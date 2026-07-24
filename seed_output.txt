@@ -1,0 +1,31 @@
+prisma:query BEGIN IMMEDIATE
+prisma:query SELECT `main`.`User`.`id` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query INSERT INTO `main`.`User` (`id`, `name`, `email`, `password`, `role`, `createdAt`, `updatedAt`) VALUES (?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`password`, `main`.`User`.`role`, `main`.`User`.`createdAt`, `main`.`User`.`updatedAt` FROM `main`.`User` WHERE `main`.`User`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+prisma:query BEGIN IMMEDIATE
+prisma:query SELECT `main`.`User`.`id` FROM `main`.`User` WHERE (`main`.`User`.`email` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query INSERT INTO `main`.`User` (`id`, `name`, `email`, `password`, `role`, `createdAt`, `updatedAt`) VALUES (?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`password`, `main`.`User`.`role`, `main`.`User`.`createdAt`, `main`.`User`.`updatedAt` FROM `main`.`User` WHERE `main`.`User`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+prisma:query BEGIN IMMEDIATE
+prisma:query SELECT `main`.`Cliente`.`id` FROM `main`.`Cliente` WHERE (`main`.`Cliente`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query INSERT INTO `main`.`Cliente` (`id`, `nome`, `cpf`, `telefone`, `beneficio`, `createdAt`, `updatedAt`) VALUES (?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`Cliente`.`id`, `main`.`Cliente`.`nome`, `main`.`Cliente`.`cpf`, `main`.`Cliente`.`telefone`, `main`.`Cliente`.`beneficio`, `main`.`Cliente`.`createdAt`, `main`.`Cliente`.`updatedAt` FROM `main`.`Cliente` WHERE `main`.`Cliente`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+prisma:query BEGIN IMMEDIATE
+prisma:query SELECT `main`.`Cliente`.`id` FROM `main`.`Cliente` WHERE (`main`.`Cliente`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query INSERT INTO `main`.`Cliente` (`id`, `nome`, `cpf`, `telefone`, `beneficio`, `createdAt`, `updatedAt`) VALUES (?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`Cliente`.`id`, `main`.`Cliente`.`nome`, `main`.`Cliente`.`cpf`, `main`.`Cliente`.`telefone`, `main`.`Cliente`.`beneficio`, `main`.`Cliente`.`createdAt`, `main`.`Cliente`.`updatedAt` FROM `main`.`Cliente` WHERE `main`.`Cliente`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+prisma:query BEGIN IMMEDIATE
+prisma:query SELECT `main`.`Processo`.`id` FROM `main`.`Processo` WHERE (`main`.`Processo`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query INSERT INTO `main`.`Processo` (`id`, `clienteId`, `beneficio`, `numero`, `status`, `responsavel`, `data`, `observacoes`, `createdAt`, `updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`Processo`.`id`, `main`.`Processo`.`clienteId`, `main`.`Processo`.`beneficio`, `main`.`Processo`.`numero`, `main`.`Processo`.`status`, `main`.`Processo`.`responsavel`, `main`.`Processo`.`data`, `main`.`Processo`.`observacoes`, `main`.`Processo`.`createdAt`, `main`.`Processo`.`updatedAt` FROM `main`.`Processo` WHERE `main`.`Processo`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+prisma:query BEGIN IMMEDIATE
+prisma:query SELECT `main`.`Processo`.`id` FROM `main`.`Processo` WHERE (`main`.`Processo`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query INSERT INTO `main`.`Processo` (`id`, `clienteId`, `beneficio`, `numero`, `status`, `responsavel`, `data`, `observacoes`, `createdAt`, `updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`Processo`.`id`, `main`.`Processo`.`clienteId`, `main`.`Processo`.`beneficio`, `main`.`Processo`.`numero`, `main`.`Processo`.`status`, `main`.`Processo`.`responsavel`, `main`.`Processo`.`data`, `main`.`Processo`.`observacoes`, `main`.`Processo`.`createdAt`, `main`.`Processo`.`updatedAt` FROM `main`.`Processo` WHERE `main`.`Processo`.`id` = ? LIMIT ? OFFSET ?
+prisma:query COMMIT
+Seed concluído com sucesso!

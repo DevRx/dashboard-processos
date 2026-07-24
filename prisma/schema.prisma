@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Cliente {
+  id        String     @id @default(cuid())
+  nome      String
+  cpf       String?
+  telefone  String?
+  beneficio String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  processos Processo[]
+}
+
+model Processo {
+  id          String   @id @default(cuid())
+  clienteId   String
+  beneficio   String
+  numero      String?
+  status      String   @default("Em análise")
+  responsavel String?
+  data        String?
+  observacoes String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+}

@@ -1,16 +1,16 @@
 # Graph Report - dashboard-processos  (2026-07-25)
 
 ## Corpus Check
-- 82 files · ~19,518 words
+- 82 files · ~19,520 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 380 nodes · 857 edges · 20 communities (12 shown, 8 thin omitted)
+- 382 nodes · 859 edges · 20 communities (12 shown, 8 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8b92a0dc`
+- Built from commit: `1544ed0a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -69,7 +69,7 @@ Cohesion: 0.07
 Nodes (50): AgendaPage(), emptyForm, hojeISO(), emptyForm, emptyForm, FinanceiroPage(), formatBRL(), LogoutButton() (+42 more)
 
 ### Community 1 - "getCurrentUser"
-Cohesion: 0.11
+Cohesion: 0.12
 Nodes (46): DELETE(), GET(), PUT(), GET(), POST(), GET(), DELETE(), GET() (+38 more)
 
 ### Community 2 - "dependencies"
@@ -77,8 +77,8 @@ Cohesion: 0.05
 Nodes (41): @base-ui/react, bcryptjs, class-variance-authority, clsx, effect, jose, lucide-react, next (+33 more)
 
 ### Community 3 - "devDependencies"
-Cohesion: 0.07
-Nodes (28): eslint, eslint-config-next, devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, tsx (+20 more)
+Cohesion: 0.06
+Nodes (30): eslint, eslint-config-next, devDependencies, eslint, eslint-config-next, playwright, tailwindcss, @tailwindcss/postcss (+22 more)
 
 ### Community 4 - "compilerOptions"
 Cohesion: 0.07
@@ -97,7 +97,7 @@ Cohesion: 0.10
 Nodes (29): getResumo(), metadata, ResumoEmbedPage(), ProcessosStatusChart(), getStatusVariant(), ProcessTable(), CLASSES_POR_TOM, StatusBadge() (+21 more)
 
 ### Community 10 - "index.ts"
-Cohesion: 0.19
+Cohesion: 0.18
 Nodes (8): POST(), globalForPrisma, RegisterSchema, LancamentoTipoEnum, ProcessoStatusEnum, TarefaPrioridadeEnum, TarefaStatusEnum, UserRoleEnum
 
 ### Community 11 - "datajud.ts"
@@ -109,7 +109,7 @@ Cohesion: 0.50
 Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
 ## Knowledge Gaps
-- **117 isolated node(s):** `emptyForm`, `emptyForm`, `emptyForm`, `metadata`, `MOTIVO_MENSAGEM` (+112 more)
+- **118 isolated node(s):** `emptyForm`, `emptyForm`, `emptyForm`, `metadata`, `MOTIVO_MENSAGEM` (+113 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -117,16 +117,16 @@ Nodes (3): Deploy on Vercel, Getting Started, Learn More
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `getCurrentUser()` connect `getCurrentUser` to `datajud.ts`, `(dashboard)/page.tsx`?**
-  _High betweenness centrality (0.046) - this node is a cross-community bridge._
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `dependencies` to `devDependencies`?**
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **Why does `cn()` connect `cn` to `data.ts`, `getCurrentUser`?**
   _High betweenness centrality (0.027) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `dependencies` to `devDependencies`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
 - **What connects `emptyForm`, `emptyForm`, `emptyForm` to the rest of the system?**
-  _117 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _118 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `data.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.07405230678812812 - nodes in this community are weakly interconnected._
 - **Should `getCurrentUser` be split into smaller, more focused modules?**
-  _Cohesion score 0.11352329262777024 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11608391608391608 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._

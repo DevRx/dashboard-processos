@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { supabase } from "@/lib/supabase/server"
 import { ProcessoSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
+import { toCamelCase } from "@/lib/utils"
 
 export async function GET(
   _request: NextRequest,
@@ -15,19 +16,21 @@ export async function GET(
 
     const { id } = await params
 
-    const processo = await db.processo.findUnique({
-      where: { id },
-      include: { cliente: true },
-    })
+    const { data: processo, error } = await supabase
+      .from("processos")
+      .select("*, cliente(*)")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single()
 
-    if (!processo) {
+    if (error || !processo) {
       return NextResponse.json(
         { error: "Processo não encontrado" },
         { status: 404 }
       )
     }
 
-    return NextResponse.json({ processo }, { status: 200 })
+    return NextResponse.json({ processo: toCamelCase(processo) }, { status: 200 })
   } catch (error) {
     console.error("Get processo error:", error)
     return NextResponse.json(
@@ -60,13 +63,24 @@ export async function PUT(
       )
     }
 
-    const processo = await db.processo.update({
-      where: { id },
-      data: validatedFields.data,
-    })
+    const { data: processo, error } = await supabase
+      .from("processos")
+      .update(validatedFields.data)
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .select()
+      .single()
+
+    if (error || !processo) {
+      console.error("Update processo error:", error)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json(
-      { message: "Processo atualizado com sucesso", processo },
+      { message: "Processo atualizado com sucesso", processo: toCamelCase(processo) },
       { status: 200 }
     )
   } catch (error) {
@@ -90,9 +104,19 @@ export async function DELETE(
 
     const { id } = await params
 
-    await db.processo.delete({
-      where: { id },
-    })
+    const { error } = await supabase
+      .from("processos")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id)
+
+    if (error) {
+      console.error("Delete processo error:", error)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json(
       { message: "Processo excluído com sucesso" },

@@ -7,53 +7,46 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Trash2, Save } from "lucide-react"
-
-type Cliente = {
-  id: string
-  nome: string
-}
-
-type Processo = {
-  id: string
-  clienteId: string
-  beneficio: string
-  numero: string | null
-  status: string
-  responsavel: string | null
-  data: string | null
-  observacoes: string | null
-  createdAt: string
-  updatedAt: string
-}
+import {
+  PROCESSO_STATUS_LABELS,
+  PROCESSO_STATUS_VALUES,
+  type Processo,
+  type Cliente,
+  type User,
+} from "@/lib/data"
 
 export default function Processos() {
   const [processos, setProcessos] = useState<Processo[]>([])
   const [clientes, setClientes] = useState<Cliente[]>([])
+  const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [novoProcesso, setNovoProcesso] = useState({
     clienteId: "",
     beneficio: "",
     numero: "",
-    status: "Em análise",
-    responsavel: "",
-    data: "",
+    status: "EM_ANALISE",
+    responsavelId: "",
+    dataEntrada: "",
     observacoes: "",
   })
 
   async function fetchData() {
     setLoading(true)
     try {
-      const [processosRes, clientesRes] = await Promise.all([
+      const [processosRes, clientesRes, usersRes] = await Promise.all([
         fetch("/api/processos"),
         fetch("/api/clientes"),
+        fetch("/api/users"),
       ])
 
       const processosData = await processosRes.json()
       const clientesData = await clientesRes.json()
+      const usersData = await usersRes.json()
 
       if (processosRes.ok) setProcessos(processosData.processos)
       if (clientesRes.ok) setClientes(clientesData.clientes)
+      if (usersRes.ok) setUsers(usersData.users)
     } catch (err) {
       console.error("Erro ao carregar dados:", err)
     } finally {
@@ -79,9 +72,9 @@ export default function Processos() {
           clienteId: "",
           beneficio: "",
           numero: "",
-          status: "Em análise",
-          responsavel: "",
-          data: "",
+          status: "EM_ANALISE",
+          responsavelId: "",
+          dataEntrada: "",
           observacoes: "",
         })
         fetchData()
@@ -102,9 +95,11 @@ export default function Processos() {
   }
 
   function getStatusVariant(status: string) {
-    if (status === "Concluído" || status === "Benefício concedido")
+    if (status === "CONCLUIDO" || status === "BENEFICIO_CONCEDIDO")
       return "default"
-    if (status.includes("Perícia")) return "secondary"
+    if (status === "PERICIA_MARCADA" || status === "PERICIA_CONCLUIDA")
+      return "secondary"
+    if (status === "RECUSADO" || status === "ARQUIVADO") return "destructive"
     return "outline"
   }
 
@@ -112,8 +107,13 @@ export default function Processos() {
     return clientes.find((c) => c.id === clienteId)?.nome || "—"
   }
 
+  function getResponsavelNome(responsavelId?: string | null) {
+    if (!responsavelId) return "—"
+    return users.find((u) => u.id === responsavelId)?.name || "—"
+  }
+
   return (
-    <main className="min-h-screen bg-zinc-100 p-6">
+    <main className="min-h-screen bg-zinc-100 p-6 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Processos</h1>
@@ -130,7 +130,7 @@ export default function Processos() {
 
       {dialogOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <Card className="w-full max-w-2xl">
+          <Card className="w-full max-w-2xl border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
             <CardHeader>
               <CardTitle>Novo Processo</CardTitle>
             </CardHeader>
@@ -164,26 +164,42 @@ export default function Processos() {
                   setNovoProcesso({ ...novoProcesso, numero: e.target.value })
                 }
               />
-              <Input
-                placeholder="Status"
+
+              <select
                 value={novoProcesso.status}
                 onChange={(e) =>
                   setNovoProcesso({ ...novoProcesso, status: e.target.value })
                 }
-              />
-              <Input
-                placeholder="Responsável"
-                value={novoProcesso.responsavel}
+                className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+              >
+                {PROCESSO_STATUS_VALUES.map((status) => (
+                  <option key={status} value={status}>
+                    {PROCESSO_STATUS_LABELS[status]}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={novoProcesso.responsavelId}
                 onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, responsavel: e.target.value })
+                  setNovoProcesso({ ...novoProcesso, responsavelId: e.target.value })
                 }
-              />
+                className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+              >
+                <option value="">Sem responsável</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name} ({user.role})
+                  </option>
+                ))}
+              </select>
+
               <Input
                 placeholder="Data de entrada"
                 type="date"
-                value={novoProcesso.data}
+                value={novoProcesso.dataEntrada}
                 onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, data: e.target.value })
+                  setNovoProcesso({ ...novoProcesso, dataEntrada: e.target.value })
                 }
               />
               <Input
@@ -208,7 +224,7 @@ export default function Processos() {
         </div>
       )}
 
-      <Card>
+      <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <CardContent className="p-0">
           {loading ? (
             <div className="p-6 text-center">
@@ -223,49 +239,53 @@ export default function Processos() {
               </p>
             </div>
           ) : (
-            <table className="w-full">
-              <thead className="bg-zinc-50">
-                <tr>
-                  <th className="p-4 text-left">Cliente</th>
-                  <th className="p-4 text-left">Benefício</th>
-                  <th className="p-4 text-left">Número</th>
-                  <th className="p-4 text-left">Status</th>
-                  <th className="p-4 text-left">Responsável</th>
-                  <th className="p-4 text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {processos.map((processo) => (
-                  <tr key={processo.id} className="border-t">
-                    <td className="p-4">
-                      <Link
-                        href={`/clientes/${processo.clienteId}`}
-                        className="font-medium hover:underline"
-                      >
-                        {getClienteNome(processo.clienteId)}
-                      </Link>
-                    </td>
-                    <td className="p-4">{processo.beneficio}</td>
-                    <td className="p-4">{processo.numero || "—"}</td>
-                    <td className="p-4">
-                      <Badge variant={getStatusVariant(processo.status)}>
-                        {processo.status}
-                      </Badge>
-                    </td>
-                    <td className="p-4">{processo.responsavel || "—"}</td>
-                    <td className="p-4 text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteProcesso(processo.id)}
-                      >
-                        <Trash2 size={16} />
-                      </Button>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-zinc-50 dark:bg-zinc-800">
+                  <tr>
+                    <th className="p-4 text-left">Cliente</th>
+                    <th className="p-4 text-left">Benefício</th>
+                    <th className="p-4 text-left">Número</th>
+                    <th className="p-4 text-left">Status</th>
+                    <th className="p-4 text-left">Responsável</th>
+                    <th className="p-4 text-right">Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {processos.map((processo) => (
+                    <tr key={processo.id} className="border-t border-zinc-200 dark:border-zinc-800">
+                      <td className="p-4">
+                        <Link
+                          href={`/clientes/${processo.clienteId}`}
+                          className="font-medium hover:underline"
+                        >
+                          {getClienteNome(processo.clienteId)}
+                        </Link>
+                      </td>
+                      <td className="p-4">{processo.beneficio}</td>
+                      <td className="p-4">{processo.numero || "—"}</td>
+                      <td className="p-4">
+                        <Badge variant={getStatusVariant(processo.status)}>
+                          {PROCESSO_STATUS_LABELS[processo.status] || processo.status}
+                        </Badge>
+                      </td>
+                      <td className="p-4">
+                        {getResponsavelNome(processo.responsavelId)}
+                      </td>
+                      <td className="p-4 text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteProcesso(processo.id)}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </CardContent>
       </Card>

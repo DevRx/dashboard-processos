@@ -1,6 +1,7 @@
 import "server-only"
 import { SignJWT, jwtVerify } from "jose"
 import { cookies } from "next/headers"
+import { UserRole } from "@/lib/data"
 
 const secretKey = process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
@@ -9,7 +10,7 @@ export type SessionPayload = {
   userId: string
   name: string
   email: string
-  role: string
+  role: UserRole
 }
 
 export async function encrypt(payload: SessionPayload) {

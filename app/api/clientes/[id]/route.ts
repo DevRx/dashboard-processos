@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { supabase } from "@/lib/supabase/server"
 import { ClienteSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
+import { toCamelCase } from "@/lib/utils"
 
 export async function GET(
   _request: NextRequest,
@@ -15,19 +16,21 @@ export async function GET(
 
     const { id } = await params
 
-    const cliente = await db.cliente.findUnique({
-      where: { id },
-      include: { processos: true },
-    })
+    const { data: cliente, error } = await supabase
+      .from("clientes")
+      .select("*, processos(*)")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single()
 
-    if (!cliente) {
+    if (error || !cliente) {
       return NextResponse.json(
         { error: "Cliente não encontrado" },
         { status: 404 }
       )
     }
 
-    return NextResponse.json({ cliente }, { status: 200 })
+    return NextResponse.json({ cliente: toCamelCase(cliente) }, { status: 200 })
   } catch (error) {
     console.error("Get cliente error:", error)
     return NextResponse.json(
@@ -60,13 +63,24 @@ export async function PUT(
       )
     }
 
-    const cliente = await db.cliente.update({
-      where: { id },
-      data: validatedFields.data,
-    })
+    const { data: cliente, error } = await supabase
+      .from("clientes")
+      .update(validatedFields.data)
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .select()
+      .single()
+
+    if (error || !cliente) {
+      console.error("Update cliente error:", error)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json(
-      { message: "Cliente atualizado com sucesso", cliente },
+      { message: "Cliente atualizado com sucesso", cliente: toCamelCase(cliente) },
       { status: 200 }
     )
   } catch (error) {
@@ -90,9 +104,19 @@ export async function DELETE(
 
     const { id } = await params
 
-    await db.cliente.delete({
-      where: { id },
-    })
+    const { error } = await supabase
+      .from("clientes")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id)
+
+    if (error) {
+      console.error("Delete cliente error:", error)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json(
       { message: "Cliente excluído com sucesso" },

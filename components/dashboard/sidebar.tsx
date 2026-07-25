@@ -50,7 +50,7 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r bg-white px-4 py-6">
+    <aside className="flex h-screen w-64 flex-col border-r border-zinc-200 bg-white px-4 py-6 text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100">
       <div className="mb-8">
         <h1 className="text-xl font-bold">
           Advocacia
@@ -73,7 +73,7 @@ export function Sidebar() {
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
                 isActive
                   ? "bg-primary text-primary-foreground"
-                  : "hover:bg-zinc-100"
+                  : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
               )}
             >
               <Icon size={18} />

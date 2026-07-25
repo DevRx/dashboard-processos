@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { supabase } from "@/lib/supabase/server"
 import { ProcessoSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
+import { toCamelCase } from "@/lib/utils"
 
 export async function GET() {
   try {
@@ -10,16 +11,21 @@ export async function GET() {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
     }
 
-    const processos = await db.processo.findMany({
-      include: {
-        cliente: {
-          select: { nome: true },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    })
+    const { data: processos, error } = await supabase
+      .from("processos")
+      .select("*, cliente(nome)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
 
-    return NextResponse.json({ processos }, { status: 200 })
+    if (error) {
+      console.error("Get processos error:", error)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ processos: toCamelCase(processos) }, { status: 200 })
   } catch (error) {
     console.error("Get processos error:", error)
     return NextResponse.json(
@@ -48,12 +54,40 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const processo = await db.processo.create({
-      data: validatedFields.data,
-    })
+    // Verify the cliente belongs to this user
+    const { data: cliente, error: clienteError } = await supabase
+      .from("clientes")
+      .select("id")
+      .eq("id", validatedFields.data.clienteId)
+      .eq("user_id", user.id)
+      .single()
+
+    if (clienteError || !cliente) {
+      return NextResponse.json(
+        { error: "Cliente não encontrado ou não autorizado" },
+        { status: 404 }
+      )
+    }
+
+    const { data: processo, error } = await supabase
+      .from("processos")
+      .insert({
+        ...validatedFields.data,
+        user_id: user.id,
+      })
+      .select()
+      .single()
+
+    if (error || !processo) {
+      console.error("Create processo error:", error)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json(
-      { message: "Processo criado com sucesso", processo },
+      { message: "Processo criado com sucesso", processo: toCamelCase(processo) },
       { status: 201 }
     )
   } catch (error) {

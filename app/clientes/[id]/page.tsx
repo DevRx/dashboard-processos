@@ -7,28 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Trash2, Save } from "lucide-react"
-
-type Cliente = {
-  id: string
-  nome: string
-  cpf: string | null
-  telefone: string | null
-  beneficio: string | null
-  processos: Processo[]
-}
-
-type Processo = {
-  id: string
-  clienteId: string
-  beneficio: string
-  numero: string | null
-  status: string
-  responsavel: string | null
-  data: string | null
-  observacoes: string | null
-  createdAt: string
-  updatedAt: string
-}
+import {
+  PROCESSO_STATUS_LABELS,
+  PROCESSO_STATUS_VALUES,
+  type Cliente,
+  type Processo,
+  type User,
+} from "@/lib/data"
 
 export default function ClienteDetalhe() {
   const params = useParams()
@@ -37,25 +22,33 @@ export default function ClienteDetalhe() {
 
   const [cliente, setCliente] = useState<Cliente | null>(null)
   const [loading, setLoading] = useState(true)
+  const [users, setUsers] = useState<User[]>([])
   const [novoProcesso, setNovoProcesso] = useState({
     beneficio: "",
     numero: "",
-    status: "Em análise",
-    responsavel: "",
-    data: "",
+    status: "EM_ANALISE",
+    responsavelId: "",
+    dataEntrada: "",
     observacoes: "",
   })
 
   async function fetchCliente() {
     setLoading(true)
     try {
-      const response = await fetch(`/api/clientes/${id}`)
-      const data = await response.json()
-      if (response.ok) {
-        setCliente(data.cliente)
+      const [clienteRes, usersRes] = await Promise.all([
+        fetch(`/api/clientes/${id}`),
+        fetch("/api/users"),
+      ])
+
+      const clienteData = await clienteRes.json()
+      const usersData = await usersRes.json()
+
+      if (clienteRes.ok) {
+        setCliente(clienteData.cliente)
       } else {
         router.push("/clientes")
       }
+      if (usersRes.ok) setUsers(usersData.users)
     } catch (err) {
       console.error("Erro ao carregar cliente:", err)
     } finally {
@@ -79,9 +72,9 @@ export default function ClienteDetalhe() {
         setNovoProcesso({
           beneficio: "",
           numero: "",
-          status: "Em análise",
-          responsavel: "",
-          data: "",
+          status: "EM_ANALISE",
+          responsavelId: "",
+          dataEntrada: "",
           observacoes: "",
         })
         fetchCliente()
@@ -100,6 +93,13 @@ export default function ClienteDetalhe() {
       console.error("Erro ao excluir processo:", err)
     }
   }
+
+  function getResponsavelNome(responsavelId?: string | null) {
+    if (!responsavelId) return "—"
+    return users.find((u) => u.id === responsavelId)?.name || "—"
+  }
+
+  const processos = cliente?.processos || []
 
   if (loading) {
     return (
@@ -131,7 +131,10 @@ export default function ClienteDetalhe() {
           </CardHeader>
           <CardContent className="space-y-2">
             <p>CPF: {cliente.cpf || "—"}</p>
+            <p>E-mail: {cliente.email || "—"}</p>
             <p>Telefone: {cliente.telefone || "—"}</p>
+            <p>Endereço: {cliente.endereco || "—"}</p>
+            <p>Data de nascimento: {cliente.dataNascimento || "—"}</p>
             <p>Benefício: {cliente.beneficio || "—"}</p>
           </CardContent>
         </Card>
@@ -141,12 +144,12 @@ export default function ClienteDetalhe() {
             <CardTitle>Processos</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {cliente.processos.length === 0 ? (
+            {processos.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 Nenhum processo cadastrado.
               </p>
             ) : (
-              cliente.processos.map((processo) => (
+              processos.map((processo: Processo) => (
                 <div
                   key={processo.id}
                   className="rounded-lg border p-4"
@@ -157,12 +160,25 @@ export default function ClienteDetalhe() {
                       <p className="text-sm">
                         Status:{" "}
                         <Badge variant="outline" className="text-xs">
-                          {processo.status}
+                          {PROCESSO_STATUS_LABELS[processo.status] || processo.status}
                         </Badge>
                       </p>
-                      {processo.responsavel && (
+                      {processo.numero && (
+                        <p className="text-sm">Número: {processo.numero}</p>
+                      )}
+                      {processo.responsavelId && (
                         <p className="text-sm">
-                          Responsável: {processo.responsavel}
+                          Responsável: {getResponsavelNome(processo.responsavelId)}
+                        </p>
+                      )}
+                      {processo.dataEntrada && (
+                        <p className="text-sm">
+                          Data de entrada: {processo.dataEntrada}
+                        </p>
+                      )}
+                      {processo.observacoes && (
+                        <p className="text-sm">
+                          Observações: {processo.observacoes}
                         </p>
                       )}
                     </div>
@@ -200,26 +216,42 @@ export default function ClienteDetalhe() {
               setNovoProcesso({ ...novoProcesso, numero: e.target.value })
             }
           />
-          <Input
-            placeholder="Status"
+
+          <select
             value={novoProcesso.status}
             onChange={(e) =>
               setNovoProcesso({ ...novoProcesso, status: e.target.value })
             }
-          />
-          <Input
-            placeholder="Responsável"
-            value={novoProcesso.responsavel}
+            className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+          >
+            {PROCESSO_STATUS_VALUES.map((status) => (
+              <option key={status} value={status}>
+                {PROCESSO_STATUS_LABELS[status]}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={novoProcesso.responsavelId}
             onChange={(e) =>
-              setNovoProcesso({ ...novoProcesso, responsavel: e.target.value })
+              setNovoProcesso({ ...novoProcesso, responsavelId: e.target.value })
             }
-          />
+            className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+          >
+            <option value="">Sem responsável</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name} ({user.role})
+              </option>
+            ))}
+          </select>
+
           <Input
             placeholder="Data de entrada"
             type="date"
-            value={novoProcesso.data}
+            value={novoProcesso.dataEntrada}
             onChange={(e) =>
-              setNovoProcesso({ ...novoProcesso, data: e.target.value })
+              setNovoProcesso({ ...novoProcesso, dataEntrada: e.target.value })
             }
           />
           <Input

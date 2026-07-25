@@ -3,41 +3,175 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
+// ─────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  ADVOGADO
+  ASSISTENTE
+  USER
+}
+
+enum ProcessoStatus {
+  EM_ANALISE
+  AGUARDANDO_INSS
+  PERICIA_MARCADA
+  PERICIA_CONCLUIDA
+  BENEFICIO_CONCEDIDO
+  RECUSADO
+  CONCLUIDO
+  ARQUIVADO
+}
+
+enum TarefaStatus {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDA
+  CANCELADA
+}
+
+enum TarefaPrioridade {
+  BAIXA
+  MEDIA
+  ALTA
+  URGENTE
+}
+
+// ─────────────────────────────────────────────────────────
+// Models
+// ─────────────────────────────────────────────────────────
+
 model User {
-  id        String   @id @default(cuid())
+  id        String     @id @default(uuid())
   name      String
-  email     String   @unique
+  email     String     @unique
   password  String
-  role      String   @default("USER")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      UserRole   @default(USER)
+  telefone  String?
+  matricula String?    @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relações
+  clientes    Cliente[]
+  processos   Processo[]      @relation("UserProcessos")
+  andamentos  Andamento[]
+  tarefas     Tarefa[]
+  documentos  Documento[]
+  auditorias  Auditoria[]
+  // Processos onde este usuário é o responsável
+  processosResponsavel Processo[] @relation("ResponsavelProcesso")
 }
 
 model Cliente {
-  id        String     @id @default(cuid())
-  nome      String
-  cpf       String?
-  telefone  String?
-  beneficio String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id             String    @id @default(uuid())
+  userId         String
+  nome           String
+  cpf            String?   @unique
+  email          String?
+  telefone       String?
+  endereco       String?
+  dataNascimento DateTime?
+  beneficio      String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relações
+  user      User      @relation(fields: [userId], references: [id])
   processos Processo[]
 }
 
 model Processo {
-  id          String   @id @default(cuid())
-  clienteId   String
-  beneficio   String
-  numero      String?
-  status      String   @default("Em análise")
-  responsavel String?
-  data        String?
-  observacoes String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+  id            String         @id @default(uuid())
+  userId        String
+  clienteId     String
+  beneficio     String
+  numero        String?
+  status        ProcessoStatus @default(EM_ANALISE)
+  responsavelId String?
+  dataEntrada   DateTime?
+  dataConclusao DateTime?
+  valorCausa    Float?
+  tribunal      String?
+  vara          String?
+  comarca       String?
+  observacoes   String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // Relações
+  user        User        @relation("UserProcessos", fields: [userId], references: [id])
+  cliente     Cliente     @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  responsavel User?       @relation("ResponsavelProcesso", fields: [responsavelId], references: [id])
+  andamentos  Andamento[]
+  tarefas     Tarefa[]
+  documentos  Documento[]
+}
+
+model Andamento {
+  id         String         @id @default(uuid())
+  processoId String
+  userId     String
+  data       DateTime
+  descricao  String
+  status     ProcessoStatus
+  createdAt  DateTime       @default(now())
+
+  // Relações
+  processo Processo @relation(fields: [processoId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id])
+}
+
+model Tarefa {
+  id          String          @id @default(uuid())
+  userId      String
+  processoId  String?
+  titulo      String
+  descricao   String?
+  data        DateTime
+  hora        String?
+  status      TarefaStatus    @default(PENDENTE)
+  prioridade  TarefaPrioridade @default(MEDIA)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  // Relações
+  user     User      @relation(fields: [userId], references: [id])
+  processo Processo? @relation(fields: [processoId], references: [id], onDelete: SetNull)
+}
+
+model Documento {
+  id         String   @id @default(uuid())
+  processoId String
+  userId     String
+  nome       String
+  url        String
+  tipo       String?
+  tamanho    Int?
+  createdAt  DateTime @default(now())
+
+  // Relações
+  processo Processo @relation(fields: [processoId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id])
+}
+
+model Auditoria {
+  id         String   @id @default(uuid())
+  userId     String
+  acao       String
+  entidade   String
+  entidadeId String?
+  detalhes   Json?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  // Relações
+  user User @relation(fields: [userId], references: [id])
 }

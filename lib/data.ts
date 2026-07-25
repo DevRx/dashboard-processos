@@ -1,59 +1,129 @@
-export type Cliente = {
+// ─────────────────────────────────────────────────────────
+// TypeScript Types (aligned with prisma/schema.prisma)
+// ─────────────────────────────────────────────────────────
+
+export type UserRole = "ADMIN" | "ADVOGADO" | "ASSISTENTE" | "USER"
+
+export type ProcessoStatus =
+  | "EM_ANALISE"
+  | "AGUARDANDO_INSS"
+  | "PERICIA_MARCADA"
+  | "PERICIA_CONCLUIDA"
+  | "BENEFICIO_CONCEDIDO"
+  | "RECUSADO"
+  | "CONCLUIDO"
+  | "ARQUIVADO"
+
+export type TarefaStatus = "PENDENTE" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA"
+
+export type TarefaPrioridade = "BAIXA" | "MEDIA" | "ALTA" | "URGENTE"
+
+export type User = {
   id: string
-  nome: string
-  cpf: string
-  telefone: string
-  beneficio: string
+  name: string
+  email: string
+  role: UserRole
+  telefone?: string | null
+  matricula?: string | null
+  createdAt: string
+  updatedAt: string
 }
 
+export type Cliente = {
+  id: string
+  userId: string
+  nome: string
+  cpf?: string | null
+  email?: string | null
+  telefone?: string | null
+  endereco?: string | null
+  dataNascimento?: string | null
+  beneficio?: string | null
+  createdAt: string
+  updatedAt: string
+  processos?: Processo[]
+}
 
 export type Processo = {
   id: string
+  userId: string
   clienteId: string
   beneficio: string
-  numero: string
-  status: string
-  responsavel: string
-  data: string
-  observacoes: string
+  numero?: string | null
+  status: ProcessoStatus
+  responsavelId?: string | null
+  dataEntrada?: string | null
+  dataConclusao?: string | null
+  valorCausa?: number | null
+  tribunal?: string | null
+  vara?: string | null
+  comarca?: string | null
+  observacoes?: string | null
+  createdAt: string
+  updatedAt: string
 }
 
+export type Andamento = {
+  id: string
+  processoId: string
+  userId: string
+  data: string
+  descricao: string
+  status: ProcessoStatus
+  createdAt: string
+}
 
+export type Tarefa = {
+  id: string
+  userId: string
+  processoId?: string | null
+  titulo: string
+  descricao?: string | null
+  data: string
+  hora?: string | null
+  status: TarefaStatus
+  prioridade: TarefaPrioridade
+  createdAt: string
+  updatedAt: string
+}
 
-export const clientes: Cliente[] = [
+export type Documento = {
+  id: string
+  processoId: string
+  userId: string
+  nome: string
+  url: string
+  tipo?: string | null
+  tamanho?: number | null
+  createdAt: string
+}
 
-  {
-    id: "1",
-    nome: "Maria Silva",
-    cpf: "123.456.789-00",
-    telefone: "(61) 99999-9999",
-    beneficio: "Salário-Maternidade",
-  },
+export type Auditoria = {
+  id: string
+  userId: string
+  acao: string
+  entidade: string
+  entidadeId?: string | null
+  detalhes?: Record<string, unknown> | null
+  ip?: string | null
+  createdAt: string
+}
 
+// ─────────────────────────────────────────────────────────
+// Status Display Helpers
+// ─────────────────────────────────────────────────────────
 
-  {
-    id: "2",
-    nome: "Carlos Oliveira",
-    cpf: "987.654.321-00",
-    telefone: "(61) 98888-8888",
-    beneficio: "Aposentadoria",
-  },
+export const PROCESSO_STATUS_LABELS: Record<ProcessoStatus, string> = {
+  EM_ANALISE: "Em análise",
+  AGUARDANDO_INSS: "Aguardando INSS",
+  PERICIA_MARCADA: "Perícia marcada",
+  PERICIA_CONCLUIDA: "Perícia concluída",
+  BENEFICIO_CONCEDIDO: "Benefício concedido",
+  RECUSADO: "Recusado",
+  CONCLUIDO: "Concluído",
+  ARQUIVADO: "Arquivado",
+}
 
-]
-
-
-
-export const processos: Processo[] = [
-
-  {
-    id: "1",
-    clienteId: "1",
-    beneficio: "Salário-Maternidade",
-    numero: "0000000-00",
-    status: "Em análise",
-    responsavel: "João",
-    data: "23/07/2026",
-    observacoes: "Aguardando análise do INSS",
-  },
-
-]
+export const PROCESSO_STATUS_VALUES = Object.keys(
+  PROCESSO_STATUS_LABELS
+) as ProcessoStatus[]

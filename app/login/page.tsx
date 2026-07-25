@@ -33,7 +33,7 @@ export default function LoginPage() {
       } else {
         router.push("/")
       }
-    } catch (err) {
+    } catch {
       setError("Erro de conexão")
     } finally {
       setLoading(false)
@@ -44,15 +44,11 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-zinc-100">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center text-2xl">
-            Entrar
-          </CardTitle>
+          <CardTitle className="text-center text-2xl">Entrar</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {error && (
-              <p className="text-sm text-destructive">{error}</p>
-            )}
+            {error && <p className="text-sm text-destructive">{error}</p>}
 
             <Input
               type="email"
@@ -76,11 +72,8 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-4 text-center text-sm">
-            Ainda não tem uma conta?{" "}
-            <Link
-              href="/register"
-              className="font-medium text-primary hover:underline"
-            >
+            Não tem conta?{" "}
+            <Link href="/register" className="font-medium text-primary hover:underline">
               Cadastrar
             </Link>
           </p>

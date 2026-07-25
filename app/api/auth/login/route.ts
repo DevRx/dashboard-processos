@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { db } from "@/lib/db"
+import { prisma } from "@/lib/db"
 import { LoginSchema } from "@/lib/validations"
 import { createSession } from "@/lib/session"
 
@@ -20,10 +20,7 @@ export async function POST(request: NextRequest) {
 
     const { email, password } = validatedFields.data
 
-    // Find user
-    const user = await db.user.findUnique({
-      where: { email },
-    })
+    const user = await prisma.user.findUnique({ where: { email } })
 
     if (!user) {
       return NextResponse.json(
@@ -32,7 +29,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verify password
     const passwordMatch = await bcrypt.compare(password, user.password)
 
     if (!passwordMatch) {
@@ -42,7 +38,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create session
     await createSession({
       userId: user.id,
       name: user.name,
@@ -51,7 +46,7 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(
-      { message: "Login realizado com sucesso" },
+      { message: "Login realizado com sucesso", user: { id: user.id, name: user.name, email: user.email, role: user.role } },
       { status: 200 }
     )
   } catch (error) {

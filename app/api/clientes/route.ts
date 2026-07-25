@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { supabase } from "@/lib/supabase/server"
 import { ClienteSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
+import { toCamelCase } from "@/lib/utils"
 
 export async function GET() {
   try {
@@ -10,16 +11,21 @@ export async function GET() {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
     }
 
-    const clientes = await db.cliente.findMany({
-      include: {
-        _count: {
-          select: { processos: true },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    })
+    const { data: clientes, error } = await supabase
+      .from("clientes")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
 
-    return NextResponse.json({ clientes }, { status: 200 })
+    if (error) {
+      console.error("Get clientes error:", error)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ clientes: toCamelCase(clientes) }, { status: 200 })
   } catch (error) {
     console.error("Get clientes error:", error)
     return NextResponse.json(
@@ -48,12 +54,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const cliente = await db.cliente.create({
-      data: validatedFields.data,
-    })
+    const { data: cliente, error } = await supabase
+      .from("clientes")
+      .insert({
+        ...validatedFields.data,
+        user_id: user.id,
+      })
+      .select()
+      .single()
+
+    if (error || !cliente) {
+      console.error("Create cliente error:", error)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json(
-      { message: "Cliente criado com sucesso", cliente },
+      { message: "Cliente criado com sucesso", cliente: toCamelCase(cliente) },
       { status: 201 }
     )
   } catch (error) {

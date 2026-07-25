@@ -1,14 +1,16 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { Sidebar } from "@/components/dashboard/sidebar"
-import { Header } from "@/components/dashboard/header"
+import { Sidebar } from "@/components/layout/sidebar"
+import { Header } from "@/components/layout/header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { MetricCard } from "@/components/dashboard/metric-card"
-import { Plus, Trash2, Save, Pencil } from "lucide-react"
+import { EmptyState } from "@/components/dashboard/empty-state"
+import { Plus, Trash2, Save, Pencil, Wallet } from "lucide-react"
 import {
   LANCAMENTO_TIPO_LABELS,
   LANCAMENTO_TIPO_VALUES,
@@ -123,7 +125,7 @@ export default function FinanceiroPage() {
     <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <Sidebar />
       <div className="flex flex-1 flex-col">
-        <Header />
+        <Header title="Financeiro" subtitle="Controle simples de entradas e saídas." />
         <main className="flex-1 space-y-6 p-6">
           <div className="mb-2 flex items-center justify-between">
             <div>
@@ -215,15 +217,17 @@ export default function FinanceiroPage() {
             </CardHeader>
             <CardContent className="p-0">
               {loading ? (
-                <div className="p-6 text-center">
-                  <p className="text-sm text-muted-foreground">Carregando lançamentos...</p>
+                <div className="space-y-3 p-6">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
                 </div>
               ) : lancamentos.length === 0 ? (
-                <div className="p-6 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Nenhum lançamento cadastrado. Clique em &quot;Novo Lançamento&quot; para começar.
-                  </p>
-                </div>
+                <EmptyState
+                  icon={Wallet}
+                  title="Nenhum lançamento cadastrado"
+                  description='Clique em "Novo Lançamento" para começar.'
+                />
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">

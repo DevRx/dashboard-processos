@@ -5,8 +5,12 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Plus, Trash2, Save, Search, Loader2, LayoutGrid, List } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Sidebar } from "@/components/layout/sidebar"
+import { Header } from "@/components/layout/header"
+import { StatusBadge } from "@/components/dashboard/status-badge"
+import { EmptyState } from "@/components/dashboard/empty-state"
+import { Plus, Trash2, Save, Search, Loader2, LayoutGrid, List, FolderSearch } from "lucide-react"
 import {
   PROCESSO_STATUS_LABELS,
   PROCESSO_STATUS_VALUES,
@@ -149,15 +153,6 @@ export default function Processos() {
     }
   }
 
-  function getStatusVariant(status: string) {
-    if (status === "CONCLUIDO" || status === "BENEFICIO_CONCEDIDO")
-      return "default"
-    if (status === "PERICIA_MARCADA" || status === "PERICIA_CONCLUIDA")
-      return "secondary"
-    if (status === "RECUSADO" || status === "ARQUIVADO") return "destructive"
-    return "outline"
-  }
-
   function getClienteNome(clienteId: string) {
     return clientes.find((c) => c.id === clienteId)?.nome || "—"
   }
@@ -168,7 +163,11 @@ export default function Processos() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-100 p-6 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+      <Sidebar />
+      <div className="flex flex-1 flex-col">
+        <Header title="Processos" subtitle="Gestão de processos do escritório" />
+        <main className="flex-1 p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Processos</h1>
@@ -353,17 +352,19 @@ export default function Processos() {
 
       {loading ? (
         <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-          <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground">Carregando processos...</p>
+          <CardContent className="space-y-3 p-6">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
           </CardContent>
         </Card>
       ) : processos.length === 0 ? (
         <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-          <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              Nenhum processo cadastrado. Clique em &quot;Novo Processo&quot; para começar.
-            </p>
-          </CardContent>
+          <EmptyState
+            icon={FolderSearch}
+            title="Nenhum processo cadastrado"
+            description='Clique em "Novo Processo" para começar.'
+          />
         </Card>
       ) : visao === "board" ? (
         <KanbanBoard
@@ -401,9 +402,7 @@ export default function Processos() {
                       <td className="p-4">{processo.beneficio}</td>
                       <td className="p-4">{processo.numero || "—"}</td>
                       <td className="p-4">
-                        <Badge variant={getStatusVariant(processo.status)}>
-                          {PROCESSO_STATUS_LABELS[processo.status] || processo.status}
-                        </Badge>
+                        <StatusBadge status={processo.status} />
                       </td>
                       <td className="p-4">
                         {getResponsavelNome(processo.responsavelId)}
@@ -425,6 +424,8 @@ export default function Processos() {
           </CardContent>
         </Card>
       )}
-    </main>
+        </main>
+      </div>
+    </div>
   )
 }

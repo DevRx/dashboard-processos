@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
-import { ClienteSchema } from "@/lib/validations"
+import { ClienteSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
 

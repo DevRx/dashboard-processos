@@ -4,21 +4,10 @@ import { useState } from "react"
 import Link from "next/link"
 import { AlertTriangle, Clock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import {
-  PROCESSO_STATUS_LABELS,
-  type Processo,
-  type Cliente,
-  type User,
-} from "@/lib/data"
+import { StatusBadge } from "@/components/dashboard/status-badge"
+import { type Processo, type Cliente, type User } from "@/lib/data"
 
 const SEM_BENEFICIO = "Sem benefício definido"
-
-function getStatusVariant(status: string) {
-  if (status === "CONCLUIDO" || status === "BENEFICIO_CONCEDIDO") return "default"
-  if (status === "PERICIA_MARCADA" || status === "PERICIA_CONCLUIDA") return "secondary"
-  if (status === "RECUSADO" || status === "ARQUIVADO") return "destructive"
-  return "outline"
-}
 
 function prazoInfo(prazo?: string | null) {
   if (!prazo) return null
@@ -168,9 +157,7 @@ export function KanbanBoard({
                     </Link>
 
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                      <Badge variant={getStatusVariant(processo.status)} className="text-[10px]">
-                        {PROCESSO_STATUS_LABELS[processo.status] || processo.status}
-                      </Badge>
+                      <StatusBadge status={processo.status} className="text-[10px]" />
                       {iniciais && (
                         <span
                           title={users.find((u) => u.id === processo.responsavelId)?.name}

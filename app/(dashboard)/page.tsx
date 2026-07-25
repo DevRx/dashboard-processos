@@ -1,7 +1,8 @@
-import { Sidebar } from "@/components/dashboard/sidebar"
-import { Header } from "@/components/dashboard/header"
+import { Sidebar } from "@/components/layout/sidebar"
+import { Header } from "@/components/layout/header"
 import { MetricCard } from "@/components/dashboard/metric-card"
 import { ProcessTable, type ProcessoRecente } from "@/components/dashboard/process-table"
+import { ProcessosStatusChart } from "@/components/charts/processos-status-chart"
 import { getSession } from "@/lib/session"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
@@ -15,11 +16,12 @@ export default async function HomePage() {
   let totalClientes = 0
   let tarefasHoje = 0
   let processosRecentes: ProcessoRecente[] = []
+  const porStatus: Record<string, number> = {}
 
   if (user) {
     const hoje = new Date().toISOString().slice(0, 10)
 
-    const [processosCount, clientesCount, tarefasCount, processosRecentesRes] = await Promise.all([
+    const [processosCount, clientesCount, tarefasCount, processosRecentesRes, todosStatusRes] = await Promise.all([
       supabase
         .from("processos")
         .select("*", { count: "exact", head: true })
@@ -40,11 +42,16 @@ export default async function HomePage() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(5),
+      supabase.from("processos").select("status").eq("user_id", user.id),
     ])
 
     processosAtivos = processosCount.count ?? 0
     totalClientes = clientesCount.count ?? 0
     tarefasHoje = tarefasCount.count ?? 0
+
+    for (const p of todosStatusRes.data || []) {
+      porStatus[p.status] = (porStatus[p.status] || 0) + 1
+    }
 
     const camelRows = toCamelCase(processosRecentesRes.data) as unknown as Array<{
       id: string
@@ -89,9 +96,12 @@ export default async function HomePage() {
             <MetricCard title="Agenda" value={String(tarefasHoje)} description="Compromissos hoje" />
           </div>
 
-          <div className="mt-8">
-            <h2 className="mb-3 text-lg font-semibold">Processos recentes</h2>
-            <ProcessTable processos={processosRecentes} />
+          <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
+            <div>
+              <h2 className="mb-3 text-lg font-semibold">Processos recentes</h2>
+              <ProcessTable processos={processosRecentes} />
+            </div>
+            <ProcessosStatusChart porStatus={porStatus} />
           </div>
         </main>
       </div>

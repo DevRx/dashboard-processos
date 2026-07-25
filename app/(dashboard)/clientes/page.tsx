@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Sidebar } from "@/components/dashboard/sidebar"
-import { Header } from "@/components/dashboard/header"
+import { Sidebar } from "@/components/layout/sidebar"
+import { Header } from "@/components/layout/header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Plus, Trash2, Save, Pencil } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { EmptyState } from "@/components/dashboard/empty-state"
+import { Plus, Trash2, Save, Pencil, Users } from "lucide-react"
 import type { Cliente } from "@/lib/data"
 
 const emptyForm = {
@@ -110,7 +112,7 @@ export default function ClientesPage() {
     <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <Sidebar />
       <div className="flex flex-1 flex-col">
-        <Header />
+        <Header title="Clientes" subtitle="Cadastro e gestão dos clientes do escritório." />
         <main className="flex-1 p-6">
           <div className="mb-6 flex items-center justify-between">
             <div>
@@ -190,15 +192,17 @@ export default function ClientesPage() {
             </CardHeader>
             <CardContent className="p-0">
               {loading ? (
-                <div className="p-6 text-center">
-                  <p className="text-sm text-muted-foreground">Carregando clientes...</p>
+                <div className="space-y-3 p-6">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
                 </div>
               ) : clientes.length === 0 ? (
-                <div className="p-6 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Nenhum cliente cadastrado. Clique em &quot;Novo Cliente&quot; para começar.
-                  </p>
-                </div>
+                <EmptyState
+                  icon={Users}
+                  title="Nenhum cliente cadastrado"
+                  description='Clique em "Novo Cliente" para começar.'
+                />
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">

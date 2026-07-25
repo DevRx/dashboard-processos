@@ -1,13 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Sidebar } from "@/components/dashboard/sidebar"
-import { Header } from "@/components/dashboard/header"
+import { Sidebar } from "@/components/layout/sidebar"
+import { Header } from "@/components/layout/header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Trash2, Save, Pencil } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { EmptyState } from "@/components/dashboard/empty-state"
+import { Plus, Trash2, Save, Pencil, CalendarDays } from "lucide-react"
 import {
   TAREFA_STATUS_LABELS,
   TAREFA_STATUS_VALUES,
@@ -201,7 +203,7 @@ export default function AgendaPage() {
     <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <Sidebar />
       <div className="flex flex-1 flex-col">
-        <Header />
+        <Header title="Agenda" subtitle="Gerencie compromissos e prazos." />
         <main className="flex-1 space-y-4 p-6">
           <div className="mb-2 flex items-center justify-between">
             <div>
@@ -301,17 +303,19 @@ export default function AgendaPage() {
 
           {loading ? (
             <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-              <CardContent className="p-6 text-center">
-                <p className="text-sm text-muted-foreground">Carregando agenda...</p>
+              <CardContent className="space-y-3 p-6">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
               </CardContent>
             </Card>
           ) : tarefas.length === 0 ? (
             <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-              <CardContent className="p-6 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Nenhum compromisso cadastrado. Clique em &quot;Novo Compromisso&quot; para começar.
-                </p>
-              </CardContent>
+              <EmptyState
+                icon={CalendarDays}
+                title="Nenhum compromisso cadastrado"
+                description='Clique em "Novo Compromisso" para começar.'
+              />
             </Card>
           ) : (
             <>

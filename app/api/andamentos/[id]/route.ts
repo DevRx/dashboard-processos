@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
-import { AndamentoSchema } from "@/lib/validations"
+import { AndamentoSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
 

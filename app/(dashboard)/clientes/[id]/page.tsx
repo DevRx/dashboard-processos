@@ -5,8 +5,12 @@ import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Trash2, Save, Search, Loader2 } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Sidebar } from "@/components/layout/sidebar"
+import { Header } from "@/components/layout/header"
+import { StatusBadge } from "@/components/dashboard/status-badge"
+import { EmptyState } from "@/components/dashboard/empty-state"
+import { Trash2, Save, Search, Loader2, FolderSearch, UserX } from "lucide-react"
 import {
   PROCESSO_STATUS_LABELS,
   PROCESSO_STATUS_VALUES,
@@ -156,22 +160,41 @@ export default function ClienteDetalhe() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-zinc-100 p-6">
-        <p className="text-sm text-muted-foreground">Carregando...</p>
-      </main>
+      <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+        <Sidebar />
+        <div className="flex flex-1 flex-col">
+          <Header title="Clientes" subtitle="Carregando detalhes..." />
+          <main className="flex-1 space-y-3 p-6">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-40 w-full" />
+          </main>
+        </div>
+      </div>
     )
   }
 
   if (!cliente) {
     return (
-      <main className="min-h-screen bg-zinc-100 p-6">
-        <p className="text-sm text-muted-foreground">Cliente não encontrado</p>
-      </main>
+      <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+        <Sidebar />
+        <div className="flex flex-1 flex-col">
+          <Header title="Clientes" subtitle="Cliente não encontrado" />
+          <main className="flex-1 p-6">
+            <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+              <EmptyState icon={UserX} title="Cliente não encontrado" />
+            </Card>
+          </main>
+        </div>
+      </div>
     )
   }
 
   return (
-    <main className="min-h-screen bg-zinc-100 p-6">
+    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+      <Sidebar />
+      <div className="flex flex-1 flex-col">
+        <Header title={cliente.nome} subtitle="Detalhes do cliente" />
+        <main className="flex-1 p-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">{cliente.nome}</h1>
         <p className="text-sm text-muted-foreground">Detalhes do cliente</p>
@@ -198,9 +221,7 @@ export default function ClienteDetalhe() {
           </CardHeader>
           <CardContent className="space-y-4">
             {processos.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                Nenhum processo cadastrado.
-              </p>
+              <EmptyState icon={FolderSearch} title="Nenhum processo cadastrado" />
             ) : (
               processos.map((processo: Processo) => (
                 <div
@@ -211,10 +232,7 @@ export default function ClienteDetalhe() {
                     <div>
                       <p className="font-medium">{processo.beneficio}</p>
                       <p className="text-sm">
-                        Status:{" "}
-                        <Badge variant="outline" className="text-xs">
-                          {PROCESSO_STATUS_LABELS[processo.status] || processo.status}
-                        </Badge>
+                        Status: <StatusBadge status={processo.status} className="text-xs" />
                       </p>
                       {processo.numero && (
                         <p className="text-sm">Número: {processo.numero}</p>
@@ -372,6 +390,8 @@ export default function ClienteDetalhe() {
           </Button>
         </CardContent>
       </Card>
-    </main>
+        </main>
+      </div>
+    </div>
   )
 }

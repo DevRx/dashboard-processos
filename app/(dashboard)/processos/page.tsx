@@ -1,8 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -41,6 +50,11 @@ export default function Processos() {
   })
   const [buscandoDataJud, setBuscandoDataJud] = useState(false)
   const [dataJudMsg, setDataJudMsg] = useState<{ tipo: "erro" | "ok"; texto: string } | null>(null)
+
+  // Elemento que abriu o modal. O Dialog é controlado, então o base-ui não
+  // descobre sozinho para onde devolver o foco — passamos via `finalFocus`.
+  // Limitação: guardamos o nó DOM; se ele sair da árvore, o foco cai no <body>.
+  const abridorRef = useRef<HTMLElement | null>(null)
 
   async function fetchData() {
     setLoading(true)
@@ -195,20 +209,28 @@ export default function Processos() {
               Lista
             </Button>
           </div>
-          <Button onClick={() => setDialogOpen(true)}>
+          <Button
+            onClick={(e) => {
+              abridorRef.current = e.currentTarget
+              setDialogOpen(true)
+            }}
+          >
             <Plus size={16} className="mr-2" />
             Novo Processo
           </Button>
         </div>
       </div>
 
-      {dialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <Card className="w-full max-w-2xl border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-            <CardHeader>
-              <CardTitle>Novo Processo</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-2xl" finalFocus={abridorRef}>
+          <DialogHeader>
+            <DialogTitle>Novo Processo</DialogTitle>
+            <DialogDescription>
+              Informe o número CNJ e use a busca para preencher os dados automaticamente.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-col gap-4">
               <select
                 value={novoProcesso.clienteId}
                 onChange={(e) =>
@@ -336,19 +358,17 @@ export default function Processos() {
                 }
               />
 
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                  Cancelar
-                </Button>
-                <Button onClick={salvarProcesso}>
-                  <Save size={16} className="mr-2" />
-                  Salvar
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+          </div>
+
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
+            <Button onClick={salvarProcesso}>
+              <Save size={16} className="mr-2" />
+              Salvar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {loading ? (
         <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">

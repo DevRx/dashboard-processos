@@ -1,9 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -55,6 +64,11 @@ export default function AgendaPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState(emptyForm)
 
+  // Elemento que abriu o modal. O Dialog é controlado, então o base-ui não
+  // descobre sozinho para onde devolver o foco — passamos via `finalFocus`.
+  // Limitação: guardamos o nó DOM; se o item sair da lista, o foco cai no <body>.
+  const abridorRef = useRef<HTMLElement | null>(null)
+
   async function fetchData() {
     setLoading(true)
     try {
@@ -79,13 +93,15 @@ export default function AgendaPage() {
     fetchData()
   }, [])
 
-  function openNewDialog() {
+  function openNewDialog(e: React.MouseEvent<HTMLButtonElement>) {
+    abridorRef.current = e.currentTarget
     setEditingId(null)
     setForm(emptyForm)
     setDialogOpen(true)
   }
 
-  function openEditDialog(tarefa: Tarefa) {
+  function openEditDialog(tarefa: Tarefa, e: React.MouseEvent<HTMLButtonElement>) {
+    abridorRef.current = e.currentTarget
     setEditingId(tarefa.id)
     setForm({
       titulo: tarefa.titulo,
@@ -185,7 +201,7 @@ export default function AgendaPage() {
                 </p>
               </div>
               <div className="flex gap-1 self-end sm:self-auto">
-                <Button variant="ghost" size="sm" onClick={() => openEditDialog(tarefa)}>
+                <Button variant="ghost" size="sm" onClick={(e) => openEditDialog(tarefa, e)}>
                   <Pencil size={16} />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => deleteTarefa(tarefa.id)}>
@@ -216,90 +232,94 @@ export default function AgendaPage() {
             </Button>
           </div>
 
-          {dialogOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-              <Card className="w-full max-w-lg border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-                <CardHeader>
-                  <CardTitle>{editingId ? "Editar compromisso" : "Novo compromisso"}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-3">
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogContent className="sm:max-w-lg" finalFocus={abridorRef}>
+              <DialogHeader>
+                <DialogTitle>
+                  {editingId ? "Editar compromisso" : "Novo compromisso"}
+                </DialogTitle>
+                <DialogDescription>
+                  {editingId
+                    ? "Atualize os dados do compromisso."
+                    : "Agende um compromisso ou prazo do escritório."}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="flex flex-col gap-3">
+                <Input
+                  placeholder="Título"
+                  value={form.titulo}
+                  onChange={(e) => setForm({ ...form, titulo: e.target.value })}
+                />
+                <Input
+                  placeholder="Descrição"
+                  value={form.descricao}
+                  onChange={(e) => setForm({ ...form, descricao: e.target.value })}
+                />
+                <div className="flex gap-3">
                   <Input
-                    placeholder="Título"
-                    value={form.titulo}
-                    onChange={(e) => setForm({ ...form, titulo: e.target.value })}
+                    type="date"
+                    value={form.data}
+                    onChange={(e) => setForm({ ...form, data: e.target.value })}
                   />
                   <Input
-                    placeholder="Descrição"
-                    value={form.descricao}
-                    onChange={(e) => setForm({ ...form, descricao: e.target.value })}
+                    type="time"
+                    value={form.hora}
+                    onChange={(e) => setForm({ ...form, hora: e.target.value })}
                   />
-                  <div className="flex gap-3">
-                    <Input
-                      type="date"
-                      value={form.data}
-                      onChange={(e) => setForm({ ...form, data: e.target.value })}
-                    />
-                    <Input
-                      type="time"
-                      value={form.hora}
-                      onChange={(e) => setForm({ ...form, hora: e.target.value })}
-                    />
-                  </div>
+                </div>
 
-                  <select
-                    value={form.status}
-                    onChange={(e) =>
-                      setForm({ ...form, status: e.target.value as typeof emptyForm.status })
-                    }
-                    className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-                  >
-                    {TAREFA_STATUS_VALUES.map((status) => (
-                      <option key={status} value={status}>
-                        {TAREFA_STATUS_LABELS[status]}
-                      </option>
-                    ))}
-                  </select>
+                <select
+                  value={form.status}
+                  onChange={(e) =>
+                    setForm({ ...form, status: e.target.value as typeof emptyForm.status })
+                  }
+                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                >
+                  {TAREFA_STATUS_VALUES.map((status) => (
+                    <option key={status} value={status}>
+                      {TAREFA_STATUS_LABELS[status]}
+                    </option>
+                  ))}
+                </select>
 
-                  <select
-                    value={form.prioridade}
-                    onChange={(e) =>
-                      setForm({ ...form, prioridade: e.target.value as typeof emptyForm.prioridade })
-                    }
-                    className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-                  >
-                    {TAREFA_PRIORIDADE_VALUES.map((prioridade) => (
-                      <option key={prioridade} value={prioridade}>
-                        {TAREFA_PRIORIDADE_LABELS[prioridade]}
-                      </option>
-                    ))}
-                  </select>
+                <select
+                  value={form.prioridade}
+                  onChange={(e) =>
+                    setForm({ ...form, prioridade: e.target.value as typeof emptyForm.prioridade })
+                  }
+                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                >
+                  {TAREFA_PRIORIDADE_VALUES.map((prioridade) => (
+                    <option key={prioridade} value={prioridade}>
+                      {TAREFA_PRIORIDADE_LABELS[prioridade]}
+                    </option>
+                  ))}
+                </select>
 
-                  <select
-                    value={form.processoId}
-                    onChange={(e) => setForm({ ...form, processoId: e.target.value })}
-                    className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-                  >
-                    <option value="">Sem processo vinculado</option>
-                    {processos.map((processo) => (
-                      <option key={processo.id} value={processo.id}>
-                        {processo.beneficio} {processo.numero ? `(${processo.numero})` : ""}
-                      </option>
-                    ))}
-                  </select>
+                <select
+                  value={form.processoId}
+                  onChange={(e) => setForm({ ...form, processoId: e.target.value })}
+                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                >
+                  <option value="">Sem processo vinculado</option>
+                  {processos.map((processo) => (
+                    <option key={processo.id} value={processo.id}>
+                      {processo.beneficio} {processo.numero ? `(${processo.numero})` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                  <div className="flex justify-end gap-2 pt-2">
-                    <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                      Cancelar
-                    </Button>
-                    <Button onClick={salvarTarefa}>
-                      <Save size={16} className="mr-2" />
-                      Salvar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+              <DialogFooter>
+                <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
+                <Button onClick={salvarTarefa}>
+                  <Save size={16} className="mr-2" />
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           {loading ? (
             <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">

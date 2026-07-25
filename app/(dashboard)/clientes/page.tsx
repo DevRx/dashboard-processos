@@ -1,10 +1,19 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -29,6 +38,16 @@ export default function ClientesPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState(emptyForm)
 
+  // Elemento que abriu o modal ("Novo Cliente" ou o lápis de uma linha).
+  // O Dialog é controlado, então o base-ui não descobre sozinho para onde
+  // devolver o foco ao fechar — passamos via `finalFocus`.
+  //
+  // Limitação conhecida: guardamos o nó DOM, não uma identidade estável. Se a
+  // linha sair da lista enquanto o modal está aberto (exclusão, filtro), o nó
+  // fica órfão e o foco cai no <body>. Aceito por ora: não é regressão, já que
+  // antes da migração não havia retorno de foco nenhum.
+  const abridorRef = useRef<HTMLElement | null>(null)
+
   async function fetchClientes() {
     setLoading(true)
     try {
@@ -46,13 +65,15 @@ export default function ClientesPage() {
     fetchClientes()
   }, [])
 
-  function openNewDialog() {
+  function openNewDialog(e: React.MouseEvent<HTMLButtonElement>) {
+    abridorRef.current = e.currentTarget
     setEditingId(null)
     setForm(emptyForm)
     setDialogOpen(true)
   }
 
-  function openEditDialog(cliente: Cliente) {
+  function openEditDialog(cliente: Cliente, e: React.MouseEvent<HTMLButtonElement>) {
+    abridorRef.current = e.currentTarget
     setEditingId(cliente.id)
     setForm({
       nome: cliente.nome,
@@ -127,64 +148,66 @@ export default function ClientesPage() {
             </Button>
           </div>
 
-          {dialogOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-              <Card className="w-full max-w-lg border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-                <CardHeader>
-                  <CardTitle>{editingId ? "Editar cliente" : "Novo cliente"}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  <Input
-                    placeholder="Nome"
-                    value={form.nome}
-                    onChange={(e) => setForm({ ...form, nome: e.target.value })}
-                  />
-                  <Input
-                    placeholder="CPF"
-                    value={form.cpf}
-                    onChange={(e) => setForm({ ...form, cpf: e.target.value })}
-                  />
-                  <Input
-                    placeholder="E-mail"
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Telefone"
-                    value={form.telefone}
-                    onChange={(e) => setForm({ ...form, telefone: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Endereço"
-                    value={form.endereco}
-                    onChange={(e) => setForm({ ...form, endereco: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Data de nascimento"
-                    type="date"
-                    value={form.dataNascimento}
-                    onChange={(e) => setForm({ ...form, dataNascimento: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Benefício"
-                    value={form.beneficio}
-                    onChange={(e) => setForm({ ...form, beneficio: e.target.value })}
-                  />
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogContent className="sm:max-w-lg" finalFocus={abridorRef}>
+              <DialogHeader>
+                <DialogTitle>{editingId ? "Editar cliente" : "Novo cliente"}</DialogTitle>
+                <DialogDescription>
+                  {editingId
+                    ? "Atualize os dados cadastrais do cliente."
+                    : "Preencha os dados para cadastrar um novo cliente."}
+                </DialogDescription>
+              </DialogHeader>
 
-                  <div className="flex justify-end gap-2 pt-2">
-                    <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                      Cancelar
-                    </Button>
-                    <Button onClick={salvarCliente}>
-                      <Save size={16} className="mr-2" />
-                      Salvar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+              <div className="flex flex-col gap-3">
+                <Input
+                  placeholder="Nome"
+                  value={form.nome}
+                  onChange={(e) => setForm({ ...form, nome: e.target.value })}
+                />
+                <Input
+                  placeholder="CPF"
+                  value={form.cpf}
+                  onChange={(e) => setForm({ ...form, cpf: e.target.value })}
+                />
+                <Input
+                  placeholder="E-mail"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                />
+                <Input
+                  placeholder="Telefone"
+                  value={form.telefone}
+                  onChange={(e) => setForm({ ...form, telefone: e.target.value })}
+                />
+                <Input
+                  placeholder="Endereço"
+                  value={form.endereco}
+                  onChange={(e) => setForm({ ...form, endereco: e.target.value })}
+                />
+                <Input
+                  placeholder="Data de nascimento"
+                  type="date"
+                  value={form.dataNascimento}
+                  onChange={(e) => setForm({ ...form, dataNascimento: e.target.value })}
+                />
+                <Input
+                  placeholder="Benefício"
+                  value={form.beneficio}
+                  onChange={(e) => setForm({ ...form, beneficio: e.target.value })}
+                />
+              </div>
+
+              <DialogFooter>
+                <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
+                <Button onClick={salvarCliente}>
+                  <Save size={16} className="mr-2" />
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
             <CardHeader>
@@ -228,7 +251,7 @@ export default function ClientesPage() {
                           <td className="p-3">{cliente.beneficio || "—"}</td>
                           <td className="p-3 text-right">
                             <div className="flex justify-end gap-1">
-                              <Button variant="ghost" size="sm" onClick={() => openEditDialog(cliente)}>
+                              <Button variant="ghost" size="sm" onClick={(e) => openEditDialog(cliente, e)}>
                                 <Pencil size={16} />
                               </Button>
                               <Button variant="ghost" size="sm" onClick={() => deleteCliente(cliente.id)}>

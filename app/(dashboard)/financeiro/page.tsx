@@ -1,9 +1,18 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -35,6 +44,11 @@ export default function FinanceiroPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState(emptyForm)
 
+  // Elemento que abriu o modal. O Dialog é controlado, então o base-ui não
+  // descobre sozinho para onde devolver o foco — passamos via `finalFocus`.
+  // Limitação: guardamos o nó DOM; se a linha sair da lista, o foco cai no <body>.
+  const abridorRef = useRef<HTMLElement | null>(null)
+
   async function fetchLancamentos() {
     setLoading(true)
     try {
@@ -62,13 +76,18 @@ export default function FinanceiroPage() {
     return { entradas, saidas, saldo: entradas - saidas }
   }, [lancamentos])
 
-  function openNewDialog() {
+  function openNewDialog(e: React.MouseEvent<HTMLButtonElement>) {
+    abridorRef.current = e.currentTarget
     setEditingId(null)
     setForm(emptyForm)
     setDialogOpen(true)
   }
 
-  function openEditDialog(lancamento: LancamentoFinanceiro) {
+  function openEditDialog(
+    lancamento: LancamentoFinanceiro,
+    e: React.MouseEvent<HTMLButtonElement>
+  ) {
+    abridorRef.current = e.currentTarget
     setEditingId(lancamento.id)
     setForm({
       descricao: lancamento.descricao,
@@ -158,58 +177,62 @@ export default function FinanceiroPage() {
             />
           </div>
 
-          {dialogOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-              <Card className="w-full max-w-lg border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-                <CardHeader>
-                  <CardTitle>{editingId ? "Editar lançamento" : "Novo lançamento"}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  <Input
-                    placeholder="Descrição"
-                    value={form.descricao}
-                    onChange={(e) => setForm({ ...form, descricao: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Valor"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={form.valor}
-                    onChange={(e) => setForm({ ...form, valor: e.target.value })}
-                  />
-                  <select
-                    value={form.tipo}
-                    onChange={(e) =>
-                      setForm({ ...form, tipo: e.target.value as typeof emptyForm.tipo })
-                    }
-                    className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-                  >
-                    {LANCAMENTO_TIPO_VALUES.map((tipo) => (
-                      <option key={tipo} value={tipo}>
-                        {LANCAMENTO_TIPO_LABELS[tipo]}
-                      </option>
-                    ))}
-                  </select>
-                  <Input
-                    type="date"
-                    value={form.data}
-                    onChange={(e) => setForm({ ...form, data: e.target.value })}
-                  />
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogContent className="sm:max-w-lg" finalFocus={abridorRef}>
+              <DialogHeader>
+                <DialogTitle>
+                  {editingId ? "Editar lançamento" : "Novo lançamento"}
+                </DialogTitle>
+                <DialogDescription>
+                  {editingId
+                    ? "Atualize os dados do lançamento."
+                    : "Registre uma entrada ou saída do escritório."}
+                </DialogDescription>
+              </DialogHeader>
 
-                  <div className="flex justify-end gap-2 pt-2">
-                    <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                      Cancelar
-                    </Button>
-                    <Button onClick={salvarLancamento}>
-                      <Save size={16} className="mr-2" />
-                      Salvar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+              <div className="flex flex-col gap-3">
+                <Input
+                  placeholder="Descrição"
+                  value={form.descricao}
+                  onChange={(e) => setForm({ ...form, descricao: e.target.value })}
+                />
+                <Input
+                  placeholder="Valor"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={form.valor}
+                  onChange={(e) => setForm({ ...form, valor: e.target.value })}
+                />
+                <select
+                  value={form.tipo}
+                  onChange={(e) =>
+                    setForm({ ...form, tipo: e.target.value as typeof emptyForm.tipo })
+                  }
+                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                >
+                  {LANCAMENTO_TIPO_VALUES.map((tipo) => (
+                    <option key={tipo} value={tipo}>
+                      {LANCAMENTO_TIPO_LABELS[tipo]}
+                    </option>
+                  ))}
+                </select>
+                <Input
+                  type="date"
+                  value={form.data}
+                  onChange={(e) => setForm({ ...form, data: e.target.value })}
+                />
+              </div>
+
+              <DialogFooter>
+                <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
+                <Button onClick={salvarLancamento}>
+                  <Save size={16} className="mr-2" />
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
             <CardHeader>
@@ -255,7 +278,7 @@ export default function FinanceiroPage() {
                           <td className="p-3">{formatBRL(Number(lancamento.valor))}</td>
                           <td className="p-3 text-right">
                             <div className="flex justify-end gap-1">
-                              <Button variant="ghost" size="sm" onClick={() => openEditDialog(lancamento)}>
+                              <Button variant="ghost" size="sm" onClick={(e) => openEditDialog(lancamento, e)}>
                                 <Pencil size={16} />
                               </Button>
                               <Button variant="ghost" size="sm" onClick={() => deleteLancamento(lancamento.id)}>

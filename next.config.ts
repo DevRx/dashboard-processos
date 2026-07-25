@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value: "frame-ancestors 'self' https://www.notion.so https://notion.site",
+            value: "frame-ancestors *",
           },
         ],
       },

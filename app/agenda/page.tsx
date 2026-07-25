@@ -1,15 +1,326 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Plus, Trash2, Save, Pencil } from "lucide-react"
+import {
+  TAREFA_STATUS_LABELS,
+  TAREFA_STATUS_VALUES,
+  TAREFA_PRIORIDADE_LABELS,
+  TAREFA_PRIORIDADE_VALUES,
+  type Tarefa,
+  type Processo,
+} from "@/lib/data"
+
+const emptyForm = {
+  titulo: "",
+  descricao: "",
+  data: "",
+  hora: "",
+  status: "PENDENTE" as const,
+  prioridade: "MEDIA" as const,
+  processoId: "",
+}
+
+function getStatusVariant(status: string) {
+  if (status === "CONCLUIDA") return "default"
+  if (status === "EM_ANDAMENTO") return "secondary"
+  if (status === "CANCELADA") return "destructive"
+  return "outline"
+}
+
+function getPrioridadeVariant(prioridade: string) {
+  if (prioridade === "URGENTE") return "destructive"
+  if (prioridade === "ALTA") return "default"
+  if (prioridade === "MEDIA") return "secondary"
+  return "outline"
+}
+
+function hojeISO() {
+  return new Date().toISOString().slice(0, 10)
+}
 
 export default function AgendaPage() {
+  const [tarefas, setTarefas] = useState<Tarefa[]>([])
+  const [processos, setProcessos] = useState<Processo[]>([])
+  const [loading, setLoading] = useState(true)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [form, setForm] = useState(emptyForm)
+
+  async function fetchData() {
+    setLoading(true)
+    try {
+      const [tarefasRes, processosRes] = await Promise.all([
+        fetch("/api/tarefas"),
+        fetch("/api/processos"),
+      ])
+
+      const tarefasData = await tarefasRes.json()
+      const processosData = await processosRes.json()
+
+      if (tarefasRes.ok) setTarefas(tarefasData.tarefas)
+      if (processosRes.ok) setProcessos(processosData.processos)
+    } catch (err) {
+      console.error("Erro ao carregar agenda:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  function openNewDialog() {
+    setEditingId(null)
+    setForm(emptyForm)
+    setDialogOpen(true)
+  }
+
+  function openEditDialog(tarefa: Tarefa) {
+    setEditingId(tarefa.id)
+    setForm({
+      titulo: tarefa.titulo,
+      descricao: tarefa.descricao || "",
+      data: tarefa.data ? tarefa.data.slice(0, 10) : "",
+      hora: tarefa.hora || "",
+      status: tarefa.status as typeof emptyForm.status,
+      prioridade: tarefa.prioridade as typeof emptyForm.prioridade,
+      processoId: tarefa.processoId || "",
+    })
+    setDialogOpen(true)
+  }
+
+  async function salvarTarefa() {
+    if (!form.titulo.trim() || !form.data) return
+
+    const payload: Record<string, string> = {
+      titulo: form.titulo,
+      data: form.data,
+      status: form.status,
+      prioridade: form.prioridade,
+    }
+    if (form.descricao) payload.descricao = form.descricao
+    if (form.hora) payload.hora = form.hora
+    if (form.processoId) payload.processoId = form.processoId
+
+    try {
+      const response = await fetch(
+        editingId ? `/api/tarefas/${editingId}` : "/api/tarefas",
+        {
+          method: editingId ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      )
+
+      if (response.ok) {
+        setDialogOpen(false)
+        setForm(emptyForm)
+        setEditingId(null)
+        fetchData()
+      }
+    } catch (err) {
+      console.error("Erro ao salvar tarefa:", err)
+    }
+  }
+
+  async function deleteTarefa(id: string) {
+    if (!confirm("Tem certeza que deseja excluir este compromisso?")) return
+    try {
+      await fetch(`/api/tarefas/${id}`, { method: "DELETE" })
+      fetchData()
+    } catch (err) {
+      console.error("Erro ao excluir tarefa:", err)
+    }
+  }
+
+  const hoje = hojeISO()
+  const naoConcluidas = (t: Tarefa) => t.status !== "CONCLUIDA" && t.status !== "CANCELADA"
+
+  const atrasadas = tarefas.filter((t) => t.data.slice(0, 10) < hoje && naoConcluidas(t))
+  const deHoje = tarefas.filter((t) => t.data.slice(0, 10) === hoje)
+  const proximas = tarefas.filter((t) => t.data.slice(0, 10) > hoje)
+  const concluidasOuCanceladas = tarefas.filter(
+    (t) => t.data.slice(0, 10) < hoje && !naoConcluidas(t)
+  )
+
+  function renderGrupo(titulo: string, itens: Tarefa[]) {
+    if (itens.length === 0) return null
+    return (
+      <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <CardHeader>
+          <CardTitle className="text-base">{titulo}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2">
+          {itens.map((tarefa) => (
+            <div
+              key={tarefa.id}
+              className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">{tarefa.titulo}</span>
+                  <Badge variant={getStatusVariant(tarefa.status)}>
+                    {TAREFA_STATUS_LABELS[tarefa.status]}
+                  </Badge>
+                  <Badge variant={getPrioridadeVariant(tarefa.prioridade)}>
+                    {TAREFA_PRIORIDADE_LABELS[tarefa.prioridade]}
+                  </Badge>
+                </div>
+                {tarefa.descricao && (
+                  <p className="mt-1 text-sm text-muted-foreground">{tarefa.descricao}</p>
+                )}
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {tarefa.data.slice(0, 10).split("-").reverse().join("/")}
+                  {tarefa.hora ? ` às ${tarefa.hora}` : ""}
+                </p>
+              </div>
+              <div className="flex gap-1 self-end sm:self-auto">
+                <Button variant="ghost" size="sm" onClick={() => openEditDialog(tarefa)}>
+                  <Pencil size={16} />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => deleteTarefa(tarefa.id)}>
+                  <Trash2 size={16} />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
-    <div className="flex min-h-screen bg-zinc-100">
+    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <Sidebar />
       <div className="flex flex-1 flex-col">
         <Header />
-        <main className="flex-1 p-6">
-          <h1 className="text-2xl font-bold">Agenda</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Gerencie compromissos e prazos.</p>
+        <main className="flex-1 space-y-4 p-6">
+          <div className="mb-2 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">Agenda</h1>
+              <p className="text-sm text-muted-foreground">Gerencie compromissos e prazos.</p>
+            </div>
+            <Button onClick={openNewDialog}>
+              <Plus size={16} className="mr-2" />
+              Novo Compromisso
+            </Button>
+          </div>
+
+          {dialogOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <Card className="w-full max-w-lg border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+                <CardHeader>
+                  <CardTitle>{editingId ? "Editar compromisso" : "Novo compromisso"}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3">
+                  <Input
+                    placeholder="Título"
+                    value={form.titulo}
+                    onChange={(e) => setForm({ ...form, titulo: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Descrição"
+                    value={form.descricao}
+                    onChange={(e) => setForm({ ...form, descricao: e.target.value })}
+                  />
+                  <div className="flex gap-3">
+                    <Input
+                      type="date"
+                      value={form.data}
+                      onChange={(e) => setForm({ ...form, data: e.target.value })}
+                    />
+                    <Input
+                      type="time"
+                      value={form.hora}
+                      onChange={(e) => setForm({ ...form, hora: e.target.value })}
+                    />
+                  </div>
+
+                  <select
+                    value={form.status}
+                    onChange={(e) =>
+                      setForm({ ...form, status: e.target.value as typeof emptyForm.status })
+                    }
+                    className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                  >
+                    {TAREFA_STATUS_VALUES.map((status) => (
+                      <option key={status} value={status}>
+                        {TAREFA_STATUS_LABELS[status]}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={form.prioridade}
+                    onChange={(e) =>
+                      setForm({ ...form, prioridade: e.target.value as typeof emptyForm.prioridade })
+                    }
+                    className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                  >
+                    {TAREFA_PRIORIDADE_VALUES.map((prioridade) => (
+                      <option key={prioridade} value={prioridade}>
+                        {TAREFA_PRIORIDADE_LABELS[prioridade]}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={form.processoId}
+                    onChange={(e) => setForm({ ...form, processoId: e.target.value })}
+                    className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                  >
+                    <option value="">Sem processo vinculado</option>
+                    {processos.map((processo) => (
+                      <option key={processo.id} value={processo.id}>
+                        {processo.beneficio} {processo.numero ? `(${processo.numero})` : ""}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                      Cancelar
+                    </Button>
+                    <Button onClick={salvarTarefa}>
+                      <Save size={16} className="mr-2" />
+                      Salvar
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {loading ? (
+            <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+              <CardContent className="p-6 text-center">
+                <p className="text-sm text-muted-foreground">Carregando agenda...</p>
+              </CardContent>
+            </Card>
+          ) : tarefas.length === 0 ? (
+            <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+              <CardContent className="p-6 text-center">
+                <p className="text-sm text-muted-foreground">
+                  Nenhum compromisso cadastrado. Clique em &quot;Novo Compromisso&quot; para começar.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              {renderGrupo("Atrasadas", atrasadas)}
+              {renderGrupo("Hoje", deHoje)}
+              {renderGrupo("Próximos", proximas)}
+              {renderGrupo("Concluídas / Canceladas", concluidasOuCanceladas)}
+            </>
+          )}
         </main>
       </div>
     </div>

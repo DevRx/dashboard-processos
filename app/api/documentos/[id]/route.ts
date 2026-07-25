@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
 import { DocumentoSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
-import { toCamelCase } from "@/lib/utils"
+import { toCamelCase, toSnakeCase } from "@/lib/utils"
 
 export async function GET(
   _request: NextRequest,
@@ -68,7 +68,7 @@ export async function PUT(
 
     const { data: documento, error } = await supabase
       .from("documentos")
-      .update(validatedFields.data)
+      .update(toSnakeCase(validatedFields.data))
       .eq("id", id)
       .eq("user_id", user.id)
       .select()

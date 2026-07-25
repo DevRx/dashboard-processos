@@ -1,43 +1,109 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import Link from "next/link"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Plus, Trash2, Save, Pencil } from "lucide-react"
+import type { Cliente } from "@/lib/data"
 
-const initialClientes = [
-  { id: 1, nome: "Ana Souza", cpf: "123.456.789-00", telefone: "(11) 99999-1111", beneficio: "INSS" },
-  { id: 2, nome: "Carlos Mendes", cpf: "987.654.321-00", telefone: "(11) 98888-2222", beneficio: "Aposentadoria" },
-]
+const emptyForm = {
+  nome: "",
+  cpf: "",
+  email: "",
+  telefone: "",
+  endereco: "",
+  dataNascimento: "",
+  beneficio: "",
+}
 
 export default function ClientesPage() {
-  const [clientes, setClientes] = useState(initialClientes)
-  const [nome, setNome] = useState("")
-  const [cpf, setCpf] = useState("")
-  const [telefone, setTelefone] = useState("")
-  const [beneficio, setBeneficio] = useState("")
+  const [clientes, setClientes] = useState<Cliente[]>([])
+  const [loading, setLoading] = useState(true)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [form, setForm] = useState(emptyForm)
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!nome.trim()) return
+  async function fetchClientes() {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/clientes")
+      const data = await res.json()
+      if (res.ok) setClientes(data.clientes)
+    } catch (err) {
+      console.error("Erro ao carregar clientes:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-    setClientes((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        nome,
-        cpf,
-        telefone,
-        beneficio,
-      },
-    ])
+  useEffect(() => {
+    fetchClientes()
+  }, [])
 
-    setNome("")
-    setCpf("")
-    setTelefone("")
-    setBeneficio("")
+  function openNewDialog() {
+    setEditingId(null)
+    setForm(emptyForm)
+    setDialogOpen(true)
+  }
+
+  function openEditDialog(cliente: Cliente) {
+    setEditingId(cliente.id)
+    setForm({
+      nome: cliente.nome,
+      cpf: cliente.cpf || "",
+      email: cliente.email || "",
+      telefone: cliente.telefone || "",
+      endereco: cliente.endereco || "",
+      dataNascimento: cliente.dataNascimento || "",
+      beneficio: cliente.beneficio || "",
+    })
+    setDialogOpen(true)
+  }
+
+  async function salvarCliente() {
+    if (!form.nome.trim()) return
+
+    const payload: Record<string, string> = { nome: form.nome }
+    if (form.cpf) payload.cpf = form.cpf
+    if (form.email) payload.email = form.email
+    if (form.telefone) payload.telefone = form.telefone
+    if (form.endereco) payload.endereco = form.endereco
+    if (form.dataNascimento) payload.dataNascimento = form.dataNascimento
+    if (form.beneficio) payload.beneficio = form.beneficio
+
+    try {
+      const response = await fetch(
+        editingId ? `/api/clientes/${editingId}` : "/api/clientes",
+        {
+          method: editingId ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      )
+
+      if (response.ok) {
+        setDialogOpen(false)
+        setForm(emptyForm)
+        setEditingId(null)
+        fetchClientes()
+      }
+    } catch (err) {
+      console.error("Erro ao salvar cliente:", err)
+    }
+  }
+
+  async function deleteCliente(id: string) {
+    if (!confirm("Tem certeza que deseja excluir este cliente?")) return
+    try {
+      await fetch(`/api/clientes/${id}`, { method: "DELETE" })
+      fetchClientes()
+    } catch (err) {
+      console.error("Erro ao excluir cliente:", err)
+    }
   }
 
   return (
@@ -46,32 +112,94 @@ export default function ClientesPage() {
       <div className="flex flex-1 flex-col">
         <Header />
         <main className="flex-1 p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold">Clientes</h1>
-            <p className="text-sm text-muted-foreground">Cadastro e gestão dos clientes do escritório.</p>
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">Clientes</h1>
+              <p className="text-sm text-muted-foreground">
+                Cadastro e gestão dos clientes do escritório.
+              </p>
+            </div>
+            <Button onClick={openNewDialog}>
+              <Plus size={16} className="mr-2" />
+              Novo Cliente
+            </Button>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
-            <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-              <CardHeader>
-                <CardTitle>Novo cliente</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-3">
-                  <Input placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
-                  <Input placeholder="CPF" value={cpf} onChange={(e) => setCpf(e.target.value)} />
-                  <Input placeholder="Telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
-                  <Input placeholder="Benefício" value={beneficio} onChange={(e) => setBeneficio(e.target.value)} />
-                  <Button type="submit" className="w-full">Salvar cliente</Button>
-                </form>
-              </CardContent>
-            </Card>
+          {dialogOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <Card className="w-full max-w-lg border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+                <CardHeader>
+                  <CardTitle>{editingId ? "Editar cliente" : "Novo cliente"}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3">
+                  <Input
+                    placeholder="Nome"
+                    value={form.nome}
+                    onChange={(e) => setForm({ ...form, nome: e.target.value })}
+                  />
+                  <Input
+                    placeholder="CPF"
+                    value={form.cpf}
+                    onChange={(e) => setForm({ ...form, cpf: e.target.value })}
+                  />
+                  <Input
+                    placeholder="E-mail"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Telefone"
+                    value={form.telefone}
+                    onChange={(e) => setForm({ ...form, telefone: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Endereço"
+                    value={form.endereco}
+                    onChange={(e) => setForm({ ...form, endereco: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Data de nascimento"
+                    type="date"
+                    value={form.dataNascimento}
+                    onChange={(e) => setForm({ ...form, dataNascimento: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Benefício"
+                    value={form.beneficio}
+                    onChange={(e) => setForm({ ...form, beneficio: e.target.value })}
+                  />
 
-            <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-              <CardHeader>
-                <CardTitle>Lista de clientes</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                      Cancelar
+                    </Button>
+                    <Button onClick={salvarCliente}>
+                      <Save size={16} className="mr-2" />
+                      Salvar
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+            <CardHeader>
+              <CardTitle>Lista de clientes</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              {loading ? (
+                <div className="p-6 text-center">
+                  <p className="text-sm text-muted-foreground">Carregando clientes...</p>
+                </div>
+              ) : clientes.length === 0 ? (
+                <div className="p-6 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Nenhum cliente cadastrado. Clique em &quot;Novo Cliente&quot; para começar.
+                  </p>
+                </div>
+              ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="bg-zinc-50 text-left dark:bg-zinc-800">
@@ -80,23 +208,38 @@ export default function ClientesPage() {
                         <th className="p-3">CPF</th>
                         <th className="p-3">Telefone</th>
                         <th className="p-3">Benefício</th>
+                        <th className="p-3 text-right">Ações</th>
                       </tr>
                     </thead>
                     <tbody>
                       {clientes.map((cliente) => (
                         <tr key={cliente.id} className="border-t border-zinc-200 dark:border-zinc-800">
-                          <td className="p-3">{cliente.nome}</td>
-                          <td className="p-3">{cliente.cpf}</td>
-                          <td className="p-3">{cliente.telefone}</td>
-                          <td className="p-3">{cliente.beneficio}</td>
+                          <td className="p-3">
+                            <Link href={`/clientes/${cliente.id}`} className="font-medium hover:underline">
+                              {cliente.nome}
+                            </Link>
+                          </td>
+                          <td className="p-3">{cliente.cpf || "—"}</td>
+                          <td className="p-3">{cliente.telefone || "—"}</td>
+                          <td className="p-3">{cliente.beneficio || "—"}</td>
+                          <td className="p-3 text-right">
+                            <div className="flex justify-end gap-1">
+                              <Button variant="ghost" size="sm" onClick={() => openEditDialog(cliente)}>
+                                <Pencil size={16} />
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => deleteCliente(cliente.id)}>
+                                <Trash2 size={16} />
+                              </Button>
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              )}
+            </CardContent>
+          </Card>
         </main>
       </div>
     </div>

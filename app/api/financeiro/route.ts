@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
-import { AndamentoSchema } from "@/lib/validations"
+import { LancamentoFinanceiroSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
 
@@ -12,22 +12,22 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const processoId = searchParams.get("processoId")
+    const tipo = searchParams.get("tipo")
 
     let query = supabase
-      .from("andamentos")
+      .from("lancamentos_financeiros")
       .select("*")
       .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
+      .order("data", { ascending: false })
 
-    if (processoId) {
-      query = query.eq("processo_id", processoId)
+    if (tipo) {
+      query = query.eq("tipo", tipo)
     }
 
-    const { data: andamentos, error } = await query
+    const { data: lancamentos, error } = await query
 
     if (error) {
-      console.error("Get andamentos error:", error)
+      console.error("Get lancamentos error:", error)
       return NextResponse.json(
         { error: "Erro interno do servidor" },
         { status: 500 }
@@ -35,11 +35,11 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { andamentos: toCamelCase(andamentos) },
+      { lancamentos: toCamelCase(lancamentos) },
       { status: 200 }
     )
   } catch (error) {
-    console.error("Get andamentos error:", error)
+    console.error("Get lancamentos error:", error)
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
-    const validatedFields = AndamentoSchema.safeParse(body)
+    const validatedFields = LancamentoFinanceiroSchema.safeParse(body)
 
     if (!validatedFields.success) {
       const firstIssue = validatedFields.error.issues[0]
@@ -66,23 +66,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verify the processo belongs to this user
-    const { data: processo, error: processoError } = await supabase
-      .from("processos")
-      .select("id")
-      .eq("id", validatedFields.data.processoId)
-      .eq("user_id", user.id)
-      .single()
-
-    if (processoError || !processo) {
-      return NextResponse.json(
-        { error: "Processo não encontrado ou não autorizado" },
-        { status: 404 }
-      )
-    }
-
-    const { data: andamento, error } = await supabase
-      .from("andamentos")
+    const { data: lancamento, error } = await supabase
+      .from("lancamentos_financeiros")
       .insert({
         ...toSnakeCase(validatedFields.data),
         user_id: user.id,
@@ -90,8 +75,8 @@ export async function POST(request: NextRequest) {
       .select()
       .single()
 
-    if (error || !andamento) {
-      console.error("Create andamento error:", error)
+    if (error || !lancamento) {
+      console.error("Create lancamento error:", error)
       return NextResponse.json(
         { error: "Erro interno do servidor" },
         { status: 500 }
@@ -99,11 +84,11 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: "Andamento criado com sucesso", andamento: toCamelCase(andamento) },
+      { message: "Lançamento criado com sucesso", lancamento: toCamelCase(lancamento) },
       { status: 201 }
     )
   } catch (error) {
-    console.error("Create andamento error:", error)
+    console.error("Create lancamento error:", error)
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }

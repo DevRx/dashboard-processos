@@ -31,6 +31,8 @@ export const TarefaPrioridadeEnum = z.enum([
   "URGENTE",
 ])
 
+export const LancamentoTipoEnum = z.enum(["ENTRADA", "SAIDA"])
+
 // ─────────────────────────────────────────────────────────
 // Auth Schemas
 // ─────────────────────────────────────────────────────────
@@ -107,6 +109,17 @@ export const TarefaSchema = z.object({
   hora: z.string().optional(),
   status: TarefaStatusEnum.default("PENDENTE"),
   prioridade: TarefaPrioridadeEnum.default("MEDIA"),
+})
+
+// ─────────────────────────────────────────────────────────
+// Lançamento Financeiro Schema
+// ─────────────────────────────────────────────────────────
+
+export const LancamentoFinanceiroSchema = z.object({
+  descricao: z.string().min(1, "Descrição é obrigatória"),
+  valor: z.number().positive("Valor deve ser maior que zero"),
+  tipo: LancamentoTipoEnum,
+  data: z.string().min(1, "Data é obrigatória"),
 })
 
 // ─────────────────────────────────────────────────────────

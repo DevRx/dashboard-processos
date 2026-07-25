@@ -27,3 +27,24 @@ export function toCamelCase<T>(obj: T): T {
   }
   return obj
 }
+
+/**
+ * Recursively converts all camelCase keys in an object or array to snake_case.
+ * This is used to normalize JS/validated-form objects (camelCase) before
+ * writing them to Supabase (which expects snake_case column names).
+ */
+export function toSnakeCase<T>(obj: T): T {
+  if (Array.isArray(obj)) {
+    return obj.map(toSnakeCase) as T
+  }
+  if (obj !== null && typeof obj === "object" && !(obj instanceof Date)) {
+    return Object.keys(obj).reduce((acc, key) => {
+      const snakeKey = key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
+      ;(acc as Record<string, unknown>)[snakeKey] = toSnakeCase(
+        (obj as Record<string, unknown>)[key]
+      )
+      return acc
+    }, {} as T)
+  }
+  return obj
+}

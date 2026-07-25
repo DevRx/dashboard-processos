@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
-import { ClienteSchema } from "@/lib/validations"
+import { LancamentoFinanceiroSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
 
@@ -16,23 +16,26 @@ export async function GET(
 
     const { id } = await params
 
-    const { data: cliente, error } = await supabase
-      .from("clientes")
-      .select("*, processos(*)")
+    const { data: lancamento, error } = await supabase
+      .from("lancamentos_financeiros")
+      .select("*")
       .eq("id", id)
       .eq("user_id", user.id)
       .single()
 
-    if (error || !cliente) {
+    if (error || !lancamento) {
       return NextResponse.json(
-        { error: "Cliente não encontrado" },
+        { error: "Lançamento não encontrado" },
         { status: 404 }
       )
     }
 
-    return NextResponse.json({ cliente: toCamelCase(cliente) }, { status: 200 })
+    return NextResponse.json(
+      { lancamento: toCamelCase(lancamento) },
+      { status: 200 }
+    )
   } catch (error) {
-    console.error("Get cliente error:", error)
+    console.error("Get lancamento error:", error)
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }
@@ -53,7 +56,7 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
 
-    const validatedFields = ClienteSchema.safeParse(body)
+    const validatedFields = LancamentoFinanceiroSchema.safeParse(body)
 
     if (!validatedFields.success) {
       const firstIssue = validatedFields.error.issues[0]
@@ -63,16 +66,16 @@ export async function PUT(
       )
     }
 
-    const { data: cliente, error } = await supabase
-      .from("clientes")
+    const { data: lancamento, error } = await supabase
+      .from("lancamentos_financeiros")
       .update(toSnakeCase(validatedFields.data))
       .eq("id", id)
       .eq("user_id", user.id)
       .select()
       .single()
 
-    if (error || !cliente) {
-      console.error("Update cliente error:", error)
+    if (error || !lancamento) {
+      console.error("Update lancamento error:", error)
       return NextResponse.json(
         { error: "Erro interno do servidor" },
         { status: 500 }
@@ -80,11 +83,11 @@ export async function PUT(
     }
 
     return NextResponse.json(
-      { message: "Cliente atualizado com sucesso", cliente: toCamelCase(cliente) },
+      { message: "Lançamento atualizado com sucesso", lancamento: toCamelCase(lancamento) },
       { status: 200 }
     )
   } catch (error) {
-    console.error("Update cliente error:", error)
+    console.error("Update lancamento error:", error)
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }
@@ -105,13 +108,13 @@ export async function DELETE(
     const { id } = await params
 
     const { error } = await supabase
-      .from("clientes")
+      .from("lancamentos_financeiros")
       .delete()
       .eq("id", id)
       .eq("user_id", user.id)
 
     if (error) {
-      console.error("Delete cliente error:", error)
+      console.error("Delete lancamento error:", error)
       return NextResponse.json(
         { error: "Erro interno do servidor" },
         { status: 500 }
@@ -119,11 +122,11 @@ export async function DELETE(
     }
 
     return NextResponse.json(
-      { message: "Cliente excluído com sucesso" },
+      { message: "Lançamento excluído com sucesso" },
       { status: 200 }
     )
   } catch (error) {
-    console.error("Delete cliente error:", error)
+    console.error("Delete lancamento error:", error)
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }

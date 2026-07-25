@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
 import { ClienteSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
-import { toCamelCase } from "@/lib/utils"
+import { toCamelCase, toSnakeCase } from "@/lib/utils"
 
 export async function GET() {
   try {
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     const { data: cliente, error } = await supabase
       .from("clientes")
       .insert({
-        ...validatedFields.data,
+        ...toSnakeCase(validatedFields.data),
         user_id: user.id,
       })
       .select()

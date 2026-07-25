@@ -18,6 +18,8 @@ export type TarefaStatus = "PENDENTE" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELAD
 
 export type TarefaPrioridade = "BAIXA" | "MEDIA" | "ALTA" | "URGENTE"
 
+export type LancamentoTipo = "ENTRADA" | "SAIDA"
+
 export type User = {
   id: string
   name: string
@@ -87,6 +89,17 @@ export type Tarefa = {
   updatedAt: string
 }
 
+export type LancamentoFinanceiro = {
+  id: string
+  userId: string
+  descricao: string
+  valor: number
+  tipo: LancamentoTipo
+  data: string
+  createdAt: string
+  updatedAt: string
+}
+
 export type Documento = {
   id: string
   processoId: string
@@ -127,3 +140,34 @@ export const PROCESSO_STATUS_LABELS: Record<ProcessoStatus, string> = {
 export const PROCESSO_STATUS_VALUES = Object.keys(
   PROCESSO_STATUS_LABELS
 ) as ProcessoStatus[]
+
+export const TAREFA_STATUS_LABELS: Record<TarefaStatus, string> = {
+  PENDENTE: "Pendente",
+  EM_ANDAMENTO: "Em andamento",
+  CONCLUIDA: "Concluída",
+  CANCELADA: "Cancelada",
+}
+
+export const TAREFA_STATUS_VALUES = Object.keys(
+  TAREFA_STATUS_LABELS
+) as TarefaStatus[]
+
+export const TAREFA_PRIORIDADE_LABELS: Record<TarefaPrioridade, string> = {
+  BAIXA: "Baixa",
+  MEDIA: "Média",
+  ALTA: "Alta",
+  URGENTE: "Urgente",
+}
+
+export const TAREFA_PRIORIDADE_VALUES = Object.keys(
+  TAREFA_PRIORIDADE_LABELS
+) as TarefaPrioridade[]
+
+export const LANCAMENTO_TIPO_LABELS: Record<LancamentoTipo, string> = {
+  ENTRADA: "Entrada",
+  SAIDA: "Saída",
+}
+
+export const LANCAMENTO_TIPO_VALUES = Object.keys(
+  LANCAMENTO_TIPO_LABELS
+) as LancamentoTipo[]

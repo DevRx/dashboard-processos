@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
 import { TarefaSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
-import { toCamelCase } from "@/lib/utils"
+import { toCamelCase, toSnakeCase } from "@/lib/utils"
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from("tarefas")
-      .select("*, processo(beneficio, numero)")
+      .select("*, processo:processos(beneficio, numero)")
       .eq("user_id", user.id)
       .order("data", { ascending: true })
 
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     const { data: tarefa, error } = await supabase
       .from("tarefas")
       .insert({
-        ...validatedFields.data,
+        ...toSnakeCase(validatedFields.data),
         user_id: user.id,
       })
       .select()

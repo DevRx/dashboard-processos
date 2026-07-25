@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
 import { ProcessoSchema } from "@/lib/validations"
 import { getCurrentUser } from "@/lib/auth"
-import { toCamelCase } from "@/lib/utils"
+import { toCamelCase, toSnakeCase } from "@/lib/utils"
 
 export async function GET(
   _request: NextRequest,
@@ -18,7 +18,7 @@ export async function GET(
 
     const { data: processo, error } = await supabase
       .from("processos")
-      .select("*, cliente(*)")
+      .select("*, cliente:clientes(*)")
       .eq("id", id)
       .eq("user_id", user.id)
       .single()
@@ -65,7 +65,7 @@ export async function PUT(
 
     const { data: processo, error } = await supabase
       .from("processos")
-      .update(validatedFields.data)
+      .update(toSnakeCase(validatedFields.data))
       .eq("id", id)
       .eq("user_id", user.id)
       .select()

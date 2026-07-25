@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { PROCESSO_STATUS_LABELS, type ProcessoStatus } from "@/lib/data"
+import { getProcessoStatusLabel, type ProcessoStatus } from "@/lib/domain/processo"
 
 export type ProcessoRecente = {
   id: string
@@ -57,7 +57,7 @@ export function ProcessTable({ processos }: { processos: ProcessoRecente[] }) {
               <TableCell>{processo.beneficio}</TableCell>
               <TableCell>
                 <Badge variant={getStatusVariant(processo.status)}>
-                  {PROCESSO_STATUS_LABELS[processo.status] || processo.status}
+                  {getProcessoStatusLabel(processo.status)}
                 </Badge>
               </TableCell>
               <TableCell>

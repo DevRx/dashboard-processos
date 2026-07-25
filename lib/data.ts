@@ -2,17 +2,13 @@
 // TypeScript Types (aligned with prisma/schema.prisma)
 // ─────────────────────────────────────────────────────────
 
-export type UserRole = "ADMIN" | "ADVOGADO" | "ASSISTENTE" | "USER"
+import type { ProcessoStatus } from "@/lib/domain/processo"
 
-export type ProcessoStatus =
-  | "EM_ANALISE"
-  | "AGUARDANDO_INSS"
-  | "PERICIA_MARCADA"
-  | "PERICIA_CONCLUIDA"
-  | "BENEFICIO_CONCEDIDO"
-  | "RECUSADO"
-  | "CONCLUIDO"
-  | "ARQUIVADO"
+// O vocabulário de status do Processo vive em @/lib/domain/processo.
+// Reexportado aqui para não quebrar os imports existentes.
+export type { ProcessoStatus }
+
+export type UserRole = "ADMIN" | "ADVOGADO" | "ASSISTENTE" | "USER"
 
 export type TarefaStatus = "PENDENTE" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELADA"
 
@@ -127,20 +123,12 @@ export type Auditoria = {
 // Status Display Helpers
 // ─────────────────────────────────────────────────────────
 
-export const PROCESSO_STATUS_LABELS: Record<ProcessoStatus, string> = {
-  EM_ANALISE: "Em análise",
-  AGUARDANDO_INSS: "Aguardando INSS",
-  PERICIA_MARCADA: "Perícia marcada",
-  PERICIA_CONCLUIDA: "Perícia concluída",
-  BENEFICIO_CONCEDIDO: "Benefício concedido",
-  RECUSADO: "Recusado",
-  CONCLUIDO: "Concluído",
-  ARQUIVADO: "Arquivado",
-}
-
-export const PROCESSO_STATUS_VALUES = Object.keys(
-  PROCESSO_STATUS_LABELS
-) as ProcessoStatus[]
+// Rótulos e ordem oficial do Processo vivem em @/lib/domain/processo.
+// Reexportados aqui para não quebrar os imports existentes.
+export {
+  PROCESSO_STATUS_LABELS,
+  PROCESSO_STATUS_VALUES,
+} from "@/lib/domain/processo"
 
 export const TAREFA_STATUS_LABELS: Record<TarefaStatus, string> = {
   PENDENTE: "Pendente",

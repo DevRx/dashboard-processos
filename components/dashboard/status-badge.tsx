@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { PROCESSO_STATUS_LABELS, type ProcessoStatus } from "@/lib/data"
+import { getProcessoStatusLabel, type ProcessoStatus } from "@/lib/domain/processo"
 
 type Tom = "info" | "success" | "warning" | "danger" | "muted"
 
@@ -30,7 +30,7 @@ export function StatusBadge({
   className?: string
 }) {
   const tom = TOM_POR_STATUS[status as ProcessoStatus] || "muted"
-  const label = PROCESSO_STATUS_LABELS[status as ProcessoStatus] || status
+  const label = getProcessoStatusLabel(status)
 
   return (
     <span

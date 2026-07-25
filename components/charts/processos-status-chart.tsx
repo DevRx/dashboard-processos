@@ -11,7 +11,7 @@ import {
   YAxis,
 } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { PROCESSO_STATUS_LABELS, type ProcessoStatus } from "@/lib/data"
+import { getProcessoStatusLabel, type ProcessoStatus } from "@/lib/domain/processo"
 
 const TOM_POR_STATUS: Record<ProcessoStatus, string> = {
   EM_ANALISE: "var(--status-info-foreground)",
@@ -32,7 +32,7 @@ export function ProcessosStatusChart({
   const data = Object.entries(porStatus)
     .map(([status, total]) => ({
       status,
-      label: PROCESSO_STATUS_LABELS[status as ProcessoStatus] || status,
+      label: getProcessoStatusLabel(status),
       total,
       cor: TOM_POR_STATUS[status as ProcessoStatus] || "var(--muted-foreground)",
     }))

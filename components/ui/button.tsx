@@ -8,7 +8,7 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 function Button({ className, variant = "default", size = "default", ...props }: ButtonProps) {
   const base = "inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm font-medium transition"
   const variants: Record<string, string> = {
-    default: "border-transparent bg-slate-900 text-white hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300",
+    default: "border-transparent bg-primary text-primary-foreground hover:bg-[#be123c] dark:hover:bg-[#f472b6]",
     outline: "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800",
     secondary: "border-transparent bg-slate-100 text-slate-800 hover:bg-slate-200 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700",
     ghost: "border-transparent bg-transparent text-slate-700 hover:bg-slate-100 dark:text-zinc-200 dark:hover:bg-zinc-800",

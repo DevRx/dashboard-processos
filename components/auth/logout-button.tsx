@@ -27,7 +27,7 @@ export function LogoutButton() {
       size="sm"
       onClick={handleLogout}
       disabled={loading}
-      className="w-full justify-start"
+      className="w-full justify-start text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
     >
       <LogOut size={16} />
       {loading ? "Saindo..." : "Sair"}

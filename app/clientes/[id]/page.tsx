@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Trash2, Save } from "lucide-react"
+import { Trash2, Save, Search, Loader2 } from "lucide-react"
 import {
   PROCESSO_STATUS_LABELS,
   PROCESSO_STATUS_VALUES,
@@ -29,8 +29,12 @@ export default function ClienteDetalhe() {
     status: "EM_ANALISE",
     responsavelId: "",
     dataEntrada: "",
+    tribunal: "",
+    vara: "",
     observacoes: "",
   })
+  const [buscandoDataJud, setBuscandoDataJud] = useState(false)
+  const [dataJudMsg, setDataJudMsg] = useState<{ tipo: "erro" | "ok"; texto: string } | null>(null)
 
   async function fetchCliente() {
     setLoading(true)
@@ -75,12 +79,59 @@ export default function ClienteDetalhe() {
           status: "EM_ANALISE",
           responsavelId: "",
           dataEntrada: "",
+          tribunal: "",
+          vara: "",
           observacoes: "",
         })
+        setDataJudMsg(null)
         fetchCliente()
       }
     } catch (err) {
       console.error("Erro ao salvar processo:", err)
+    }
+  }
+
+  async function buscarNoDataJud() {
+    if (!novoProcesso.numero.trim()) return
+    setBuscandoDataJud(true)
+    setDataJudMsg(null)
+    try {
+      const res = await fetch(
+        `/api/processos/lookup?numero=${encodeURIComponent(novoProcesso.numero)}`
+      )
+      const data = await res.json()
+
+      if (!res.ok) {
+        setDataJudMsg({ tipo: "erro", texto: data.error || "Erro ao buscar processo" })
+        return
+      }
+
+      const d = data.dados
+      const infoExtra = [
+        d.classe ? `Classe: ${d.classe}` : null,
+        d.ultimoMovimento
+          ? `Último movimento: ${d.ultimoMovimento.nome}${d.ultimoMovimento.data ? ` (${d.ultimoMovimento.data.slice(0, 10).split("-").reverse().join("/")})` : ""}`
+          : null,
+      ]
+        .filter(Boolean)
+        .join(" — ")
+
+      setNovoProcesso((prev) => ({
+        ...prev,
+        beneficio: d.assuntos?.[0] || prev.beneficio,
+        dataEntrada: d.dataAjuizamento ? d.dataAjuizamento.slice(0, 10) : prev.dataEntrada,
+        tribunal: d.tribunal || prev.tribunal,
+        vara: d.orgaoJulgador || prev.vara,
+        observacoes: infoExtra
+          ? [prev.observacoes, infoExtra].filter(Boolean).join(" | ")
+          : prev.observacoes,
+      }))
+      setDataJudMsg({ tipo: "ok", texto: "Dados encontrados e preenchidos. Confira o benefício antes de salvar." })
+    } catch (err) {
+      console.error("Erro ao buscar no DataJud:", err)
+      setDataJudMsg({ tipo: "erro", texto: "Erro de conexão ao buscar o processo" })
+    } finally {
+      setBuscandoDataJud(false)
     }
   }
 
@@ -202,18 +253,44 @@ export default function ClienteDetalhe() {
           <CardTitle>Novo Processo</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
+          <div className="flex gap-2">
+            <Input
+              placeholder="Número do processo (CNJ)"
+              value={novoProcesso.numero}
+              onChange={(e) =>
+                setNovoProcesso({ ...novoProcesso, numero: e.target.value })
+              }
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={buscarNoDataJud}
+              disabled={buscandoDataJud || !novoProcesso.numero.trim()}
+            >
+              {buscandoDataJud ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Search size={16} />
+              )}
+            </Button>
+          </div>
+          {dataJudMsg && (
+            <p
+              className={
+                dataJudMsg.tipo === "erro"
+                  ? "text-sm text-destructive"
+                  : "text-sm text-emerald-600 dark:text-emerald-400"
+              }
+            >
+              {dataJudMsg.texto}
+            </p>
+          )}
+
           <Input
             placeholder="Tipo de benefício"
             value={novoProcesso.beneficio}
             onChange={(e) =>
               setNovoProcesso({ ...novoProcesso, beneficio: e.target.value })
-            }
-          />
-          <Input
-            placeholder="Número do processo"
-            value={novoProcesso.numero}
-            onChange={(e) =>
-              setNovoProcesso({ ...novoProcesso, numero: e.target.value })
             }
           />
 
@@ -254,6 +331,22 @@ export default function ClienteDetalhe() {
               setNovoProcesso({ ...novoProcesso, dataEntrada: e.target.value })
             }
           />
+          <div className="flex gap-2">
+            <Input
+              placeholder="Tribunal (ex: TRF3)"
+              value={novoProcesso.tribunal}
+              onChange={(e) =>
+                setNovoProcesso({ ...novoProcesso, tribunal: e.target.value })
+              }
+            />
+            <Input
+              placeholder="Vara / órgão julgador"
+              value={novoProcesso.vara}
+              onChange={(e) =>
+                setNovoProcesso({ ...novoProcesso, vara: e.target.value })
+              }
+            />
+          </div>
           <Input
             placeholder="Observações"
             value={novoProcesso.observacoes}

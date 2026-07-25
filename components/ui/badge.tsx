@@ -2,7 +2,7 @@ import * as React from "react"
 
 function Badge({ className, variant = "default", ...props }: React.HTMLAttributes<HTMLSpanElement> & { variant?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "link" }) {
   const variants: Record<string, string> = {
-    default: "border-transparent bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900",
+    default: "border-transparent bg-primary text-white",
     secondary: "border-transparent bg-slate-100 text-slate-700 dark:bg-zinc-800 dark:text-zinc-200",
     destructive: "border-transparent bg-red-600 text-white",
     outline: "border-slate-300 bg-white text-slate-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200",

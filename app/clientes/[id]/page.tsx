@@ -29,6 +29,7 @@ export default function ClienteDetalhe() {
     status: "EM_ANALISE",
     responsavelId: "",
     dataEntrada: "",
+    prazo: "",
     tribunal: "",
     vara: "",
     observacoes: "",
@@ -79,6 +80,7 @@ export default function ClienteDetalhe() {
           status: "EM_ANALISE",
           responsavelId: "",
           dataEntrada: "",
+          prazo: "",
           tribunal: "",
           vara: "",
           observacoes: "",
@@ -323,14 +325,24 @@ export default function ClienteDetalhe() {
             ))}
           </select>
 
-          <Input
-            placeholder="Data de entrada"
-            type="date"
-            value={novoProcesso.dataEntrada}
-            onChange={(e) =>
-              setNovoProcesso({ ...novoProcesso, dataEntrada: e.target.value })
-            }
-          />
+          <div className="flex gap-2">
+            <Input
+              placeholder="Data de entrada"
+              type="date"
+              value={novoProcesso.dataEntrada}
+              onChange={(e) =>
+                setNovoProcesso({ ...novoProcesso, dataEntrada: e.target.value })
+              }
+            />
+            <Input
+              placeholder="Prazo"
+              type="date"
+              value={novoProcesso.prazo}
+              onChange={(e) =>
+                setNovoProcesso({ ...novoProcesso, prazo: e.target.value })
+              }
+            />
+          </div>
           <div className="flex gap-2">
             <Input
               placeholder="Tribunal (ex: TRF3)"

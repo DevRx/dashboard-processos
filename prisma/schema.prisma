@@ -108,6 +108,7 @@ model Processo {
   responsavelId String?        @map("responsavel_id")
   dataEntrada   DateTime?      @map("data_entrada") @db.Date
   dataConclusao DateTime?      @map("data_conclusao") @db.Date
+  prazo         DateTime?      @db.Date
   valorCausa    Float?         @map("valor_causa")
   tribunal      String?
   vara          String?

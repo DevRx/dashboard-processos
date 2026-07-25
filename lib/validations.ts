@@ -79,6 +79,7 @@ export const ProcessoSchema = z.object({
   responsavelId: z.string().optional(),
   dataEntrada: z.string().optional(),
   dataConclusao: z.string().optional(),
+  prazo: z.string().optional(),
   valorCausa: z.number().optional(),
   tribunal: z.string().optional(),
   vara: z.string().optional(),

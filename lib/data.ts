@@ -56,6 +56,7 @@ export type Processo = {
   responsavelId?: string | null
   dataEntrada?: string | null
   dataConclusao?: string | null
+  prazo?: string | null
   valorCausa?: number | null
   tribunal?: string | null
   vara?: string | null

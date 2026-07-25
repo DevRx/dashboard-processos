@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Trash2, Save, Search, Loader2 } from "lucide-react"
+import { Plus, Trash2, Save, Search, Loader2, LayoutGrid, List } from "lucide-react"
 import {
   PROCESSO_STATUS_LABELS,
   PROCESSO_STATUS_VALUES,
@@ -14,6 +14,7 @@ import {
   type Cliente,
   type User,
 } from "@/lib/data"
+import { KanbanBoard } from "@/components/processos/kanban-board"
 
 export default function Processos() {
   const [processos, setProcessos] = useState<Processo[]>([])
@@ -21,6 +22,7 @@ export default function Processos() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [visao, setVisao] = useState<"lista" | "board">("board")
   const [novoProcesso, setNovoProcesso] = useState({
     clienteId: "",
     beneficio: "",
@@ -28,6 +30,7 @@ export default function Processos() {
     status: "EM_ANALISE",
     responsavelId: "",
     dataEntrada: "",
+    prazo: "",
     tribunal: "",
     vara: "",
     observacoes: "",
@@ -79,6 +82,7 @@ export default function Processos() {
           status: "EM_ANALISE",
           responsavelId: "",
           dataEntrada: "",
+          prazo: "",
           tribunal: "",
           vara: "",
           observacoes: "",
@@ -173,10 +177,30 @@ export default function Processos() {
           </p>
         </div>
 
-        <Button onClick={() => setDialogOpen(true)}>
-          <Plus size={16} className="mr-2" />
-          Novo Processo
-        </Button>
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
+            <Button
+              variant={visao === "board" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setVisao("board")}
+            >
+              <LayoutGrid size={16} className="mr-2" />
+              Board
+            </Button>
+            <Button
+              variant={visao === "lista" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setVisao("lista")}
+            >
+              <List size={16} className="mr-2" />
+              Lista
+            </Button>
+          </div>
+          <Button onClick={() => setDialogOpen(true)}>
+            <Plus size={16} className="mr-2" />
+            Novo Processo
+          </Button>
+        </div>
       </div>
 
       {dialogOpen && (
@@ -271,14 +295,24 @@ export default function Processos() {
                 ))}
               </select>
 
-              <Input
-                placeholder="Data de entrada"
-                type="date"
-                value={novoProcesso.dataEntrada}
-                onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, dataEntrada: e.target.value })
-                }
-              />
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Data de entrada"
+                  type="date"
+                  value={novoProcesso.dataEntrada}
+                  onChange={(e) =>
+                    setNovoProcesso({ ...novoProcesso, dataEntrada: e.target.value })
+                  }
+                />
+                <Input
+                  placeholder="Prazo"
+                  type="date"
+                  value={novoProcesso.prazo}
+                  onChange={(e) =>
+                    setNovoProcesso({ ...novoProcesso, prazo: e.target.value })
+                  }
+                />
+              </div>
               <div className="flex gap-2">
                 <Input
                   placeholder="Tribunal (ex: TRF3)"
@@ -317,21 +351,30 @@ export default function Processos() {
         </div>
       )}
 
-      <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <CardContent className="p-0">
-          {loading ? (
-            <div className="p-6 text-center">
-              <p className="text-sm text-muted-foreground">
-                Carregando processos...
-              </p>
-            </div>
-          ) : processos.length === 0 ? (
-            <div className="p-6 text-center">
-              <p className="text-sm text-muted-foreground">
-                Nenhum processo cadastrado. Clique em "Novo Processo" para começar.
-              </p>
-            </div>
-          ) : (
+      {loading ? (
+        <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <CardContent className="p-6 text-center">
+            <p className="text-sm text-muted-foreground">Carregando processos...</p>
+          </CardContent>
+        </Card>
+      ) : processos.length === 0 ? (
+        <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <CardContent className="p-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              Nenhum processo cadastrado. Clique em &quot;Novo Processo&quot; para começar.
+            </p>
+          </CardContent>
+        </Card>
+      ) : visao === "board" ? (
+        <KanbanBoard
+          processos={processos}
+          clientes={clientes}
+          users={users}
+          onUpdated={fetchData}
+        />
+      ) : (
+        <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-zinc-50 dark:bg-zinc-800">
@@ -379,9 +422,9 @@ export default function Processos() {
                 </tbody>
               </table>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </main>
   )
 }

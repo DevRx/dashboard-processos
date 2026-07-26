@@ -100,13 +100,13 @@
     "semantic_hash": ""
   },
   "components/dashboard/metric-card.tsx": {
-    "mtime": 1784856545.8882372,
-    "ast_hash": "58cf5b5304b2dd930c61c967e9980246",
-    "semantic_hash": "58cf5b5304b2dd930c61c967e9980246"
+    "mtime": 1785026220.9094572,
+    "ast_hash": "51d2e2ac0a34c8c7e287957b2d424008",
+    "semantic_hash": ""
   },
   "components/dashboard/process-table.tsx": {
-    "mtime": 1785009315.8957179,
-    "ast_hash": "22455716976d9e9282cdbd61ac76121f",
+    "mtime": 1785026220.9114559,
+    "ast_hash": "359125f463ed1ef22d940ce7b446f088",
     "semantic_hash": ""
   },
   "components/ui/badge.tsx": {
@@ -230,13 +230,13 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/[id]/page.tsx": {
-    "mtime": 1785001254.8640924,
-    "ast_hash": "a63f22defe3bc39184ca30f90f784d32",
+    "mtime": 1785026220.9014616,
+    "ast_hash": "b1f0e4e80664de3b8e4c8e67c547957a",
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/page.tsx": {
-    "mtime": 1785010369.5358799,
-    "ast_hash": "64c82f4c6e01cb2e2ad480ed09b56a2f",
+    "mtime": 1785026220.9034622,
+    "ast_hash": "ccbc434b97bea0f39ad3e9b1bd223be4",
     "semantic_hash": ""
   },
   "app/(dashboard)/configuracoes/page.tsx": {
@@ -250,8 +250,8 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/page.tsx": {
-    "mtime": 1785001451.7063603,
-    "ast_hash": "74ab9227cb7eb0993540c1c6d396d1da",
+    "mtime": 1785026220.9054618,
+    "ast_hash": "3a1d5a287ecc5071ad2a1ec8bde7c9c8",
     "semantic_hash": ""
   },
   "app/(dashboard)/processos/page.tsx": {
@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "components/charts/processos-status-chart.tsx": {
-    "mtime": 1785009315.8936925,
-    "ast_hash": "14afec247cbe639f79445c763374fe5e",
+    "mtime": 1785026220.9074593,
+    "ast_hash": "1783defe2539ab1d419380feb15d0b14",
     "semantic_hash": ""
   },
   "components/dashboard/empty-state.tsx": {
@@ -295,13 +295,13 @@
     "semantic_hash": ""
   },
   "components/layout/header.tsx": {
-    "mtime": 1785000997.7210338,
-    "ast_hash": "e91e99d82b811033fd99a8648892254c",
+    "mtime": 1785026220.9134548,
+    "ast_hash": "514347b8147bdf8962a9db75c85739c1",
     "semantic_hash": ""
   },
   "components/layout/sidebar.tsx": {
-    "mtime": 1785013623.5953417,
-    "ast_hash": "f175624764ab6b428caff14303618b6d",
+    "mtime": 1785026245.6124868,
+    "ast_hash": "7a46497741987bf29d876de45db32195",
     "semantic_hash": ""
   },
   "components/processos/kanban-board.tsx": {

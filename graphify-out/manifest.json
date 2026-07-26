@@ -435,8 +435,8 @@
     "semantic_hash": ""
   },
   "app/api/lgpd/consentimentos/[id]/route.ts": {
-    "mtime": 1785106866.2019644,
-    "ast_hash": "806616887cfd1a89bb3b7b272820c063",
+    "mtime": 1785109073.462957,
+    "ast_hash": "99ee65edcf52de1585e65750d9088ad8",
     "semantic_hash": ""
   },
   "app/api/lgpd/consentimentos/route.ts": {
@@ -460,8 +460,8 @@
     "semantic_hash": ""
   },
   "components/integracoes/painel-inss.tsx": {
-    "mtime": 1785107876.5562549,
-    "ast_hash": "1f8deceac0efe8e437fa1d40228b3c19",
+    "mtime": 1785109149.7684247,
+    "ast_hash": "7544a58c8cac4e8693d6b4fd4181d5c8",
     "semantic_hash": ""
   },
   "lib/integracoes/contrato.ts": {
@@ -490,8 +490,8 @@
     "semantic_hash": ""
   },
   "lib/lgpd/auditoria.ts": {
-    "mtime": 1785106709.5845692,
-    "ast_hash": "02a0afd82353bbd13512b8e522c4e7b1",
+    "mtime": 1785109044.8015625,
+    "ast_hash": "8c11bf892cfe9539ff3eb19f8b7d31b3",
     "semantic_hash": ""
   },
   "lib/lgpd/consentimento.ts": {
@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "lib/validators/lgpd.ts": {
-    "mtime": 1785106778.0779846,
-    "ast_hash": "8ea1870a73ff0b1f1a3477265ece76f7",
+    "mtime": 1785109179.7294998,
+    "ast_hash": "62b77374b6bcc264cb12e40265fc9118",
     "semantic_hash": ""
   },
   "supabase/migrations/20260726100000_integracoes_inss_lgpd.sql": {

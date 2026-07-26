@@ -16,6 +16,7 @@ import {
 import {
   Download,
   Loader2,
+  Pencil,
   ShieldAlert,
   ShieldCheck,
   Trash2,
@@ -119,6 +120,11 @@ export function PainelInss({
   const [retencaoAte, setRetencaoAte] = useState("")
   const [fontes, setFontes] = useState<Fonte[]>(["MEU_INSS", "GERID"])
 
+  // Corrigir a base legal vigente. Sem isto o único caminho para
+  // arrumar um dado errado seria revogar e recriar, o que suja o
+  // histórico com uma revogação que não aconteceu de verdade.
+  const [editandoId, setEditandoId] = useState<string | null>(null)
+
   const [fonteImportacao, setFonteImportacao] = useState<Fonte>("GERID")
   const [texto, setTexto] = useState("")
 
@@ -169,30 +175,61 @@ export function PainelInss({
     carregar()
   }, [carregar])
 
-  async function registrarBaseLegal() {
+  /** Abre o formulário já preenchido com a base legal vigente. */
+  function editarBaseLegal(atual: Consentimento) {
+    setBaseLegal(atual.baseLegal)
+    setFinalidade(atual.finalidade)
+    setProcuracaoRef(atual.procuracaoRef ?? "")
+    setRetencaoAte(atual.retencaoAte?.slice(0, 10) ?? "")
+    setFontes(atual.fontes.filter((f): f is Fonte => f !== "DATAJUD"))
+    setEditandoId(atual.id)
+    setMensagem(null)
+  }
+
+  function cancelarEdicao() {
+    setEditandoId(null)
+    setFinalidade("")
+    setProcuracaoRef("")
+    setRetencaoAte("")
+    setFontes(["MEU_INSS", "GERID"])
+    setMensagem(null)
+  }
+
+  async function salvarBaseLegal() {
     setEnviando(true)
     setMensagem(null)
     try {
-      const res = await fetch("/api/lgpd/consentimentos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clienteId,
-          baseLegal,
-          finalidade,
-          procuracaoRef: procuracaoRef || undefined,
-          retencaoAte: retencaoAte || undefined,
-          fontes,
-        }),
-      })
+      const corpo = {
+        baseLegal,
+        finalidade,
+        procuracaoRef: procuracaoRef || undefined,
+        retencaoAte: retencaoAte || undefined,
+        fontes,
+      }
+      const res = await fetch(
+        editandoId
+          ? `/api/lgpd/consentimentos/${editandoId}`
+          : "/api/lgpd/consentimentos",
+        {
+          method: editandoId ? "PATCH" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            editandoId ? corpo : { clienteId, ...corpo }
+          ),
+        }
+      )
       const data = await res.json()
       if (!res.ok) {
         setMensagem({ tipo: "erro", texto: data.error })
         return
       }
+      setEditandoId(null)
       setFinalidade("")
       setProcuracaoRef("")
-      setMensagem({ tipo: "ok", texto: "Base legal registrada." })
+      setMensagem({
+        tipo: "ok",
+        texto: data.message ?? "Base legal registrada.",
+      })
       carregar()
     } catch {
       setMensagem({ tipo: "erro", texto: "Erro de conexão." })
@@ -368,14 +405,21 @@ export function PainelInss({
         )}
 
         {/* ── Base legal ── */}
-        {vigente ? (
+        {vigente && !editandoId ? (
           <div className="space-y-1 rounded-lg border border-slate-200 p-3 text-sm dark:border-zinc-800">
             <p className="font-medium">
               {BASE_LEGAL_OPCOES.find((o) => o.valor === vigente.baseLegal)
                 ?.rotulo ?? vigente.baseLegal}
             </p>
             <p>Finalidade: {vigente.finalidade}</p>
-            {vigente.procuracaoRef && <p>Procuração: {vigente.procuracaoRef}</p>}
+            <p>
+              Procuração:{" "}
+              {vigente.procuracaoRef || (
+                <span className="text-amber-700 dark:text-amber-400">
+                  não informada
+                </span>
+              )}
+            </p>
             <p>Fontes autorizadas: {vigente.fontes.join(", ") || "—"}</p>
             <p>
               Vigente desde {formatarData(vigente.vigenteDesde)}
@@ -383,18 +427,30 @@ export function PainelInss({
                 ? ` · retenção até ${formatarData(vigente.retencaoAte)}`
                 : " · sem prazo de retenção definido"}
             </p>
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={enviando}
-              onClick={() => revogar(vigente.id)}
-            >
-              Revogar base legal
-            </Button>
+            <div className="flex flex-wrap gap-1 pt-1">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={enviando}
+                onClick={() => editarBaseLegal(vigente)}
+              >
+                <Pencil size={14} /> Corrigir
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={enviando}
+                onClick={() => revogar(vigente.id)}
+              >
+                Revogar base legal
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="space-y-2 rounded-lg border border-slate-200 p-3 dark:border-zinc-800">
-            <p className="text-sm font-medium">Registrar base legal</p>
+            <p className="text-sm font-medium">
+              {editandoId ? "Corrigir base legal" : "Registrar base legal"}
+            </p>
             <select
               className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
               value={baseLegal}
@@ -411,11 +467,15 @@ export function PainelInss({
               value={finalidade}
               onChange={(e) => setFinalidade(e.target.value)}
             />
-            <Input
-              placeholder="Referência da procuração (obrigatória para exercício de direitos)"
-              value={procuracaoRef}
-              onChange={(e) => setProcuracaoRef(e.target.value)}
-            />
+            <label className="block text-xs text-slate-600 dark:text-zinc-400">
+              Procuração
+              {baseLegal === "EXERCICIO_DIREITOS" ? " (obrigatória)" : " (opcional)"}
+              <Input
+                placeholder="Ex.: procuração ad judicia de 12/03/2026, fls. 4"
+                value={procuracaoRef}
+                onChange={(e) => setProcuracaoRef(e.target.value)}
+              />
+            </label>
             <label className="block text-xs text-slate-600 dark:text-zinc-400">
               Retenção até
               <Input
@@ -436,15 +496,27 @@ export function PainelInss({
                 </label>
               ))}
             </div>
-            <Button size="sm" disabled={enviando} onClick={registrarBaseLegal}>
-              {enviando ? <Loader2 size={16} className="animate-spin" /> : null}
-              Registrar
-            </Button>
+            <div className="flex gap-2">
+              <Button size="sm" disabled={enviando} onClick={salvarBaseLegal}>
+                {enviando ? <Loader2 size={16} className="animate-spin" /> : null}
+                {editandoId ? "Salvar correção" : "Registrar"}
+              </Button>
+              {editandoId && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={enviando}
+                  onClick={cancelarEdicao}
+                >
+                  Cancelar
+                </Button>
+              )}
+            </div>
           </div>
         )}
 
         {/* ── Importação assistida ── */}
-        {vigente && !proposta && (
+        {vigente && !editandoId && !proposta && (
           <div className="space-y-2">
             <p className="text-sm font-medium">Importar documento</p>
             <select

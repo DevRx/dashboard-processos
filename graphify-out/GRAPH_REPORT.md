@@ -1,16 +1,16 @@
 # Graph Report - dashboard-processos  (2026-07-26)
 
 ## Corpus Check
-- 104 files · ~32,068 words
+- 104 files · ~32,938 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 515 nodes · 1221 edges · 21 communities (14 shown, 7 thin omitted)
+- 520 nodes · 1232 edges · 21 communities (14 shown, 7 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `db56fe9c`
+- Built from commit: `f5eb1a46`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -37,14 +37,14 @@
 - importar/route.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `getCurrentUser()` - 71 edges
-2. `toCamelCase()` - 58 edges
+1. `getCurrentUser()` - 72 edges
+2. `toCamelCase()` - 59 edges
 3. `cn()` - 38 edges
 4. `supabase` - 27 edges
 5. `toSnakeCase()` - 25 edges
-6. `compilerOptions` - 16 edges
-7. `ipDaRequisicao()` - 15 edges
-8. `registrarTratamento()` - 15 edges
+6. `ipDaRequisicao()` - 16 edges
+7. `registrarTratamento()` - 16 edges
+8. `compilerOptions` - 16 edges
 9. `Card()` - 12 edges
 10. `CardContent()` - 12 edges
 
@@ -67,11 +67,11 @@
 
 ### Community 0 - "data.ts"
 Cohesion: 0.05
-Nodes (79): AgendaPage(), emptyForm, hojeISO(), emptyForm, emptyForm, FinanceiroPage(), formatBRL(), HomePage() (+71 more)
+Nodes (80): AgendaPage(), emptyForm, hojeISO(), emptyForm, emptyForm, FinanceiroPage(), formatBRL(), HomePage() (+72 more)
 
 ### Community 1 - "getCurrentUser"
-Cohesion: 0.08
-Nodes (65): DELETE(), GET(), PUT(), GET(), POST(), GET(), DELETE(), GET() (+57 more)
+Cohesion: 0.11
+Nodes (48): DELETE(), GET(), PUT(), GET(), POST(), GET(), DELETE(), GET() (+40 more)
 
 ### Community 2 - "dependencies"
 Cohesion: 0.05
@@ -95,7 +95,7 @@ Nodes (21): aliases, components, hooks, lib, ui, utils, iconLibrary, menuAccent 
 
 ### Community 7 - "cn"
 Cohesion: 0.08
-Nodes (34): getResumo(), metadata, ResumoEmbedPage(), ProcessosStatusChart(), CLASSES_POR_TOM, Tom, TOM_POR_STATUS, BASE_LEGAL_OPCOES (+26 more)
+Nodes (33): getResumo(), metadata, ResumoEmbedPage(), CLASSES_POR_TOM, Tom, TOM_POR_STATUS, BASE_LEGAL_OPCOES, BaseLegal (+25 more)
 
 ### Community 8 - "layout.tsx"
 Cohesion: 0.33
@@ -107,18 +107,18 @@ Nodes (43): GET(), MOTIVO_MENSAGEM, AdapterImportacao, dataBrParaIso(), Document
 
 ### Community 12 - "validators/index.ts"
 Cohesion: 0.16
-Nodes (11): BaseLegalLGPDEnum, DocumentoINSSEnum, FonteIntegracaoEnum, LancamentoTipoEnum, ProcessoStatusEnum, TarefaPrioridadeEnum, TarefaStatusEnum, UserRoleEnum (+3 more)
+Nodes (12): BaseLegalLGPDEnum, DocumentoINSSEnum, FonteIntegracaoEnum, LancamentoTipoEnum, TarefaPrioridadeEnum, TarefaStatusEnum, UserRoleEnum, ImportacaoInput (+4 more)
 
 ### Community 13 - "README.md"
 Cohesion: 0.50
 Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
 ### Community 21 - "importar/route.ts"
-Cohesion: 0.15
-Nodes (13): MOTIVO_PARSER_MENSAGEM, POST(), hashOrigem(), selecionarAdapter(), BASE_LEGAL_LABELS, BaseLegalLGPD, buscarConsentimentoVigente(), Consentimento (+5 more)
+Cohesion: 0.08
+Nodes (34): POST(), MOTIVO_PARSER_MENSAGEM, POST(), DELETE(), PATCH(), GET(), POST(), POST() (+26 more)
 
 ## Knowledge Gaps
-- **161 isolated node(s):** `emptyForm`, `emptyForm`, `emptyForm`, `metadata`, `MOTIVO_PARSER_MENSAGEM` (+156 more)
+- **164 isolated node(s):** `emptyForm`, `emptyForm`, `emptyForm`, `metadata`, `MOTIVO_PARSER_MENSAGEM` (+159 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -132,10 +132,10 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `cn()` connect `data.ts` to `getCurrentUser`, `cn`?**
   _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **What connects `emptyForm`, `emptyForm`, `emptyForm` to the rest of the system?**
-  _161 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _164 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `data.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.05098732684939582 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05041286397218601 - nodes in this community are weakly interconnected._
 - **Should `getCurrentUser` be split into smaller, more focused modules?**
-  _Cohesion score 0.08241881298992161 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1062374245472837 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._

@@ -1,16 +1,16 @@
-# Graph Report - dashboard-processos  (2026-07-25)
+# Graph Report - dashboard-processos  (2026-07-26)
 
 ## Corpus Check
-- 82 files · ~20,711 words
+- 104 files · ~32,068 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 395 nodes · 886 edges · 20 communities (13 shown, 7 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
+- 515 nodes · 1221 edges · 21 communities (14 shown, 7 thin omitted)
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `13b05f5a`
+- Built from commit: `db56fe9c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,7 +26,7 @@
 - layout.tsx
 - seed.ts
 - index.ts
-- datajud.ts
+- validators/index.ts
 - README.md
 - AGENTS.md
 - eslint.config.mjs
@@ -34,18 +34,19 @@
 - next.config.ts
 - postcss.config.mjs
 - CLAUDE.md
+- importar/route.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `getCurrentUser()` - 54 edges
-2. `toCamelCase()` - 43 edges
+1. `getCurrentUser()` - 71 edges
+2. `toCamelCase()` - 58 edges
 3. `cn()` - 38 edges
-4. `toSnakeCase()` - 25 edges
-5. `supabase` - 17 edges
+4. `supabase` - 27 edges
+5. `toSnakeCase()` - 25 edges
 6. `compilerOptions` - 16 edges
-7. `Card()` - 11 edges
-8. `CardContent()` - 11 edges
-9. `Button()` - 10 edges
-10. `CardHeader()` - 9 edges
+7. `ipDaRequisicao()` - 15 edges
+8. `registrarTratamento()` - 15 edges
+9. `Card()` - 12 edges
+10. `CardContent()` - 12 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `HomePage()` --calls--> `getCurrentUser()`  [EXTRACTED]
@@ -62,15 +63,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (20 total, 7 thin omitted)
+## Communities (21 total, 7 thin omitted)
 
 ### Community 0 - "data.ts"
-Cohesion: 0.08
-Nodes (48): AgendaPage(), emptyForm, hojeISO(), emptyForm, emptyForm, FinanceiroPage(), formatBRL(), EmptyState() (+40 more)
+Cohesion: 0.05
+Nodes (79): AgendaPage(), emptyForm, hojeISO(), emptyForm, emptyForm, FinanceiroPage(), formatBRL(), HomePage() (+71 more)
 
 ### Community 1 - "getCurrentUser"
-Cohesion: 0.12
-Nodes (46): DELETE(), GET(), PUT(), GET(), POST(), GET(), DELETE(), GET() (+38 more)
+Cohesion: 0.08
+Nodes (65): DELETE(), GET(), PUT(), GET(), POST(), GET(), DELETE(), GET() (+57 more)
 
 ### Community 2 - "dependencies"
 Cohesion: 0.05
@@ -85,52 +86,56 @@ Cohesion: 0.07
 Nodes (28): dom, dom.iterable, esnext, **/*.mts, .next/dev/types/**/*.ts, next-env.d.ts, .next/types/**/*.ts, node_modules (+20 more)
 
 ### Community 5 - "(dashboard)/page.tsx"
-Cohesion: 0.09
-Nodes (22): POST(), POST(), POST(), UserRole, globalForPrisma, createSession(), decrypt(), deleteSession() (+14 more)
+Cohesion: 0.12
+Nodes (17): POST(), POST(), POST(), UserRole, globalForPrisma, createSession(), decrypt(), deleteSession() (+9 more)
 
 ### Community 6 - "components.json"
 Cohesion: 0.09
 Nodes (21): aliases, components, hooks, lib, ui, utils, iconLibrary, menuAccent (+13 more)
 
 ### Community 7 - "cn"
-Cohesion: 0.09
-Nodes (29): HomePage(), LogoutButton(), formatarData(), ProcessoRecente, ProcessTable(), StatusBadge(), iniciais(), MenuUsuario() (+21 more)
+Cohesion: 0.08
+Nodes (34): getResumo(), metadata, ResumoEmbedPage(), ProcessosStatusChart(), CLASSES_POR_TOM, Tom, TOM_POR_STATUS, BASE_LEGAL_OPCOES (+26 more)
 
 ### Community 8 - "layout.tsx"
 Cohesion: 0.33
 Nodes (4): metadata, plexMono, plexSans, ThemeProvider()
 
 ### Community 10 - "index.ts"
-Cohesion: 0.14
-Nodes (14): getResumo(), metadata, ResumoEmbedPage(), ProcessosStatusChart(), TOM_POR_STATUS, CLASSES_POR_TOM, Tom, TOM_POR_STATUS (+6 more)
+Cohesion: 0.08
+Nodes (43): GET(), MOTIVO_MENSAGEM, AdapterImportacao, dataBrParaIso(), DocumentoINSS, FonteIntegracao, ModoIntegracao, moedaBrParaNumero() (+35 more)
 
-### Community 11 - "datajud.ts"
-Cohesion: 0.31
-Nodes (8): GET(), MOTIVO_MENSAGEM, consultarProcessoDataJud(), DataJudResultado, detectarEndpoint(), limparNumero(), normalizarData(), TRF_ENDPOINTS
+### Community 12 - "validators/index.ts"
+Cohesion: 0.16
+Nodes (11): BaseLegalLGPDEnum, DocumentoINSSEnum, FonteIntegracaoEnum, LancamentoTipoEnum, ProcessoStatusEnum, TarefaPrioridadeEnum, TarefaStatusEnum, UserRoleEnum (+3 more)
 
 ### Community 13 - "README.md"
 Cohesion: 0.50
 Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
+### Community 21 - "importar/route.ts"
+Cohesion: 0.15
+Nodes (13): MOTIVO_PARSER_MENSAGEM, POST(), hashOrigem(), selecionarAdapter(), BASE_LEGAL_LABELS, BaseLegalLGPD, buscarConsentimentoVigente(), Consentimento (+5 more)
+
 ## Knowledge Gaps
-- **125 isolated node(s):** `emptyForm`, `emptyForm`, `emptyForm`, `metadata`, `MOTIVO_MENSAGEM` (+120 more)
+- **161 isolated node(s):** `emptyForm`, `emptyForm`, `emptyForm`, `metadata`, `MOTIVO_PARSER_MENSAGEM` (+156 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `getCurrentUser()` connect `getCurrentUser` to `datajud.ts`, `cn`?**
-  _High betweenness centrality (0.043) - this node is a cross-community bridge._
-- **Why does `cn()` connect `cn` to `data.ts`, `getCurrentUser`, `index.ts`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `dependencies` to `devDependencies`?**
-  _High betweenness centrality (0.026) - this node is a cross-community bridge._
+- **Why does `getCurrentUser()` connect `getCurrentUser` to `data.ts`, `index.ts`, `importar/route.ts`?**
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **Why does `toCamelCase()` connect `getCurrentUser` to `data.ts`, `importar/route.ts`?**
+  _High betweenness centrality (0.038) - this node is a cross-community bridge._
+- **Why does `cn()` connect `data.ts` to `getCurrentUser`, `cn`?**
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **What connects `emptyForm`, `emptyForm`, `emptyForm` to the rest of the system?**
-  _125 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _161 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `data.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.08036036036036036 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05098732684939582 - nodes in this community are weakly interconnected._
 - **Should `getCurrentUser` be split into smaller, more focused modules?**
-  _Cohesion score 0.11608391608391608 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08241881298992161 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._

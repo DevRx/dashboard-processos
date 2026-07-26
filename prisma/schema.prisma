@@ -49,6 +49,31 @@ enum LancamentoTipo {
   SAIDA
 }
 
+enum FonteIntegracao {
+  DATAJUD
+  MEU_INSS
+  GERID
+}
+
+/// Base legal para tratar dado sensível previdenciário (art. 11 da LGPD).
+enum BaseLegalLGPD {
+  /// art. 11, I — consentimento específico e destacado
+  CONSENTIMENTO
+  /// art. 11, II, "a" — cumprimento de obrigação legal
+  OBRIGACAO_LEGAL
+  /// art. 11, II, "d" — exercício regular de direitos. Base típica
+  /// da procuração previdenciária cadastrada no Meu INSS.
+  EXERCICIO_DIREITOS
+}
+
+enum DocumentoINSS {
+  CNIS
+  CARTA_CONCESSAO
+  CARTA_INDEFERIMENTO
+  EXTRATO_PAGAMENTO
+  REQUERIMENTO_GERID
+}
+
 // ─────────────────────────────────────────────────────────
 // Models
 // ─────────────────────────────────────────────────────────
@@ -72,6 +97,8 @@ model User {
   documentos  Documento[]
   auditorias  Auditoria[]
   lancamentos LancamentoFinanceiro[]
+  consentimentos ConsentimentoLGPD[]
+  importacoes    ImportacaoIntegracao[]
   // Processos onde este usuário é o responsável
   processosResponsavel Processo[] @relation("ResponsavelProcesso")
 
@@ -92,8 +119,10 @@ model Cliente {
   updatedAt      DateTime  @updatedAt @map("updated_at")
 
   // Relações
-  user      User       @relation(fields: [userId], references: [id])
-  processos Processo[]
+  user           User                   @relation(fields: [userId], references: [id])
+  processos      Processo[]
+  consentimentos ConsentimentoLGPD[]
+  importacoes    ImportacaoIntegracao[]
 
   @@map("clientes")
 }
@@ -124,6 +153,7 @@ model Processo {
   andamentos  Andamento[]
   tarefas     Tarefa[]
   documentos  Documento[]
+  importacoes ImportacaoIntegracao[]
 
   @@map("processos")
 }
@@ -195,6 +225,65 @@ model LancamentoFinanceiro {
   user User @relation(fields: [userId], references: [id])
 
   @@map("lancamentos_financeiros")
+}
+
+/// Base legal registrada por titular. Sem uma linha vigente aqui,
+/// a API de importação recusa o tratamento.
+model ConsentimentoLGPD {
+  id             String        @id @default(uuid())
+  userId         String        @map("user_id")
+  clienteId      String        @map("cliente_id")
+  baseLegal      BaseLegalLGPD @map("base_legal")
+  /// Finalidade específica do tratamento (art. 6º, I).
+  finalidade     String
+  /// Identificação da procuração/termo que sustenta a base legal.
+  procuracaoRef  String?       @map("procuracao_ref")
+  /// Fontes que esta base legal autoriza — limita o escopo da importação.
+  fontes         FonteIntegracao[]
+  vigenteDesde   DateTime      @default(now()) @map("vigente_desde")
+  retencaoAte    DateTime?     @map("retencao_ate") @db.Date
+  /// Revogação (art. 8º, §5º). A linha nunca é deletada: o histórico
+  /// é a prova de que houve base legal no período.
+  revogadoEm     DateTime?     @map("revogado_em")
+  revogadoMotivo String?       @map("revogado_motivo")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  // Relações
+  user        User                   @relation(fields: [userId], references: [id])
+  cliente     Cliente                @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  importacoes ImportacaoIntegracao[]
+
+  @@map("consentimentos_lgpd")
+}
+
+/// Registro de tratamento (art. 37) de cada importação. Guarda o
+/// resultado estruturado, nunca o documento bruto — o original
+/// permanece no GERID/Meu INSS, que é a fonte autoritativa.
+model ImportacaoIntegracao {
+  id               String          @id @default(uuid())
+  userId           String          @map("user_id")
+  clienteId        String?         @map("cliente_id")
+  processoId       String?         @map("processo_id")
+  consentimentoId  String?         @map("consentimento_id")
+  fonte            FonteIntegracao
+  documento        DocumentoINSS?
+  /// Campos extraídos, já minimizados pelo parser.
+  dados            Json
+  /// SHA-256 do texto de origem: prova de correspondência com o
+  /// documento oficial e detecção de reimportação, sem guardar o bruto.
+  hashOrigem       String          @map("hash_origem")
+  expurgarEm       DateTime?       @map("expurgar_em") @db.Date
+  expurgadoEm      DateTime?       @map("expurgado_em")
+  createdAt        DateTime        @default(now()) @map("created_at")
+
+  // Relações
+  user          User               @relation(fields: [userId], references: [id])
+  cliente       Cliente?           @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  processo      Processo?          @relation(fields: [processoId], references: [id], onDelete: SetNull)
+  consentimento ConsentimentoLGPD? @relation(fields: [consentimentoId], references: [id])
+
+  @@map("importacoes_integracao")
 }
 
 model Auditoria {

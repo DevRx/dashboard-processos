@@ -10,6 +10,7 @@ import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { StatusBadge } from "@/components/dashboard/status-badge"
 import { EmptyState } from "@/components/dashboard/empty-state"
+import { PainelInss } from "@/components/integracoes/painel-inss"
 import { Trash2, Save, Search, Loader2, FolderSearch, UserX } from "lucide-react"
 import {
   PROCESSO_STATUS_LABELS,
@@ -209,6 +210,12 @@ export default function ClienteDetalhe() {
             <p>Benefício: {cliente.beneficio || "—"}</p>
           </CardContent>
         </Card>
+
+        <PainelInss
+          clienteId={cliente.id}
+          processos={processos}
+          onAplicado={fetchCliente}
+        />
 
         <Card>
           <CardHeader>

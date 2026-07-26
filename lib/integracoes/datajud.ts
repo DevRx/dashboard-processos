@@ -1,6 +1,10 @@
 import "server-only"
+import type { Resultado } from "@/lib/integracoes/contrato"
 
 // API pública do DataJud (CNJ) — chave pública oficial, sem cadastro.
+// Única fonte deste projeto em modo `consulta`: os atos processuais
+// são públicos por lei, então não há base legal a verificar antes de
+// consultar. Meu INSS e GERID são o oposto — ver contrato.ts.
 // Docs: https://datajud-wiki.cnj.jus.br/api-publica/
 const DATAJUD_API_KEY =
   "cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw=="
@@ -60,7 +64,7 @@ function detectarEndpoint(numeroLimpo: string): string | null {
 
 export async function consultarProcessoDataJud(
   numero: string
-): Promise<{ ok: true; dados: DataJudResultado } | { ok: false; motivo: string }> {
+): Promise<Resultado<DataJudResultado>> {
   const numeroLimpo = limparNumero(numero)
 
   if (numeroLimpo.length !== 20) {

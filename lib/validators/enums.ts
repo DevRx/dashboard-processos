@@ -32,3 +32,19 @@ export const TarefaPrioridadeEnum = z.enum([
 ])
 
 export const LancamentoTipoEnum = z.enum(["ENTRADA", "SAIDA"])
+
+export const FonteIntegracaoEnum = z.enum(["DATAJUD", "MEU_INSS", "GERID"])
+
+export const BaseLegalLGPDEnum = z.enum([
+  "CONSENTIMENTO",
+  "OBRIGACAO_LEGAL",
+  "EXERCICIO_DIREITOS",
+])
+
+export const DocumentoINSSEnum = z.enum([
+  "CNIS",
+  "CARTA_CONCESSAO",
+  "CARTA_INDEFERIMENTO",
+  "EXTRATO_PAGAMENTO",
+  "REQUERIMENTO_GERID",
+])

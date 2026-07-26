@@ -80,8 +80,8 @@
     "semantic_hash": "e2ebe97e5a811cf99249bdb931f4dcab"
   },
   "app/layout.tsx": {
-    "mtime": 1785000973.9988399,
-    "ast_hash": "3db281e4f02ea5053bbd121f3bb94e6a",
+    "mtime": 1785013375.403432,
+    "ast_hash": "f79b89a7940fca47a6ee73471dd6003a",
     "semantic_hash": ""
   },
   "app/not-found.tsx": {
@@ -300,8 +300,8 @@
     "semantic_hash": ""
   },
   "components/layout/sidebar.tsx": {
-    "mtime": 1784956707.118546,
-    "ast_hash": "919140e45776328c7c90b4955a05019b",
+    "mtime": 1785013623.5953417,
+    "ast_hash": "f175624764ab6b428caff14303618b6d",
     "semantic_hash": ""
   },
   "components/processos/kanban-board.tsx": {

@@ -53,14 +53,14 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col bg-sidebar px-4 py-6 text-sidebar-foreground">
       <div className="mb-8 flex items-center gap-3 px-1">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500 via-pink-600 to-red-600 shadow-lg shadow-pink-900/30">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand">
           <Scale size={20} className="text-white" />
         </div>
         <div>
-          <h1 className="text-lg leading-tight font-bold text-sidebar-foreground">
+          <h1 className="text-base leading-tight font-semibold text-sidebar-foreground">
             Zeca Aposenta
           </h1>
-          <p className="bg-gradient-to-r from-fuchsia-400 via-pink-400 to-red-400 bg-clip-text text-[11px] leading-tight font-extrabold tracking-widest text-transparent uppercase">
+          <p className="text-[10.5px] leading-tight font-medium tracking-widest text-sidebar-foreground/45 uppercase">
             O Terror do INSS
           </p>
         </div>
@@ -76,10 +76,10 @@ export function Sidebar() {
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-md border-l-2 px-3 py-2 text-sm transition-colors duration-120",
                 isActive
-                  ? "bg-gradient-to-r from-pink-600 to-fuchsia-600 text-white shadow-md shadow-pink-950/40"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                  ? "border-sidebar-primary bg-sidebar-accent font-medium text-sidebar-foreground"
+                  : "border-transparent font-normal text-sidebar-foreground/60 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
               )}
             >
               <Icon size={18} />

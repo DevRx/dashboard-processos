@@ -221,11 +221,7 @@ export default function AgendaPage() {
       <div className="flex flex-1 flex-col">
         <Header title="Agenda" subtitle="Gerencie compromissos e prazos." />
         <main className="flex-1 space-y-4 p-6">
-          <div className="mb-2 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Agenda</h1>
-              <p className="text-sm text-muted-foreground">Gerencie compromissos e prazos.</p>
-            </div>
+          <div className="mb-2 flex items-center justify-end">
             <Button onClick={openNewDialog}>
               <Plus size={16} className="mr-2" />
               Novo Compromisso

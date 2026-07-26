@@ -146,13 +146,7 @@ export default function FinanceiroPage() {
       <div className="flex flex-1 flex-col">
         <Header title="Financeiro" subtitle="Controle simples de entradas e saídas." />
         <main className="flex-1 space-y-6 p-6">
-          <div className="mb-2 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Financeiro</h1>
-              <p className="text-sm text-muted-foreground">
-                Controle simples de entradas e saídas.
-              </p>
-            </div>
+          <div className="mb-2 flex items-center justify-end">
             <Button onClick={openNewDialog}>
               <Plus size={16} className="mr-2" />
               Novo Lançamento

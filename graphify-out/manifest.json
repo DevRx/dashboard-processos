@@ -95,8 +95,8 @@
     "semantic_hash": "63b2c4fcf776fec9dbc76e94ea0d70c6"
   },
   "components/auth/logout-button.tsx": {
-    "mtime": 1784956416.5775042,
-    "ast_hash": "3bb700f8426de83865978045edc34657",
+    "mtime": 1785026825.9529066,
+    "ast_hash": "c089365f07642e39b3ea4a4afc5158c4",
     "semantic_hash": ""
   },
   "components/dashboard/metric-card.tsx": {
@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/agenda/page.tsx": {
-    "mtime": 1785010472.3647263,
-    "ast_hash": "6013cab43f88467faf8ba14a4fee2c04",
+    "mtime": 1785027304.525352,
+    "ast_hash": "22ced3c27eb12abd0e72a3b3e8998dae",
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/[id]/page.tsx": {
@@ -240,13 +240,13 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/configuracoes/page.tsx": {
-    "mtime": 1785001020.607842,
-    "ast_hash": "c4f5e9037ef0069d6d52fd4203a03a80",
+    "mtime": 1785027319.7854526,
+    "ast_hash": "d981b24d7eabd66998ec50534120784c",
     "semantic_hash": ""
   },
   "app/(dashboard)/financeiro/page.tsx": {
-    "mtime": 1785010425.2089,
-    "ast_hash": "ceeafd8352bd93901e2fa2b48a80f43c",
+    "mtime": 1785027309.3326406,
+    "ast_hash": "506b11279147c234e91a22707b85b3ff",
     "semantic_hash": ""
   },
   "app/(dashboard)/page.tsx": {
@@ -255,8 +255,8 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/processos/page.tsx": {
-    "mtime": 1785010626.128075,
-    "ast_hash": "dea107771996865f708bb96dacbf7da6",
+    "mtime": 1785027314.4147868,
+    "ast_hash": "66427abc6d99e289fa0b5ac4a891d161",
     "semantic_hash": ""
   },
   "app/(public)/embed/resumo/page.tsx": {
@@ -295,13 +295,13 @@
     "semantic_hash": ""
   },
   "components/layout/header.tsx": {
-    "mtime": 1785026220.9134548,
-    "ast_hash": "514347b8147bdf8962a9db75c85739c1",
+    "mtime": 1785027298.5144818,
+    "ast_hash": "a03d8cac45fcad45a57f20c205970c9e",
     "semantic_hash": ""
   },
   "components/layout/sidebar.tsx": {
-    "mtime": 1785026245.6124868,
-    "ast_hash": "7a46497741987bf29d876de45db32195",
+    "mtime": 1785026864.5379753,
+    "ast_hash": "f84c06a8782760cb1cce9e76c41fa304",
     "semantic_hash": ""
   },
   "components/processos/kanban-board.tsx": {

@@ -182,14 +182,7 @@ export default function Processos() {
       <div className="flex flex-1 flex-col">
         <Header title="Processos" subtitle="Gestão de processos do escritório" />
         <main className="flex-1 p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Processos</h1>
-          <p className="text-sm text-muted-foreground">
-            Gestão de processos do escritório
-          </p>
-        </div>
-
+      <div className="mb-6 flex items-center justify-end">
         <div className="flex items-center gap-2">
           <div className="flex rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
             <Button

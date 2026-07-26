@@ -10,7 +10,13 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { getProcessoStatusLabel, type ProcessoStatus } from "@/lib/domain/processo"
 
 const TOM_POR_STATUS: Record<ProcessoStatus, string> = {
@@ -38,12 +44,17 @@ export function ProcessosStatusChart({
     }))
     .sort((a, b) => b.total - a.total)
 
+  const total = data.reduce((soma, item) => soma + item.total, 0)
+
   return (
-    <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-      <CardHeader>
-        <CardTitle className="text-base">Processos por status</CardTitle>
+    <Card className="gap-0">
+      <CardHeader className="border-b pb-(--card-spacing)">
+        <CardTitle>Processos por status</CardTitle>
+        <CardDescription>
+          {total === 1 ? "1 processo no total" : `${total} processos no total`}
+        </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-(--card-spacing)">
         {data.length === 0 ? (
           <p className="p-6 text-center text-sm text-muted-foreground">
             Nenhum processo cadastrado ainda.
@@ -52,13 +63,25 @@ export function ProcessosStatusChart({
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data} layout="vertical" margin={{ left: 12, right: 12 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} className="stroke-zinc-200 dark:stroke-zinc-800" />
-                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  horizontal={false}
+                  stroke="var(--border)"
+                />
+                <XAxis
+                  type="number"
+                  allowDecimals={false}
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                  axisLine={false}
+                  tickLine={false}
+                />
                 <YAxis
                   type="category"
                   dataKey="label"
                   width={140}
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                  axisLine={false}
+                  tickLine={false}
                 />
                 <Tooltip
                   cursor={{ fill: "var(--muted)" }}

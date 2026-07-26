@@ -1,3 +1,5 @@
+import { CalendarDays, FileText, Users } from "lucide-react"
+
 import { Sidebar } from "@/components/layout/sidebar"
 import { Header } from "@/components/layout/header"
 import { MetricCard } from "@/components/dashboard/metric-card"
@@ -76,31 +78,43 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
 
       <div className="flex flex-1 flex-col">
-        <Header />
+        <Header
+          title="Visão geral"
+          subtitle={
+            session
+              ? `Bem-vindo, ${session.name}`
+              : "Faça login para acessar o sistema."
+          }
+        />
 
-        <main className="flex-1 p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold">Visão Geral</h1>
-            <p className="text-sm text-muted-foreground">
-              {session ? `Bem-vindo, ${session.name}` : "Faça login para acessar o sistema."}
-            </p>
-          </div>
-
+        <main className="flex-1 space-y-6 p-6">
           <div className="grid gap-4 md:grid-cols-3">
-            <MetricCard title="Processos ativos" value={String(processosAtivos)} description="Em andamento" />
-            <MetricCard title="Clientes" value={String(totalClientes)} description="Cadastrados" />
-            <MetricCard title="Agenda" value={String(tarefasHoje)} description="Compromissos hoje" />
+            <MetricCard
+              icon={FileText}
+              title="Processos ativos"
+              value={String(processosAtivos)}
+              description="Em andamento"
+            />
+            <MetricCard
+              icon={Users}
+              title="Clientes"
+              value={String(totalClientes)}
+              description="Cadastrados"
+            />
+            <MetricCard
+              icon={CalendarDays}
+              title="Agenda"
+              value={String(tarefasHoje)}
+              description="Compromissos hoje"
+            />
           </div>
 
-          <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
-            <div>
-              <h2 className="mb-3 text-lg font-semibold">Processos recentes</h2>
-              <ProcessTable processos={processosRecentes} />
-            </div>
+          <div className="grid gap-6 lg:grid-cols-[1fr_380px] lg:items-start">
+            <ProcessTable processos={processosRecentes} />
             <ProcessosStatusChart porStatus={porStatus} />
           </div>
         </main>

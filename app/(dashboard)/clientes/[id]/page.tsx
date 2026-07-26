@@ -195,11 +195,6 @@ export default function ClienteDetalhe() {
       <div className="flex flex-1 flex-col">
         <Header title={cliente.nome} subtitle="Detalhes do cliente" />
         <main className="flex-1 p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">{cliente.nome}</h1>
-        <p className="text-sm text-muted-foreground">Detalhes do cliente</p>
-      </div>
-
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>

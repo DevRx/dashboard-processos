@@ -135,13 +135,7 @@ export default function ClientesPage() {
       <div className="flex flex-1 flex-col">
         <Header title="Clientes" subtitle="Cadastro e gestão dos clientes do escritório." />
         <main className="flex-1 p-6">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Clientes</h1>
-              <p className="text-sm text-muted-foreground">
-                Cadastro e gestão dos clientes do escritório.
-              </p>
-            </div>
+          <div className="mb-6 flex items-center justify-end">
             <Button onClick={openNewDialog}>
               <Plus size={16} className="mr-2" />
               Novo Cliente

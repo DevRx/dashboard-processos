@@ -20,10 +20,12 @@ export function Header({
   const isDark = mounted && resolvedTheme === "dark"
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-zinc-200 bg-white px-6 text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
-      <div>
-        <h2 className="text-lg font-semibold">{title}</h2>
-        <p className="text-sm text-muted-foreground">{subtitle}</p>
+    <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6 text-card-foreground">
+      <div className="min-w-0">
+        <h2 className="font-heading truncate text-lg leading-tight font-semibold">
+          {title}
+        </h2>
+        <p className="truncate text-sm text-muted-foreground">{subtitle}</p>
       </div>
 
       <div className="flex items-center gap-2">

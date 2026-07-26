@@ -300,8 +300,8 @@
     "semantic_hash": ""
   },
   "components/layout/sidebar.tsx": {
-    "mtime": 1785027713.9243162,
-    "ast_hash": "0a9606e7b68d3189d28baa00bf049548",
+    "mtime": 1785109721.287102,
+    "ast_hash": "4d41c30d0cc7bac09bdcde921737bc98",
     "semantic_hash": ""
   },
   "components/processos/kanban-board.tsx": {
@@ -542,6 +542,16 @@
   "lib/validators/aplicacao.ts": {
     "mtime": 1785107598.9470253,
     "ast_hash": "8c042cab5b9d8ca02c70fd00f8a1f28d",
+    "semantic_hash": ""
+  },
+  "app/(dashboard)/inss/page.tsx": {
+    "mtime": 1785109731.0615795,
+    "ast_hash": "e7c3c717abc74f2642536cd9a34ad4cf",
+    "semantic_hash": ""
+  },
+  "app/api/integracoes/painel/route.ts": {
+    "mtime": 1785109668.769969,
+    "ast_hash": "fcf9cd589867f4d81f5d3c2be79c3ee4",
     "semantic_hash": ""
   }
 }

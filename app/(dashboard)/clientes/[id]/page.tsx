@@ -12,7 +12,7 @@ import { StatusBadge } from "@/components/dashboard/status-badge"
 import { EmptyState } from "@/components/dashboard/empty-state"
 import { PainelInss } from "@/components/integracoes/painel-inss"
 import { PreparoProtocolo } from "@/components/integracoes/preparo-protocolo"
-import { DocumentosProcesso } from "@/components/integracoes/documentos-processo"
+import { DocumentosCliente } from "@/components/integracoes/documentos-cliente"
 import { opcoesEspecie } from "@/lib/domain/beneficio"
 import { Trash2, Save, Search, Loader2, FolderSearch, UserX } from "lucide-react"
 import {
@@ -250,6 +250,8 @@ export default function ClienteDetalhe() {
           onAplicado={() => fetchCliente(true)}
         />
 
+        <DocumentosCliente clienteId={cliente.id} processos={processos} />
+
         <Card>
           <CardHeader>
             <CardTitle>Processos</CardTitle>
@@ -305,8 +307,6 @@ export default function ClienteDetalhe() {
                     </Button>
                   </div>
 
-                  <DocumentosProcesso processoId={processo.id} />
-
                   <PreparoProtocolo
                     cliente={cliente}
                     processo={processo}
@@ -347,16 +347,26 @@ export default function ClienteDetalhe() {
           </select>
 
           {novoProcesso.esfera === "ADMINISTRATIVO" ? (
-            <Input
-              placeholder="Protocolo do requerimento (INSS)"
-              value={novoProcesso.protocoloInss}
-              onChange={(e) =>
-                setNovoProcesso({
-                  ...novoProcesso,
-                  protocoloInss: e.target.value,
-                })
-              }
-            />
+            /* O protocolo não é pedido aqui: o caso é aberto justamente
+               para protocolar, e o número só existe depois. Fica atrás
+               de uma revelação, para quem está cadastrando um
+               requerimento que já foi apresentado. */
+            <details className="text-xs">
+              <summary className="cursor-pointer text-slate-600 dark:text-zinc-400">
+                Já foi protocolado no INSS?
+              </summary>
+              <Input
+                className="mt-1.5"
+                placeholder="Protocolo do requerimento"
+                value={novoProcesso.protocoloInss}
+                onChange={(e) =>
+                  setNovoProcesso({
+                    ...novoProcesso,
+                    protocoloInss: e.target.value,
+                  })
+                }
+              />
+            </details>
           ) : (
             <div className="flex gap-2">
               <Input

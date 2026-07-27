@@ -24,7 +24,14 @@ async function remover(bucket: string, caminhos: string[]) {
   }
 }
 
-/** Documentos anexados a um processo. */
+/**
+ * Arquivos ligados **apenas** a este processo.
+ *
+ * Documento do cliente que por acaso está vinculado ao caso não é
+ * removido: excluir o caso desfaz o vínculo (`on delete set null`) e o
+ * arquivo permanece na pasta do titular. Apagá-lo aqui destruiria um
+ * RG que vale para todos os outros casos.
+ */
 export async function removerArquivosDoProcesso(
   processoId: string,
   userId: string
@@ -34,6 +41,7 @@ export async function removerArquivosDoProcesso(
     .select("caminho")
     .eq("processo_id", processoId)
     .eq("user_id", userId)
+    .is("cliente_id", null)
     .not("caminho", "is", null)
 
   await remover(
@@ -42,20 +50,22 @@ export async function removerArquivosDoProcesso(
   )
 }
 
-/** Documentos de todos os processos do cliente, mais as procurações. */
+/** Toda a pasta do cliente, mais as procurações da base legal. */
 export async function removerArquivosDoCliente(
   clienteId: string,
   userId: string
 ) {
-  const { data: processos } = await supabase
-    .from("processos")
-    .select("id")
+  const { data: documentos } = await supabase
+    .from("documentos")
+    .select("caminho")
     .eq("cliente_id", clienteId)
     .eq("user_id", userId)
+    .not("caminho", "is", null)
 
-  for (const processo of processos ?? []) {
-    await removerArquivosDoProcesso(processo.id as string, userId)
-  }
+  await remover(
+    "documentos",
+    (documentos ?? []).map((d) => d.caminho as string).filter(Boolean)
+  )
 
   const { data: consentimentos } = await supabase
     .from("consentimentos_lgpd")

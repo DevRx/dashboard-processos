@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "app/api/documentos/route.ts": {
-    "mtime": 1784997558.6626098,
-    "ast_hash": "5cbea5e01e08632af72b5a16bb940117",
+    "mtime": 1785128251.6922934,
+    "ast_hash": "eeb715db483ede7205681cbb8dfeb41c",
     "semantic_hash": ""
   },
   "app/api/processos/[id]/route.ts": {
@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/[id]/page.tsx": {
-    "mtime": 1785126166.3504508,
-    "ast_hash": "b7fd154fe79e817c89c22b5d9be50e84",
+    "mtime": 1785128395.2845402,
+    "ast_hash": "aa973de139d095880beab6f2a6094019",
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/page.tsx": {
@@ -460,8 +460,8 @@
     "semantic_hash": ""
   },
   "components/integracoes/painel-inss.tsx": {
-    "mtime": 1785117530.4954958,
-    "ast_hash": "6d5651947df172c19240afb199df7381",
+    "mtime": 1785128418.5934443,
+    "ast_hash": "873ff651153e63a50613777362f4e66d",
     "semantic_hash": ""
   },
   "lib/integracoes/contrato.ts": {
@@ -590,8 +590,8 @@
     "semantic_hash": ""
   },
   "app/api/documentos/upload/route.ts": {
-    "mtime": 1785125914.9045675,
-    "ast_hash": "157aec69ac3522d19d4e11501093c949",
+    "mtime": 1785128243.233691,
+    "ast_hash": "e53d33f2e1ed1f6c368d446fc53c848b",
     "semantic_hash": ""
   },
   "app/api/processos/[id]/tarefa-protocolo/route.ts": {
@@ -599,19 +599,34 @@
     "ast_hash": "472cab09768f19a73b1e7711f8fd7646",
     "semantic_hash": ""
   },
-  "components/integracoes/documentos-processo.tsx": {
-    "mtime": 1785126384.0790875,
-    "ast_hash": "91a584379d4d24de6e0b97d11d9b5526",
-    "semantic_hash": ""
-  },
   "lib/storage/limpeza.ts": {
-    "mtime": 1785125960.524405,
-    "ast_hash": "4fb0894bd62ae5cd4beeaef843879552",
+    "mtime": 1785128317.7764647,
+    "ast_hash": "80c3edbb21848889a1910c362e1ed187",
     "semantic_hash": ""
   },
   "supabase/migrations/20260727100000_documentos_upload.sql": {
     "mtime": 1785125869.359391,
     "ast_hash": "c5d2920a3c375fb0d626067501175269",
+    "semantic_hash": ""
+  },
+  "components/integracoes/documentos-cliente.tsx": {
+    "mtime": 1785128357.2616577,
+    "ast_hash": "5c4faf0f1e4b32c747b88941f3643cf4",
+    "semantic_hash": ""
+  },
+  "lib/domain/documento/index.ts": {
+    "mtime": 1785128212.4642224,
+    "ast_hash": "0411020bdbd343b201981fad13150220",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260727140000_documentos_do_cliente.sql": {
+    "mtime": 1785128135.8733456,
+    "ast_hash": "865fbbe28d8bd90151d53e0e408afd87",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260727141000_documento_sobrevive_ao_processo.sql": {
+    "mtime": 1785128279.526433,
+    "ast_hash": "73896c2dbde9522f5360051479ef2d75",
     "semantic_hash": ""
   }
 }

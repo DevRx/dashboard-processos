@@ -13,12 +13,19 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const processoId = searchParams.get("processoId")
+    const clienteId = searchParams.get("clienteId")
 
     let query = supabase
       .from("documentos")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
+
+    // Por cliente é a visão da pasta completa; por processo, o recorte
+    // do que pertence a um pedido específico.
+    if (clienteId) {
+      query = query.eq("cliente_id", clienteId)
+    }
 
     if (processoId) {
       query = query.eq("processo_id", processoId)

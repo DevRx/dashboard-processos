@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { toCamelCase } from "@/lib/utils"
+import { isCategoriaDocumento } from "@/lib/domain/documento"
 
 /**
  * Upload de documento do caso.
@@ -32,11 +33,25 @@ export async function POST(request: NextRequest) {
 
     const form = await request.formData()
     const arquivo = form.get("arquivo")
-    const processoId = form.get("processoId")
+    const clienteId = form.get("clienteId")
+    const processoIdBruto = form.get("processoId")
+    const categoriaBruta = form.get("categoria")
 
-    if (typeof processoId !== "string" || !processoId) {
-      return NextResponse.json({ error: "Informe o processo" }, { status: 400 })
+    // O dono é o cliente. O processo é opcional — laudo de um pedido
+    // específico merece ficar junto dele, mas RG não pertence a caso
+    // nenhum.
+    if (typeof clienteId !== "string" || !clienteId) {
+      return NextResponse.json({ error: "Informe o cliente" }, { status: 400 })
     }
+
+    const processoId =
+      typeof processoIdBruto === "string" && processoIdBruto
+        ? processoIdBruto
+        : null
+
+    const categoria = isCategoriaDocumento(categoriaBruta)
+      ? categoriaBruta
+      : "OUTRO"
 
     if (!(arquivo instanceof File)) {
       return NextResponse.json({ error: "Envie o arquivo" }, { status: 400 })
@@ -57,23 +72,41 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { data: processo } = await supabase
-      .from("processos")
+    const { data: cliente } = await supabase
+      .from("clientes")
       .select("id")
-      .eq("id", processoId)
+      .eq("id", clienteId)
       .eq("user_id", user.id)
       .maybeSingle()
 
-    if (!processo) {
+    if (!cliente) {
       return NextResponse.json(
-        { error: "Processo não encontrado" },
+        { error: "Cliente não encontrado" },
         { status: 404 }
       )
     }
 
-    // Caminho por usuário: id vazado não permite gravar na pasta de
-    // outro escritório.
-    const caminho = `${user.id}/${processoId}/${crypto.randomUUID()}.${extensao}`
+    if (processoId) {
+      const { data: processo } = await supabase
+        .from("processos")
+        .select("id")
+        .eq("id", processoId)
+        .eq("cliente_id", clienteId)
+        .eq("user_id", user.id)
+        .maybeSingle()
+
+      if (!processo) {
+        return NextResponse.json(
+          { error: "Processo não encontrado para este cliente" },
+          { status: 404 }
+        )
+      }
+    }
+
+    // Caminho por usuário e cliente: id vazado não permite gravar na
+    // pasta de outro escritório, e o arquivo acompanha o titular mesmo
+    // que o caso a que ele se liga seja excluído depois.
+    const caminho = `${user.id}/${clienteId}/${crypto.randomUUID()}.${extensao}`
 
     const { error: erroUpload } = await supabase.storage
       .from(BUCKET)
@@ -90,7 +123,9 @@ export async function POST(request: NextRequest) {
     const { data: documento, error } = await supabase
       .from("documentos")
       .insert({
+        cliente_id: clienteId,
         processo_id: processoId,
+        categoria,
         user_id: user.id,
         nome: arquivo.name,
         caminho,

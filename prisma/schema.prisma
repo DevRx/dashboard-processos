@@ -74,6 +74,22 @@ enum BaseLegalLGPD {
   EXERCICIO_DIREITOS
 }
 
+/// Organização da pasta do cliente, no espírito de um cofre de
+/// documentos: o operador acha pelo tipo, não pelo nome do arquivo.
+enum CategoriaDocumento {
+  PROCURACAO
+  IDENTIFICACAO
+  CPF
+  COMPROVANTE_RESIDENCIA
+  CNIS
+  CARTEIRA_TRABALHO
+  LAUDO_MEDICO
+  EXAME
+  CERTIDAO
+  CARTA_BENEFICIO
+  OUTRO
+}
+
 enum DocumentoINSS {
   CNIS
   CARTA_CONCESSAO
@@ -129,6 +145,7 @@ model Cliente {
   // Relações
   user           User                   @relation(fields: [userId], references: [id])
   processos      Processo[]
+  documentos     Documento[]
   consentimentos ConsentimentoLGPD[]
   importacoes    ImportacaoIntegracao[]
 
@@ -208,10 +225,16 @@ model Tarefa {
   @@map("tarefas")
 }
 
+/// Documentos do titular. RG, CPF e comprovante de residência valem
+/// para todos os casos e existem antes de qualquer requerimento, então
+/// pertencem ao cliente; o vínculo com um processo é opcional, para o
+/// que é específico de um pedido (laudo, carta de decisão).
 model Documento {
-  id         String   @id @default(uuid())
-  processoId String   @map("processo_id")
-  userId     String   @map("user_id")
+  id         String            @id @default(uuid())
+  clienteId  String?           @map("cliente_id")
+  processoId String?           @map("processo_id")
+  categoria  CategoriaDocumento @default(OUTRO)
+  userId     String            @map("user_id")
   nome       String
   /// Endereço externo, quando o documento mora fora (sistema de
   /// tribunal, por exemplo). Arquivo enviado pelo CRM usa `caminho`.
@@ -224,8 +247,11 @@ model Documento {
   createdAt  DateTime @default(now()) @map("created_at")
 
   // Relações
-  processo Processo @relation(fields: [processoId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id])
+  cliente  Cliente?  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  /// SetNull: excluir o caso não pode levar embora um documento que
+  /// vale para todos os casos do titular.
+  processo Processo? @relation(fields: [processoId], references: [id], onDelete: SetNull)
+  user     User      @relation(fields: [userId], references: [id])
 
   @@map("documentos")
 }

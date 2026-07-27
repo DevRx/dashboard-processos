@@ -14,8 +14,10 @@ import {
   getProcessoStatusLabel,
   type ProcessoStatus,
 } from "@/lib/domain/processo"
+import { URL_GERID, URL_MEU_INSS } from "@/lib/domain/protocolo"
 import {
   Download,
+  ExternalLink,
   FileText,
   Loader2,
   Pencil,
@@ -445,6 +447,28 @@ export function PainelInss({
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {/* Sempre à mão: o preparo do protocolo exige um caso aberto,
+            mas consultar o portal não. Depois de conferir a pasta do
+            cliente, daqui é um clique até o requerimento. */}
+        <div className="flex flex-wrap gap-2">
+          <a
+            href={URL_MEU_INSS}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+          >
+            <ExternalLink size={15} /> Meu INSS
+          </a>
+          <a
+            href={URL_GERID}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+          >
+            <ExternalLink size={15} /> GERID (advogado)
+          </a>
+        </div>
+
         {mensagem && (
           <p
             className={

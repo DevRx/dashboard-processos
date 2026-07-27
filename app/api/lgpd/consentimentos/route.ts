@@ -57,8 +57,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { clienteId, baseLegal, finalidade, procuracaoRef, fontes, retencaoAte } =
-      validado.data
+    const {
+      clienteId,
+      baseLegal,
+      finalidade,
+      procuracaoRef,
+      fontes,
+      iaAutorizada,
+      retencaoAte,
+    } = validado.data
 
     const { data: cliente } = await supabase
       .from("clientes")
@@ -83,6 +90,7 @@ export async function POST(request: NextRequest) {
         finalidade,
         procuracao_ref: procuracaoRef ?? null,
         fontes,
+        ia_autorizada: iaAutorizada,
         retencao_ate: retencaoAte ?? null,
       })
       .select()

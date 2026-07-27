@@ -40,8 +40,14 @@ export async function PATCH(
       )
     }
 
-    const { baseLegal, finalidade, procuracaoRef, fontes, retencaoAte } =
-      validado.data
+    const {
+      baseLegal,
+      finalidade,
+      procuracaoRef,
+      fontes,
+      iaAutorizada,
+      retencaoAte,
+    } = validado.data
 
     const { data: atual } = await supabase
       .from("consentimentos_lgpd")
@@ -63,6 +69,7 @@ export async function PATCH(
       finalidade,
       procuracao_ref: procuracaoRef ?? null,
       fontes,
+      ia_autorizada: iaAutorizada,
       retencao_ate: retencaoAte ?? null,
     }
 

@@ -244,6 +244,13 @@ model Documento {
   caminho    String?
   tipo       String?
   tamanho    Int?
+  /// Leitura por IA, guardada para não reenviar o documento a cada
+  /// abertura da tela. `iaModelo` registra quem leu: a extração muda
+  /// entre versões de modelo.
+  iaResumo   String?   @map("ia_resumo")
+  iaCampos   Json?     @map("ia_campos")
+  iaLidoEm   DateTime? @map("ia_lido_em")
+  iaModelo   String?   @map("ia_modelo")
   createdAt  DateTime @default(now()) @map("created_at")
 
   // Relações
@@ -289,6 +296,10 @@ model ConsentimentoLGPD {
   procuracaoNome    String?    @map("procuracao_nome")
   /// Fontes que esta base legal autoriza — limita o escopo da importação.
   fontes         FonteIntegracao[]
+  /// Autoriza mandar documentos do titular para leitura por IA —
+  /// operador novo e transferência internacional (art. 33), que o
+  /// consentimento de consultar o INSS não cobre. Desligada por padrão.
+  iaAutorizada   Boolean       @default(false) @map("ia_autorizada")
   vigenteDesde   DateTime      @default(now()) @map("vigente_desde")
   retencaoAte    DateTime?     @map("retencao_ate") @db.Date
   /// Revogação (art. 8º, §5º). A linha nunca é deletada: o histórico

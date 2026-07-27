@@ -10,7 +10,7 @@ import {
   getCategoriaLabel,
   type CategoriaDocumento,
 } from "@/lib/domain/documento"
-import { FileText, Loader2, Trash2, Upload } from "lucide-react"
+import { FileText, Loader2, Sparkles, Trash2, Upload } from "lucide-react"
 
 /**
  * Pasta de documentos do cliente.
@@ -33,6 +33,8 @@ type Documento = {
   tipo: string | null
   tamanho: number | null
   createdAt: string
+  iaResumo: string | null
+  iaCampos: Record<string, unknown> | null
 }
 
 export type ProcessoOpcao = {
@@ -49,6 +51,27 @@ function formatarTamanho(bytes?: number | null) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }
 
+const ROTULO_CAMPO: Record<string, string> = {
+  cid: "CID",
+  medico: "médico",
+  crm: "CRM",
+  dataEmissao: "emitido em",
+  diasAfastamento: "dias de afastamento",
+  dataInicioAfastamento: "afastamento desde",
+}
+
+/**
+ * Campos extraídos, em texto curto. `ilegivel` fica de fora aqui e
+ * aparece como aviso próprio — misturá-lo com o que foi lido daria a
+ * impressão de que é mais um dado extraído.
+ */
+function camposLegiveis(campos: Record<string, unknown> | null): string[] {
+  if (!campos) return []
+  return Object.entries(ROTULO_CAMPO)
+    .filter(([chave]) => campos[chave] !== undefined && campos[chave] !== null)
+    .map(([chave, rotulo]) => `${rotulo}: ${campos[chave]}`)
+}
+
 export function DocumentosCliente({
   clienteId,
   processos,
@@ -62,6 +85,7 @@ export function DocumentosCliente({
   const [carregando, setCarregando] = useState(true)
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
+  const [aviso, setAviso] = useState<string | null>(null)
 
   const [categoria, setCategoria] = useState<CategoriaDocumento>("IDENTIFICACAO")
   const [processoId, setProcessoId] = useState("")
@@ -99,6 +123,45 @@ export function DocumentosCliente({
       }
       await carregar()
       onMudou?.()
+    } catch {
+      setErro("Erro de conexão.")
+    } finally {
+      setEnviando(false)
+    }
+  }
+
+  /**
+   * Várias fotos viram um PDF só. É o caso real: o laudo é
+   * fotografado em pedaços, torto e com sombra, e hoje isso vira três
+   * arquivos soltos que ninguém consegue anexar em lugar nenhum.
+   */
+  async function processarFotos(arquivos: File[]) {
+    setEnviando(true)
+    setErro(null)
+    setAviso(null)
+    try {
+      const form = new FormData()
+      form.append("clienteId", clienteId)
+      form.append("categoria", categoria)
+      if (processoId) form.append("processoId", processoId)
+      for (const arquivo of arquivos) form.append("paginas", arquivo)
+
+      const res = await fetch("/api/documentos/processar", {
+        method: "POST",
+        body: form,
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setErro(data.error ?? "Não foi possível processar")
+        return
+      }
+      await carregar()
+      onMudou?.()
+      setAviso(
+        [data.message, data.tarefaCriada && `Tarefa criada: ${data.tarefaCriada}`, data.aviso]
+          .filter(Boolean)
+          .join(" · ")
+      )
     } catch {
       setErro("Erro de conexão.")
     } finally {
@@ -182,6 +245,21 @@ export function DocumentosCliente({
                   >
                     <Trash2 size={13} />
                   </button>
+
+                  {/* Marcado como leitura de máquina de propósito: o
+                      operador precisa saber que aquilo não foi conferido
+                      por ninguém antes de agir com base nisso. */}
+                  {doc.iaResumo && (
+                    <span className="w-full text-xs text-slate-600 dark:text-zinc-400">
+                      <Sparkles size={11} className="mr-1 inline" />
+                      {doc.iaResumo}
+                      {camposLegiveis(doc.iaCampos).length > 0 && (
+                        <span className="ml-1 text-slate-500 dark:text-zinc-500">
+                          ({camposLegiveis(doc.iaCampos).join(" · ")})
+                        </span>
+                      )}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -189,6 +267,9 @@ export function DocumentosCliente({
         ))}
 
         {erro && <p className="text-xs text-red-600 dark:text-red-400">{erro}</p>}
+        {aviso && (
+          <p className="text-xs text-emerald-700 dark:text-emerald-400">{aviso}</p>
+        )}
 
         <div className="space-y-2 border-t border-slate-200 pt-3 dark:border-zinc-800">
           <select
@@ -243,6 +324,33 @@ export function DocumentosCliente({
           </label>
           <span className="ml-2 text-xs text-slate-500 dark:text-zinc-500">
             PDF, JPG ou PNG até 20 MB
+          </span>
+
+          {/* Caminho separado: aqui entram várias fotos e sai um PDF
+              único, tratado e lido. O de cima anexa o arquivo como veio. */}
+          <label className="mt-1 flex cursor-pointer items-center gap-1.5 text-sm text-blue-700 hover:underline dark:text-blue-400">
+            {enviando ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Sparkles size={14} />
+            )}
+            Fotografei o documento — juntar em PDF e ler
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/heic"
+              multiple
+              className="hidden"
+              disabled={enviando}
+              onChange={(e) => {
+                const escolhidos = Array.from(e.target.files ?? [])
+                e.target.value = ""
+                if (escolhidos.length) processarFotos(escolhidos)
+              }}
+            />
+          </label>
+          <span className="ml-5 text-xs text-slate-500 dark:text-zinc-500">
+            Selecione as páginas na ordem, até 10. As fotos são endireitadas e
+            o contraste corrigido antes de virar PDF.
           </span>
         </div>
       </CardContent>

@@ -79,6 +79,7 @@ type Consentimento = {
   procuracaoArquivo: string | null
   procuracaoNome: string | null
   fontes: string[]
+  iaAutorizada: boolean
   vigenteDesde: string
   retencaoAte: string | null
   revogadoEm: string | null
@@ -139,6 +140,7 @@ export function PainelInss({
   const [procuracaoRef, setProcuracaoRef] = useState("")
   const [retencaoAte, setRetencaoAte] = useState("")
   const [fontes, setFontes] = useState<Fonte[]>(["MEU_INSS", "GERID"])
+  const [iaAutorizada, setIaAutorizada] = useState(false)
   /** PDF escolhido no formulário, enviado depois de salvar a base legal. */
   const [procuracaoPdf, setProcuracaoPdf] = useState<File | null>(null)
 
@@ -207,6 +209,7 @@ export function PainelInss({
     setProcuracaoRef(atual.procuracaoRef ?? "")
     setRetencaoAte(atual.retencaoAte?.slice(0, 10) ?? "")
     setFontes(atual.fontes.filter((f): f is Fonte => f !== "DATAJUD"))
+    setIaAutorizada(atual.iaAutorizada)
     setProcuracaoPdf(null)
     setEditandoId(atual.id)
     setMensagem(null)
@@ -219,6 +222,7 @@ export function PainelInss({
     setProcuracaoPdf(null)
     setRetencaoAte("")
     setFontes(["MEU_INSS", "GERID"])
+    setIaAutorizada(false)
     setMensagem(null)
   }
 
@@ -234,6 +238,7 @@ export function PainelInss({
         procuracaoRef: procuracaoRef || procuracaoPdf?.name || undefined,
         retencaoAte: retencaoAte || undefined,
         fontes,
+        iaAutorizada,
       }
       const res = await fetch(
         editandoId
@@ -525,6 +530,7 @@ export function PainelInss({
               {vigente.retencaoAte
                 ? ` · retenção até ${formatarData(vigente.retencaoAte)}`
                 : ""}
+              {vigente.iaAutorizada ? " · leitura por IA autorizada" : ""}
             </p>
             <div className="flex flex-wrap gap-1 pt-1">
               <Button
@@ -624,6 +630,23 @@ export function PainelInss({
                 </label>
               </div>
             </details>
+
+            {/* Fora da revelação: mandar documento do titular para
+                fora do país é decisão consciente, não opção avançada. */}
+            <label className="flex items-start gap-2 rounded-lg border border-slate-200 p-2 text-xs dark:border-zinc-800">
+              <input
+                type="checkbox"
+                className="mt-0.5"
+                checked={iaAutorizada}
+                onChange={() => setIaAutorizada((v) => !v)}
+              />
+              <span className="text-slate-600 dark:text-zinc-400">
+                Autorizo enviar documentos deste titular para leitura por IA
+                (Anthropic, nos EUA) — transferência internacional a um
+                operador, art. 33 da LGPD. Sem isto o sistema ainda monta o
+                PDF, só não lê o conteúdo.
+              </span>
+            </label>
 
             <div className="flex gap-2">
               <Button size="sm" disabled={enviando} onClick={salvarBaseLegal}>

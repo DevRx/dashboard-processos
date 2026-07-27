@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1785012251.7578657,
-    "ast_hash": "ef35394dd11a0cd7fc519a540a1c4936",
+    "mtime": 1785165248.5676007,
+    "ast_hash": "c39a1bb30786045c150f1b0f766eafad",
     "semantic_hash": ""
   },
   "postcss.config.mjs": {
@@ -435,13 +435,13 @@
     "semantic_hash": ""
   },
   "app/api/lgpd/consentimentos/[id]/route.ts": {
-    "mtime": 1785109073.462957,
-    "ast_hash": "99ee65edcf52de1585e65750d9088ad8",
+    "mtime": 1785165507.5591273,
+    "ast_hash": "64dff35ce6dc76297fa446da4d84ea49",
     "semantic_hash": ""
   },
   "app/api/lgpd/consentimentos/route.ts": {
-    "mtime": 1785106852.1229675,
-    "ast_hash": "c2a6ac0cc460aac9f2700263e4a58871",
+    "mtime": 1785165494.688944,
+    "ast_hash": "08006cd4ddc91dde5699e112a932551d",
     "semantic_hash": ""
   },
   "app/api/lgpd/retencao/route.ts": {
@@ -460,8 +460,8 @@
     "semantic_hash": ""
   },
   "components/integracoes/painel-inss.tsx": {
-    "mtime": 1785128418.5934443,
-    "ast_hash": "873ff651153e63a50613777362f4e66d",
+    "mtime": 1785165615.169196,
+    "ast_hash": "30fcee1836a662925f7abc9933373b71",
     "semantic_hash": ""
   },
   "lib/integracoes/contrato.ts": {
@@ -495,8 +495,8 @@
     "semantic_hash": ""
   },
   "lib/lgpd/consentimento.ts": {
-    "mtime": 1785110036.1002297,
-    "ast_hash": "cc5b159180a2220a64ff43b324af08c5",
+    "mtime": 1785165456.7359383,
+    "ast_hash": "5fa9596d96b411b0a3223a9a80ad9ee6",
     "semantic_hash": ""
   },
   "lib/lgpd/mascarar.ts": {
@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "lib/validators/lgpd.ts": {
-    "mtime": 1785109179.7294998,
-    "ast_hash": "62b77374b6bcc264cb12e40265fc9118",
+    "mtime": 1785165473.6599696,
+    "ast_hash": "b0537bf5215b4016fd752e3c0b2c3638",
     "semantic_hash": ""
   },
   "supabase/migrations/20260726100000_integracoes_inss_lgpd.sql": {
@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "components/integracoes/documentos-cliente.tsx": {
-    "mtime": 1785128357.2616577,
-    "ast_hash": "5c4faf0f1e4b32c747b88941f3643cf4",
+    "mtime": 1785165697.2912178,
+    "ast_hash": "18272db74e71c81f2340e50997e47254",
     "semantic_hash": ""
   },
   "lib/domain/documento/index.ts": {
@@ -627,6 +627,26 @@
   "supabase/migrations/20260727141000_documento_sobrevive_ao_processo.sql": {
     "mtime": 1785128279.526433,
     "ast_hash": "73896c2dbde9522f5360051479ef2d75",
+    "semantic_hash": ""
+  },
+  "app/api/documentos/processar/route.ts": {
+    "mtime": 1785165466.3047206,
+    "ast_hash": "ff26db3e36f92c11dd862a48e136f664",
+    "semantic_hash": ""
+  },
+  "lib/documentos/imagem.ts": {
+    "mtime": 1785165778.730707,
+    "ast_hash": "b7b8d34c96e3daacce1d93e5bc8ba256",
+    "semantic_hash": ""
+  },
+  "lib/ia/leitor-documento.ts": {
+    "mtime": 1785165382.4923162,
+    "ast_hash": "dd53c2fb0dcedbf3bf6c15e11b3645e6",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260727170000_leitura_ia.sql": {
+    "mtime": 1785165323.7818553,
+    "ast_hash": "bbb2d5242d4488f95f6e657461316847",
     "semantic_hash": ""
   }
 }

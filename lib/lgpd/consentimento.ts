@@ -35,6 +35,14 @@ export type Consentimento = {
   finalidade: string
   procuracaoRef: string | null
   fontes: FonteIntegracao[]
+  /**
+   * Autoriza mandar documentos do titular para leitura por IA.
+   *
+   * Separado das `fontes` de propósito: aquelas dizem de onde o dado
+   * vem, esta diz que ele *sai* — para um operador em outro país
+   * (art. 33). Consentir em consultar o INSS não é consentir nisso.
+   */
+  iaAutorizada: boolean
   vigenteDesde: string
   retencaoAte: string | null
   revogadoEm: string | null

@@ -19,6 +19,12 @@ const camposBaseLegal = {
   fontes: z
     .array(FonteIntegracaoEnum)
     .min(1, "Selecione ao menos uma fonte autorizada"),
+  /**
+   * Desligada por padrão: mandar documento do titular para leitura por
+   * IA é transferência internacional a um operador novo, e quem não
+   * marcar continua usando o sistema inteiro sem isso.
+   */
+  iaAutorizada: z.boolean().default(false),
   /** Fim do prazo de retenção acordado, "AAAA-MM-DD". */
   retencaoAte: z
     .string()

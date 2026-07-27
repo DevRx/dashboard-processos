@@ -10,6 +10,7 @@
     "seed": "node --import tsx lib/seed.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.115.0",
     "@base-ui/react": "^1.6.0",
     "@prisma/client": "^5.22.0",
     "@supabase/supabase-js": "^2.110.8",
@@ -21,12 +22,14 @@
     "lucide-react": "^1.26.0",
     "next": "16.2.11",
     "next-themes": "^0.4.6",
+    "pdf-lib": "^1.17.1",
     "prisma": "^5.22.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "recharts": "^3.10.0",
     "server-only": "^0.0.1",
     "shadcn": "^4.14.1",
+    "sharp": "^0.35.3",
     "tailwind-merge": "^3.6.0",
     "tw-animate-css": "^1.4.0",
     "zod": "^4.4.3"

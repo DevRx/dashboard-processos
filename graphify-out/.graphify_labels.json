@@ -21,9 +21,5 @@
   "19": "postcss.config.mjs",
   "20": "CLAUDE.md",
   "21": "agenda/page.tsx",
-  "22": "datajud.ts",
-  "23": "processos/page.tsx",
-  "24": "[id]/page.tsx",
-  "25": "inss/page.tsx",
-  "26": "header.tsx"
+  "24": "[id]/page.tsx"
 }

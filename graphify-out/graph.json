@@ -54,8 +54,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_agenda_page",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "agenda/page.tsx"
     },
     {
@@ -65,8 +65,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "app_dashboard_agenda_page_emptyform",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "emptyform"
     },
     {
@@ -76,8 +76,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "app_dashboard_agenda_page_getstatusvariant",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "getstatusvariant()"
     },
     {
@@ -87,8 +87,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "app_dashboard_agenda_page_getprioridadevariant",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "getprioridadevariant()"
     },
     {
@@ -98,8 +98,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "app_dashboard_agenda_page_hojeiso",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "hojeiso()"
     },
     {
@@ -109,8 +109,8 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "app_dashboard_agenda_page_agendapage",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "agendapage()"
     },
     {
@@ -120,15 +120,15 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_clientes_id_page",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "[id]/page.tsx"
     },
     {
       "label": "ClienteDetalhe()",
       "file_type": "code",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "app_dashboard_clientes_id_page_clientedetalhe",
       "community": 24,
@@ -142,8 +142,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_clientes_page",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "clientes/page.tsx"
     },
     {
@@ -153,8 +153,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_dashboard_clientes_page_emptyform",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "emptyform"
     },
     {
@@ -164,8 +164,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "app_dashboard_clientes_page_clientespage",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "clientespage()"
     },
     {
@@ -175,8 +175,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_configuracoes_page",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "configuracoes/page.tsx"
     },
     {
@@ -186,8 +186,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "app_dashboard_configuracoes_page_configuracoespage",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "configuracoespage()"
     },
     {
@@ -241,8 +241,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_inss_page",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "inss/page.tsx"
     },
     {
@@ -252,8 +252,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_clienteintegracao",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "clienteintegracao"
     },
     {
@@ -263,8 +263,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_resumo",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "resumo"
     },
     {
@@ -274,8 +274,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_base_legal_curto",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "base_legal_curto"
     },
     {
@@ -285,8 +285,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_formatardata",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "formatardata()"
     },
     {
@@ -296,8 +296,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_insspage",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "insspage()"
     },
     {
@@ -307,8 +307,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_page",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "(dashboard)/page.tsx"
     },
     {
@@ -318,8 +318,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_dashboard_page_homepage",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "homepage()"
     },
     {
@@ -329,8 +329,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_processos_page",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "processos/page.tsx"
     },
     {
@@ -340,8 +340,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "app_dashboard_processos_page_processos",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "processos()"
     },
     {
@@ -846,8 +846,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "importar/route.ts"
     },
     {
@@ -857,8 +857,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route_motivo_parser_mensagem",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivo_parser_mensagem"
     },
     {
@@ -868,8 +868,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route_post",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "post()"
     },
     {
@@ -912,6 +912,39 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "app_api_integracoes_painel_route_get",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "get()"
+    },
+    {
+      "label": "procuracao/route.ts",
+      "file_type": "code",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "procuracao/route.ts"
+    },
+    {
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "app_api_lgpd_consentimentos_id_procuracao_route_post",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "post()"
+    },
+    {
+      "label": "GET()",
+      "file_type": "code",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L137",
+      "_origin": "ast",
+      "id": "app_api_lgpd_consentimentos_id_procuracao_route_get",
       "community": 1,
       "community_name": "getCurrentUser",
       "norm_label": "get()"
@@ -1099,8 +1132,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_processos_lookup_route",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "lookup/route.ts"
     },
     {
@@ -1110,8 +1143,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_processos_lookup_route_motivo_mensagem",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "motivo_mensagem"
     },
     {
@@ -1121,8 +1154,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_api_processos_lookup_route_get",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "get()"
     },
     {
@@ -1583,8 +1616,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_auth_logout_button",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "logout-button.tsx"
     },
     {
@@ -1594,8 +1627,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "components_auth_logout_button_logoutbutton",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "logoutbutton()"
     },
     {
@@ -1638,8 +1671,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_dashboard_empty_state",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "empty-state.tsx"
     },
     {
@@ -1649,8 +1682,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_dashboard_empty_state_emptystate",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "emptystate()"
     },
     {
@@ -1800,7 +1833,7 @@
       "label": "BaseLegal",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L48",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_baselegal",
       "community": 7,
@@ -1811,7 +1844,7 @@
       "label": "Fonte",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L49",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_fonte",
       "community": 7,
@@ -1822,7 +1855,7 @@
       "label": "Documento",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L50",
+      "source_location": "L51",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_documento",
       "community": 7,
@@ -1833,7 +1866,7 @@
       "label": "BASE_LEGAL_OPCOES",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L57",
+      "source_location": "L58",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_base_legal_opcoes",
       "community": 7,
@@ -1844,7 +1877,7 @@
       "label": "DOCUMENTO_LABELS",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L63",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_documento_labels",
       "community": 7,
@@ -1855,7 +1888,7 @@
       "label": "Consentimento",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L71",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_consentimento",
       "community": 7,
@@ -1866,7 +1899,7 @@
       "label": "Importacao",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L82",
+      "source_location": "L85",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_importacao",
       "community": 7,
@@ -1877,7 +1910,7 @@
       "label": "ProcessoResumo",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L92",
+      "source_location": "L95",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_processoresumo",
       "community": 7,
@@ -1888,7 +1921,7 @@
       "label": "Mensagem",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L99",
+      "source_location": "L102",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_mensagem",
       "community": 7,
@@ -1899,7 +1932,7 @@
       "label": "Confirmacao",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L102",
+      "source_location": "L105",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_confirmacao",
       "community": 7,
@@ -1910,7 +1943,7 @@
       "label": "formatarData()",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L111",
+      "source_location": "L114",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_formatardata",
       "community": 7,
@@ -1921,7 +1954,7 @@
       "label": "PainelInss()",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L116",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_painelinss",
       "community": 7,
@@ -1935,8 +1968,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_layout_header",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "header.tsx"
     },
     {
@@ -1946,8 +1979,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_layout_header_usuario",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "usuario"
     },
     {
@@ -1957,8 +1990,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "components_layout_header_rotulo_por_papel",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "rotulo_por_papel"
     },
     {
@@ -1968,8 +2001,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "components_layout_header_iniciais",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "iniciais()"
     },
     {
@@ -1979,8 +2012,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "components_layout_header_campobusca",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "campobusca()"
     },
     {
@@ -1990,8 +2023,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "components_layout_header_botaotema",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "botaotema()"
     },
     {
@@ -2001,8 +2034,8 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "components_layout_header_menuusuario",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "menuusuario()"
     },
     {
@@ -2012,8 +2045,8 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "components_layout_header_header",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "header()"
     },
     {
@@ -2023,8 +2056,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_layout_sidebar",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -2034,8 +2067,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_layout_sidebar_menuitem",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "menuitem"
     },
     {
@@ -2045,8 +2078,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "components_layout_sidebar_menugroup",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "menugroup"
     },
     {
@@ -2056,8 +2089,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_layout_sidebar_menugroups",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "menugroups"
     },
     {
@@ -2067,8 +2100,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "components_layout_sidebar_modo",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "modo"
     },
     {
@@ -2078,8 +2111,8 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "components_layout_sidebar_marca",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "marca()"
     },
     {
@@ -2089,8 +2122,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "components_layout_sidebar_navegacao",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "navegacao()"
     },
     {
@@ -2100,8 +2133,8 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "components_layout_sidebar_sidebar",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "sidebar()"
     },
     {
@@ -2111,8 +2144,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_processos_kanban_board",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "kanban-board.tsx"
     },
     {
@@ -2122,8 +2155,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_processos_kanban_board_prazoinfo",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "prazoinfo()"
     },
     {
@@ -2133,8 +2166,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "components_processos_kanban_board_payloadfromprocesso",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "payloadfromprocesso()"
     },
     {
@@ -2144,8 +2177,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "components_processos_kanban_board_kanbanboard",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "kanbanboard()"
     },
     {
@@ -2177,8 +2210,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_badge",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "badge.tsx"
     },
     {
@@ -2188,8 +2221,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_badge_badge",
-      "community": 25,
-      "community_name": "inss/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "badge()"
     },
     {
@@ -2199,8 +2232,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_button",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "button.tsx"
     },
     {
@@ -2210,8 +2243,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_button_buttonprops",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "buttonprops"
     },
     {
@@ -2221,8 +2254,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_ui_button_button",
-      "community": 26,
-      "community_name": "header.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "button()"
     },
     {
@@ -2320,8 +2353,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_dialog",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialog.tsx"
     },
     {
@@ -2331,8 +2364,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "components_ui_dialog_dialog",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialog()"
     },
     {
@@ -2342,8 +2375,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogtrigger",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialogtrigger()"
     },
     {
@@ -2353,8 +2386,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogportal",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialogportal()"
     },
     {
@@ -2364,8 +2397,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogclose",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialogclose()"
     },
     {
@@ -2386,8 +2419,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogcontent",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialogcontent()"
     },
     {
@@ -2397,8 +2430,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogheader",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialogheader()"
     },
     {
@@ -2408,8 +2441,8 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogfooter",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialogfooter()"
     },
     {
@@ -2419,8 +2452,8 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogtitle",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialogtitle()"
     },
     {
@@ -2430,8 +2463,8 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogdescription",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "dialogdescription()"
     },
     {
@@ -2463,8 +2496,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_skeleton",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "skeleton.tsx"
     },
     {
@@ -2474,8 +2507,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_skeleton_skeleton",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "skeleton()"
     },
     {
@@ -2672,8 +2705,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_data",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "data.ts"
     },
     {
@@ -2694,8 +2727,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "lib_data_tarefastatus",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "tarefastatus"
     },
     {
@@ -2705,8 +2738,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_data_tarefaprioridade",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "tarefaprioridade"
     },
     {
@@ -2716,8 +2749,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_data_lancamentotipo",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "lancamentotipo"
     },
     {
@@ -2727,8 +2760,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "lib_data_esferaprocesso",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "esferaprocesso"
     },
     {
@@ -2738,8 +2771,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "lib_data_user",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "user"
     },
     {
@@ -2749,8 +2782,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "lib_data_cliente",
-      "community": 23,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "cliente"
     },
     {
@@ -2760,8 +2793,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "lib_data_processo",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "processo"
     },
     {
@@ -2771,8 +2804,8 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "lib_data_andamento",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "andamento"
     },
     {
@@ -2782,8 +2815,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "lib_data_tarefa",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "tarefa"
     },
     {
@@ -2804,8 +2837,8 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "lib_data_documento",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "documento"
     },
     {
@@ -2815,8 +2848,8 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "lib_data_auditoria",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "auditoria"
     },
     {
@@ -2826,8 +2859,8 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "lib_data_tarefa_status_labels",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "tarefa_status_labels"
     },
     {
@@ -2837,8 +2870,8 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "lib_data_tarefa_status_values",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "tarefa_status_values"
     },
     {
@@ -2848,8 +2881,8 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "lib_data_tarefa_prioridade_labels",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "tarefa_prioridade_labels"
     },
     {
@@ -2859,8 +2892,8 @@
       "source_location": "L160",
       "_origin": "ast",
       "id": "lib_data_tarefa_prioridade_values",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "tarefa_prioridade_values"
     },
     {
@@ -2884,6 +2917,50 @@
       "community": 0,
       "community_name": "data.ts",
       "norm_label": "lancamento_tipo_values"
+    },
+    {
+      "label": "beneficio/index.ts",
+      "file_type": "code",
+      "source_file": "lib/domain/beneficio/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "lib_domain_beneficio_index",
+      "community": 24,
+      "community_name": "[id]/page.tsx",
+      "norm_label": "beneficio/index.ts"
+    },
+    {
+      "label": "ESPECIES_BENEFICIO",
+      "file_type": "code",
+      "source_file": "lib/domain/beneficio/index.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "lib_domain_beneficio_index_especies_beneficio",
+      "community": 24,
+      "community_name": "[id]/page.tsx",
+      "norm_label": "especies_beneficio"
+    },
+    {
+      "label": "isEspecieConhecida()",
+      "file_type": "code",
+      "source_file": "lib/domain/beneficio/index.ts",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "lib_domain_beneficio_index_isespecieconhecida",
+      "community": 24,
+      "community_name": "[id]/page.tsx",
+      "norm_label": "isespecieconhecida()"
+    },
+    {
+      "label": "opcoesEspecie()",
+      "file_type": "code",
+      "source_file": "lib/domain/beneficio/index.ts",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "lib_domain_beneficio_index_opcoesespecie",
+      "community": 24,
+      "community_name": "[id]/page.tsx",
+      "norm_label": "opcoesespecie()"
     },
     {
       "label": "processo/index.ts",
@@ -2936,8 +3013,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "lib_domain_processo_status_processo_status_labels",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "processo_status_labels"
     },
     {
@@ -3222,8 +3299,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_integracoes_datajud",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "datajud.ts"
     },
     {
@@ -3233,8 +3310,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_trf_endpoints",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "trf_endpoints"
     },
     {
@@ -3244,8 +3321,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_datajudresultado",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "datajudresultado"
     },
     {
@@ -3255,8 +3332,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_limparnumero",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "limparnumero()"
     },
     {
@@ -3266,8 +3343,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_normalizardata",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "normalizardata()"
     },
     {
@@ -3277,8 +3354,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_detectarendpoint",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "detectarendpoint()"
     },
     {
@@ -3288,8 +3365,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_consultarprocessodatajud",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 21,
+      "community_name": "agenda/page.tsx",
       "norm_label": "consultarprocessodatajud()"
     },
     {
@@ -3420,8 +3497,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "lib_integracoes_index_selecionaradapter",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "selecionaradapter()"
     },
     {
@@ -3431,8 +3508,8 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "lib_integracoes_index_hashorigem",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "hashorigem()"
     },
     {
@@ -3695,8 +3772,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "consentimento.ts"
     },
     {
@@ -3706,8 +3783,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_baselegallgpd",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "baselegallgpd"
     },
     {
@@ -3717,8 +3794,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_base_legal_labels",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "base_legal_labels"
     },
     {
@@ -3728,8 +3805,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_consentimento",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "consentimento"
     },
     {
@@ -3739,8 +3816,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_motivorecusa",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivorecusa"
     },
     {
@@ -3750,8 +3827,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_motivo_recusa_mensagem",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivo_recusa_mensagem"
     },
     {
@@ -3761,8 +3838,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_buscarconsentimentovigente",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "buscarconsentimentovigente()"
     },
     {
@@ -3783,8 +3860,8 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_avaliarbaselegal",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "avaliarbaselegal()"
     },
     {
@@ -3794,8 +3871,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascarar.ts"
     },
     {
@@ -3805,8 +3882,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararcpf",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararcpf()"
     },
     {
@@ -3816,8 +3893,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararnome",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararnome()"
     },
     {
@@ -3827,8 +3904,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararemail",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararemail()"
     },
     {
@@ -3838,8 +3915,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararbeneficio",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararbeneficio()"
     },
     {
@@ -3849,8 +3926,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_reftitular",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "reftitular()"
     },
     {
@@ -4036,8 +4113,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "lib_session_getsession",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "getsession()"
     },
     {
@@ -4421,8 +4498,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "lib_validators_integracao_importacaoschema",
-      "community": 22,
-      "community_name": "datajud.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "importacaoschema"
     },
     {
@@ -6585,7 +6662,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -6849,7 +6926,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -6861,7 +6938,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -6873,7 +6950,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -6885,7 +6962,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -6897,7 +6974,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -6905,11 +6982,35 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_dashboard_clientes_id_page",
+      "target": "lib_domain_beneficio_index",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_dashboard_clientes_id_page",
+      "target": "lib_domain_beneficio_index_opcoesespecie",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -6921,12 +7022,24 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
       "target": "lib_domain_processo_status_processo_status_values",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
+      "source_location": "L373",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_dashboard_clientes_id_page_clientedetalhe",
+      "target": "lib_domain_beneficio_index_opcoesespecie"
     },
     {
       "relation": "contains",
@@ -11647,6 +11760,160 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L137",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "target": "app_api_lgpd_consentimentos_id_procuracao_route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "target": "app_api_lgpd_consentimentos_id_procuracao_route_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "target": "lib_auth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "target": "lib_auth_getcurrentuser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "target": "lib_lgpd_auditoria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "target": "lib_lgpd_auditoria_ipdarequisicao",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "target": "lib_lgpd_auditoria_registrartratamento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "target": "lib_supabase_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route",
+      "target": "lib_supabase_server_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route_post",
+      "target": "lib_auth_getcurrentuser"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L121",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route_post",
+      "target": "lib_lgpd_auditoria_ipdarequisicao"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route_post",
+      "target": "lib_lgpd_auditoria_registrartratamento"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/lgpd/consentimentos/[id]/procuracao/route.ts",
+      "source_location": "L142",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_lgpd_consentimentos_id_procuracao_route_get",
+      "target": "lib_auth_getcurrentuser"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "app/api/lgpd/consentimentos/[id]/route.ts",
       "source_location": "L194",
       "weight": 1.0,
@@ -14793,7 +15060,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L57",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14804,7 +15071,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L48",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14815,7 +15082,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L102",
+      "source_location": "L105",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14826,7 +15093,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L71",
+      "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14837,7 +15104,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L50",
+      "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14848,7 +15115,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L63",
+      "source_location": "L64",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14859,7 +15126,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L49",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14870,7 +15137,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L111",
+      "source_location": "L114",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14881,7 +15148,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L82",
+      "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14892,7 +15159,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L99",
+      "source_location": "L102",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14903,7 +15170,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L116",
+      "source_location": "L119",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14914,7 +15181,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L92",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -15155,7 +15422,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L443",
+      "source_location": "L470",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss_painelinss",
@@ -15166,7 +15433,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L457",
+      "source_location": "L502",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss_painelinss",
@@ -15179,7 +15446,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L638",
+      "source_location": "L698",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss_painelinss",
@@ -15191,7 +15458,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L398",
+      "source_location": "L425",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss_painelinss",
@@ -16790,6 +17057,63 @@
       "_origin": "ast",
       "source": "lib_session",
       "target": "lib_data_userrole",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/domain/beneficio/index.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_domain_beneficio_index",
+      "target": "lib_domain_beneficio_index_especies_beneficio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/domain/beneficio/index.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_domain_beneficio_index",
+      "target": "lib_domain_beneficio_index_isespecieconhecida",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/domain/beneficio/index.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_domain_beneficio_index",
+      "target": "lib_domain_beneficio_index_opcoesespecie",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/domain/beneficio/index.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_domain_beneficio_index_isespecieconhecida",
+      "target": "lib_domain_beneficio_index_especies_beneficio"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/domain/beneficio/index.ts",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_domain_beneficio_index_opcoesespecie",
+      "target": "lib_domain_beneficio_index_isespecieconhecida",
       "confidence_score": 1.0
     },
     {
@@ -20734,5 +21058,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d244c942bbf237ba819fdb55019703c9e1141ad3"
+  "built_at_commit": "ba663ef6db20299ae9c06e37a02e33abbaad574f"
 }

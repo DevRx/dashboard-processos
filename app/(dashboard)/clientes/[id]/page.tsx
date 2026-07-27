@@ -11,6 +11,7 @@ import { Header } from "@/components/layout/header"
 import { StatusBadge } from "@/components/dashboard/status-badge"
 import { EmptyState } from "@/components/dashboard/empty-state"
 import { PainelInss } from "@/components/integracoes/painel-inss"
+import { opcoesEspecie } from "@/lib/domain/beneficio"
 import { Trash2, Save, Search, Loader2, FolderSearch, UserX } from "lucide-react"
 import {
   PROCESSO_STATUS_LABELS,
@@ -358,13 +359,23 @@ export default function ClienteDetalhe() {
             </p>
           )}
 
-          <Input
-            placeholder="Tipo de benefício"
+          {/* Catálogo em vez de texto livre. `opcoesEspecie` mantém no
+              topo um valor fora da lista — é o caso do benefício que
+              veio do GERID com a redação do INSS. */}
+          <select
             value={novoProcesso.beneficio}
             onChange={(e) =>
               setNovoProcesso({ ...novoProcesso, beneficio: e.target.value })
             }
-          />
+            className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+          >
+            <option value="">Tipo de benefício…</option>
+            {opcoesEspecie(novoProcesso.beneficio).map((especie) => (
+              <option key={especie} value={especie}>
+                {especie}
+              </option>
+            ))}
+          </select>
 
           <select
             value={novoProcesso.status}
@@ -413,22 +424,26 @@ export default function ClienteDetalhe() {
               }
             />
           </div>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Tribunal (ex: TRF3)"
-              value={novoProcesso.tribunal}
-              onChange={(e) =>
-                setNovoProcesso({ ...novoProcesso, tribunal: e.target.value })
-              }
-            />
-            <Input
-              placeholder="Vara / órgão julgador"
-              value={novoProcesso.vara}
-              onChange={(e) =>
-                setNovoProcesso({ ...novoProcesso, vara: e.target.value })
-              }
-            />
-          </div>
+          {/* Tribunal e vara não existem no administrativo: ali quem
+              analisa é uma APS, não um órgão julgador. */}
+          {novoProcesso.esfera === "JUDICIAL" && (
+            <div className="flex gap-2">
+              <Input
+                placeholder="Tribunal (ex: TRF3)"
+                value={novoProcesso.tribunal}
+                onChange={(e) =>
+                  setNovoProcesso({ ...novoProcesso, tribunal: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Vara / órgão julgador"
+                value={novoProcesso.vara}
+                onChange={(e) =>
+                  setNovoProcesso({ ...novoProcesso, vara: e.target.value })
+                }
+              />
+            </div>
+          )}
           <Input
             placeholder="Observações"
             value={novoProcesso.observacoes}

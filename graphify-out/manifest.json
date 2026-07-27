@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "app/api/clientes/[id]/route.ts": {
-    "mtime": 1784997558.5506427,
-    "ast_hash": "066f15945533c852be79e0e71707b848",
+    "mtime": 1785124461.5890062,
+    "ast_hash": "b0c9025821de0bd469068833efb2fc49",
     "semantic_hash": ""
   },
   "app/api/clientes/route.ts": {
@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/[id]/page.tsx": {
-    "mtime": 1785117032.342915,
-    "ast_hash": "4896a29ef4b014eff70fc819df589bd4",
+    "mtime": 1785124274.6138422,
+    "ast_hash": "6b38e8b284767edd8a2f9e46784ff5ef",
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/page.tsx": {
@@ -460,8 +460,8 @@
     "semantic_hash": ""
   },
   "components/integracoes/painel-inss.tsx": {
-    "mtime": 1785117014.5745223,
-    "ast_hash": "f4b0745b4022df75f3fa544e78a83871",
+    "mtime": 1785117530.4954958,
+    "ast_hash": "6d5651947df172c19240afb199df7381",
     "semantic_hash": ""
   },
   "lib/integracoes/contrato.ts": {
@@ -557,6 +557,21 @@
   "supabase/migrations/20260726140000_esfera_administrativa.sql": {
     "mtime": 1785116570.790238,
     "ast_hash": "e58bbc09dedad57e4ff692d9dca6397b",
+    "semantic_hash": ""
+  },
+  "app/api/lgpd/consentimentos/[id]/procuracao/route.ts": {
+    "mtime": 1785117427.9939961,
+    "ast_hash": "72c80cbf6b8bf3b560432a91f528e328",
+    "semantic_hash": ""
+  },
+  "lib/domain/beneficio/index.ts": {
+    "mtime": 1785117450.376161,
+    "ast_hash": "49e0f7c0b672132a11087568e6defe83",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260726160000_procuracao_arquivo.sql": {
+    "mtime": 1785117375.6381648,
+    "ast_hash": "b79f87c3755b7a803b0152e5d12758dc",
     "semantic_hash": ""
   }
 }

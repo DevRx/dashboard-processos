@@ -16,6 +16,7 @@ import {
 } from "@/lib/domain/processo"
 import {
   Download,
+  FileText,
   Loader2,
   Pencil,
   ShieldAlert,
@@ -73,6 +74,8 @@ type Consentimento = {
   baseLegal: BaseLegal
   finalidade: string
   procuracaoRef: string | null
+  procuracaoArquivo: string | null
+  procuracaoNome: string | null
   fontes: string[]
   vigenteDesde: string
   retencaoAte: string | null
@@ -134,6 +137,8 @@ export function PainelInss({
   const [procuracaoRef, setProcuracaoRef] = useState("")
   const [retencaoAte, setRetencaoAte] = useState("")
   const [fontes, setFontes] = useState<Fonte[]>(["MEU_INSS", "GERID"])
+  /** PDF escolhido no formulário, enviado depois de salvar a base legal. */
+  const [procuracaoPdf, setProcuracaoPdf] = useState<File | null>(null)
 
   // Corrigir a base legal vigente. Sem isto o único caminho para
   // arrumar um dado errado seria revogar e recriar, o que suja o
@@ -200,6 +205,7 @@ export function PainelInss({
     setProcuracaoRef(atual.procuracaoRef ?? "")
     setRetencaoAte(atual.retencaoAte?.slice(0, 10) ?? "")
     setFontes(atual.fontes.filter((f): f is Fonte => f !== "DATAJUD"))
+    setProcuracaoPdf(null)
     setEditandoId(atual.id)
     setMensagem(null)
   }
@@ -208,6 +214,7 @@ export function PainelInss({
     setEditandoId(null)
     setFinalidade("")
     setProcuracaoRef("")
+    setProcuracaoPdf(null)
     setRetencaoAte("")
     setFontes(["MEU_INSS", "GERID"])
     setMensagem(null)
@@ -220,7 +227,9 @@ export function PainelInss({
       const corpo = {
         baseLegal,
         finalidade,
-        procuracaoRef: procuracaoRef || undefined,
+        // Anexado o PDF, o nome do arquivo já identifica a procuração —
+        // não faz sentido exigir que o operador redigite a referência.
+        procuracaoRef: procuracaoRef || procuracaoPdf?.name || undefined,
         retencaoAte: retencaoAte || undefined,
         fontes,
       }
@@ -239,12 +248,30 @@ export function PainelInss({
         setMensagem({ tipo: "erro", texto: data.error })
         return
       }
+      // O upload vem depois porque precisa do id da base legal. Se
+      // falhar, a base legal continua válida e o aviso diz exatamente
+      // o que faltou — em vez de desfazer um registro que está correto.
+      let avisoAnexo = ""
+      if (procuracaoPdf && data.consentimento?.id) {
+        const formData = new FormData()
+        formData.append("arquivo", procuracaoPdf)
+        const anexo = await fetch(
+          `/api/lgpd/consentimentos/${data.consentimento.id}/procuracao`,
+          { method: "POST", body: formData }
+        )
+        if (!anexo.ok) {
+          const erro = await anexo.json().catch(() => ({}))
+          avisoAnexo = ` Mas o PDF não subiu: ${erro.error ?? "erro no envio"}.`
+        }
+      }
+
       setEditandoId(null)
       setFinalidade("")
       setProcuracaoRef("")
+      setProcuracaoPdf(null)
       setMensagem({
-        tipo: "ok",
-        texto: data.message ?? "Base legal registrada.",
+        tipo: avisoAnexo ? "erro" : "ok",
+        texto: (data.message ?? "Base legal registrada.") + avisoAnexo,
       })
       carregar()
     } catch {
@@ -448,9 +475,27 @@ export function PainelInss({
             </p>
             <p className="text-slate-600 dark:text-zinc-400">
               Procuração:{" "}
-              {vigente.procuracaoRef || (
+              {vigente.procuracaoArquivo ? (
+                <a
+                  href={`/api/lgpd/consentimentos/${vigente.id}/procuracao`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-blue-700 underline dark:text-blue-400"
+                >
+                  <FileText size={13} />
+                  {vigente.procuracaoNome || "abrir PDF"}
+                </a>
+              ) : (
+                vigente.procuracaoRef || (
+                  <span className="text-amber-700 dark:text-amber-400">
+                    não informada
+                  </span>
+                )
+              )}
+              {vigente.procuracaoArquivo || !vigente.procuracaoRef ? null : (
                 <span className="text-amber-700 dark:text-amber-400">
-                  não informada
+                  {" "}
+                  · PDF não anexado
                 </span>
               )}
               {vigente.retencaoAte
@@ -510,6 +555,21 @@ export function PainelInss({
               value={procuracaoRef}
               onChange={(e) => setProcuracaoRef(e.target.value)}
             />
+            <label className="block text-xs text-slate-600 dark:text-zinc-400">
+              Anexar a procuração em PDF
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => setProcuracaoPdf(e.target.files?.[0] ?? null)}
+                className="mt-1 block w-full text-sm file:mr-3 file:h-8 file:rounded-lg file:border file:border-slate-300 file:bg-white file:px-3 file:text-sm dark:file:border-zinc-700 dark:file:bg-zinc-900 dark:file:text-zinc-100"
+              />
+              {procuracaoPdf && (
+                <span className="mt-1 block text-slate-600 dark:text-zinc-400">
+                  {procuracaoPdf.name} ·{" "}
+                  {(procuracaoPdf.size / 1024).toFixed(0)} KB
+                </span>
+              )}
+            </label>
 
             {/* Escopo e retenção têm padrão sensato: ambas as fontes,
                 sem prazo. Ficam aqui para quem precisa restringir. */}

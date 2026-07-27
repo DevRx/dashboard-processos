@@ -252,6 +252,10 @@ model ConsentimentoLGPD {
   finalidade     String
   /// Identificação da procuração/termo que sustenta a base legal.
   procuracaoRef  String?       @map("procuracao_ref")
+  /// Caminho do PDF no bucket privado `procuracoes`. Não é URL: URL de
+  /// bucket privado expira, e guardá-la aqui a deixaria vencida.
+  procuracaoArquivo String?    @map("procuracao_arquivo")
+  procuracaoNome    String?    @map("procuracao_nome")
   /// Fontes que esta base legal autoriza — limita o escopo da importação.
   fontes         FonteIntegracao[]
   vigenteDesde   DateTime      @default(now()) @map("vigente_desde")

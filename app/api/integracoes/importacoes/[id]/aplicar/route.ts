@@ -16,6 +16,12 @@ import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
  * modo que o histórico do processo mostre de onde a mudança veio — um
  * status que muda sozinho, sem andamento correspondente, é o tipo de
  * coisa que ninguém consegue explicar seis meses depois.
+ *
+ * Com `criarRequerimento`, o documento abre o caso: cria um processo
+ * na esfera administrativa, identificado pelo protocolo do INSS. É o
+ * inverso da ordem antiga, que exigia um processo judicial — com
+ * número CNJ — para poder registrar um requerimento que ainda nem saiu
+ * do administrativo.
  */
 export async function POST(
   request: NextRequest,
@@ -75,33 +81,6 @@ export async function POST(
       )
     }
 
-    const { data: processo } = await supabase
-      .from("processos")
-      .select("id, cliente_id, status, beneficio")
-      .eq("id", confirmado.processoId)
-      .eq("user_id", user.id)
-      .maybeSingle()
-
-    if (!processo) {
-      return NextResponse.json(
-        { error: "Processo não encontrado" },
-        { status: 404 }
-      )
-    }
-
-    // O processo tem de ser do mesmo titular da importação, senão um
-    // documento previdenciário de uma pessoa entraria no processo de
-    // outra.
-    if (
-      importacao.cliente_id &&
-      processo.cliente_id !== importacao.cliente_id
-    ) {
-      return NextResponse.json(
-        { error: "Este processo pertence a outro cliente" },
-        { status: 409 }
-      )
-    }
-
     const proposta = derivarAplicacao(
       importacao.documento as DocumentoINSS,
       (importacao.dados ?? {}) as Record<string, unknown>
@@ -110,19 +89,106 @@ export async function POST(
     const hoje = new Date().toISOString().slice(0, 10)
     const aplicado: string[] = []
 
+    type ProcessoDestino = {
+      id: string
+      cliente_id: string
+      status: string
+      beneficio: string
+    }
+    let processo: ProcessoDestino
+
+    if (confirmado.criarRequerimento) {
+      if (!importacao.cliente_id) {
+        return NextResponse.json(
+          { error: "Importação sem cliente — não há para quem abrir o requerimento" },
+          { status: 422 }
+        )
+      }
+
+      const { data: novo, error } = await supabase
+        .from("processos")
+        .insert({
+          user_id: user.id,
+          cliente_id: importacao.cliente_id,
+          esfera: "ADMINISTRATIVO",
+          beneficio: proposta.beneficio || "Requerimento INSS",
+          protocolo_inss: proposta.protocoloInss ?? null,
+          numero_beneficio: proposta.numeroBeneficio ?? null,
+          status: proposta.status ?? "EM_ANALISE",
+          prazo: proposta.prazo ?? null,
+        })
+        .select("id, cliente_id, status, beneficio")
+        .single()
+
+      if (error || !novo) {
+        console.error("Criar requerimento a partir da importação:", error?.message)
+        return NextResponse.json(
+          { error: "Não foi possível abrir o requerimento" },
+          { status: 500 }
+        )
+      }
+
+      processo = novo as ProcessoDestino
+      aplicado.push("requerimento criado")
+    } else {
+      const { data: existente } = await supabase
+        .from("processos")
+        .select("id, cliente_id, status, beneficio")
+        .eq("id", confirmado.processoId!)
+        .eq("user_id", user.id)
+        .maybeSingle()
+
+      if (!existente) {
+        return NextResponse.json(
+          { error: "Processo não encontrado" },
+          { status: 404 }
+        )
+      }
+
+      // O processo tem de ser do mesmo titular da importação, senão um
+      // documento previdenciário de uma pessoa entraria no processo de
+      // outra.
+      if (
+        importacao.cliente_id &&
+        existente.cliente_id !== importacao.cliente_id
+      ) {
+        return NextResponse.json(
+          { error: "Este processo pertence a outro cliente" },
+          { status: 409 }
+        )
+      }
+
+      processo = existente as ProcessoDestino
+    }
+
     // ── Processo ──
+    // Num requerimento recém-criado, status, prazo, benefício e
+    // identificadores já entraram no insert. Reaplicar aqui só geraria
+    // um update redundante e faria o relatório listar o que não mudou.
     const camposProcesso: Record<string, string> = {}
-    if (confirmado.status && proposta.status) {
-      camposProcesso.status = proposta.status
-      aplicado.push("status")
-    }
-    if (confirmado.prazo && proposta.prazo) {
-      camposProcesso.prazo = proposta.prazo
-      aplicado.push("prazo")
-    }
-    if (confirmado.beneficio && proposta.beneficio) {
-      camposProcesso.beneficio = proposta.beneficio
-      aplicado.push("beneficio")
+    if (!confirmado.criarRequerimento) {
+      if (confirmado.status && proposta.status) {
+        camposProcesso.status = proposta.status
+        aplicado.push("status")
+      }
+      if (confirmado.prazo && proposta.prazo) {
+        camposProcesso.prazo = proposta.prazo
+        aplicado.push("prazo")
+      }
+      if (confirmado.beneficio && proposta.beneficio) {
+        camposProcesso.beneficio = proposta.beneficio
+        aplicado.push("beneficio")
+      }
+      if (confirmado.identificadores) {
+        if (proposta.protocoloInss) {
+          camposProcesso.protocolo_inss = proposta.protocoloInss
+          aplicado.push("protocolo INSS")
+        }
+        if (proposta.numeroBeneficio) {
+          camposProcesso.numero_beneficio = proposta.numeroBeneficio
+          aplicado.push("NB")
+        }
+      }
     }
 
     if (Object.keys(camposProcesso).length > 0) {

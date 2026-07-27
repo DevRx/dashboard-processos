@@ -49,6 +49,14 @@ enum LancamentoTipo {
   SAIDA
 }
 
+/// O trabalho previdenciário começa no administrativo (requerimento no
+/// INSS, identificado por protocolo) e só vira judicial — com número
+/// CNJ — depois do indeferimento.
+enum EsferaProcesso {
+  ADMINISTRATIVO
+  JUDICIAL
+}
+
 enum FonteIntegracao {
   DATAJUD
   MEU_INSS
@@ -132,7 +140,13 @@ model Processo {
   userId        String         @map("user_id")
   clienteId     String         @map("cliente_id")
   beneficio     String
+  esfera        EsferaProcesso @default(ADMINISTRATIVO)
+  /// Número único CNJ. Só existe na esfera judicial.
   numero        String?
+  /// Protocolo do requerimento no INSS, mostrado pelo GERID.
+  protocoloInss String?        @map("protocolo_inss")
+  /// NB, presente na carta de concessão e no extrato de pagamento.
+  numeroBeneficio String?      @map("numero_beneficio")
   status        ProcessoStatus @default(EM_ANALISE)
   responsavelId String?        @map("responsavel_id")
   dataEntrada   DateTime?      @map("data_entrada") @db.Date

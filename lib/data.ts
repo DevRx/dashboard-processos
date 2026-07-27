@@ -16,6 +16,9 @@ export type TarefaPrioridade = "BAIXA" | "MEDIA" | "ALTA" | "URGENTE"
 
 export type LancamentoTipo = "ENTRADA" | "SAIDA"
 
+/** Fase do caso: requerimento no INSS ou ação judicial. */
+export type EsferaProcesso = "ADMINISTRATIVO" | "JUDICIAL"
+
 export type User = {
   id: string
   name: string
@@ -47,7 +50,13 @@ export type Processo = {
   userId: string
   clienteId: string
   beneficio: string
+  esfera?: EsferaProcesso
+  /** Número único CNJ. Só existe na esfera judicial. */
   numero?: string | null
+  /** Protocolo do requerimento no INSS, mostrado pelo GERID. */
+  protocoloInss?: string | null
+  /** NB, presente na carta de concessão e no extrato de pagamento. */
+  numeroBeneficio?: string | null
   status: ProcessoStatus
   responsavelId?: string | null
   dataEntrada?: string | null

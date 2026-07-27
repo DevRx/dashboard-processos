@@ -16,6 +16,7 @@ import {
   PROCESSO_STATUS_LABELS,
   PROCESSO_STATUS_VALUES,
   type Cliente,
+  type EsferaProcesso,
   type Processo,
   type User,
 } from "@/lib/data"
@@ -30,7 +31,9 @@ export default function ClienteDetalhe() {
   const [users, setUsers] = useState<User[]>([])
   const [novoProcesso, setNovoProcesso] = useState({
     beneficio: "",
+    esfera: "ADMINISTRATIVO" as EsferaProcesso,
     numero: "",
+    protocoloInss: "",
     status: "EM_ANALISE",
     responsavelId: "",
     dataEntrada: "",
@@ -42,8 +45,13 @@ export default function ClienteDetalhe() {
   const [buscandoDataJud, setBuscandoDataJud] = useState(false)
   const [dataJudMsg, setDataJudMsg] = useState<{ tipo: "erro" | "ok"; texto: string } | null>(null)
 
-  async function fetchCliente() {
-    setLoading(true)
+  /**
+   * `silencioso` recarrega sem trocar a tela pelo skeleton. O skeleton
+   * desmonta os cards, e desmontar o painel de integração no meio de
+   * uma importação jogaria fora a prévia que o operador está revisando.
+   */
+  async function fetchCliente(silencioso = false) {
+    if (!silencioso) setLoading(true)
     try {
       const [clienteRes, usersRes] = await Promise.all([
         fetch(`/api/clientes/${id}`),
@@ -81,7 +89,9 @@ export default function ClienteDetalhe() {
       if (response.ok) {
         setNovoProcesso({
           beneficio: "",
+          esfera: "ADMINISTRATIVO",
           numero: "",
+          protocoloInss: "",
           status: "EM_ANALISE",
           responsavelId: "",
           dataEntrada: "",
@@ -214,7 +224,7 @@ export default function ClienteDetalhe() {
         <PainelInss
           clienteId={cliente.id}
           processos={processos}
-          onAplicado={fetchCliente}
+          onAplicado={() => fetchCliente(true)}
         />
 
         <Card>
@@ -237,7 +247,15 @@ export default function ClienteDetalhe() {
                         Status: <StatusBadge status={processo.status} className="text-xs" />
                       </p>
                       {processo.numero && (
-                        <p className="text-sm">Número: {processo.numero}</p>
+                        <p className="text-sm">Número CNJ: {processo.numero}</p>
+                      )}
+                      {processo.protocoloInss && (
+                        <p className="text-sm">
+                          Protocolo INSS: {processo.protocoloInss}
+                        </p>
+                      )}
+                      {processo.numeroBeneficio && (
+                        <p className="text-sm">NB: {processo.numeroBeneficio}</p>
                       )}
                       {processo.responsavelId && (
                         <p className="text-sm">
@@ -272,30 +290,62 @@ export default function ClienteDetalhe() {
 
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>Novo Processo</CardTitle>
+          <CardTitle>Novo caso</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <div className="flex gap-2">
+          {/* A esfera vem primeiro porque decide quais identificadores
+              existem. Requerimento no INSS tem protocolo; número CNJ,
+              tribunal e vara só passam a existir na via judicial. */}
+          <select
+            className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+            value={novoProcesso.esfera}
+            onChange={(e) =>
+              setNovoProcesso({
+                ...novoProcesso,
+                esfera: e.target.value as EsferaProcesso,
+              })
+            }
+          >
+            <option value="ADMINISTRATIVO">
+              Administrativo — requerimento no INSS
+            </option>
+            <option value="JUDICIAL">Judicial — ação com número CNJ</option>
+          </select>
+
+          {novoProcesso.esfera === "ADMINISTRATIVO" ? (
             <Input
-              placeholder="Número do processo (CNJ)"
-              value={novoProcesso.numero}
+              placeholder="Protocolo do requerimento (INSS)"
+              value={novoProcesso.protocoloInss}
               onChange={(e) =>
-                setNovoProcesso({ ...novoProcesso, numero: e.target.value })
+                setNovoProcesso({
+                  ...novoProcesso,
+                  protocoloInss: e.target.value,
+                })
               }
             />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={buscarNoDataJud}
-              disabled={buscandoDataJud || !novoProcesso.numero.trim()}
-            >
-              {buscandoDataJud ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : (
-                <Search size={16} />
-              )}
-            </Button>
-          </div>
+          ) : (
+            <div className="flex gap-2">
+              <Input
+                placeholder="Número do processo (CNJ)"
+                value={novoProcesso.numero}
+                onChange={(e) =>
+                  setNovoProcesso({ ...novoProcesso, numero: e.target.value })
+                }
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={buscarNoDataJud}
+                disabled={buscandoDataJud || !novoProcesso.numero.trim()}
+              >
+                {buscandoDataJud ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <Search size={16} />
+                )}
+              </Button>
+            </div>
+          )}
           {dataJudMsg && (
             <p
               className={

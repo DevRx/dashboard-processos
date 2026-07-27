@@ -150,8 +150,8 @@
     "semantic_hash": "b483cf2a1dfab98443e47f0be11b5df4"
   },
   "lib/data.ts": {
-    "mtime": 1785009315.9146817,
-    "ast_hash": "f26eda0f7516e054dadcb6017a9280e0",
+    "mtime": 1785116646.7280488,
+    "ast_hash": "89182bf69721781f8aa8d93111a0ab1e",
     "semantic_hash": ""
   },
   "lib/seed.ts": {
@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/[id]/page.tsx": {
-    "mtime": 1785107741.855403,
-    "ast_hash": "077d75a3c7f0194b274304a599d2f149",
+    "mtime": 1785117032.342915,
+    "ast_hash": "4896a29ef4b014eff70fc819df589bd4",
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/page.tsx": {
@@ -345,8 +345,8 @@
     "semantic_hash": ""
   },
   "lib/validators/enums.ts": {
-    "mtime": 1785106757.7923374,
-    "ast_hash": "365c67563b2499030983505a51b02f45",
+    "mtime": 1785116602.1000123,
+    "ast_hash": "33aa4549f9e07260610547d44079627d",
     "semantic_hash": ""
   },
   "lib/validators/financeiro.ts": {
@@ -360,8 +360,8 @@
     "semantic_hash": ""
   },
   "lib/validators/processo.ts": {
-    "mtime": 1784997502.5067644,
-    "ast_hash": "dd4850b5875739af07064d4d859ed85d",
+    "mtime": 1785116624.0258968,
+    "ast_hash": "479d7c223c60a25de07226bd527f6841",
     "semantic_hash": ""
   },
   "lib/validators/tarefa.ts": {
@@ -460,8 +460,8 @@
     "semantic_hash": ""
   },
   "components/integracoes/painel-inss.tsx": {
-    "mtime": 1785110215.054959,
-    "ast_hash": "b342a2d04b943a93283110e68ea7f36c",
+    "mtime": 1785117014.5745223,
+    "ast_hash": "f4b0745b4022df75f3fa544e78a83871",
     "semantic_hash": ""
   },
   "lib/integracoes/contrato.ts": {
@@ -525,8 +525,8 @@
     "semantic_hash": ""
   },
   "app/api/integracoes/importacoes/[id]/aplicar/route.ts": {
-    "mtime": 1785107644.2190514,
-    "ast_hash": "85a6046cec7b6445067c4e2953ee9778",
+    "mtime": 1785116729.039483,
+    "ast_hash": "4d14e895c0d045c3596f3fcf1f60b8ca",
     "semantic_hash": ""
   },
   "app/api/integracoes/importacoes/route.ts": {
@@ -535,13 +535,13 @@
     "semantic_hash": ""
   },
   "lib/integracoes/aplicar.ts": {
-    "mtime": 1785107801.512858,
-    "ast_hash": "ca823f62ab19d83468cabd97b92a6dcd",
+    "mtime": 1785116678.8383024,
+    "ast_hash": "05ef9229465527bb7db91ab913648b62",
     "semantic_hash": ""
   },
   "lib/validators/aplicacao.ts": {
-    "mtime": 1785107598.9470253,
-    "ast_hash": "8c042cab5b9d8ca02c70fd00f8a1f28d",
+    "mtime": 1785116689.0731058,
+    "ast_hash": "03e4a1217b105f085752572cd1ca0c83",
     "semantic_hash": ""
   },
   "app/(dashboard)/inss/page.tsx": {
@@ -552,6 +552,11 @@
   "app/api/integracoes/painel/route.ts": {
     "mtime": 1785109668.769969,
     "ast_hash": "fcf9cd589867f4d81f5d3c2be79c3ee4",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260726140000_esfera_administrativa.sql": {
+    "mtime": 1785116570.790238,
+    "ast_hash": "e58bbc09dedad57e4ff692d9dca6397b",
     "semantic_hash": ""
   }
 }

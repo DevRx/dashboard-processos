@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   derivarAplicacao,
   type PropostaAplicacao,
@@ -104,6 +105,7 @@ type Confirmacao = {
   andamento: boolean
   tarefas: boolean
   beneficio: boolean
+  identificadores: boolean
 }
 
 function formatarData(iso?: string | null) {
@@ -152,6 +154,7 @@ export function PainelInss({
     andamento: true,
     tarefas: true,
     beneficio: false,
+    identificadores: true,
   })
 
   const vigente = consentimentos.find((c) => !c.revogadoEm) ?? null
@@ -311,8 +314,14 @@ export function PainelInss({
     }
   }
 
-  async function aplicar(importacaoId: string) {
-    if (!processoDestino) {
+  /**
+   * `criarRequerimento` abre um processo administrativo a partir do
+   * próprio documento. É o caminho quando o cliente ainda não tem nada
+   * cadastrado — o requerimento no INSS costuma ser o primeiro fato do
+   * caso, e não tem número CNJ para preencher em formulário nenhum.
+   */
+  async function aplicar(importacaoId: string, criarRequerimento = false) {
+    if (!criarRequerimento && !processoDestino) {
       setMensagem({ tipo: "erro", texto: "Escolha o processo de destino." })
       return
     }
@@ -324,7 +333,11 @@ export function PainelInss({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ processoId: processoDestino, ...confirmacao }),
+          body: JSON.stringify(
+            criarRequerimento
+              ? { criarRequerimento: true, ...confirmacao }
+              : { processoId: processoDestino, ...confirmacao }
+          ),
         }
       )
       const data = await res.json()
@@ -417,8 +430,14 @@ export function PainelInss({
           </p>
         )}
 
-        {/* ── Base legal ── */}
-        {vigente && !editandoId ? (
+        {/* ── Base legal ──
+            Enquanto carrega não se afirma nada. Renderizar o formulário
+            de registro antes da resposta diria "este titular não tem
+            base legal" sem saber — e é justamente o aviso que não pode
+            piscar em falso. */}
+        {carregando ? (
+          <Skeleton className="h-28 w-full" />
+        ) : vigente && !editandoId ? (
           <div className="space-y-1 rounded-lg border border-slate-200 p-3 text-sm dark:border-zinc-800">
             <p className="font-medium">
               {BASE_LEGAL_OPCOES.find((o) => o.valor === vigente.baseLegal)
@@ -585,12 +604,6 @@ export function PainelInss({
               Ler documento
             </Button>
 
-            {processos.length === 0 && (
-              <p className="text-xs text-amber-700 dark:text-amber-400">
-                Este cliente não tem processo cadastrado. Crie um abaixo para
-                que o documento possa alimentar status, prazo e agenda.
-              </p>
-            )}
           </div>
         )}
 
@@ -600,9 +613,13 @@ export function PainelInss({
             <p className="text-sm font-semibold">{proposta.resumo}</p>
 
             {processos.length === 0 ? (
-              <p className="text-sm text-amber-700 dark:text-amber-400">
-                Este cliente ainda não tem processo cadastrado. Crie um processo
-                para aplicar o documento.
+              <p className="text-sm text-slate-600 dark:text-zinc-400">
+                Este cliente ainda não tem caso aberto. O documento abre um
+                requerimento administrativo
+                {proposta.protocoloInss
+                  ? `, protocolo ${proposta.protocoloInss}`
+                  : ""}
+                .
               </p>
             ) : (
               processos.length > 1 && (
@@ -672,6 +689,32 @@ export function PainelInss({
                 </label>
               )}
 
+              {(proposta.protocoloInss || proposta.numeroBeneficio) &&
+                processos.length > 0 && (
+                  <label className="flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      className="mt-1"
+                      checked={confirmacao.identificadores}
+                      onChange={() => alternarConfirmacao("identificadores")}
+                    />
+                    <span>
+                      {proposta.protocoloInss && (
+                        <>
+                          Protocolo INSS →{" "}
+                          <strong>{proposta.protocoloInss}</strong>
+                        </>
+                      )}
+                      {proposta.protocoloInss && proposta.numeroBeneficio && " · "}
+                      {proposta.numeroBeneficio && (
+                        <>
+                          NB → <strong>{proposta.numeroBeneficio}</strong>
+                        </>
+                      )}
+                    </span>
+                  </label>
+                )}
+
               {proposta.andamento && (
                 <label className="flex items-start gap-2">
                   <input
@@ -707,15 +750,40 @@ export function PainelInss({
               )}
             </div>
 
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                disabled={enviando || processos.length === 0}
-                onClick={() => aplicar(pendente.id)}
-              >
-                {enviando ? <Loader2 size={16} className="animate-spin" /> : null}
-                Aplicar ao processo
-              </Button>
+            <div className="flex flex-wrap gap-2">
+              {processos.length === 0 ? (
+                <Button
+                  size="sm"
+                  disabled={enviando}
+                  onClick={() => aplicar(pendente.id, true)}
+                >
+                  {enviando ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : null}
+                  Abrir requerimento com estes dados
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    size="sm"
+                    disabled={enviando}
+                    onClick={() => aplicar(pendente.id)}
+                  >
+                    {enviando ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : null}
+                    Aplicar ao caso
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={enviando}
+                    onClick={() => aplicar(pendente.id, true)}
+                  >
+                    Abrir novo requerimento
+                  </Button>
+                </>
+              )}
               <Button
                 variant="ghost"
                 size="sm"

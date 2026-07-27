@@ -33,6 +33,8 @@ export const TarefaPrioridadeEnum = z.enum([
 
 export const LancamentoTipoEnum = z.enum(["ENTRADA", "SAIDA"])
 
+export const EsferaProcessoEnum = z.enum(["ADMINISTRATIVO", "JUDICIAL"])
+
 export const FonteIntegracaoEnum = z.enum(["DATAJUD", "MEU_INSS", "GERID"])
 
 export const BaseLegalLGPDEnum = z.enum([

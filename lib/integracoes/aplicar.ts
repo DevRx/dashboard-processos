@@ -37,6 +37,13 @@ export type PropostaAplicacao = {
   tarefas: TarefaProposta[]
   /** Benefício identificado, para preencher o campo do processo. */
   beneficio?: string
+  /**
+   * Identificadores da fase administrativa. Documento do INSS nunca
+   * traz número CNJ — o requerimento é identificado por protocolo, e o
+   * benefício concedido por NB.
+   */
+  protocoloInss?: string
+  numeroBeneficio?: string
   /** Rótulo do que o documento é, para a UI resumir a proposta. */
   resumo: string
 }
@@ -145,6 +152,7 @@ export function derivarAplicacao(
           .join(" — "),
         tarefas,
         beneficio: texto(dados.servico),
+        protocoloInss: protocolo,
         resumo: `Requerimento GERID${situacao ? ` — ${situacao}` : ""}`,
       }
     }
@@ -182,6 +190,7 @@ export function derivarAplicacao(
           .join(" — "),
         tarefas,
         beneficio: texto(dados.servico),
+        protocoloInss: protocolo,
         resumo: "Comunicado de decisão — indeferimento",
       }
     }
@@ -205,6 +214,7 @@ export function derivarAplicacao(
           .join(" — "),
         tarefas,
         beneficio: especie,
+        numeroBeneficio: nb,
         resumo: `Carta de concessão${especie ? ` — ${especie}` : ""}`,
       }
     }
@@ -229,6 +239,7 @@ export function derivarAplicacao(
           .filter(Boolean)
           .join(" — "),
         tarefas,
+        numeroBeneficio: texto(dados.numeroBeneficio),
         resumo: "Extrato de pagamento",
       }
     }

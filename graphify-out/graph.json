@@ -307,8 +307,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_page",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "(dashboard)/page.tsx"
     },
     {
@@ -318,8 +318,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_dashboard_page_homepage",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "homepage()"
     },
     {
@@ -846,30 +846,30 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "importar/route.ts"
     },
     {
       "label": "MOTIVO_PARSER_MENSAGEM",
       "file_type": "code",
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L31",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route_motivo_parser_mensagem",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivo_parser_mensagem"
     },
     {
       "label": "POST()",
       "file_type": "code",
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L44",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route_post",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "post()"
     },
     {
@@ -1583,8 +1583,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_auth_logout_button",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "logout-button.tsx"
     },
     {
@@ -1594,8 +1594,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "components_auth_logout_button_logoutbutton",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "logoutbutton()"
     },
     {
@@ -1627,8 +1627,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_charts_processos_status_chart_processosstatuschart",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "processosstatuschart()"
     },
     {
@@ -1737,8 +1737,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_dashboard_status_badge",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "status-badge.tsx"
     },
     {
@@ -1748,8 +1748,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_tom",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "tom"
     },
     {
@@ -1759,8 +1759,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_tom_por_status",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "tom_por_status"
     },
     {
@@ -1770,8 +1770,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_classes_por_tom",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "classes_por_tom"
     },
     {
@@ -1781,8 +1781,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_statusbadge",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "statusbadge()"
     },
     {
@@ -1800,7 +1800,7 @@
       "label": "BaseLegal",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L40",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_baselegal",
       "community": 7,
@@ -1811,7 +1811,7 @@
       "label": "Fonte",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L41",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_fonte",
       "community": 7,
@@ -1819,10 +1819,21 @@
       "norm_label": "fonte"
     },
     {
+      "label": "Documento",
+      "file_type": "code",
+      "source_file": "components/integracoes/painel-inss.tsx",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "components_integracoes_painel_inss_documento",
+      "community": 7,
+      "community_name": "cn",
+      "norm_label": "documento"
+    },
+    {
       "label": "BASE_LEGAL_OPCOES",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L43",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_base_legal_opcoes",
       "community": 7,
@@ -1833,7 +1844,7 @@
       "label": "DOCUMENTO_LABELS",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L49",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_documento_labels",
       "community": 7,
@@ -1844,7 +1855,7 @@
       "label": "Consentimento",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L57",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_consentimento",
       "community": 7,
@@ -1855,7 +1866,7 @@
       "label": "Importacao",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L68",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_importacao",
       "community": 7,
@@ -1866,7 +1877,7 @@
       "label": "ProcessoResumo",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L78",
+      "source_location": "L91",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_processoresumo",
       "community": 7,
@@ -1877,7 +1888,7 @@
       "label": "Mensagem",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L85",
+      "source_location": "L98",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_mensagem",
       "community": 7,
@@ -1888,7 +1899,7 @@
       "label": "Confirmacao",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L88",
+      "source_location": "L101",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_confirmacao",
       "community": 7,
@@ -1899,7 +1910,7 @@
       "label": "formatarData()",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L96",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_formatardata",
       "community": 7,
@@ -1910,7 +1921,7 @@
       "label": "PainelInss()",
       "file_type": "code",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L101",
+      "source_location": "L114",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_painelinss",
       "community": 7,
@@ -2012,8 +2023,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_layout_sidebar",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -2023,8 +2034,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_layout_sidebar_menuitem",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "menuitem"
     },
     {
@@ -2034,8 +2045,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "components_layout_sidebar_menugroup",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "menugroup"
     },
     {
@@ -2045,8 +2056,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_layout_sidebar_menugroups",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "menugroups"
     },
     {
@@ -2056,8 +2067,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "components_layout_sidebar_modo",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "modo"
     },
     {
@@ -2067,8 +2078,8 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "components_layout_sidebar_marca",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "marca()"
     },
     {
@@ -2078,8 +2089,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "components_layout_sidebar_navegacao",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "navegacao()"
     },
     {
@@ -2276,8 +2287,8 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "components_ui_card_cardaction",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "cardaction()"
     },
     {
@@ -2298,8 +2309,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "components_ui_card_cardfooter",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "cardfooter()"
     },
     {
@@ -2364,8 +2375,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogoverlay",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "dialogoverlay()"
     },
     {
@@ -2936,8 +2947,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "lib_domain_processo_status_getprocessostatuslabel",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "getprocessostatuslabel()"
     },
     {
@@ -3395,22 +3406,22 @@
       "label": "selecionarAdapter()",
       "file_type": "code",
       "source_file": "lib/integracoes/index.ts",
-      "source_location": "L40",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "lib_integracoes_index_selecionaradapter",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "selecionaradapter()"
     },
     {
       "label": "hashOrigem()",
       "file_type": "code",
       "source_file": "lib/integracoes/index.ts",
-      "source_location": "L61",
+      "source_location": "L66",
       "_origin": "ast",
       "id": "lib_integracoes_index_hashorigem",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "hashorigem()"
     },
     {
@@ -3673,8 +3684,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "consentimento.ts"
     },
     {
@@ -3684,8 +3695,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_baselegallgpd",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "baselegallgpd"
     },
     {
@@ -3695,8 +3706,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_base_legal_labels",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "base_legal_labels"
     },
     {
@@ -3706,8 +3717,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_consentimento",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "consentimento"
     },
     {
@@ -3717,8 +3728,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_motivorecusa",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivorecusa"
     },
     {
@@ -3728,8 +3739,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_motivo_recusa_mensagem",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivo_recusa_mensagem"
     },
     {
@@ -3739,8 +3750,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_buscarconsentimentovigente",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "buscarconsentimentovigente()"
     },
     {
@@ -3755,15 +3766,15 @@
       "norm_label": "listarconsentimentos()"
     },
     {
-      "label": "verificarBaseLegal()",
+      "label": "avaliarBaseLegal()",
       "file_type": "code",
       "source_file": "lib/lgpd/consentimento.ts",
-      "source_location": "L93",
+      "source_location": "L103",
       "_origin": "ast",
-      "id": "lib_lgpd_consentimento_verificarbaselegal",
-      "community": 21,
-      "community_name": "importar/route.ts",
-      "norm_label": "verificarbaselegal()"
+      "id": "lib_lgpd_consentimento_avaliarbaselegal",
+      "community": 10,
+      "community_name": "index.ts",
+      "norm_label": "avaliarbaselegal()"
     },
     {
       "label": "mascarar.ts",
@@ -3772,8 +3783,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascarar.ts"
     },
     {
@@ -3783,8 +3794,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararcpf",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararcpf()"
     },
     {
@@ -3794,8 +3805,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararnome",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararnome()"
     },
     {
@@ -3805,8 +3816,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararemail",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararemail()"
     },
     {
@@ -3816,8 +3827,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararbeneficio",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararbeneficio()"
     },
     {
@@ -3827,8 +3838,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_reftitular",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "reftitular()"
     },
     {
@@ -4014,8 +4025,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "lib_session_getsession",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "getsession()"
     },
     {
@@ -4080,8 +4091,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_utils_cn",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 11,
+      "community_name": "process-table.tsx",
       "norm_label": "cn()"
     },
     {
@@ -4388,15 +4399,15 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "lib_validators_integracao_importacaoschema",
-      "community": 21,
-      "community_name": "importar/route.ts",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "importacaoschema"
     },
     {
       "label": "ImportacaoInput",
       "file_type": "code",
       "source_file": "lib/validators/integracao.ts",
-      "source_location": "L25",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "lib_validators_integracao_importacaoinput",
       "community": 12,
@@ -11128,7 +11139,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L31",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route",
@@ -11139,7 +11150,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L44",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route",
@@ -11211,7 +11222,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route",
@@ -11223,7 +11234,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route",
@@ -11235,7 +11246,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route",
@@ -11263,7 +11274,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route",
-      "target": "lib_lgpd_consentimento_motivo_recusa_mensagem",
+      "target": "lib_lgpd_consentimento_avaliarbaselegal",
       "confidence_score": 1.0
     },
     {
@@ -11275,7 +11286,19 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route",
-      "target": "lib_lgpd_consentimento_verificarbaselegal",
+      "target": "lib_lgpd_consentimento_buscarconsentimentovigente",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/integracoes/importar/route.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_integracoes_importar_route",
+      "target": "lib_lgpd_consentimento_motivo_recusa_mensagem",
       "confidence_score": 1.0
     },
     {
@@ -11283,7 +11306,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route",
@@ -11295,7 +11318,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route",
@@ -11380,7 +11403,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L46",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route_post",
@@ -11392,7 +11415,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L128",
+      "source_location": "L153",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route_post",
@@ -11404,7 +11427,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L103",
+      "source_location": "L106",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route_post",
@@ -11416,7 +11439,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L94",
+      "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route_post",
@@ -11428,7 +11451,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L88",
+      "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route_post",
@@ -11440,11 +11463,11 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L81",
+      "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route_post",
-      "target": "lib_lgpd_consentimento_verificarbaselegal"
+      "target": "lib_lgpd_consentimento_avaliarbaselegal"
     },
     {
       "relation": "calls",
@@ -11452,7 +11475,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L172",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_integracoes_importar_route_post",
+      "target": "lib_lgpd_consentimento_buscarconsentimentovigente"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/integracoes/importar/route.ts",
+      "source_location": "L197",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route_post",
@@ -11464,7 +11499,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L145",
+      "source_location": "L170",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route_post",
@@ -11476,7 +11511,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/integracoes/importar/route.ts",
-      "source_location": "L52",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_integracoes_importar_route_post",
@@ -14724,7 +14759,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L43",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14735,7 +14770,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L40",
+      "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14746,7 +14781,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L88",
+      "source_location": "L101",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14757,7 +14792,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L57",
+      "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14772,6 +14807,17 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
+      "target": "components_integracoes_painel_inss_documento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/integracoes/painel-inss.tsx",
+      "source_location": "L62",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_integracoes_painel_inss",
       "target": "components_integracoes_painel_inss_documento_labels",
       "confidence_score": 1.0
     },
@@ -14779,7 +14825,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L41",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14790,7 +14836,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L96",
+      "source_location": "L109",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14801,7 +14847,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L68",
+      "source_location": "L81",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14812,7 +14858,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L85",
+      "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14823,7 +14869,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L101",
+      "source_location": "L114",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -14834,7 +14880,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L78",
+      "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss",
@@ -15051,7 +15097,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L411",
+      "source_location": "L424",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss_painelinss",
@@ -15062,7 +15108,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L425",
+      "source_location": "L438",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss_painelinss",
@@ -15075,7 +15121,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L576",
+      "source_location": "L621",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss_painelinss",
@@ -15087,7 +15133,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/painel-inss.tsx",
-      "source_location": "L365",
+      "source_location": "L385",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_painel_inss_painelinss",
@@ -17853,7 +17899,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/integracoes/index.ts",
-      "source_location": "L61",
+      "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_integracoes_index",
@@ -17864,7 +17910,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/integracoes/index.ts",
-      "source_location": "L40",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_integracoes_index",
@@ -18206,6 +18252,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/lgpd/consentimento.ts",
+      "source_location": "L103",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_lgpd_consentimento",
+      "target": "lib_lgpd_consentimento_avaliarbaselegal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/lgpd/consentimento.ts",
       "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
@@ -18280,17 +18337,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "lib/lgpd/consentimento.ts",
-      "source_location": "L93",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "lib_lgpd_consentimento",
-      "target": "lib_lgpd_consentimento_verificarbaselegal",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -18349,18 +18395,6 @@
       "_origin": "ast",
       "source": "lib_lgpd_consentimento_buscarconsentimentovigente",
       "target": "lib_utils_tocamelcase"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "lib/lgpd/consentimento.ts",
-      "source_location": "L100",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "lib_lgpd_consentimento_verificarbaselegal",
-      "target": "lib_lgpd_consentimento_buscarconsentimentovigente",
-      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -19239,7 +19273,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/validators/integracao.ts",
-      "source_location": "L25",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_validators_integracao",
@@ -20608,5 +20642,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "27df1ae5620b3c58f29f85bdef8b8a1abf15ffb8"
+  "built_at_commit": "939c5a0f0d6cc7c8c8173e4d019f066ee48b76f5"
 }

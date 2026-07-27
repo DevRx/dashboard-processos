@@ -5,8 +5,9 @@ import { toCamelCase } from "@/lib/utils"
 import { ImportacaoSchema } from "@/lib/validators"
 import { hashOrigem, selecionarAdapter } from "@/lib/integracoes"
 import {
+  avaliarBaseLegal,
+  buscarConsentimentoVigente,
   MOTIVO_RECUSA_MENSAGEM,
-  verificarBaseLegal,
 } from "@/lib/lgpd/consentimento"
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
 import { refTitular } from "@/lib/lgpd/mascarar"
@@ -19,13 +20,18 @@ import { refTitular } from "@/lib/lgpd/mascarar"
  *   1. autenticação
  *   2. validação de formato
  *   3. posse do cliente pelo usuário
- *   4. base legal LGPD
- *   5. só então o parser toca o texto
+ *   4. base legal vigente e dentro do prazo de retenção
+ *   5. detecção de qual documento é (lê o texto, não extrai nada)
+ *   6. a fonte detectada está no escopo autorizado
+ *   7. só então o parser extrai
  *
- * O passo 4 antes do 5 é o ponto todo: se a base legal falha, o dado
- * sensível nunca é estruturado nem persistido, e a recusa também é
- * auditada. Rodar o parser antes "para já mostrar ao usuário" criaria
- * tratamento sem base legal.
+ * O passo 4 antes do 5 é o ponto todo: sem base legal, o documento não
+ * é nem inspecionado, e a recusa também é auditada. Rodar o parser
+ * antes "para já mostrar ao usuário" criaria tratamento sem base legal.
+ *
+ * A fonte não é pedida ao operador: o conteúdo do documento revela de
+ * que sistema ele veio. Por isso o escopo de fonte só pode ser
+ * conferido no passo 6, depois da detecção.
  */
 
 const MOTIVO_PARSER_MENSAGEM: Record<string, string> = {
@@ -78,24 +84,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const baseLegal = await verificarBaseLegal({
-      clienteId,
-      userId: user.id,
-      fonte,
-    })
+    const consentimento = await buscarConsentimentoVigente(clienteId, user.id)
+    const podeTratar = avaliarBaseLegal(consentimento)
 
-    if (!baseLegal.ok) {
+    if (!podeTratar.ok) {
       await registrarTratamento({
         userId: user.id,
         acao: "IMPORTACAO_RECUSADA",
         entidade: "cliente",
         entidadeId: clienteId,
-        detalhes: { fonte, motivo: baseLegal.motivo },
+        detalhes: { motivo: podeTratar.motivo },
         ip: ipDaRequisicao(request),
       })
 
       return NextResponse.json(
-        { error: MOTIVO_RECUSA_MENSAGEM[baseLegal.motivo] },
+        { error: MOTIVO_RECUSA_MENSAGEM[podeTratar.motivo] },
         { status: 403 }
       )
     }
@@ -103,12 +106,34 @@ export async function POST(request: NextRequest) {
     const adapter = selecionarAdapter({ fonte, texto, documento })
 
     if (!adapter) {
+      // `precisaTipo` diz à interface para oferecer a escolha manual do
+      // documento — que só aparece neste caso, em vez de ficar sempre
+      // na tela pedindo uma decisão que quase nunca é necessária.
       return NextResponse.json(
         {
           error:
-            "Não reconheci o tipo de documento. Selecione manualmente qual documento está colando.",
+            "Não reconheci este documento. Confira se colou o conteúdo completo, ou escolha o tipo abaixo.",
+          precisaTipo: true,
         },
         { status: 422 }
+      )
+    }
+
+    const escopo = avaliarBaseLegal(podeTratar.consentimento, adapter.fonte)
+
+    if (!escopo.ok) {
+      await registrarTratamento({
+        userId: user.id,
+        acao: "IMPORTACAO_RECUSADA",
+        entidade: "cliente",
+        entidadeId: clienteId,
+        detalhes: { fonte: adapter.fonte, motivo: escopo.motivo },
+        ip: ipDaRequisicao(request),
+      })
+
+      return NextResponse.json(
+        { error: MOTIVO_RECUSA_MENSAGEM[escopo.motivo] },
+        { status: 403 }
       )
     }
 
@@ -155,12 +180,12 @@ export async function POST(request: NextRequest) {
         user_id: user.id,
         cliente_id: clienteId,
         processo_id: processoId ?? null,
-        consentimento_id: baseLegal.consentimento.id,
-        fonte,
+        consentimento_id: escopo.consentimento.id,
+        fonte: adapter.fonte,
         documento: adapter.documento,
         dados: extraido.dados,
         hash_origem: hash,
-        expurgar_em: baseLegal.consentimento.retencaoAte,
+        expurgar_em: escopo.consentimento.retencaoAte,
       })
       .select()
       .single()
@@ -170,7 +195,7 @@ export async function POST(request: NextRequest) {
       // sobrevive à eliminação pedida pelo titular.
       console.error("Importação INSS falhou", {
         titular: refTitular(clienteId),
-        fonte,
+        fonte: adapter.fonte,
         erro: error?.message,
       })
       return NextResponse.json(
@@ -185,10 +210,10 @@ export async function POST(request: NextRequest) {
       entidade: "importacao_integracao",
       entidadeId: importacao.id,
       detalhes: {
-        fonte,
+        fonte: adapter.fonte,
         documento: adapter.documento,
-        baseLegal: baseLegal.consentimento.baseLegal,
-        consentimentoId: baseLegal.consentimento.id,
+        baseLegal: escopo.consentimento.baseLegal,
+        consentimentoId: escopo.consentimento.id,
       },
       ip: ipDaRequisicao(request),
     })

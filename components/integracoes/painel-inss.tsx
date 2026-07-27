@@ -32,6 +32,13 @@ import {
  * recusaria de todo modo, e oferecer o campo antes ensinaria o
  * operador a tratar dado sensível primeiro e documentar depois.
  *
+ * O painel mostra por padrão só o que é decisão de quem opera. A fonte
+ * do documento não é perguntada: o conteúdo revela de onde veio, e o
+ * seletor manual de tipo só aparece quando a detecção falha. Escopo de
+ * fontes, prazo de retenção e direitos do titular ficam atrás de
+ * revelação — continuam a um clique, sem ocupar a tela de quem só quer
+ * lançar um documento.
+ *
  * A prévia usa `derivarAplicacao`, a mesma função que a rota de
  * aplicação usa para gravar. O que está na tela é literalmente o que
  * será escrito.
@@ -39,6 +46,12 @@ import {
 
 type BaseLegal = "CONSENTIMENTO" | "OBRIGACAO_LEGAL" | "EXERCICIO_DIREITOS"
 type Fonte = "MEU_INSS" | "GERID"
+type Documento =
+  | "CNIS"
+  | "CARTA_CONCESSAO"
+  | "CARTA_INDEFERIMENTO"
+  | "EXTRATO_PAGAMENTO"
+  | "REQUERIMENTO_GERID"
 
 const BASE_LEGAL_OPCOES: { valor: BaseLegal; rotulo: string }[] = [
   { valor: "EXERCICIO_DIREITOS", rotulo: "Procuração — exercício de direitos (art. 11, II, “d”)" },
@@ -125,8 +138,10 @@ export function PainelInss({
   // histórico com uma revogação que não aconteceu de verdade.
   const [editandoId, setEditandoId] = useState<string | null>(null)
 
-  const [fonteImportacao, setFonteImportacao] = useState<Fonte>("GERID")
   const [texto, setTexto] = useState("")
+  // Só ganha valor quando a detecção automática falha.
+  const [tipoManual, setTipoManual] = useState<Documento | "">("")
+  const [precisaTipo, setPrecisaTipo] = useState(false)
 
   // Importação recém-criada, aguardando aplicação.
   const [pendente, setPendente] = useState<Importacao | null>(null)
@@ -213,9 +228,7 @@ export function PainelInss({
         {
           method: editandoId ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(
-            editandoId ? corpo : { clienteId, ...corpo }
-          ),
+          body: JSON.stringify(editandoId ? corpo : { clienteId, ...corpo }),
         }
       )
       const data = await res.json()
@@ -268,13 +281,20 @@ export function PainelInss({
       const res = await fetch("/api/integracoes/importar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clienteId, fonte: fonteImportacao, texto }),
+        body: JSON.stringify({
+          clienteId,
+          texto,
+          documento: tipoManual || undefined,
+        }),
       })
       const data = await res.json()
       if (!res.ok) {
+        setPrecisaTipo(Boolean(data.precisaTipo))
         setMensagem({ tipo: "erro", texto: data.error })
         return
       }
+      setPrecisaTipo(false)
+      setTipoManual("")
       setPendente(data.importacao ?? null)
       setTexto("")
       setMensagem({
@@ -384,14 +404,7 @@ export function PainelInss({
           ))}
       </CardHeader>
 
-      <CardContent className="space-y-5">
-        <p className="text-sm text-slate-600 dark:text-zinc-400">
-          Meu INSS e GERID não oferecem API para terceiros. Abra o documento no
-          portal oficial — já autenticado, com a procuração cadastrada no Meu
-          INSS — e cole o conteúdo aqui. Nenhuma senha gov.br é pedida ou
-          guardada.
-        </p>
-
+      <CardContent className="space-y-4">
         {mensagem && (
           <p
             className={
@@ -411,21 +424,19 @@ export function PainelInss({
               {BASE_LEGAL_OPCOES.find((o) => o.valor === vigente.baseLegal)
                 ?.rotulo ?? vigente.baseLegal}
             </p>
-            <p>Finalidade: {vigente.finalidade}</p>
-            <p>
+            <p className="text-slate-600 dark:text-zinc-400">
+              {vigente.finalidade}
+            </p>
+            <p className="text-slate-600 dark:text-zinc-400">
               Procuração:{" "}
               {vigente.procuracaoRef || (
                 <span className="text-amber-700 dark:text-amber-400">
                   não informada
                 </span>
               )}
-            </p>
-            <p>Fontes autorizadas: {vigente.fontes.join(", ") || "—"}</p>
-            <p>
-              Vigente desde {formatarData(vigente.vigenteDesde)}
               {vigente.retencaoAte
                 ? ` · retenção até ${formatarData(vigente.retencaoAte)}`
-                : " · sem prazo de retenção definido"}
+                : ""}
             </p>
             <div className="flex flex-wrap gap-1 pt-1">
               <Button
@@ -442,7 +453,7 @@ export function PainelInss({
                 disabled={enviando}
                 onClick={() => revogar(vigente.id)}
               >
-                Revogar base legal
+                Revogar
               </Button>
             </div>
           </div>
@@ -450,6 +461,10 @@ export function PainelInss({
           <div className="space-y-2 rounded-lg border border-slate-200 p-3 dark:border-zinc-800">
             <p className="text-sm font-medium">
               {editandoId ? "Corrigir base legal" : "Registrar base legal"}
+            </p>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">
+              Dado previdenciário é sensível. Sem isto o sistema não lê nenhum
+              documento do titular.
             </p>
             <select
               className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
@@ -463,39 +478,50 @@ export function PainelInss({
               ))}
             </select>
             <Input
-              placeholder="Finalidade específica do tratamento"
+              placeholder="Para que os dados serão usados (ex.: revisão de aposentadoria por idade)"
               value={finalidade}
               onChange={(e) => setFinalidade(e.target.value)}
             />
-            <label className="block text-xs text-slate-600 dark:text-zinc-400">
-              Procuração
-              {baseLegal === "EXERCICIO_DIREITOS" ? " (obrigatória)" : " (opcional)"}
-              <Input
-                placeholder="Ex.: procuração ad judicia de 12/03/2026, fls. 4"
-                value={procuracaoRef}
-                onChange={(e) => setProcuracaoRef(e.target.value)}
-              />
-            </label>
-            <label className="block text-xs text-slate-600 dark:text-zinc-400">
-              Retenção até
-              <Input
-                type="date"
-                value={retencaoAte}
-                onChange={(e) => setRetencaoAte(e.target.value)}
-              />
-            </label>
-            <div className="flex gap-3 text-sm">
-              {(["MEU_INSS", "GERID"] as Fonte[]).map((f) => (
-                <label key={f} className="flex items-center gap-1.5">
-                  <input
-                    type="checkbox"
-                    checked={fontes.includes(f)}
-                    onChange={() => alternarFonte(f)}
+            <Input
+              placeholder={
+                baseLegal === "EXERCICIO_DIREITOS"
+                  ? "Procuração (obrigatória) — ex.: ad judicia de 12/03/2026"
+                  : "Procuração (opcional)"
+              }
+              value={procuracaoRef}
+              onChange={(e) => setProcuracaoRef(e.target.value)}
+            />
+
+            {/* Escopo e retenção têm padrão sensato: ambas as fontes,
+                sem prazo. Ficam aqui para quem precisa restringir. */}
+            <details className="text-xs">
+              <summary className="cursor-pointer text-slate-600 dark:text-zinc-400">
+                Restringir fontes ou definir retenção
+              </summary>
+              <div className="mt-2 space-y-2">
+                <div className="flex gap-3 text-sm">
+                  {(["MEU_INSS", "GERID"] as Fonte[]).map((f) => (
+                    <label key={f} className="flex items-center gap-1.5">
+                      <input
+                        type="checkbox"
+                        checked={fontes.includes(f)}
+                        onChange={() => alternarFonte(f)}
+                      />
+                      {f === "MEU_INSS" ? "Meu INSS" : "GERID"}
+                    </label>
+                  ))}
+                </div>
+                <label className="block text-slate-600 dark:text-zinc-400">
+                  Apagar os dados importados a partir de
+                  <Input
+                    type="date"
+                    value={retencaoAte}
+                    onChange={(e) => setRetencaoAte(e.target.value)}
                   />
-                  {f === "MEU_INSS" ? "Meu INSS" : "GERID"}
                 </label>
-              ))}
-            </div>
+              </div>
+            </details>
+
             <div className="flex gap-2">
               <Button size="sm" disabled={enviando} onClick={salvarBaseLegal}>
                 {enviando ? <Loader2 size={16} className="animate-spin" /> : null}
@@ -518,23 +544,34 @@ export function PainelInss({
         {/* ── Importação assistida ── */}
         {vigente && !editandoId && !proposta && (
           <div className="space-y-2">
-            <p className="text-sm font-medium">Importar documento</p>
-            <select
-              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
-              value={fonteImportacao}
-              onChange={(e) => setFonteImportacao(e.target.value as Fonte)}
-            >
-              <option value="GERID">INSS Digital / GERID — requerimento</option>
-              <option value="MEU_INSS">
-                Meu INSS — CNIS, concessão, indeferimento, extrato
-              </option>
-            </select>
+            <p className="text-sm font-medium">Colar documento do INSS</p>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">
+              Abra o CNIS, a carta de concessão, o comunicado de decisão, o
+              extrato de pagamento ou o requerimento no portal oficial e cole o
+              texto. O tipo é reconhecido sozinho.
+            </p>
             <textarea
-              className="min-h-32 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 font-mono text-xs shadow-sm outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
-              placeholder="Cole aqui o conteúdo do documento oficial. O tipo é detectado automaticamente."
+              className="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 font-mono text-xs shadow-sm outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+              placeholder="Cole aqui…"
               value={texto}
               onChange={(e) => setTexto(e.target.value)}
             />
+
+            {precisaTipo && (
+              <select
+                className="h-9 w-full rounded-lg border border-amber-400 bg-white px-2.5 text-sm dark:bg-zinc-950 dark:text-zinc-100"
+                value={tipoManual}
+                onChange={(e) => setTipoManual(e.target.value as Documento)}
+              >
+                <option value="">Escolha o tipo de documento…</option>
+                {Object.entries(DOCUMENTO_LABELS).map(([valor, rotulo]) => (
+                  <option key={valor} value={valor}>
+                    {rotulo}
+                  </option>
+                ))}
+              </select>
+            )}
+
             <Button
               size="sm"
               disabled={enviando || texto.trim().length < 20}
@@ -547,6 +584,13 @@ export function PainelInss({
               )}
               Ler documento
             </Button>
+
+            {processos.length === 0 && (
+              <p className="text-xs text-amber-700 dark:text-amber-400">
+                Este cliente não tem processo cadastrado. Crie um abaixo para
+                que o documento possa alimentar status, prazo e agenda.
+              </p>
+            )}
           </div>
         )}
 
@@ -561,23 +605,25 @@ export function PainelInss({
                 para aplicar o documento.
               </p>
             ) : (
-              <label className="block text-xs text-slate-600 dark:text-zinc-400">
-                Aplicar ao processo
-                <select
-                  className="mt-1 h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
-                  value={processoDestino}
-                  onChange={(e) => setProcessoId(e.target.value)}
-                >
-                  <option value="">Selecione…</option>
-                  {processos.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.beneficio}
-                      {p.numero ? ` · ${p.numero}` : ""} ·{" "}
-                      {getProcessoStatusLabel(p.status)}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              processos.length > 1 && (
+                <label className="block text-xs text-slate-600 dark:text-zinc-400">
+                  Aplicar ao processo
+                  <select
+                    className="mt-1 h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+                    value={processoDestino}
+                    onChange={(e) => setProcessoId(e.target.value)}
+                  >
+                    <option value="">Selecione…</option>
+                    {processos.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.beneficio}
+                        {p.numero ? ` · ${p.numero}` : ""} ·{" "}
+                        {getProcessoStatusLabel(p.status)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )
             )}
 
             <div className="space-y-1.5 text-sm">
@@ -607,7 +653,7 @@ export function PainelInss({
                     onChange={() => alternarConfirmacao("prazo")}
                   />
                   <span>
-                    Prazo do processo → <strong>{formatarData(proposta.prazo)}</strong>
+                    Prazo → <strong>{formatarData(proposta.prazo)}</strong>
                   </span>
                 </label>
               )}
@@ -634,7 +680,7 @@ export function PainelInss({
                     checked={confirmacao.andamento}
                     onChange={() => alternarConfirmacao("andamento")}
                   />
-                  <span>Registrar andamento: “{proposta.andamento}”</span>
+                  <span>Andamento: “{proposta.andamento}”</span>
                 </label>
               )}
 
@@ -647,11 +693,12 @@ export function PainelInss({
                     onChange={() => alternarConfirmacao("tarefas")}
                   />
                   <span>
-                    Criar {proposta.tarefas.length} tarefa(s) na agenda:
+                    {proposta.tarefas.length} tarefa(s) na agenda:
                     <ul className="ml-4 list-disc">
                       {proposta.tarefas.map((t, i) => (
                         <li key={i}>
-                          {t.titulo} — {formatarData(t.data)} ({t.prioridade.toLowerCase()})
+                          {t.titulo} — {formatarData(t.data)} (
+                          {t.prioridade.toLowerCase()})
                         </li>
                       ))}
                     </ul>
@@ -726,18 +773,31 @@ export function PainelInss({
           </div>
         )}
 
-        {/* ── Direitos do titular ── */}
-        <div className="flex flex-wrap gap-2 border-t border-slate-200 pt-3 dark:border-zinc-800">
-          <a
-            href={`/api/lgpd/titular/${clienteId}/portabilidade`}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
-          >
-            <Download size={16} /> Exportar dados do titular
-          </a>
-          <Button variant="ghost" size="sm" disabled={enviando} onClick={eliminar}>
-            <Trash2 size={16} /> Eliminar dados do INSS
-          </Button>
-        </div>
+        {/* ── Direitos do titular ──
+            Não são tarefa do dia a dia: ficam recolhidos para não
+            competir com o fluxo de importar, mas a um clique quando o
+            titular pedir. */}
+        <details className="border-t border-slate-200 pt-3 text-xs dark:border-zinc-800">
+          <summary className="cursor-pointer text-slate-600 dark:text-zinc-400">
+            Direitos do titular (LGPD)
+          </summary>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <a
+              href={`/api/lgpd/titular/${clienteId}/portabilidade`}
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+            >
+              <Download size={16} /> Exportar dados
+            </a>
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={enviando}
+              onClick={eliminar}
+            >
+              <Trash2 size={16} /> Eliminar dados do INSS
+            </Button>
+          </div>
+        </details>
       </CardContent>
     </Card>
   )

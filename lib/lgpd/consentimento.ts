@@ -90,24 +90,22 @@ export async function listarConsentimentos(
   return toCamelCase(data) as Consentimento[]
 }
 
-export async function verificarBaseLegal(params: {
-  clienteId: string
-  userId: string
-  fonte: FonteIntegracao
-}): Promise<
-  { ok: true; consentimento: Consentimento } | { ok: false; motivo: MotivoRecusa }
-> {
-  const consentimento = await buscarConsentimentoVigente(
-    params.clienteId,
-    params.userId
-  )
-
+/**
+ * Avalia um consentimento já carregado.
+ *
+ * `fonte` é opcional porque a verificação acontece em duas etapas: a
+ * existência da base legal e o prazo de retenção são checados *antes*
+ * de o sistema olhar o documento colado, e o escopo de fonte só pode
+ * ser checado depois, quando a detecção revelou de que sistema o
+ * documento veio. Assim nenhum texto é inspecionado sem base legal
+ * vigente, e nenhuma fonte fora do escopo chega ao parser.
+ */
+export function avaliarBaseLegal(
+  consentimento: Consentimento | null,
+  fonte?: FonteIntegracao
+): { ok: true; consentimento: Consentimento } | { ok: false; motivo: MotivoRecusa } {
   if (!consentimento) {
     return { ok: false, motivo: "sem_base_legal" }
-  }
-
-  if (!consentimento.fontes.includes(params.fonte)) {
-    return { ok: false, motivo: "fonte_nao_autorizada" }
   }
 
   // Retenção vencida significa que o combinado com o titular acabou.
@@ -118,6 +116,10 @@ export async function verificarBaseLegal(params: {
     if (consentimento.retencaoAte < hoje) {
       return { ok: false, motivo: "retencao_expirada" }
     }
+  }
+
+  if (fonte && !consentimento.fontes.includes(fonte)) {
+    return { ok: false, motivo: "fonte_nao_autorizada" }
   }
 
   return { ok: true, consentimento }

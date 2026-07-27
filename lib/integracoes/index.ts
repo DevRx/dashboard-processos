@@ -34,15 +34,20 @@ export const FONTE_LABELS: Record<FonteIntegracao, string> = {
 }
 
 /**
- * Escolhe o adapter. Se `documento` foi informado pelo operador, ele
- * manda — a detecção automática só decide quando ninguém decidiu.
+ * Escolhe o adapter a partir do próprio conteúdo colado.
+ *
+ * `fonte` e `documento` são desempates opcionais: informados, mandam.
+ * Sem eles, varre todos os adapters e deixa o texto se identificar — é
+ * o caminho normal, porque o documento diz de onde veio.
  */
 export function selecionarAdapter(params: {
-  fonte: FonteIntegracao
+  fonte?: FonteIntegracao
   texto: string
   documento?: DocumentoINSS
 }): AdapterImportacao<unknown> | null {
-  const candidatos = ADAPTERS.filter((a) => a.fonte === params.fonte)
+  const candidatos = params.fonte
+    ? ADAPTERS.filter((a) => a.fonte === params.fonte)
+    : ADAPTERS
 
   if (params.documento) {
     return candidatos.find((a) => a.documento === params.documento) ?? null

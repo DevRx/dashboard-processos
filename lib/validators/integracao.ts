@@ -11,10 +11,16 @@ import { DocumentoINSSEnum, FonteIntegracaoEnum } from "./enums"
 export const ImportacaoSchema = z.object({
   clienteId: z.string().uuid("Cliente inválido"),
   processoId: z.string().uuid("Processo inválido").optional(),
+  /**
+   * Ambos opcionais: o normal é o conteúdo do documento revelar de que
+   * sistema ele veio e qual documento é. Só valem como desempate,
+   * quando a deteccão automática não reconhece o texto colado — pedir
+   * a fonte de antemão é fazer o operador decidir o que a máquina
+   * decide melhor.
+   */
   fonte: FonteIntegracaoEnum.exclude(["DATAJUD"], {
     message: "O DataJud é consultado automaticamente, não importado",
-  }),
-  /** Opcional: quando ausente, o tipo é detectado pelo conteúdo. */
+  }).optional(),
   documento: DocumentoINSSEnum.optional(),
   texto: z
     .string()

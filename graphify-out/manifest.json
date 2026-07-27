@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "components/integracoes/documentos-cliente.tsx": {
-    "mtime": 1785165697.2912178,
-    "ast_hash": "18272db74e71c81f2340e50997e47254",
+    "mtime": 1785174903.1458988,
+    "ast_hash": "1098c4ad0a0222f5cd14ea732ca5ec16",
     "semantic_hash": ""
   },
   "lib/domain/documento/index.ts": {
@@ -630,8 +630,8 @@
     "semantic_hash": ""
   },
   "app/api/documentos/processar/route.ts": {
-    "mtime": 1785166697.3526664,
-    "ast_hash": "e8fcb2d6a2aacc655129c46456d24f44",
+    "mtime": 1785174735.6995382,
+    "ast_hash": "8f499f63f9486061754dba87dcd02a46",
     "semantic_hash": ""
   },
   "lib/documentos/imagem.ts": {
@@ -640,13 +640,28 @@
     "semantic_hash": ""
   },
   "lib/ia/leitor-documento.ts": {
-    "mtime": 1785166619.5401547,
-    "ast_hash": "39b8ea597798a099b779401e7f4b98e1",
+    "mtime": 1785174714.2443998,
+    "ast_hash": "16ad5d096f9b0cfd5f868d40107c805b",
     "semantic_hash": ""
   },
   "supabase/migrations/20260727170000_leitura_ia.sql": {
     "mtime": 1785165323.7818553,
     "ast_hash": "bbb2d5242d4488f95f6e657461316847",
+    "semantic_hash": ""
+  },
+  "app/api/documentos/[id]/analise/route.ts": {
+    "mtime": 1785174779.864512,
+    "ast_hash": "1597721311952afc536fc8a4733074c5",
+    "semantic_hash": ""
+  },
+  "lib/ia/mensagem-triagem.ts": {
+    "mtime": 1785174895.8843057,
+    "ast_hash": "3ff735f31a6e09fca96152b8a7c908b8",
+    "semantic_hash": ""
+  },
+  "artifacts/workflows/protocolo_administrativo.md": {
+    "mtime": 1785173166.9866686,
+    "ast_hash": "602e5011de33a30fa6ea5a3522320f21",
     "semantic_hash": ""
   }
 }

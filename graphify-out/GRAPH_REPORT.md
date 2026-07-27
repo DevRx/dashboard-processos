@@ -1,20 +1,21 @@
 # Graph Report - dashboard-processos  (2026-07-27)
 
 ## Corpus Check
-- 125 files · ~47,410 words
+- 128 files · ~50,789 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 612 nodes · 1482 edges · 23 communities (16 shown, 7 thin omitted)
+- 649 nodes · 1532 edges · 30 communities (23 shown, 7 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 6 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6ad8d32c`
+- Built from commit: `75ceab08`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
+- financeiro/page.tsx
 - getCurrentUser
 - dependencies
 - devDependencies
@@ -25,6 +26,7 @@
 - layout.tsx
 - seed.ts
 - index.ts
+- Protocolo administrativo no INSS — fluxo operacional
 - validators/index.ts
 - README.md
 - AGENTS.md
@@ -33,16 +35,21 @@
 - next.config.ts
 - postcss.config.mjs
 - CLAUDE.md
-- documentos-cliente.tsx
 - [id]/page.tsx
+- documentos-cliente.tsx
+- header.tsx
+- [id]/page.tsx
+- cn
 - processos/page.tsx
+- datajud.ts
+- resumo/page.tsx
 - protocolo/index.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `getCurrentUser()` - 86 edges
+1. `getCurrentUser()` - 88 edges
 2. `toCamelCase()` - 66 edges
 3. `cn()` - 38 edges
-4. `supabase` - 34 edges
+4. `supabase` - 35 edges
 5. `toSnakeCase()` - 25 edges
 6. `ipDaRequisicao()` - 20 edges
 7. `registrarTratamento()` - 20 edges
@@ -53,23 +60,27 @@
 ## Surprising Connections (you probably didn't know these)
 - `POST()` --indirect_call--> `texto()`  [INFERRED]
   app/api/documentos/processar/route.ts → lib/integracoes/aplicar.ts
-- `TableFooter()` --calls--> `cn()`  [EXTRACTED]
-  components/ui/table.tsx → lib/utils.ts
-- `TableCaption()` --calls--> `cn()`  [EXTRACTED]
-  components/ui/table.tsx → lib/utils.ts
-- `HomePage()` --calls--> `getCurrentUser()`  [EXTRACTED]
-  app/(dashboard)/page.tsx → lib/auth.ts
-- `HomePage()` --calls--> `toCamelCase()`  [EXTRACTED]
-  app/(dashboard)/page.tsx → lib/utils.ts
+- `Marca()` --calls--> `cn()`  [EXTRACTED]
+  components/layout/sidebar.tsx → lib/utils.ts
+- `Navegacao()` --calls--> `cn()`  [EXTRACTED]
+  components/layout/sidebar.tsx → lib/utils.ts
+- `DELETE()` --calls--> `getCurrentUser()`  [EXTRACTED]
+  app/api/andamentos/[id]/route.ts → lib/auth.ts
+- `GET()` --calls--> `getCurrentUser()`  [EXTRACTED]
+  app/api/auth/me/route.ts → lib/auth.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (23 total, 7 thin omitted)
+## Communities (30 total, 7 thin omitted)
+
+### Community 0 - "financeiro/page.tsx"
+Cohesion: 0.20
+Nodes (15): emptyForm, emptyForm, FinanceiroPage(), formatBRL(), EmptyState(), Button(), ButtonProps, Dialog() (+7 more)
 
 ### Community 1 - "getCurrentUser"
 Cohesion: 0.06
-Nodes (81): DELETE(), GET(), PUT(), GET(), POST(), GET(), DELETE(), GET() (+73 more)
+Nodes (83): DELETE(), GET(), PUT(), GET(), POST(), GET(), DELETE(), GET() (+75 more)
 
 ### Community 2 - "dependencies"
 Cohesion: 0.04
@@ -84,67 +95,91 @@ Cohesion: 0.07
 Nodes (28): dom, dom.iterable, esnext, **/*.mts, .next/dev/types/**/*.ts, next-env.d.ts, .next/types/**/*.ts, node_modules (+20 more)
 
 ### Community 5 - "(dashboard)/page.tsx"
-Cohesion: 0.09
-Nodes (28): POST(), POST(), HomePage(), ProcessosStatusChart(), formatarData(), ProcessoRecente, ProcessTable(), Table() (+20 more)
+Cohesion: 0.12
+Nodes (17): POST(), POST(), POST(), UserRole, globalForPrisma, createSession(), decrypt(), deleteSession() (+9 more)
 
 ### Community 6 - "components.json"
 Cohesion: 0.09
 Nodes (21): aliases, components, hooks, lib, ui, utils, iconLibrary, menuAccent (+13 more)
 
 ### Community 7 - "cn"
-Cohesion: 0.08
-Nodes (34): getResumo(), metadata, ResumoEmbedPage(), CLASSES_POR_TOM, Tom, TOM_POR_STATUS, BASE_LEGAL_OPCOES, BaseLegal (+26 more)
+Cohesion: 0.14
+Nodes (16): ProcessosStatusChart(), BASE_LEGAL_OPCOES, BaseLegal, Confirmacao, Consentimento, Documento, DOCUMENTO_LABELS, Fonte (+8 more)
 
 ### Community 8 - "layout.tsx"
 Cohesion: 0.33
 Nodes (4): metadata, plexMono, plexSans, ThemeProvider()
 
 ### Community 10 - "index.ts"
+Cohesion: 0.05
+Nodes (59): MOTIVO_IA_MENSAGEM, POST(), TIPOS_ACEITOS, MOTIVO_PARSER_MENSAGEM, POST(), montarPdf(), PaginaTratada, tratarImagem() (+51 more)
+
+### Community 11 - "Protocolo administrativo no INSS — fluxo operacional"
 Cohesion: 0.08
-Nodes (43): GET(), MOTIVO_MENSAGEM, AdapterImportacao, dataBrParaIso(), DocumentoINSS, FonteIntegracao, ModoIntegracao, moedaBrParaNumero() (+35 more)
+Nodes (23): 1. Base legal — antes de qualquer documento, 2. Pasta de documentos, 3. Abrir o caso administrativo, 4. Preparar o protocolo, 5. Passe de bastão, 6. Protocolar no portal, 7. Registrar o protocolo, 8. Acompanhar (+15 more)
 
 ### Community 12 - "validators/index.ts"
-Cohesion: 0.10
-Nodes (19): POST(), globalForPrisma, RegisterSchema, BaseLegalLGPDEnum, DocumentoINSSEnum, EsferaProcessoEnum, FonteIntegracaoEnum, LancamentoTipoEnum (+11 more)
+Cohesion: 0.12
+Nodes (16): BaseLegalLGPDEnum, DocumentoINSSEnum, EsferaProcessoEnum, FonteIntegracaoEnum, LancamentoTipoEnum, ProcessoStatusEnum, TarefaPrioridadeEnum, TarefaStatusEnum (+8 more)
 
 ### Community 13 - "README.md"
 Cohesion: 0.50
 Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
+### Community 21 - "[id]/page.tsx"
+Cohesion: 0.21
+Nodes (13): BASE_LEGAL_CURTO, ClienteIntegracao, formatarData(), InssPage(), Resumo, TOM_POR_STATUS, MetricCardProps, Card() (+5 more)
+
 ### Community 22 - "documentos-cliente.tsx"
-Cohesion: 0.07
-Nodes (41): MOTIVO_IA_MENSAGEM, POST(), TIPOS_ACEITOS, MOTIVO_PARSER_MENSAGEM, POST(), camposLegiveis(), Documento, DocumentosCliente() (+33 more)
+Cohesion: 0.08
+Nodes (32): GET(), ClienteDetalhe(), Analise, Documento, DocumentosCliente(), formatarTamanho(), ProcessoOpcao, resumoTriagem() (+24 more)
+
+### Community 23 - "header.tsx"
+Cohesion: 0.12
+Nodes (15): LogoutButton(), MetricCard(), ProcessoRecente, Header(), iniciais(), MenuUsuario(), ROTULO_POR_PAPEL, Usuario (+7 more)
 
 ### Community 24 - "[id]/page.tsx"
-Cohesion: 0.06
-Nodes (74): AgendaPage(), emptyForm, hojeISO(), emptyForm, emptyForm, FinanceiroPage(), formatBRL(), BASE_LEGAL_CURTO (+66 more)
+Cohesion: 0.10
+Nodes (23): AgendaPage(), emptyForm, hojeISO(), KanbanBoard(), prazoInfo(), Andamento, Auditoria, Cliente (+15 more)
+
+### Community 25 - "cn"
+Cohesion: 0.17
+Nodes (18): formatarData(), ProcessTable(), CLASSES_POR_TOM, StatusBadge(), Tom, TOM_POR_STATUS, CardAction(), CardFooter() (+10 more)
 
 ### Community 26 - "processos/page.tsx"
-Cohesion: 0.60
-Nodes (4): ClienteDetalhe(), ESPECIES_BENEFICIO, isEspecieConhecida(), opcoesEspecie()
+Cohesion: 0.29
+Nodes (11): isProcessoStatus(), comoStatus(), derivarAplicacao(), formatarBr(), lista(), moeda(), numero(), prioridadePorPrazo() (+3 more)
+
+### Community 27 - "datajud.ts"
+Cohesion: 0.31
+Nodes (8): GET(), MOTIVO_MENSAGEM, consultarProcessoDataJud(), DataJudResultado, detectarEndpoint(), limparNumero(), normalizarData(), TRF_ENDPOINTS
+
+### Community 28 - "resumo/page.tsx"
+Cohesion: 0.27
+Nodes (7): getResumo(), metadata, ResumoEmbedPage(), compareProcessoStatus(), PROCESSO_STATUS_LABELS, PROCESSO_STATUS_VALUES, ProcessoStatus
 
 ### Community 29 - "protocolo/index.ts"
-Cohesion: 0.20
-Nodes (13): POST(), PreparoProtocolo(), avaliarPreparo(), ClienteParaPreparo, DOCUMENTOS_COMUNS, DOCUMENTOS_POR_ESPECIE, documentosDaEspecie(), Gravidade (+5 more)
+Cohesion: 0.19
+Nodes (15): POST(), ClientePreparo, PreparoProtocolo(), ProcessoPreparo, avaliarPreparo(), ClienteParaPreparo, DOCUMENTOS_COMUNS, DOCUMENTOS_POR_ESPECIE (+7 more)
 
 ## Knowledge Gaps
-- **194 isolated node(s):** `emptyForm`, `emptyForm`, `emptyForm`, `ClienteIntegracao`, `Resumo` (+189 more)
+- **220 isolated node(s):** `emptyForm`, `emptyForm`, `emptyForm`, `ClienteIntegracao`, `Resumo` (+215 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `getCurrentUser()` connect `getCurrentUser` to `index.ts`, `(dashboard)/page.tsx`, `protocolo/index.ts`, `documentos-cliente.tsx`?**
-  _High betweenness centrality (0.071) - this node is a cross-community bridge._
-- **Why does `toCamelCase()` connect `getCurrentUser` to `(dashboard)/page.tsx`, `protocolo/index.ts`, `documentos-cliente.tsx`?**
-  _High betweenness centrality (0.041) - this node is a cross-community bridge._
-- **Why does `cn()` connect `[id]/page.tsx` to `getCurrentUser`, `(dashboard)/page.tsx`, `cn`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `getCurrentUser()` connect `getCurrentUser` to `index.ts`, `documentos-cliente.tsx`, `header.tsx`, `datajud.ts`, `protocolo/index.ts`?**
+  _High betweenness centrality (0.070) - this node is a cross-community bridge._
+- **Why does `toCamelCase()` connect `getCurrentUser` to `index.ts`, `protocolo/index.ts`, `header.tsx`?**
+  _High betweenness centrality (0.036) - this node is a cross-community bridge._
+- **Why does `cn()` connect `cn` to `financeiro/page.tsx`, `getCurrentUser`, `[id]/page.tsx`, `header.tsx`?**
+  _High betweenness centrality (0.022) - this node is a cross-community bridge._
 - **What connects `emptyForm`, `emptyForm`, `emptyForm` to the rest of the system?**
-  _194 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _220 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `getCurrentUser` be split into smaller, more focused modules?**
-  _Cohesion score 0.06469201296787504 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06330580906852093 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**

@@ -5,47 +5,82 @@ import {
   isCategoriaDocumento,
   type CategoriaDocumento,
 } from "@/lib/domain/documento"
+import { ESPECIES_BENEFICIO } from "@/lib/domain/beneficio"
 
 /**
- * Leitura de documento previdenciário por IA.
+ * Triagem de laudo médico para fins previdenciários.
  *
- * Só isto usa modelo: classificar o documento e extrair os campos que
- * o escritório precisa digitar à mão hoje. Tratar imagem e montar PDF
- * ficam em `lib/documentos/imagem.ts`, com bibliotecas — modelo de
- * linguagem não produz imagem, e usá-lo para isso seria caro e pior.
+ * Não é transcrição. Transcrever o CID economiza uma digitação; a
+ * triagem economiza a leitura — o advogado abre a lista e já sabe se
+ * aquele laudo sustenta incapacidade, se tem nexo com o trabalho e
+ * onde o INSS vai atacar, antes de abrir o PDF.
  *
- * O que sai daqui é sugestão, não verdade. Laudo tem letra de médico,
- * carimbo torto e foto com sombra; a interface mostra o que foi lido
- * para conferência antes de virar tarefa.
+ * Tudo aqui é rascunho para revisão humana. Laudo tem letra de médico,
+ * carimbo torto e foto com sombra, e a leitura chega à interface
+ * marcada como leitura de máquina.
  */
 
 const MODELO = "claude-opus-5"
 
 /**
- * `low` porque isto é extração estruturada, não raciocínio aberto: o
- * documento está na imagem, basta lê-lo. Esforço alto aqui gastaria
- * tokens de pensamento sem melhorar a transcrição.
+ * `medium` e não `low`: além de ler, o modelo pesa se a redação
+ * sustenta incapacidade e o que fragiliza o laudo. Isso é julgamento,
+ * não transcrição — no esforço mínimo os pontos fracos saem genéricos.
  */
-const ESFORCO = "low"
+const ESFORCO = "medium"
 
-export type CampoLaudo = {
+export type Incapacidade =
+  | "TEMPORARIA"
+  | "PERMANENTE"
+  | "NAO_CARACTERIZADA"
+  | "NAO_INFORMADA"
+
+export type Alcance = "TOTAL" | "PARCIAL" | "NAO_INFORMADO"
+
+export type NexoOcupacional = "SIM" | "NAO" | "NAO_INFORMADO"
+
+export type TriagemLaudo = {
+  /** Nome da doença como o laudo descreve. */
+  patologia?: string
   cid?: string
+  incapacidade: Incapacidade
+  alcance: Alcance
+  /**
+   * Decide a espécie: com nexo o benefício é acidentário (B91), sem
+   * nexo é previdenciário (B31). Muda carência, estabilidade no
+   * emprego e valor.
+   */
+  nexoOcupacional: NexoOcupacional
+  /** DID — data de início da doença. */
+  dataInicioDoenca?: string
+  /** DII — data de início da incapacidade. É a que fixa a DIB. */
+  dataInicioIncapacidade?: string
+  diasAfastamento?: number
+  dataEmissao?: string
   medico?: string
   crm?: string
-  dataEmissao?: string
-  diasAfastamento?: number
-  dataInicioAfastamento?: string
-  observacao?: string
+}
+
+/** O que faz o INSS descartar um laudo por vício de forma. */
+export type ValidadeLaudo = {
+  temAssinatura: boolean
+  temCarimbo: boolean
+  crmLegivel: boolean
+  temData: boolean
 }
 
 export type LeituraDocumento = {
   categoria: CategoriaDocumento
-  /** Uma frase para a lista da pasta. */
+  /** Uma frase de triagem, para a lista e para o WhatsApp. */
   resumo: string
-  campos: CampoLaudo
-  /** O que o modelo não conseguiu ler — importante para a conferência. */
+  triagem: TriagemLaudo
+  validade: ValidadeLaudo
+  /** Onde o INSS pode se apoiar para negar. */
+  pontosFracos: string[]
+  /** Espécie compatível com o quadro descrito. */
+  beneficioSugerido?: string
+  /** O que não deu para ler — separado do que foi lido. */
   ilegivel: string[]
-  /** Título sugerido para a tarefa de acompanhamento, se houver. */
   tarefaSugerida?: { titulo: string; prazo?: string }
   modelo: string
 }
@@ -59,20 +94,40 @@ const ESQUEMA = {
   properties: {
     categoria: { type: "string", enum: [...CATEGORIAS_DOCUMENTO] },
     resumo: { type: "string" },
-    campos: {
+    triagem: {
       type: "object",
       properties: {
+        patologia: { type: "string" },
         cid: { type: "string" },
+        incapacidade: {
+          type: "string",
+          enum: ["TEMPORARIA", "PERMANENTE", "NAO_CARACTERIZADA", "NAO_INFORMADA"],
+        },
+        alcance: { type: "string", enum: ["TOTAL", "PARCIAL", "NAO_INFORMADO"] },
+        nexoOcupacional: { type: "string", enum: ["SIM", "NAO", "NAO_INFORMADO"] },
+        dataInicioDoenca: { type: "string", format: "date" },
+        dataInicioIncapacidade: { type: "string", format: "date" },
+        diasAfastamento: { type: "integer" },
+        dataEmissao: { type: "string", format: "date" },
         medico: { type: "string" },
         crm: { type: "string" },
-        dataEmissao: { type: "string", format: "date" },
-        diasAfastamento: { type: "integer" },
-        dataInicioAfastamento: { type: "string", format: "date" },
-        observacao: { type: "string" },
       },
-      required: [],
+      required: ["incapacidade", "alcance", "nexoOcupacional"],
       additionalProperties: false,
     },
+    validade: {
+      type: "object",
+      properties: {
+        temAssinatura: { type: "boolean" },
+        temCarimbo: { type: "boolean" },
+        crmLegivel: { type: "boolean" },
+        temData: { type: "boolean" },
+      },
+      required: ["temAssinatura", "temCarimbo", "crmLegivel", "temData"],
+      additionalProperties: false,
+    },
+    pontosFracos: { type: "array", items: { type: "string" } },
+    beneficioSugerido: { type: "string", enum: [...ESPECIES_BENEFICIO] },
     ilegivel: { type: "array", items: { type: "string" } },
     tarefaSugerida: {
       type: "object",
@@ -84,29 +139,41 @@ const ESQUEMA = {
       additionalProperties: false,
     },
   },
-  required: ["categoria", "resumo", "campos", "ilegivel"],
+  required: [
+    "categoria",
+    "resumo",
+    "triagem",
+    "validade",
+    "pontosFracos",
+    "ilegivel",
+  ],
   additionalProperties: false,
 } as const
 
-const INSTRUCOES = `Você lê laudos médicos de processos previdenciários brasileiros do INSS para um escritório de advocacia.
+const INSTRUCOES = `Você faz a triagem de laudos médicos para um escritório de advocacia previdenciária brasileiro. O advogado vai revisar tudo — seu trabalho é fazer com que ele saiba do que se trata antes de abrir o documento.
 
-Transcreva o que está no documento. Não complete, não deduza e não corrija o que estiver escrito: se o CID está borrado, ele é ilegível, e um CID inventado faria o escritório protocolar um pedido errado.
+NUNCA inclua nome, CPF, RG, endereço, telefone ou data de nascimento do paciente em nenhum campo. O escritório já tem esses dados no cadastro; repeti-los aqui só criaria mais uma cópia de dado sensível. Escreva "o titular". Nome e CRM do médico são exceção: identificam quem assina, e o escritório precisa deles.
 
-NUNCA inclua na resposta o nome, CPF, RG, endereço, telefone ou data de nascimento do paciente, em nenhum campo. O escritório já tem esses dados no cadastro dele; repeti-los aqui só criaria mais uma cópia de dado sensível. Escreva "o titular" quando precisar se referir à pessoa. O nome e o CRM do médico são exceção: identificam o profissional que assina, não o paciente, e o escritório precisa deles para contestar o laudo.
+Transcreva o que está escrito. Não complete, não deduza e não corrija: se o CID está borrado, ele é ilegível. Um CID inventado faria protocolar o pedido errado.
 
-Regras de extração:
-- "cid": código como aparece (ex.: "M54.5"). Só preencha se conseguir ler os caracteres com certeza.
-- "diasAfastamento": apenas quando o documento declarar o período de afastamento em dias.
-- "dataEmissao" e "dataInicioAfastamento": formato AAAA-MM-DD.
-- "ilegivel": liste em português o que você não conseguiu ler (ex.: "assinatura do médico", "data no carimbo"). Lista vazia se leu tudo.
-- "resumo": uma frase, sem repetir o nome do titular.
-- "tarefaSugerida": só quando o documento gerar uma ação com data — fim de afastamento, retorno para reavaliação. Não sugira tarefa para RG ou comprovante de residência.
+Como preencher cada campo:
 
-Escolha "categoria" pelo que o documento é, não pelo que ele menciona.`
+- "incapacidade": só marque TEMPORARIA ou PERMANENTE se o laudo afirmar. Laudo que descreve doença sem falar em incapacidade para o trabalho é NAO_INFORMADA — doença e incapacidade são coisas diferentes, e essa confusão é o erro mais caro no requerimento.
+- "alcance": TOTAL quando impede qualquer trabalho, PARCIAL quando impede a atividade habitual mas admite outras.
+- "nexoOcupacional": SIM só quando o laudo ligar a doença ao trabalho (menção a CAT, acidente de trabalho, doença ocupacional, atividade exercida). Isso decide entre benefício acidentário e previdenciário, então na dúvida use NAO_INFORMADO.
+- "dataInicioDoenca" (DID) e "dataInicioIncapacidade" (DII): datas diferentes. A DII é a que fixa o início do benefício. Só preencha o que estiver declarado.
+- "validade": olhe o documento, não o texto. Um laudo sem assinatura, sem carimbo ou sem data é descartado pelo INSS por vício de forma, por melhor que seja o conteúdo.
+- "pontosFracos": em português, o que o INSS pode usar para negar. Seja concreto — "não indica a data de início da incapacidade", "não menciona limitação funcional", "atestado genérico, sem exame que o sustente". Lista vazia se o laudo é sólido. Não repita aqui o que já está em "ilegivel".
+- "beneficioSugerido": a espécie compatível com o quadro descrito, ou omita se o laudo não permitir concluir.
+- "ilegivel": o que você não conseguiu ler no documento (ex.: "assinatura do médico", "data no carimbo").
+- "resumo": uma frase que o advogado leria no celular e já saberia do que se trata. Comece pela patologia e pelo que o laudo sustenta.
+- "tarefaSugerida": só quando houver ação com data — fim do afastamento, retorno para reavaliação.
+
+Se o documento não for um laudo ou atestado médico, preencha "categoria" com o que ele é e diga isso no "resumo".`
 
 /**
- * Lê páginas já tratadas (JPEG). O chamador é responsável por conferir
- * a base legal e a autorização de IA antes de chamar — este módulo não
+ * Lê páginas já tratadas (JPEG). O chamador confere base legal,
+ * autorização de IA e categoria antes de chamar — este módulo não
  * conhece titular nem consentimento.
  */
 export async function lerDocumento(
@@ -128,7 +195,7 @@ export async function lerDocumento(
       max_tokens: 4096,
       // Classificadores de segurança podem recusar conteúdo médico por
       // falso positivo. Com o fallback, a requisição é reexecutada em
-      // outro modelo em vez de simplesmente falhar na mão do operador.
+      // outro modelo em vez de falhar na mão do operador.
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",
       system: INSTRUCOES,
@@ -152,8 +219,8 @@ export async function lerDocumento(
               type: "text" as const,
               text:
                 paginasJpeg.length === 1
-                  ? "Leia este documento."
-                  : `Leia este documento de ${paginasJpeg.length} páginas, na ordem enviada.`,
+                  ? "Faça a triagem deste documento."
+                  : `Faça a triagem deste documento de ${paginasJpeg.length} páginas, na ordem enviada.`,
             },
           ],
         },
@@ -163,7 +230,7 @@ export async function lerDocumento(
     // Precisa vir antes de ler `content`: numa recusa o array vem vazio
     // e indexar content[0] quebraria.
     if (resposta.stop_reason === "refusal") {
-      console.error("Leitura de documento recusada pelos classificadores")
+      console.error("Triagem de laudo recusada pelos classificadores")
       return { ok: false, motivo: "recusado" }
     }
 
@@ -174,19 +241,23 @@ export async function lerDocumento(
 
     const bruto = JSON.parse(bloco.text) as Record<string, unknown>
 
-    const categoria = isCategoriaDocumento(bruto.categoria)
-      ? bruto.categoria
-      : "OUTRO"
-
     return {
       ok: true,
       leitura: {
-        categoria,
+        categoria: isCategoriaDocumento(bruto.categoria)
+          ? bruto.categoria
+          : "OUTRO",
         resumo: String(bruto.resumo ?? "").slice(0, 500),
-        campos: (bruto.campos ?? {}) as CampoLaudo,
-        ilegivel: Array.isArray(bruto.ilegivel)
-          ? bruto.ilegivel.map(String)
+        triagem: bruto.triagem as TriagemLaudo,
+        validade: bruto.validade as ValidadeLaudo,
+        pontosFracos: Array.isArray(bruto.pontosFracos)
+          ? bruto.pontosFracos.map(String)
           : [],
+        beneficioSugerido:
+          typeof bruto.beneficioSugerido === "string"
+            ? bruto.beneficioSugerido
+            : undefined,
+        ilegivel: Array.isArray(bruto.ilegivel) ? bruto.ilegivel.map(String) : [],
         tarefaSugerida: bruto.tarefaSugerida as
           | { titulo: string; prazo?: string }
           | undefined,
@@ -199,7 +270,7 @@ export async function lerDocumento(
     // A mensagem de erro pode carregar trecho do documento — nunca vai
     // inteira para o log.
     console.error(
-      "Falha ao ler documento por IA:",
+      "Falha na triagem de laudo:",
       erro instanceof Error ? erro.name : "erro desconhecido"
     )
     return { ok: false, motivo: "erro_api" }

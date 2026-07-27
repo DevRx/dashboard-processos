@@ -10,7 +10,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_auth_login_page",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "login/page.tsx"
     },
@@ -21,7 +21,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_auth_login_page_loginpage",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "loginpage()"
     },
@@ -32,7 +32,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_auth_register_page",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "register/page.tsx"
     },
@@ -43,7 +43,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "app_auth_register_page_registerpage",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "registerpage()"
     },
@@ -120,7 +120,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_clientes_id_page",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "[id]/page.tsx"
     },
@@ -131,8 +131,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "app_dashboard_clientes_id_page_clientedetalhe",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "clientedetalhe()"
     },
     {
@@ -142,8 +142,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_clientes_page",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "clientes/page.tsx"
     },
     {
@@ -153,8 +153,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_dashboard_clientes_page_emptyform",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "emptyform"
     },
     {
@@ -164,8 +164,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "app_dashboard_clientes_page_clientespage",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "clientespage()"
     },
     {
@@ -175,8 +175,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_configuracoes_page",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "configuracoes/page.tsx"
     },
     {
@@ -186,8 +186,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "app_dashboard_configuracoes_page_configuracoespage",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "configuracoespage()"
     },
     {
@@ -197,8 +197,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_financeiro_page",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "financeiro/page.tsx"
     },
     {
@@ -208,8 +208,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "app_dashboard_financeiro_page_emptyform",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "emptyform"
     },
     {
@@ -219,8 +219,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "app_dashboard_financeiro_page_formatbrl",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "formatbrl()"
     },
     {
@@ -230,8 +230,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "app_dashboard_financeiro_page_financeiropage",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "financeiropage()"
     },
     {
@@ -241,7 +241,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_inss_page",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "inss/page.tsx"
     },
@@ -252,7 +252,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_clienteintegracao",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "clienteintegracao"
     },
@@ -263,7 +263,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_resumo",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "resumo"
     },
@@ -274,7 +274,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_base_legal_curto",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "base_legal_curto"
     },
@@ -285,7 +285,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_formatardata",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "formatardata()"
     },
@@ -296,7 +296,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "app_dashboard_inss_page_insspage",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "insspage()"
     },
@@ -307,8 +307,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_page",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "(dashboard)/page.tsx"
     },
     {
@@ -318,8 +318,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_dashboard_page_homepage",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 1,
+      "community_name": "getCurrentUser",
       "norm_label": "homepage()"
     },
     {
@@ -329,8 +329,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_processos_page",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "processos/page.tsx"
     },
     {
@@ -340,8 +340,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "app_dashboard_processos_page_processos",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "processos()"
     },
     {
@@ -351,8 +351,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_public_embed_resumo_page",
-      "community": 7,
-      "community_name": "cn",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "resumo/page.tsx"
     },
     {
@@ -362,8 +362,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "app_public_embed_resumo_page_metadata",
-      "community": 7,
-      "community_name": "cn",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "metadata"
     },
     {
@@ -373,8 +373,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_public_embed_resumo_page_getresumo",
-      "community": 7,
-      "community_name": "cn",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "getresumo()"
     },
     {
@@ -384,8 +384,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "app_public_embed_resumo_page_metric",
-      "community": 7,
-      "community_name": "cn",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "metric()"
     },
     {
@@ -395,8 +395,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "app_public_embed_resumo_page_resumoembedpage",
-      "community": 7,
-      "community_name": "cn",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "resumoembedpage()"
     },
     {
@@ -549,8 +549,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_register_route",
-      "community": 12,
-      "community_name": "validators/index.ts",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "register/route.ts"
     },
     {
@@ -560,8 +560,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_register_route_post",
-      "community": 12,
-      "community_name": "validators/index.ts",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "post()"
     },
     {
@@ -642,6 +642,28 @@
       "norm_label": "post()"
     },
     {
+      "label": "analise/route.ts",
+      "file_type": "code",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_api_documentos_id_analise_route",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "analise/route.ts"
+    },
+    {
+      "label": "GET()",
+      "file_type": "code",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "app_api_documentos_id_analise_route_get",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "get()"
+    },
+    {
       "label": "arquivo/route.ts",
       "file_type": "code",
       "source_file": "app/api/documentos/[id]/arquivo/route.ts",
@@ -714,8 +736,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_documentos_processar_route",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "processar/route.ts"
     },
     {
@@ -725,8 +747,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "app_api_documentos_processar_route_tipos_aceitos",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "tipos_aceitos"
     },
     {
@@ -736,8 +758,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "app_api_documentos_processar_route_motivo_ia_mensagem",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivo_ia_mensagem"
     },
     {
@@ -747,8 +769,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "app_api_documentos_processar_route_post",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "post()"
     },
     {
@@ -945,8 +967,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "importar/route.ts"
     },
     {
@@ -956,8 +978,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route_motivo_parser_mensagem",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivo_parser_mensagem"
     },
     {
@@ -967,8 +989,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route_post",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "post()"
     },
     {
@@ -1242,8 +1264,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_processos_id_tarefa_protocolo_route",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
       "norm_label": "tarefa-protocolo/route.ts"
     },
     {
@@ -1264,8 +1286,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_processos_lookup_route",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "lookup/route.ts"
     },
     {
@@ -1275,8 +1297,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_processos_lookup_route_motivo_mensagem",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "motivo_mensagem"
     },
     {
@@ -1286,8 +1308,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_api_processos_lookup_route_get",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "get()"
     },
     {
@@ -1748,8 +1770,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_auth_logout_button",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "logout-button.tsx"
     },
     {
@@ -1759,8 +1781,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "components_auth_logout_button_logoutbutton",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "logoutbutton()"
     },
     {
@@ -1770,7 +1792,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_charts_processos_status_chart",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "processos-status-chart.tsx"
     },
@@ -1781,7 +1803,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_charts_processos_status_chart_tom_por_status",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "tom_por_status"
     },
@@ -1792,8 +1814,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_charts_processos_status_chart_processosstatuschart",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "processosstatuschart()"
     },
     {
@@ -1803,8 +1825,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_dashboard_empty_state",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "empty-state.tsx"
     },
     {
@@ -1814,8 +1836,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_dashboard_empty_state_emptystate",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "emptystate()"
     },
     {
@@ -1825,7 +1847,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_dashboard_metric_card",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "metric-card.tsx"
     },
@@ -1836,7 +1858,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_dashboard_metric_card_metriccardprops",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "metriccardprops"
     },
@@ -1847,8 +1869,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "components_dashboard_metric_card_metriccard",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "metriccard()"
     },
     {
@@ -1858,8 +1880,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_dashboard_process_table",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "process-table.tsx"
     },
     {
@@ -1869,8 +1891,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "components_dashboard_process_table_processorecente",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "processorecente"
     },
     {
@@ -1880,8 +1902,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "components_dashboard_process_table_formatardata",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "formatardata()"
     },
     {
@@ -1891,8 +1913,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "components_dashboard_process_table_processtable",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "processtable()"
     },
     {
@@ -1902,7 +1924,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_dashboard_status_badge",
-      "community": 7,
+      "community": 25,
       "community_name": "cn",
       "norm_label": "status-badge.tsx"
     },
@@ -1913,7 +1935,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_tom",
-      "community": 7,
+      "community": 25,
       "community_name": "cn",
       "norm_label": "tom"
     },
@@ -1924,7 +1946,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_tom_por_status",
-      "community": 7,
+      "community": 25,
       "community_name": "cn",
       "norm_label": "tom_por_status"
     },
@@ -1935,7 +1957,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_classes_por_tom",
-      "community": 7,
+      "community": 25,
       "community_name": "cn",
       "norm_label": "classes_por_tom"
     },
@@ -1946,8 +1968,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_statusbadge",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "statusbadge()"
     },
     {
@@ -1995,32 +2017,54 @@
       "norm_label": "formatartamanho()"
     },
     {
-      "label": "ROTULO_CAMPO",
+      "label": "ROTULO_INCAPACIDADE",
       "file_type": "code",
       "source_file": "components/integracoes/documentos-cliente.tsx",
       "source_location": "L54",
       "_origin": "ast",
-      "id": "components_integracoes_documentos_cliente_rotulo_campo",
+      "id": "components_integracoes_documentos_cliente_rotulo_incapacidade",
       "community": 22,
       "community_name": "documentos-cliente.tsx",
-      "norm_label": "rotulo_campo"
+      "norm_label": "rotulo_incapacidade"
     },
     {
-      "label": "camposLegiveis()",
+      "label": "Analise",
       "file_type": "code",
       "source_file": "components/integracoes/documentos-cliente.tsx",
-      "source_location": "L68",
+      "source_location": "L61",
       "_origin": "ast",
-      "id": "components_integracoes_documentos_cliente_camposlegiveis",
+      "id": "components_integracoes_documentos_cliente_analise",
       "community": 22,
       "community_name": "documentos-cliente.tsx",
-      "norm_label": "camposlegiveis()"
+      "norm_label": "analise"
+    },
+    {
+      "label": "resumoTriagem()",
+      "file_type": "code",
+      "source_file": "components/integracoes/documentos-cliente.tsx",
+      "source_location": "L78",
+      "_origin": "ast",
+      "id": "components_integracoes_documentos_cliente_resumotriagem",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "resumotriagem()"
+    },
+    {
+      "label": "vicioDeForma()",
+      "file_type": "code",
+      "source_file": "components/integracoes/documentos-cliente.tsx",
+      "source_location": "L99",
+      "_origin": "ast",
+      "id": "components_integracoes_documentos_cliente_viciodeforma",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "viciodeforma()"
     },
     {
       "label": "DocumentosCliente()",
       "file_type": "code",
       "source_file": "components/integracoes/documentos-cliente.tsx",
-      "source_location": "L75",
+      "source_location": "L111",
       "_origin": "ast",
       "id": "components_integracoes_documentos_cliente_documentoscliente",
       "community": 22,
@@ -2177,8 +2221,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_integracoes_preparo_protocolo",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
       "norm_label": "preparo-protocolo.tsx"
     },
     {
@@ -2188,8 +2232,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "components_integracoes_preparo_protocolo_processopreparo",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
       "norm_label": "processopreparo"
     },
     {
@@ -2199,8 +2243,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "components_integracoes_preparo_protocolo_clientepreparo",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
       "norm_label": "clientepreparo"
     },
     {
@@ -2210,8 +2254,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "components_integracoes_preparo_protocolo_linhapendencia",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
       "norm_label": "linhapendencia()"
     },
     {
@@ -2232,8 +2276,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_layout_header",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "header.tsx"
     },
     {
@@ -2243,8 +2287,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_layout_header_usuario",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "usuario"
     },
     {
@@ -2254,8 +2298,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "components_layout_header_rotulo_por_papel",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "rotulo_por_papel"
     },
     {
@@ -2265,8 +2309,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "components_layout_header_iniciais",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "iniciais()"
     },
     {
@@ -2276,8 +2320,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "components_layout_header_campobusca",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "campobusca()"
     },
     {
@@ -2287,8 +2331,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "components_layout_header_botaotema",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "botaotema()"
     },
     {
@@ -2298,8 +2342,8 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "components_layout_header_menuusuario",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "menuusuario()"
     },
     {
@@ -2309,8 +2353,8 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "components_layout_header_header",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "header()"
     },
     {
@@ -2320,8 +2364,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_layout_sidebar",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "sidebar.tsx"
     },
     {
@@ -2331,8 +2375,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_layout_sidebar_menuitem",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "menuitem"
     },
     {
@@ -2342,8 +2386,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "components_layout_sidebar_menugroup",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "menugroup"
     },
     {
@@ -2353,8 +2397,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_layout_sidebar_menugroups",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "menugroups"
     },
     {
@@ -2364,8 +2408,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "components_layout_sidebar_modo",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "modo"
     },
     {
@@ -2375,8 +2419,8 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "components_layout_sidebar_marca",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "marca()"
     },
     {
@@ -2386,8 +2430,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "components_layout_sidebar_navegacao",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "navegacao()"
     },
     {
@@ -2397,8 +2441,8 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "components_layout_sidebar_sidebar",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 23,
+      "community_name": "header.tsx",
       "norm_label": "sidebar()"
     },
     {
@@ -2474,8 +2518,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_badge",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "badge.tsx"
     },
     {
@@ -2485,8 +2529,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_badge_badge",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "badge()"
     },
     {
@@ -2496,8 +2540,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_button",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "button.tsx"
     },
     {
@@ -2507,8 +2551,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_button_buttonprops",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "buttonprops"
     },
     {
@@ -2518,8 +2562,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_ui_button_button",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "button()"
     },
     {
@@ -2529,7 +2573,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_card",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "card.tsx"
     },
@@ -2540,7 +2584,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_ui_card_card",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "card()"
     },
@@ -2551,7 +2595,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "components_ui_card_cardheader",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "cardheader()"
     },
@@ -2562,7 +2606,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "components_ui_card_cardtitle",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "cardtitle()"
     },
@@ -2573,7 +2617,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "components_ui_card_carddescription",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "carddescription()"
     },
@@ -2584,8 +2628,8 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "components_ui_card_cardaction",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "cardaction()"
     },
     {
@@ -2595,7 +2639,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "components_ui_card_cardcontent",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "cardcontent()"
     },
@@ -2606,8 +2650,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "components_ui_card_cardfooter",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "cardfooter()"
     },
     {
@@ -2617,8 +2661,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_dialog",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialog.tsx"
     },
     {
@@ -2628,8 +2672,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "components_ui_dialog_dialog",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialog()"
     },
     {
@@ -2639,8 +2683,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogtrigger",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialogtrigger()"
     },
     {
@@ -2650,8 +2694,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogportal",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialogportal()"
     },
     {
@@ -2661,8 +2705,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogclose",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialogclose()"
     },
     {
@@ -2672,8 +2716,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogoverlay",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "dialogoverlay()"
     },
     {
@@ -2683,8 +2727,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogcontent",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialogcontent()"
     },
     {
@@ -2694,8 +2738,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogheader",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialogheader()"
     },
     {
@@ -2705,8 +2749,8 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogfooter",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialogfooter()"
     },
     {
@@ -2716,8 +2760,8 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogtitle",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialogtitle()"
     },
     {
@@ -2727,8 +2771,8 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogdescription",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "dialogdescription()"
     },
     {
@@ -2738,7 +2782,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_input",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "input.tsx"
     },
@@ -2749,7 +2793,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_input_input",
-      "community": 24,
+      "community": 21,
       "community_name": "[id]/page.tsx",
       "norm_label": "input()"
     },
@@ -2760,8 +2804,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_skeleton",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "skeleton.tsx"
     },
     {
@@ -2771,8 +2815,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_skeleton_skeleton",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "financeiro/page.tsx",
       "norm_label": "skeleton()"
     },
     {
@@ -2782,8 +2826,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_table",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "table.tsx"
     },
     {
@@ -2793,8 +2837,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_ui_table_table",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "table()"
     },
     {
@@ -2804,8 +2848,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_ui_table_tableheader",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "tableheader()"
     },
     {
@@ -2815,8 +2859,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "components_ui_table_tablebody",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "tablebody()"
     },
     {
@@ -2826,8 +2870,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "components_ui_table_tablefooter",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "tablefooter()"
     },
     {
@@ -2837,8 +2881,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "components_ui_table_tablerow",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "tablerow()"
     },
     {
@@ -2848,8 +2892,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "components_ui_table_tablehead",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "tablehead()"
     },
     {
@@ -2859,8 +2903,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "components_ui_table_tablecell",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "tablecell()"
     },
     {
@@ -2870,8 +2914,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "components_ui_table_tablecaption",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "tablecaption()"
     },
     {
@@ -3189,8 +3233,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_documentos_imagem",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "imagem.ts"
     },
     {
@@ -3200,8 +3244,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "lib_documentos_imagem_paginatratada",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "paginatratada"
     },
     {
@@ -3211,8 +3255,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "lib_documentos_imagem_tratarimagem",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "tratarimagem()"
     },
     {
@@ -3222,8 +3266,8 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "lib_documentos_imagem_montarpdf",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "montarpdf()"
     },
     {
@@ -3233,8 +3277,8 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "lib_documentos_imagem_ehpdf",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "ehpdf()"
     },
     {
@@ -3244,8 +3288,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_domain_beneficio_index",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "beneficio/index.ts"
     },
     {
@@ -3255,8 +3299,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_domain_beneficio_index_especies_beneficio",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "especies_beneficio"
     },
     {
@@ -3266,8 +3310,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "lib_domain_beneficio_index_isespecieconhecida",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "isespecieconhecida()"
     },
     {
@@ -3277,8 +3321,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "lib_domain_beneficio_index_opcoesespecie",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "opcoesespecie()"
     },
     {
@@ -3354,8 +3398,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "lib_domain_documento_index_podeserlidoporia",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "podeserlidoporia()"
     },
     {
@@ -3365,8 +3409,8 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "lib_domain_documento_index_iscategoriadocumento",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "iscategoriadocumento()"
     },
     {
@@ -3398,7 +3442,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_domain_processo_index",
-      "community": 7,
+      "community": 25,
       "community_name": "cn",
       "norm_label": "processo/index.ts"
     },
@@ -3409,8 +3453,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_domain_processo_status",
-      "community": 7,
-      "community_name": "cn",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "status.ts"
     },
     {
@@ -3420,8 +3464,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "lib_domain_processo_status_processostatus",
-      "community": 7,
-      "community_name": "cn",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "processostatus"
     },
     {
@@ -3431,8 +3475,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "lib_domain_processo_status_processo_status_values",
-      "community": 7,
-      "community_name": "cn",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "processo_status_values"
     },
     {
@@ -3442,8 +3486,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "lib_domain_processo_status_processo_status_labels",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "processo_status_labels"
     },
     {
@@ -3453,8 +3497,8 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "lib_domain_processo_status_isprocessostatus",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "isprocessostatus()"
     },
     {
@@ -3475,8 +3519,8 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "lib_domain_processo_status_compareprocessostatus",
-      "community": 7,
-      "community_name": "cn",
+      "community": 28,
+      "community_name": "resumo/page.tsx",
       "norm_label": "compareprocessostatus()"
     },
     {
@@ -3612,21 +3656,65 @@
       "norm_label": "leitor-documento.ts"
     },
     {
-      "label": "CampoLaudo",
+      "label": "Incapacidade",
       "file_type": "code",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L31",
+      "source_location": "L32",
       "_origin": "ast",
-      "id": "lib_ia_leitor_documento_campolaudo",
+      "id": "lib_ia_leitor_documento_incapacidade",
       "community": 22,
       "community_name": "documentos-cliente.tsx",
-      "norm_label": "campolaudo"
+      "norm_label": "incapacidade"
+    },
+    {
+      "label": "Alcance",
+      "file_type": "code",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "lib_ia_leitor_documento_alcance",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "alcance"
+    },
+    {
+      "label": "NexoOcupacional",
+      "file_type": "code",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "lib_ia_leitor_documento_nexoocupacional",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "nexoocupacional"
+    },
+    {
+      "label": "TriagemLaudo",
+      "file_type": "code",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "lib_ia_leitor_documento_triagemlaudo",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "triagemlaudo"
+    },
+    {
+      "label": "ValidadeLaudo",
+      "file_type": "code",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L65",
+      "_origin": "ast",
+      "id": "lib_ia_leitor_documento_validadelaudo",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "validadelaudo"
     },
     {
       "label": "LeituraDocumento",
       "file_type": "code",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L41",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "lib_ia_leitor_documento_leituradocumento",
       "community": 22,
@@ -3637,7 +3725,7 @@
       "label": "ResultadoLeitura",
       "file_type": "code",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L53",
+      "source_location": "L88",
       "_origin": "ast",
       "id": "lib_ia_leitor_documento_resultadoleitura",
       "community": 22,
@@ -3648,7 +3736,7 @@
       "label": "ESQUEMA",
       "file_type": "code",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L57",
+      "source_location": "L92",
       "_origin": "ast",
       "id": "lib_ia_leitor_documento_esquema",
       "community": 22,
@@ -3659,12 +3747,67 @@
       "label": "lerDocumento()",
       "file_type": "code",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L112",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "lib_ia_leitor_documento_lerdocumento",
+      "community": 10,
+      "community_name": "index.ts",
+      "norm_label": "lerdocumento()"
+    },
+    {
+      "label": "mensagem-triagem.ts",
+      "file_type": "code",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "lib_ia_mensagem_triagem",
       "community": 22,
       "community_name": "documentos-cliente.tsx",
-      "norm_label": "lerdocumento()"
+      "norm_label": "mensagem-triagem.ts"
+    },
+    {
+      "label": "ROTULO_INCAPACIDADE",
+      "file_type": "code",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "lib_ia_mensagem_triagem_rotulo_incapacidade",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "rotulo_incapacidade"
+    },
+    {
+      "label": "ROTULO_ALCANCE",
+      "file_type": "code",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "lib_ia_mensagem_triagem_rotulo_alcance",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "rotulo_alcance"
+    },
+    {
+      "label": "dataBr()",
+      "file_type": "code",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "lib_ia_mensagem_triagem_databr",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "databr()"
+    },
+    {
+      "label": "mensagemWhatsApp()",
+      "file_type": "code",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "lib_ia_mensagem_triagem_mensagemwhatsapp",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "mensagemwhatsapp()"
     },
     {
       "label": "aplicar.ts",
@@ -3673,8 +3816,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "aplicar.ts"
     },
     {
@@ -3684,8 +3827,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_tarefaprioridade",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "tarefaprioridade"
     },
     {
@@ -3695,8 +3838,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_tarefaproposta",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "tarefaproposta"
     },
     {
@@ -3717,8 +3860,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_texto",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "texto()"
     },
     {
@@ -3728,8 +3871,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_numero",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "numero()"
     },
     {
@@ -3739,8 +3882,8 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_lista",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "lista()"
     },
     {
@@ -3750,8 +3893,8 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_comostatus",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "comostatus()"
     },
     {
@@ -3761,8 +3904,8 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_prioridadeporprazo",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "prioridadeporprazo()"
     },
     {
@@ -3772,8 +3915,8 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_formatarbr",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "formatarbr()"
     },
     {
@@ -3783,8 +3926,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_moeda",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "moeda()"
     },
     {
@@ -3794,8 +3937,8 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "lib_integracoes_aplicar_derivaraplicacao",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "derivaraplicacao()"
     },
     {
@@ -3915,8 +4058,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_integracoes_datajud",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "datajud.ts"
     },
     {
@@ -3926,8 +4069,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_trf_endpoints",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "trf_endpoints"
     },
     {
@@ -3937,8 +4080,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_datajudresultado",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "datajudresultado"
     },
     {
@@ -3948,8 +4091,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_limparnumero",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "limparnumero()"
     },
     {
@@ -3959,8 +4102,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_normalizardata",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "normalizardata()"
     },
     {
@@ -3970,8 +4113,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_detectarendpoint",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "detectarendpoint()"
     },
     {
@@ -3981,8 +4124,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_consultarprocessodatajud",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 27,
+      "community_name": "datajud.ts",
       "norm_label": "consultarprocessodatajud()"
     },
     {
@@ -4113,8 +4256,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "lib_integracoes_index_selecionaradapter",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "selecionaradapter()"
     },
     {
@@ -4124,8 +4267,8 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "lib_integracoes_index_hashorigem",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "hashorigem()"
     },
     {
@@ -4388,8 +4531,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "consentimento.ts"
     },
     {
@@ -4399,8 +4542,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_baselegallgpd",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "baselegallgpd"
     },
     {
@@ -4410,8 +4553,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_base_legal_labels",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "base_legal_labels"
     },
     {
@@ -4421,8 +4564,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_consentimento",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "consentimento"
     },
     {
@@ -4432,8 +4575,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_motivorecusa",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivorecusa"
     },
     {
@@ -4443,8 +4586,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_motivo_recusa_mensagem",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivo_recusa_mensagem"
     },
     {
@@ -4454,8 +4597,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_buscarconsentimentovigente",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "buscarconsentimentovigente()"
     },
     {
@@ -4476,8 +4619,8 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_avaliarbaselegal",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "avaliarbaselegal()"
     },
     {
@@ -4487,8 +4630,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascarar.ts"
     },
     {
@@ -4498,8 +4641,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararcpf",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararcpf()"
     },
     {
@@ -4509,8 +4652,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararnome",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararnome()"
     },
     {
@@ -4520,8 +4663,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararemail",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararemail()"
     },
     {
@@ -4531,8 +4674,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararbeneficio",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "mascararbeneficio()"
     },
     {
@@ -4542,8 +4685,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_particulas",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "particulas"
     },
     {
@@ -4553,8 +4696,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_removeridentificadores",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "removeridentificadores()"
     },
     {
@@ -4564,8 +4707,8 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_reftitular",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "reftitular()"
     },
     {
@@ -4619,8 +4762,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_prisma",
-      "community": 12,
-      "community_name": "validators/index.ts",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "prisma.ts"
     },
     {
@@ -4630,8 +4773,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_prisma_globalforprisma",
-      "community": 12,
-      "community_name": "validators/index.ts",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "globalforprisma"
     },
     {
@@ -4751,8 +4894,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "lib_session_getsession",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 1,
+      "community_name": "getCurrentUser",
       "norm_label": "getsession()"
     },
     {
@@ -4861,8 +5004,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_utils_cn",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 25,
+      "community_name": "cn",
       "norm_label": "cn()"
     },
     {
@@ -4971,8 +5114,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "lib_validators_auth_registerschema",
-      "community": 12,
-      "community_name": "validators/index.ts",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "registerschema"
     },
     {
@@ -5180,8 +5323,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "lib_validators_integracao_importacaoschema",
-      "community": 22,
-      "community_name": "documentos-cliente.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "importacaoschema"
     },
     {
@@ -6734,6 +6877,270 @@
       "community": 13,
       "community_name": "README.md",
       "norm_label": "deploy on vercel"
+    },
+    {
+      "label": "protocolo_administrativo.md",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "protocolo_administrativo.md"
+    },
+    {
+      "label": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "protocolo administrativo no inss \u2014 fluxo operacional"
+    },
+    {
+      "label": "Overview",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_overview",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "overview"
+    },
+    {
+      "label": "Objectives",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_objectives",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "objectives"
+    },
+    {
+      "label": "Architecture",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_architecture",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "architecture"
+    },
+    {
+      "label": "Flow Diagram",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_flow_diagram",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "flow diagram"
+    },
+    {
+      "label": "Execution Steps",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "execution steps"
+    },
+    {
+      "label": "1. Base legal \u2014 antes de qualquer documento",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_1_base_legal_antes_de_qualquer_documento",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "1. base legal \u2014 antes de qualquer documento"
+    },
+    {
+      "label": "2. Pasta de documentos",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L89",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_2_pasta_de_documentos",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "2. pasta de documentos"
+    },
+    {
+      "label": "3. Abrir o caso administrativo",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_3_abrir_o_caso_administrativo",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "3. abrir o caso administrativo"
+    },
+    {
+      "label": "4. Preparar o protocolo",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L115",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_4_preparar_o_protocolo",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "4. preparar o protocolo"
+    },
+    {
+      "label": "5. Passe de bast\u00e3o",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L130",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_5_passe_de_bast\u00e3o",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "5. passe de bastao"
+    },
+    {
+      "label": "6. Protocolar no portal",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L142",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_6_protocolar_no_portal",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "6. protocolar no portal"
+    },
+    {
+      "label": "7. Registrar o protocolo",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L153",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_7_registrar_o_protocolo",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "7. registrar o protocolo"
+    },
+    {
+      "label": "8. Acompanhar",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L168",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_8_acompanhar",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "8. acompanhar"
+    },
+    {
+      "label": "Inputs",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L183",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_inputs",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "inputs"
+    },
+    {
+      "label": "Outputs",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L195",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_outputs",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "outputs"
+    },
+    {
+      "label": "Error Handling",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L207",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_error_handling",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "error handling"
+    },
+    {
+      "label": "Future Improvements",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L223",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_future_improvements",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "future improvements"
+    },
+    {
+      "label": "Technical Notes",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L234",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_technical_notes",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "technical notes"
+    },
+    {
+      "label": "Rotas envolvidas",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L236",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_rotas_envolvidas",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "rotas envolvidas"
+    },
+    {
+      "label": "Regras de dom\u00ednio",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L251",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_regras_de_dom\u00ednio",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "regras de dominio"
+    },
+    {
+      "label": "Privacidade",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L258",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_privacidade",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "privacidade"
+    },
+    {
+      "label": "Fundamento",
+      "file_type": "document",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L265",
+      "_origin": "ast",
+      "id": "artifacts_workflows_protocolo_administrativo_fundamento",
+      "community": 11,
+      "community_name": "Protocolo administrativo no INSS \u2014 fluxo operacional",
+      "norm_label": "fundamento"
     }
   ],
   "links": [
@@ -10937,6 +11344,137 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route",
+      "target": "app_api_documentos_id_analise_route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route",
+      "target": "lib_auth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route",
+      "target": "lib_auth_getcurrentuser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route",
+      "target": "lib_ia_leitor_documento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route",
+      "target": "lib_ia_leitor_documento_leituradocumento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route",
+      "target": "lib_ia_mensagem_triagem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route",
+      "target": "lib_ia_mensagem_triagem_mensagemwhatsapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route",
+      "target": "lib_supabase_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route",
+      "target": "lib_supabase_server_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route_get",
+      "target": "lib_auth_getcurrentuser"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/documentos/[id]/analise/route.ts",
+      "source_location": "L96",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_analise_route_get",
+      "target": "lib_ia_mensagem_triagem_mensagemwhatsapp"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "app/api/documentos/[id]/arquivo/route.ts",
       "source_location": "L15",
       "weight": 1.0,
@@ -11665,7 +12203,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L218",
+      "source_location": "L225",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -11689,7 +12227,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L270",
+      "source_location": "L277",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -16924,11 +17462,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/documentos-cliente.tsx",
-      "source_location": "L68",
+      "source_location": "L61",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_documentos_cliente",
-      "target": "components_integracoes_documentos_cliente_camposlegiveis",
+      "target": "components_integracoes_documentos_cliente_analise",
       "confidence_score": 1.0
     },
     {
@@ -16946,7 +17484,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/documentos-cliente.tsx",
-      "source_location": "L75",
+      "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_documentos_cliente",
@@ -16979,11 +17517,33 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/documentos-cliente.tsx",
+      "source_location": "L78",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_integracoes_documentos_cliente",
+      "target": "components_integracoes_documentos_cliente_resumotriagem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/integracoes/documentos-cliente.tsx",
       "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_documentos_cliente",
-      "target": "components_integracoes_documentos_cliente_rotulo_campo",
+      "target": "components_integracoes_documentos_cliente_rotulo_incapacidade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/integracoes/documentos-cliente.tsx",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_integracoes_documentos_cliente",
+      "target": "components_integracoes_documentos_cliente_viciodeforma",
       "confidence_score": 1.0
     },
     {
@@ -17147,7 +17707,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/documentos-cliente.tsx",
-      "source_location": "L232",
+      "source_location": "L268",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_documentos_cliente_documentoscliente",
@@ -17159,11 +17719,23 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/documentos-cliente.tsx",
-      "source_location": "L256",
+      "source_location": "L292",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_documentos_cliente_documentoscliente",
-      "target": "components_integracoes_documentos_cliente_camposlegiveis",
+      "target": "components_integracoes_documentos_cliente_resumotriagem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "components/integracoes/documentos-cliente.tsx",
+      "source_location": "L297",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_integracoes_documentos_cliente_documentoscliente",
+      "target": "components_integracoes_documentos_cliente_viciodeforma",
       "confidence_score": 1.0
     },
     {
@@ -17172,7 +17744,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/documentos-cliente.tsx",
-      "source_location": "L179",
+      "source_location": "L215",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_documentos_cliente_documentoscliente",
@@ -17184,7 +17756,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/documentos-cliente.tsx",
-      "source_location": "L310",
+      "source_location": "L351",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_documentos_cliente_documentoscliente",
@@ -19495,6 +20067,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_leitor_documento",
+      "target": "lib_domain_beneficio_index",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -19505,6 +20089,18 @@
       "_origin": "ast",
       "source": "lib_domain_beneficio_index_isespecieconhecida",
       "target": "lib_domain_beneficio_index_especies_beneficio"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_leitor_documento",
+      "target": "lib_domain_beneficio_index_especies_beneficio",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -19707,7 +20303,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L177",
+      "source_location": "L247",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_ia_leitor_documento_lerdocumento",
@@ -20025,18 +20621,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L31",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_ia_leitor_documento",
-      "target": "lib_ia_leitor_documento_campolaudo",
+      "target": "lib_ia_leitor_documento_alcance",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L57",
+      "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_ia_leitor_documento",
@@ -20047,7 +20643,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L41",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_leitor_documento",
+      "target": "lib_ia_leitor_documento_incapacidade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_ia_leitor_documento",
@@ -20058,7 +20665,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L112",
+      "source_location": "L179",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_ia_leitor_documento",
@@ -20069,11 +20676,124 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L53",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_leitor_documento",
+      "target": "lib_ia_leitor_documento_nexoocupacional",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L88",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_ia_leitor_documento",
       "target": "lib_ia_leitor_documento_resultadoleitura",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_leitor_documento",
+      "target": "lib_ia_leitor_documento_triagemlaudo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/leitor-documento.ts",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_leitor_documento",
+      "target": "lib_ia_leitor_documento_validadelaudo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_mensagem_triagem",
+      "target": "lib_ia_leitor_documento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_mensagem_triagem",
+      "target": "lib_ia_leitor_documento_leituradocumento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_mensagem_triagem",
+      "target": "lib_ia_mensagem_triagem_databr",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_mensagem_triagem",
+      "target": "lib_ia_mensagem_triagem_mensagemwhatsapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_mensagem_triagem",
+      "target": "lib_ia_mensagem_triagem_rotulo_alcance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_mensagem_triagem",
+      "target": "lib_ia_mensagem_triagem_rotulo_incapacidade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/ia/mensagem-triagem.ts",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_ia_mensagem_triagem_mensagemwhatsapp",
+      "target": "lib_ia_mensagem_triagem_databr",
       "confidence_score": 1.0
     },
     {
@@ -24069,8 +24789,261 @@
       "source": "readme",
       "target": "readme_learn_more",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo",
+      "target": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L207",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_error_handling",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_flow_diagram",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L223",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_future_improvements",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L183",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_inputs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_objectives",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L195",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_outputs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_overview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L234",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_protocolo_administrativo_no_inss_fluxo_operacional",
+      "target": "artifacts_workflows_protocolo_administrativo_technical_notes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "target": "artifacts_workflows_protocolo_administrativo_1_base_legal_antes_de_qualquer_documento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "target": "artifacts_workflows_protocolo_administrativo_2_pasta_de_documentos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L104",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "target": "artifacts_workflows_protocolo_administrativo_3_abrir_o_caso_administrativo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "target": "artifacts_workflows_protocolo_administrativo_4_preparar_o_protocolo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L130",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "target": "artifacts_workflows_protocolo_administrativo_5_passe_de_bast\u00e3o",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L142",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "target": "artifacts_workflows_protocolo_administrativo_6_protocolar_no_portal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L153",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "target": "artifacts_workflows_protocolo_administrativo_7_registrar_o_protocolo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L168",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_execution_steps",
+      "target": "artifacts_workflows_protocolo_administrativo_8_acompanhar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L265",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_technical_notes",
+      "target": "artifacts_workflows_protocolo_administrativo_fundamento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L258",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_technical_notes",
+      "target": "artifacts_workflows_protocolo_administrativo_privacidade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L251",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_technical_notes",
+      "target": "artifacts_workflows_protocolo_administrativo_regras_de_dom\u00ednio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "artifacts/workflows/protocolo_administrativo.md",
+      "source_location": "L236",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "artifacts_workflows_protocolo_administrativo_technical_notes",
+      "target": "artifacts_workflows_protocolo_administrativo_rotas_envolvidas",
+      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "6ad8d32c42ddb98aa447d84f685d89bd4fc63e9f"
+  "built_at_commit": "75ceab08692768adfd9e56a9cb88aad9b058a556"
 }

@@ -184,11 +184,18 @@ export async function POST(request: NextRequest) {
     const resumo = leitura?.ok ? limpar(leitura.leitura.resumo) : null
     const campos = leitura?.ok
       ? {
-          ...leitura.leitura.campos,
-          medico: leitura.leitura.campos.medico,
-          observacao: leitura.leitura.campos.observacao
-            ? limpar(leitura.leitura.campos.observacao)
-            : undefined,
+          triagem: {
+            ...leitura.leitura.triagem,
+            // Único campo livre da triagem: o modelo descreve a doença
+            // com as palavras do laudo, e o nome do titular pode vir
+            // junto na descrição.
+            patologia: leitura.leitura.triagem.patologia
+              ? limpar(leitura.leitura.triagem.patologia)
+              : undefined,
+          },
+          validade: leitura.leitura.validade,
+          pontosFracos: leitura.leitura.pontosFracos.map(limpar),
+          beneficioSugerido: leitura.leitura.beneficioSugerido,
           ilegivel: leitura.leitura.ilegivel.map(limpar),
         }
       : null

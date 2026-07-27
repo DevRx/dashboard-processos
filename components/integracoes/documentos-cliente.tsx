@@ -51,25 +51,61 @@ function formatarTamanho(bytes?: number | null) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }
 
-const ROTULO_CAMPO: Record<string, string> = {
-  cid: "CID",
-  medico: "médico",
-  crm: "CRM",
-  dataEmissao: "emitido em",
-  diasAfastamento: "dias de afastamento",
-  dataInicioAfastamento: "afastamento desde",
+const ROTULO_INCAPACIDADE: Record<string, string> = {
+  TEMPORARIA: "incapacidade temporária",
+  PERMANENTE: "incapacidade permanente",
+  NAO_CARACTERIZADA: "incapacidade não caracterizada",
+  NAO_INFORMADA: "incapacidade não informada",
+}
+
+type Analise = {
+  triagem?: {
+    cid?: string
+    incapacidade?: string
+    alcance?: string
+    nexoOcupacional?: string
+    diasAfastamento?: number
+  }
+  validade?: Record<string, boolean>
+  pontosFracos?: string[]
 }
 
 /**
- * Campos extraídos, em texto curto. `ilegivel` fica de fora aqui e
- * aparece como aviso próprio — misturá-lo com o que foi lido daria a
- * impressão de que é mais um dado extraído.
+ * A linha de triagem na lista: o que muda a conduta, não tudo o que
+ * foi extraído. Médico, CRM e datas ficam para o endpoint de análise —
+ * numa lista eles empurram para baixo o que importa.
  */
-function camposLegiveis(campos: Record<string, unknown> | null): string[] {
-  if (!campos) return []
-  return Object.entries(ROTULO_CAMPO)
-    .filter(([chave]) => campos[chave] !== undefined && campos[chave] !== null)
-    .map(([chave, rotulo]) => `${rotulo}: ${campos[chave]}`)
+function resumoTriagem(campos: Record<string, unknown> | null): string[] {
+  const analise = campos as Analise | null
+  const t = analise?.triagem
+  if (!t) return []
+
+  const partes: string[] = []
+  if (t.cid) partes.push(`CID ${t.cid}`)
+  if (t.incapacidade && ROTULO_INCAPACIDADE[t.incapacidade]) {
+    partes.push(
+      ROTULO_INCAPACIDADE[t.incapacidade] +
+        (t.alcance && t.alcance !== "NAO_INFORMADO"
+          ? ` ${t.alcance.toLowerCase()}`
+          : "")
+    )
+  }
+  if (t.nexoOcupacional === "SIM") partes.push("nexo ocupacional")
+  if (t.diasAfastamento) partes.push(`${t.diasAfastamento} dias`)
+  return partes
+}
+
+/** Vício de forma derruba o laudo por melhor que seja o conteúdo. */
+function vicioDeForma(campos: Record<string, unknown> | null): string | null {
+  const v = (campos as Analise | null)?.validade
+  if (!v) return null
+  const faltando = [
+    v.temAssinatura === false && "assinatura",
+    v.temCarimbo === false && "carimbo",
+    v.crmLegivel === false && "CRM",
+    v.temData === false && "data",
+  ].filter((x): x is string => Boolean(x))
+  return faltando.length ? `faltando ${faltando.join(", ")}` : null
 }
 
 export function DocumentosCliente({
@@ -253,9 +289,14 @@ export function DocumentosCliente({
                     <span className="w-full text-xs text-slate-600 dark:text-zinc-400">
                       <Sparkles size={11} className="mr-1 inline" />
                       {doc.iaResumo}
-                      {camposLegiveis(doc.iaCampos).length > 0 && (
+                      {resumoTriagem(doc.iaCampos).length > 0 && (
                         <span className="ml-1 text-slate-500 dark:text-zinc-500">
-                          ({camposLegiveis(doc.iaCampos).join(" · ")})
+                          ({resumoTriagem(doc.iaCampos).join(" · ")})
+                        </span>
+                      )}
+                      {vicioDeForma(doc.iaCampos) && (
+                        <span className="ml-1 text-amber-700 dark:text-amber-400">
+                          ⚠ {vicioDeForma(doc.iaCampos)}
                         </span>
                       )}
                     </span>

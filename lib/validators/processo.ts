@@ -24,3 +24,24 @@ export const ProcessoSchema = z.object({
   comarca: z.string().optional(),
   observacoes: z.string().optional(),
 })
+
+/**
+ * Registro do protocolo depois de o requerimento ser apresentado no
+ * GERID.
+ *
+ * Schema estreito de propósito: reaproveitar o `ProcessoSchema` num
+ * PUT obrigaria a interface a reenviar o processo inteiro só para
+ * anotar um número, e qualquer campo desatualizado na tela
+ * sobrescreveria o que estava certo no banco.
+ */
+export const ProtocoloSchema = z.object({
+  protocoloInss: z.string().min(3, "Informe o número do protocolo"),
+  /** DER — data de entrada do requerimento. */
+  dataEntrada: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida")
+    .optional(),
+})
+
+export type ProtocoloInput = z.infer<typeof ProtocoloSchema>
+

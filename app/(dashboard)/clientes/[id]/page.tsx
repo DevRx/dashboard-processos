@@ -11,6 +11,7 @@ import { Header } from "@/components/layout/header"
 import { StatusBadge } from "@/components/dashboard/status-badge"
 import { EmptyState } from "@/components/dashboard/empty-state"
 import { PainelInss } from "@/components/integracoes/painel-inss"
+import { PreparoProtocolo } from "@/components/integracoes/preparo-protocolo"
 import { opcoesEspecie } from "@/lib/domain/beneficio"
 import { Trash2, Save, Search, Loader2, FolderSearch, UserX } from "lucide-react"
 import {
@@ -43,6 +44,14 @@ export default function ClienteDetalhe() {
     vara: "",
     observacoes: "",
   })
+  // O preparo do protocolo precisa saber se há procuração vigente e se
+  // o PDF está anexado. Buscado aqui em vez de erguido do painel de
+  // integração: o endpoint é barato, e plumbing de estado entre irmãos
+  // custaria mais do que uma requisição.
+  const [baseLegal, setBaseLegal] = useState({
+    temVigente: false,
+    temPdf: false,
+  })
   const [buscandoDataJud, setBuscandoDataJud] = useState(false)
   const [dataJudMsg, setDataJudMsg] = useState<{ tipo: "erro" | "ok"; texto: string } | null>(null)
 
@@ -54,9 +63,10 @@ export default function ClienteDetalhe() {
   async function fetchCliente(silencioso = false) {
     if (!silencioso) setLoading(true)
     try {
-      const [clienteRes, usersRes] = await Promise.all([
+      const [clienteRes, usersRes, basesRes] = await Promise.all([
         fetch(`/api/clientes/${id}`),
         fetch("/api/users"),
+        fetch(`/api/lgpd/consentimentos?clienteId=${id}`),
       ])
 
       const clienteData = await clienteRes.json()
@@ -68,6 +78,17 @@ export default function ClienteDetalhe() {
         router.push("/clientes")
       }
       if (usersRes.ok) setUsers(usersData.users)
+
+      if (basesRes.ok) {
+        const { consentimentos } = await basesRes.json()
+        const vigente = (consentimentos ?? []).find(
+          (c: { revogadoEm: string | null }) => !c.revogadoEm
+        )
+        setBaseLegal({
+          temVigente: Boolean(vigente),
+          temPdf: Boolean(vigente?.procuracaoArquivo),
+        })
+      }
     } catch (err) {
       console.error("Erro ao carregar cliente:", err)
     } finally {
@@ -282,6 +303,14 @@ export default function ClienteDetalhe() {
                       <Trash2 size={16} />
                     </Button>
                   </div>
+
+                  <PreparoProtocolo
+                    cliente={cliente}
+                    processo={processo}
+                    outrosProcessos={processos}
+                    baseLegal={baseLegal}
+                    onProtocolado={() => fetchCliente(true)}
+                  />
                 </div>
               ))
             )}

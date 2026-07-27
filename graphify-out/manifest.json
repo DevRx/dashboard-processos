@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "app/api/processos/[id]/route.ts": {
-    "mtime": 1784997559.157112,
-    "ast_hash": "58a21b93a04ad0a51458c10525de332e",
+    "mtime": 1785125199.2302797,
+    "ast_hash": "78c2f2a7c6ed1f84b7fe0d9158a804ba",
     "semantic_hash": ""
   },
   "app/api/processos/route.ts": {
@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/[id]/page.tsx": {
-    "mtime": 1785124274.6138422,
-    "ast_hash": "6b38e8b284767edd8a2f9e46784ff5ef",
+    "mtime": 1785125095.703905,
+    "ast_hash": "f621de74e0aa71d6bf132b53d77e2937",
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/page.tsx": {
@@ -360,8 +360,8 @@
     "semantic_hash": ""
   },
   "lib/validators/processo.ts": {
-    "mtime": 1785116624.0258968,
-    "ast_hash": "479d7c223c60a25de07226bd527f6841",
+    "mtime": 1785124984.5851107,
+    "ast_hash": "8b3ed8262aaf9f1f22b7d6986959f9c9",
     "semantic_hash": ""
   },
   "lib/validators/tarefa.ts": {
@@ -572,6 +572,16 @@
   "supabase/migrations/20260726160000_procuracao_arquivo.sql": {
     "mtime": 1785117375.6381648,
     "ast_hash": "b79f87c3755b7a803b0152e5d12758dc",
+    "semantic_hash": ""
+  },
+  "components/integracoes/preparo-protocolo.tsx": {
+    "mtime": 1785125258.701446,
+    "ast_hash": "790b24e6f92bdafd7951f5ed9ca9b2fc",
+    "semantic_hash": ""
+  },
+  "lib/domain/protocolo/index.ts": {
+    "mtime": 1785124971.894425,
+    "ast_hash": "22b0f72ff80b6eca107323b72603bd6e",
     "semantic_hash": ""
   }
 }

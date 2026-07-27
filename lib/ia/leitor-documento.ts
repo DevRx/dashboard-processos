@@ -88,9 +88,11 @@ const ESQUEMA = {
   additionalProperties: false,
 } as const
 
-const INSTRUCOES = `Você lê documentos de processos previdenciários brasileiros do INSS para um escritório de advocacia.
+const INSTRUCOES = `Você lê laudos médicos de processos previdenciários brasileiros do INSS para um escritório de advocacia.
 
 Transcreva o que está no documento. Não complete, não deduza e não corrija o que estiver escrito: se o CID está borrado, ele é ilegível, e um CID inventado faria o escritório protocolar um pedido errado.
+
+NUNCA inclua na resposta o nome, CPF, RG, endereço, telefone ou data de nascimento do paciente, em nenhum campo. O escritório já tem esses dados no cadastro dele; repeti-los aqui só criaria mais uma cópia de dado sensível. Escreva "o titular" quando precisar se referir à pessoa. O nome e o CRM do médico são exceção: identificam o profissional que assina, não o paciente, e o escritório precisa deles para contestar o laudo.
 
 Regras de extração:
 - "cid": código como aparece (ex.: "M54.5"). Só preencha se conseguir ler os caracteres com certeza.

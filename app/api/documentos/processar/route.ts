@@ -10,7 +10,8 @@ import {
   MOTIVO_RECUSA_MENSAGEM,
 } from "@/lib/lgpd/consentimento"
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
-import { refTitular } from "@/lib/lgpd/mascarar"
+import { refTitular, removerIdentificadores } from "@/lib/lgpd/mascarar"
+import { podeSerLidoPorIa } from "@/lib/domain/documento"
 
 /**
  * Recebe fotos de um documento, monta um PDF e manda a IA lê-lo.
@@ -96,9 +97,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Nome e CPF são carregados só para *remover* do que a IA devolve,
+    // nunca para enviar: o prompt não recebe nenhum dado do titular.
     const { data: cliente } = await supabase
       .from("clientes")
-      .select("id")
+      .select("id, nome, cpf")
       .eq("id", clienteId)
       .eq("user_id", user.id)
       .maybeSingle()
@@ -128,7 +131,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Duas condições, não uma: o titular autorizou leitura por IA *e*
+    // o documento é de uma categoria que pode sair. Um RG continua
+    // parado aqui mesmo com autorização em dia.
+    const categoriaDeclarada = form.get("categoria")
+    const categoriaLegivel = podeSerLidoPorIa(categoriaDeclarada)
     const iaAutorizada = podeTratar.consentimento.iaAutorizada
+    const vaiLer = iaAutorizada && categoriaLegivel
 
     // ── Tratamento local: nada saiu da máquina até aqui ──
     const paginas = []
@@ -163,7 +172,26 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Leitura por IA: o único passo que manda dado para fora ──
-    const leitura = iaAutorizada ? await lerDocumento(paginas.map((p) => p.jpeg)) : null
+    const leitura = vaiLer ? await lerDocumento(paginas.map((p) => p.jpeg)) : null
+
+    // O modelo é instruído a não transcrever identificação do titular,
+    // mas instrução não é garantia: o nome está impresso no papel que
+    // ele acabou de ler. A limpeza aqui é o que impede uma segunda
+    // cópia do nome e do CPF de entrar no banco e na tela.
+    const limpar = (texto: string) =>
+      removerIdentificadores(texto, { nome: cliente.nome, cpf: cliente.cpf })
+
+    const resumo = leitura?.ok ? limpar(leitura.leitura.resumo) : null
+    const campos = leitura?.ok
+      ? {
+          ...leitura.leitura.campos,
+          medico: leitura.leitura.campos.medico,
+          observacao: leitura.leitura.campos.observacao
+            ? limpar(leitura.leitura.campos.observacao)
+            : undefined,
+          ilegivel: leitura.leitura.ilegivel.map(limpar),
+        }
+      : null
 
     const { data: documento, error } = await supabase
       .from("documentos")
@@ -176,10 +204,8 @@ export async function POST(request: NextRequest) {
         caminho,
         tipo: "application/pdf",
         tamanho: pdf.byteLength,
-        ia_resumo: leitura?.ok ? leitura.leitura.resumo : null,
-        ia_campos: leitura?.ok
-          ? { ...leitura.leitura.campos, ilegivel: leitura.leitura.ilegivel }
-          : null,
+        ia_resumo: resumo,
+        ia_campos: campos,
         ia_lido_em: leitura?.ok ? new Date().toISOString() : null,
         ia_modelo: leitura?.ok ? leitura.leitura.modelo : null,
       })
@@ -205,11 +231,11 @@ export async function POST(request: NextRequest) {
       const { error: erroTarefa } = await supabase.from("tarefas").insert({
         user_id: user.id,
         processo_id: processoId,
-        titulo: sugestao.titulo,
+        titulo: limpar(sugestao.titulo),
         descricao: [
-          leitura.leitura.resumo,
+          resumo,
           leitura.leitura.ilegivel.length
-            ? `Confira no documento: ${leitura.leitura.ilegivel.join(", ")}.`
+            ? `Confira no documento: ${leitura.leitura.ilegivel.map(limpar).join(", ")}.`
             : null,
           "Lido por IA — confira antes de usar.",
         ]
@@ -231,6 +257,7 @@ export async function POST(request: NextRequest) {
         origem: "processar_documento",
         paginas: paginas.length,
         iaAutorizada,
+        categoriaLegivel,
         iaLida: Boolean(leitura?.ok),
         modelo: leitura?.ok ? leitura.leitura.modelo : null,
       },
@@ -243,11 +270,13 @@ export async function POST(request: NextRequest) {
         documento: toCamelCase(documento),
         melhorias: paginas[0]?.melhorias ?? [],
         tarefaCriada,
-        aviso: !iaAutorizada
-          ? "Leitura por IA não autorizada para este titular — o PDF foi montado e guardado sem análise."
-          : leitura && !leitura.ok
-            ? MOTIVO_IA_MENSAGEM[leitura.motivo]
-            : null,
+        aviso: !categoriaLegivel
+          ? "Só laudo médico é lido por IA — este documento foi montado e guardado sem sair do sistema."
+          : !iaAutorizada
+            ? "Leitura por IA não autorizada para este titular — o PDF foi montado e guardado sem análise."
+            : leitura && !leitura.ok
+              ? MOTIVO_IA_MENSAGEM[leitura.motivo]
+              : null,
       },
       { status: 201 }
     )

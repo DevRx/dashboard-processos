@@ -500,8 +500,8 @@
     "semantic_hash": ""
   },
   "lib/lgpd/mascarar.ts": {
-    "mtime": 1785106691.9881437,
-    "ast_hash": "088453ced2d831d8a9a36b4aeeda20d3",
+    "mtime": 1785166763.62487,
+    "ast_hash": "7330d3394ae6681e9c4fa0d0b0fe56e3",
     "semantic_hash": ""
   },
   "lib/lgpd/retencao.ts": {
@@ -615,8 +615,8 @@
     "semantic_hash": ""
   },
   "lib/domain/documento/index.ts": {
-    "mtime": 1785128212.4642224,
-    "ast_hash": "0411020bdbd343b201981fad13150220",
+    "mtime": 1785166588.7488039,
+    "ast_hash": "1172d177a512f481a57eec6c0786b753",
     "semantic_hash": ""
   },
   "supabase/migrations/20260727140000_documentos_do_cliente.sql": {
@@ -630,8 +630,8 @@
     "semantic_hash": ""
   },
   "app/api/documentos/processar/route.ts": {
-    "mtime": 1785165466.3047206,
-    "ast_hash": "ff26db3e36f92c11dd862a48e136f664",
+    "mtime": 1785166697.3526664,
+    "ast_hash": "e8fcb2d6a2aacc655129c46456d24f44",
     "semantic_hash": ""
   },
   "lib/documentos/imagem.ts": {
@@ -640,8 +640,8 @@
     "semantic_hash": ""
   },
   "lib/ia/leitor-documento.ts": {
-    "mtime": 1785165382.4923162,
-    "ast_hash": "dd53c2fb0dcedbf3bf6c15e11b3645e6",
+    "mtime": 1785166619.5401547,
+    "ast_hash": "39b8ea597798a099b779401e7f4b98e1",
     "semantic_hash": ""
   },
   "supabase/migrations/20260727170000_leitura_ia.sql": {

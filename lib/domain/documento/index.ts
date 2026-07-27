@@ -62,6 +62,31 @@ export const CATEGORIAS_BASICAS: readonly CategoriaDocumento[] = [
   "PROCURACAO",
 ]
 
+/**
+ * As únicas categorias que podem sair do sistema para leitura por IA.
+ *
+ * Lista de permissão, não de bloqueio: categoria nova nasce fora dela
+ * e só entra por decisão explícita. O contrário — bloquear o que se
+ * lembrou de bloquear — vaza no dia em que alguém cria "CARTEIRA_SUS"
+ * e esquece de somar à lista.
+ *
+ * RG, CPF e comprovante de residência ficam de fora porque são só
+ * identificação: não há o que a IA extraia deles que compense mandar
+ * o documento inteiro para fora. O laudo é o oposto — CID, prazo de
+ * afastamento e CRM são exatamente o trabalho manual que se quer
+ * eliminar.
+ */
+export const CATEGORIAS_LEGIVEIS_POR_IA: readonly CategoriaDocumento[] = [
+  "LAUDO_MEDICO",
+]
+
+export function podeSerLidoPorIa(categoria: unknown): boolean {
+  return (
+    isCategoriaDocumento(categoria) &&
+    CATEGORIAS_LEGIVEIS_POR_IA.includes(categoria)
+  )
+}
+
 export function isCategoriaDocumento(valor: unknown): valor is CategoriaDocumento {
   return (
     typeof valor === "string" &&

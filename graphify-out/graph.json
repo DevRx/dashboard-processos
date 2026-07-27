@@ -714,41 +714,41 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_documentos_processar_route",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "processar/route.ts"
     },
     {
       "label": "TIPOS_ACEITOS",
       "file_type": "code",
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L40",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "app_api_documentos_processar_route_tipos_aceitos",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "tipos_aceitos"
     },
     {
       "label": "MOTIVO_IA_MENSAGEM",
       "file_type": "code",
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L42",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "app_api_documentos_processar_route_motivo_ia_mensagem",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "motivo_ia_mensagem"
     },
     {
       "label": "POST()",
       "file_type": "code",
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L53",
+      "source_location": "L54",
       "_origin": "ast",
       "id": "app_api_documentos_processar_route_post",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "post()"
     },
     {
@@ -945,8 +945,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "importar/route.ts"
     },
     {
@@ -956,8 +956,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route_motivo_parser_mensagem",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "motivo_parser_mensagem"
     },
     {
@@ -967,8 +967,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_api_integracoes_importar_route_post",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "post()"
     },
     {
@@ -1792,8 +1792,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_charts_processos_status_chart_processosstatuschart",
-      "community": 7,
-      "community_name": "cn",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "processosstatuschart()"
     },
     {
@@ -1858,8 +1858,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_dashboard_process_table",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "process-table.tsx"
     },
     {
@@ -2782,8 +2782,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_table",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "table.tsx"
     },
     {
@@ -2793,8 +2793,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "components_ui_table_table",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "table()"
     },
     {
@@ -2804,8 +2804,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_ui_table_tableheader",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "tableheader()"
     },
     {
@@ -2815,8 +2815,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "components_ui_table_tablebody",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "tablebody()"
     },
     {
@@ -2826,8 +2826,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "components_ui_table_tablefooter",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "tablefooter()"
     },
     {
@@ -2837,8 +2837,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "components_ui_table_tablerow",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "tablerow()"
     },
     {
@@ -2848,8 +2848,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "components_ui_table_tablehead",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "tablehead()"
     },
     {
@@ -2859,8 +2859,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "components_ui_table_tablecell",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "tablecell()"
     },
     {
@@ -2870,8 +2870,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "components_ui_table_tablecaption",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "tablecaption()"
     },
     {
@@ -3189,8 +3189,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_documentos_imagem",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "imagem.ts"
     },
     {
@@ -3200,8 +3200,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "lib_documentos_imagem_paginatratada",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "paginatratada"
     },
     {
@@ -3211,8 +3211,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "lib_documentos_imagem_tratarimagem",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "tratarimagem()"
     },
     {
@@ -3222,8 +3222,8 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "lib_documentos_imagem_montarpdf",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "montarpdf()"
     },
     {
@@ -3233,8 +3233,8 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "lib_documentos_imagem_ehpdf",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "ehpdf()"
     },
     {
@@ -3337,10 +3337,32 @@
       "norm_label": "categorias_basicas"
     },
     {
+      "label": "CATEGORIAS_LEGIVEIS_POR_IA",
+      "file_type": "code",
+      "source_file": "lib/domain/documento/index.ts",
+      "source_location": "L79",
+      "_origin": "ast",
+      "id": "lib_domain_documento_index_categorias_legiveis_por_ia",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "categorias_legiveis_por_ia"
+    },
+    {
+      "label": "podeSerLidoPorIa()",
+      "file_type": "code",
+      "source_file": "lib/domain/documento/index.ts",
+      "source_location": "L83",
+      "_origin": "ast",
+      "id": "lib_domain_documento_index_podeserlidoporia",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "podeserlidoporia()"
+    },
+    {
       "label": "isCategoriaDocumento()",
       "file_type": "code",
       "source_file": "lib/domain/documento/index.ts",
-      "source_location": "L65",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "lib_domain_documento_index_iscategoriadocumento",
       "community": 22,
@@ -3351,7 +3373,7 @@
       "label": "getCategoriaLabel()",
       "file_type": "code",
       "source_file": "lib/domain/documento/index.ts",
-      "source_location": "L72",
+      "source_location": "L97",
       "_origin": "ast",
       "id": "lib_domain_documento_index_getcategorialabel",
       "community": 22,
@@ -3362,7 +3384,7 @@
       "label": "faltandoNaPasta()",
       "file_type": "code",
       "source_file": "lib/domain/documento/index.ts",
-      "source_location": "L79",
+      "source_location": "L104",
       "_origin": "ast",
       "id": "lib_domain_documento_index_faltandonapasta",
       "community": 22,
@@ -3637,7 +3659,7 @@
       "label": "lerDocumento()",
       "file_type": "code",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L110",
+      "source_location": "L112",
       "_origin": "ast",
       "id": "lib_ia_leitor_documento_lerdocumento",
       "community": 22,
@@ -4091,8 +4113,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "lib_integracoes_index_selecionaradapter",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "selecionaradapter()"
     },
     {
@@ -4102,8 +4124,8 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "lib_integracoes_index_hashorigem",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "hashorigem()"
     },
     {
@@ -4366,8 +4388,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "consentimento.ts"
     },
     {
@@ -4377,8 +4399,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_baselegallgpd",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "baselegallgpd"
     },
     {
@@ -4388,8 +4410,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_base_legal_labels",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "base_legal_labels"
     },
     {
@@ -4399,8 +4421,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_consentimento",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "consentimento"
     },
     {
@@ -4410,8 +4432,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_motivorecusa",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "motivorecusa"
     },
     {
@@ -4421,8 +4443,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_motivo_recusa_mensagem",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "motivo_recusa_mensagem"
     },
     {
@@ -4432,8 +4454,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_buscarconsentimentovigente",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "buscarconsentimentovigente()"
     },
     {
@@ -4454,8 +4476,8 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "lib_lgpd_consentimento_avaliarbaselegal",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "avaliarbaselegal()"
     },
     {
@@ -4465,8 +4487,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar",
-      "community": 23,
-      "community_name": "importar/route.ts",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "mascarar.ts"
     },
     {
@@ -4476,8 +4498,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararcpf",
-      "community": 23,
-      "community_name": "importar/route.ts",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "mascararcpf()"
     },
     {
@@ -4487,8 +4509,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararnome",
-      "community": 23,
-      "community_name": "importar/route.ts",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "mascararnome()"
     },
     {
@@ -4498,8 +4520,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararemail",
-      "community": 23,
-      "community_name": "importar/route.ts",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "mascararemail()"
     },
     {
@@ -4509,19 +4531,41 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_mascararbeneficio",
-      "community": 23,
-      "community_name": "importar/route.ts",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "mascararbeneficio()"
+    },
+    {
+      "label": "PARTICULAS",
+      "file_type": "code",
+      "source_file": "lib/lgpd/mascarar.ts",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "lib_lgpd_mascarar_particulas",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "particulas"
+    },
+    {
+      "label": "removerIdentificadores()",
+      "file_type": "code",
+      "source_file": "lib/lgpd/mascarar.ts",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "lib_lgpd_mascarar_removeridentificadores",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
+      "norm_label": "removeridentificadores()"
     },
     {
       "label": "refTitular()",
       "file_type": "code",
       "source_file": "lib/lgpd/mascarar.ts",
-      "source_location": "L49",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "lib_lgpd_mascarar_reftitular",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "reftitular()"
     },
     {
@@ -5136,8 +5180,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "lib_validators_integracao_importacaoschema",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 22,
+      "community_name": "documentos-cliente.tsx",
       "norm_label": "importacaoschema"
     },
     {
@@ -11190,7 +11234,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L42",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route",
@@ -11201,7 +11245,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L53",
+      "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route",
@@ -11212,7 +11256,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L40",
+      "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route",
@@ -11277,6 +11321,30 @@
       "_origin": "ast",
       "source": "app_api_documentos_processar_route",
       "target": "lib_documentos_imagem_tratarimagem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/processar/route.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_processar_route",
+      "target": "lib_domain_documento_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/processar/route.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_processar_route",
+      "target": "lib_domain_documento_index_podeserlidoporia",
       "confidence_score": 1.0
     },
     {
@@ -11412,6 +11480,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/processar/route.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_processar_route",
+      "target": "lib_lgpd_mascarar_removeridentificadores",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -11465,7 +11545,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L55",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -11477,7 +11557,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L139",
+      "source_location": "L148",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -11489,7 +11569,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L136",
+      "source_location": "L145",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -11501,11 +11581,11 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L166",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
-      "target": "lib_ia_leitor_documento_lerdocumento"
+      "target": "lib_domain_documento_index_podeserlidoporia"
     },
     {
       "relation": "calls",
@@ -11513,7 +11593,31 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L123",
+      "source_location": "L175",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_processar_route_post",
+      "target": "lib_ia_leitor_documento_lerdocumento"
+    },
+    {
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/api/documentos/processar/route.ts",
+      "source_location": "L182",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_processar_route_post",
+      "target": "lib_integracoes_aplicar_texto"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/documentos/processar/route.ts",
+      "source_location": "L126",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -11525,7 +11629,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L117",
+      "source_location": "L120",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -11537,7 +11641,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L114",
+      "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -11549,7 +11653,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L113",
+      "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -11561,7 +11665,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L192",
+      "source_location": "L218",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -11573,7 +11677,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/documentos/processar/route.ts",
-      "source_location": "L243",
+      "source_location": "L182",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_processar_route_post",
+      "target": "lib_lgpd_mascarar_removeridentificadores"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/documentos/processar/route.ts",
+      "source_location": "L270",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_documentos_processar_route_post",
@@ -19454,6 +19570,17 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_documento_index",
+      "target": "lib_domain_documento_index_categorias_legiveis_por_ia",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/domain/documento/index.ts",
+      "source_location": "L104",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_domain_documento_index",
       "target": "lib_domain_documento_index_faltandonapasta",
       "confidence_score": 1.0
     },
@@ -19461,7 +19588,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/documento/index.ts",
-      "source_location": "L72",
+      "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_documento_index",
@@ -19472,11 +19599,22 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/documento/index.ts",
-      "source_location": "L65",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_documento_index",
       "target": "lib_domain_documento_index_iscategoriadocumento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/domain/documento/index.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_domain_documento_index",
+      "target": "lib_domain_documento_index_podeserlidoporia",
       "confidence_score": 1.0
     },
     {
@@ -19516,11 +19654,35 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "references",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/domain/documento/index.ts",
+      "source_location": "L86",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_domain_documento_index_podeserlidoporia",
+      "target": "lib_domain_documento_index_categorias_legiveis_por_ia"
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/documento/index.ts",
-      "source_location": "L73",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_domain_documento_index_podeserlidoporia",
+      "target": "lib_domain_documento_index_iscategoriadocumento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/domain/documento/index.ts",
+      "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_documento_index_getcategorialabel",
@@ -19545,7 +19707,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L175",
+      "source_location": "L177",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_ia_leitor_documento_lerdocumento",
@@ -19896,7 +20058,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/ia/leitor-documento.ts",
-      "source_location": "L110",
+      "source_location": "L112",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_ia_leitor_documento",
@@ -21473,12 +21635,46 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/lgpd/mascarar.ts",
-      "source_location": "L49",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_lgpd_mascarar",
+      "target": "lib_lgpd_mascarar_particulas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/lgpd/mascarar.ts",
+      "source_location": "L109",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_lgpd_mascarar",
       "target": "lib_lgpd_mascarar_reftitular",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/lgpd/mascarar.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_lgpd_mascarar",
+      "target": "lib_lgpd_mascarar_removeridentificadores",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/lgpd/mascarar.ts",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_lgpd_mascarar_removeridentificadores",
+      "target": "lib_lgpd_mascarar_particulas"
     },
     {
       "relation": "contains",
@@ -23876,5 +24072,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "bd8bb9da91917d9fa8f490aacca50016e54558da"
+  "built_at_commit": "6ad8d32c42ddb98aa447d84f685d89bd4fc63e9f"
 }

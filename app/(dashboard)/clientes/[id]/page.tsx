@@ -12,6 +12,7 @@ import { StatusBadge } from "@/components/dashboard/status-badge"
 import { EmptyState } from "@/components/dashboard/empty-state"
 import { PainelInss } from "@/components/integracoes/painel-inss"
 import { PreparoProtocolo } from "@/components/integracoes/preparo-protocolo"
+import { DocumentosProcesso } from "@/components/integracoes/documentos-processo"
 import { opcoesEspecie } from "@/lib/domain/beneficio"
 import { Trash2, Save, Search, Loader2, FolderSearch, UserX } from "lucide-react"
 import {
@@ -304,11 +305,14 @@ export default function ClienteDetalhe() {
                     </Button>
                   </div>
 
+                  <DocumentosProcesso processoId={processo.id} />
+
                   <PreparoProtocolo
                     cliente={cliente}
                     processo={processo}
                     outrosProcessos={processos}
                     baseLegal={baseLegal}
+                    usuarios={users}
                     onProtocolado={() => fetchCliente(true)}
                   />
                 </div>

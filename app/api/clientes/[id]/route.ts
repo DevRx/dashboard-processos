@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
 import { ClienteSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
+import { removerArquivosDoCliente } from "@/lib/storage/limpeza"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
 
 export async function GET(
@@ -104,39 +105,16 @@ export async function DELETE(
 
     const { id } = await params
 
-    // O cascade do banco apaga as linhas, mas não alcança o bucket: os
-    // PDFs de procuração ficariam órfãos no storage, dado pessoal fora
-    // do alcance de qualquer expurgo. Levantar os caminhos antes é a
-    // única chance de removê-los.
-    const { data: procuracoes } = await supabase
-      .from("consentimentos_lgpd")
-      .select("procuracao_arquivo")
-      .eq("cliente_id", id)
-      .eq("user_id", user.id)
-      .not("procuracao_arquivo", "is", null)
+    // Antes de apagar: o cascade do banco não alcança o storage, e
+    // depois da exclusão não há mais como descobrir quais arquivos
+    // pertenciam a este cliente.
+    await removerArquivosDoCliente(id, user.id)
 
     const { error } = await supabase
       .from("clientes")
       .delete()
       .eq("id", id)
       .eq("user_id", user.id)
-
-    if (!error && procuracoes?.length) {
-      const caminhos = procuracoes
-        .map((p) => p.procuracao_arquivo as string)
-        .filter(Boolean)
-      const { error: erroStorage } = await supabase.storage
-        .from("procuracoes")
-        .remove(caminhos)
-      // Falha aqui não desfaz a exclusão — o cliente já saiu do banco.
-      // Mas precisa aparecer no log, senão o arquivo fica esquecido.
-      if (erroStorage) {
-        console.error(
-          "Delete cliente: procurações não removidas do storage",
-          erroStorage.message
-        )
-      }
-    }
 
     if (error) {
       console.error("Delete cliente error:", error)

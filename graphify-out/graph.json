@@ -128,11 +128,11 @@
       "label": "ClienteDetalhe()",
       "file_type": "code",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "app_dashboard_clientes_id_page_clientedetalhe",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "clientedetalhe()"
     },
     {
@@ -307,8 +307,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_page",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "(dashboard)/page.tsx"
     },
     {
@@ -318,8 +318,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "app_dashboard_page_homepage",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "homepage()"
     },
     {
@@ -329,8 +329,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_dashboard_processos_page",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "processos/page.tsx"
     },
     {
@@ -340,8 +340,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "app_dashboard_processos_page_processos",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "processos()"
     },
     {
@@ -549,8 +549,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_auth_register_route",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 12,
+      "community_name": "validators/index.ts",
       "norm_label": "register/route.ts"
     },
     {
@@ -560,8 +560,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "app_api_auth_register_route_post",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 12,
+      "community_name": "validators/index.ts",
       "norm_label": "post()"
     },
     {
@@ -579,7 +579,7 @@
       "label": "GET()",
       "file_type": "code",
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "_origin": "ast",
       "id": "app_api_clientes_id_route_get",
       "community": 1,
@@ -590,7 +590,7 @@
       "label": "PUT()",
       "file_type": "code",
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L43",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "app_api_clientes_id_route_put",
       "community": 1,
@@ -601,7 +601,7 @@
       "label": "DELETE()",
       "file_type": "code",
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L95",
+      "source_location": "L96",
       "_origin": "ast",
       "id": "app_api_clientes_id_route_delete",
       "community": 1,
@@ -640,6 +640,28 @@
       "community": 1,
       "community_name": "getCurrentUser",
       "norm_label": "post()"
+    },
+    {
+      "label": "arquivo/route.ts",
+      "file_type": "code",
+      "source_file": "app/api/documentos/[id]/arquivo/route.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_api_documentos_id_arquivo_route",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "arquivo/route.ts"
+    },
+    {
+      "label": "GET()",
+      "file_type": "code",
+      "source_file": "app/api/documentos/[id]/arquivo/route.ts",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "app_api_documentos_id_arquivo_route_get",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "get()"
     },
     {
       "label": "documentos/[id]/route.ts",
@@ -714,6 +736,39 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "app_api_documentos_route_post",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "post()"
+    },
+    {
+      "label": "upload/route.ts",
+      "file_type": "code",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_api_documentos_upload_route",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "upload/route.ts"
+    },
+    {
+      "label": "TIPOS_ACEITOS",
+      "file_type": "code",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "app_api_documentos_upload_route_tipos_aceitos",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "tipos_aceitos"
+    },
+    {
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "app_api_documentos_upload_route_post",
       "community": 1,
       "community_name": "getCurrentUser",
       "norm_label": "post()"
@@ -802,8 +857,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_integracoes_importacoes_id_aplicar_route",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "aplicar/route.ts"
     },
     {
@@ -813,8 +868,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "app_api_integracoes_importacoes_id_aplicar_route_post",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "post()"
     },
     {
@@ -1096,7 +1151,7 @@
       "label": "GET()",
       "file_type": "code",
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "_origin": "ast",
       "id": "app_api_processos_id_route_get",
       "community": 1,
@@ -1107,7 +1162,7 @@
       "label": "PATCH()",
       "file_type": "code",
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L54",
+      "source_location": "L55",
       "_origin": "ast",
       "id": "app_api_processos_id_route_patch",
       "community": 1,
@@ -1118,7 +1173,7 @@
       "label": "PUT()",
       "file_type": "code",
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L132",
+      "source_location": "L133",
       "_origin": "ast",
       "id": "app_api_processos_id_route_put",
       "community": 1,
@@ -1129,12 +1184,34 @@
       "label": "DELETE()",
       "file_type": "code",
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L184",
+      "source_location": "L185",
       "_origin": "ast",
       "id": "app_api_processos_id_route_delete",
       "community": 1,
       "community_name": "getCurrentUser",
       "norm_label": "delete()"
+    },
+    {
+      "label": "tarefa-protocolo/route.ts",
+      "file_type": "code",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_api_processos_id_tarefa_protocolo_route",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "tarefa-protocolo/route.ts"
+    },
+    {
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "app_api_processos_id_tarefa_protocolo_route_post",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
+      "norm_label": "post()"
     },
     {
       "label": "lookup/route.ts",
@@ -1143,8 +1220,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "app_api_processos_lookup_route",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "lookup/route.ts"
     },
     {
@@ -1154,8 +1231,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "app_api_processos_lookup_route_motivo_mensagem",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "motivo_mensagem"
     },
     {
@@ -1165,8 +1242,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "app_api_processos_lookup_route_get",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "get()"
     },
     {
@@ -1649,8 +1726,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_charts_processos_status_chart",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 24,
+      "community_name": "[id]/page.tsx",
       "norm_label": "processos-status-chart.tsx"
     },
     {
@@ -1660,8 +1737,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "components_charts_processos_status_chart_tom_por_status",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 24,
+      "community_name": "[id]/page.tsx",
       "norm_label": "tom_por_status"
     },
     {
@@ -1671,8 +1748,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "components_charts_processos_status_chart_processosstatuschart",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "processosstatuschart()"
     },
     {
@@ -1682,8 +1759,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_dashboard_empty_state",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "empty-state.tsx"
     },
     {
@@ -1693,8 +1770,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_dashboard_empty_state_emptystate",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "emptystate()"
     },
     {
@@ -1748,8 +1825,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "components_dashboard_process_table_processorecente",
-      "community": 27,
-      "community_name": "cn",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "processorecente"
     },
     {
@@ -1759,8 +1836,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "components_dashboard_process_table_formatardata",
-      "community": 27,
-      "community_name": "cn",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "formatardata()"
     },
     {
@@ -1770,8 +1847,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "components_dashboard_process_table_processtable",
-      "community": 27,
-      "community_name": "cn",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
       "norm_label": "processtable()"
     },
     {
@@ -1781,8 +1858,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_dashboard_status_badge",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 27,
+      "community_name": "cn",
       "norm_label": "status-badge.tsx"
     },
     {
@@ -1792,8 +1869,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_tom",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 27,
+      "community_name": "cn",
       "norm_label": "tom"
     },
     {
@@ -1803,8 +1880,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_tom_por_status",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 27,
+      "community_name": "cn",
       "norm_label": "tom_por_status"
     },
     {
@@ -1814,8 +1891,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_classes_por_tom",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 27,
+      "community_name": "cn",
       "norm_label": "classes_por_tom"
     },
     {
@@ -1825,9 +1902,53 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "components_dashboard_status_badge_statusbadge",
+      "community": 27,
+      "community_name": "cn",
+      "norm_label": "statusbadge()"
+    },
+    {
+      "label": "documentos-processo.tsx",
+      "file_type": "code",
+      "source_file": "components/integracoes/documentos-processo.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "components_integracoes_documentos_processo",
       "community": 26,
       "community_name": "processos/page.tsx",
-      "norm_label": "statusbadge()"
+      "norm_label": "documentos-processo.tsx"
+    },
+    {
+      "label": "Documento",
+      "file_type": "code",
+      "source_file": "components/integracoes/documentos-processo.tsx",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "components_integracoes_documentos_processo_documento",
+      "community": 26,
+      "community_name": "processos/page.tsx",
+      "norm_label": "documento"
+    },
+    {
+      "label": "formatarTamanho()",
+      "file_type": "code",
+      "source_file": "components/integracoes/documentos-processo.tsx",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "components_integracoes_documentos_processo_formatartamanho",
+      "community": 26,
+      "community_name": "processos/page.tsx",
+      "norm_label": "formatartamanho()"
+    },
+    {
+      "label": "DocumentosProcesso()",
+      "file_type": "code",
+      "source_file": "components/integracoes/documentos-processo.tsx",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "components_integracoes_documentos_processo_documentosprocesso",
+      "community": 26,
+      "community_name": "processos/page.tsx",
+      "norm_label": "documentosprocesso()"
     },
     {
       "label": "painel-inss.tsx",
@@ -1836,8 +1957,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "painel-inss.tsx"
     },
     {
@@ -1847,8 +1968,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_baselegal",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "baselegal"
     },
     {
@@ -1858,8 +1979,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_fonte",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "fonte"
     },
     {
@@ -1869,8 +1990,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_documento",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "documento"
     },
     {
@@ -1880,8 +2001,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_base_legal_opcoes",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "base_legal_opcoes"
     },
     {
@@ -1891,8 +2012,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_documento_labels",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "documento_labels"
     },
     {
@@ -1902,8 +2023,8 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_consentimento",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "consentimento"
     },
     {
@@ -1913,8 +2034,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_importacao",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "importacao"
     },
     {
@@ -1924,8 +2045,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_processoresumo",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "processoresumo"
     },
     {
@@ -1935,8 +2056,8 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_mensagem",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "mensagem"
     },
     {
@@ -1946,8 +2067,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_confirmacao",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "confirmacao"
     },
     {
@@ -1957,8 +2078,8 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_formatardata",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "formatardata()"
     },
     {
@@ -1968,8 +2089,8 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "components_integracoes_painel_inss_painelinss",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "painelinss()"
     },
     {
@@ -1979,48 +2100,48 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_integracoes_preparo_protocolo",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
       "norm_label": "preparo-protocolo.tsx"
     },
     {
       "label": "ProcessoPreparo",
       "file_type": "code",
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L29",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "components_integracoes_preparo_protocolo_processopreparo",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
       "norm_label": "processopreparo"
     },
     {
       "label": "ClientePreparo",
       "file_type": "code",
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L37",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "components_integracoes_preparo_protocolo_clientepreparo",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
       "norm_label": "clientepreparo"
     },
     {
       "label": "LinhaPendencia()",
       "file_type": "code",
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L44",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "components_integracoes_preparo_protocolo_linhapendencia",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 29,
+      "community_name": "protocolo/index.ts",
       "norm_label": "linhapendencia()"
     },
     {
       "label": "PreparoProtocolo()",
       "file_type": "code",
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L60",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "components_integracoes_preparo_protocolo_preparoprotocolo",
       "community": 29,
@@ -2210,8 +2331,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_processos_kanban_board",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 25,
+      "community_name": "agenda/page.tsx",
       "norm_label": "kanban-board.tsx"
     },
     {
@@ -2221,8 +2342,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_processos_kanban_board_prazoinfo",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 25,
+      "community_name": "agenda/page.tsx",
       "norm_label": "prazoinfo()"
     },
     {
@@ -2232,8 +2353,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "components_processos_kanban_board_payloadfromprocesso",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 25,
+      "community_name": "agenda/page.tsx",
       "norm_label": "payloadfromprocesso()"
     },
     {
@@ -2243,8 +2364,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "components_processos_kanban_board_kanbanboard",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 25,
+      "community_name": "agenda/page.tsx",
       "norm_label": "kanbanboard()"
     },
     {
@@ -2276,8 +2397,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_badge",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 25,
+      "community_name": "agenda/page.tsx",
       "norm_label": "badge.tsx"
     },
     {
@@ -2287,8 +2408,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_badge_badge",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 25,
+      "community_name": "agenda/page.tsx",
       "norm_label": "badge()"
     },
     {
@@ -2298,8 +2419,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_button",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "button.tsx"
     },
     {
@@ -2309,8 +2430,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_button_buttonprops",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "buttonprops"
     },
     {
@@ -2320,8 +2441,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "components_ui_button_button",
-      "community": 22,
-      "community_name": "painel-inss.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "button()"
     },
     {
@@ -2375,8 +2496,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "components_ui_card_carddescription",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 24,
+      "community_name": "[id]/page.tsx",
       "norm_label": "carddescription()"
     },
     {
@@ -2474,8 +2595,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "components_ui_dialog_dialogoverlay",
-      "community": 0,
-      "community_name": "data.ts",
+      "community": 27,
+      "community_name": "cn",
       "norm_label": "dialogoverlay()"
     },
     {
@@ -2540,8 +2661,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_input",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "input.tsx"
     },
     {
@@ -2551,8 +2672,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_input_input",
-      "community": 24,
-      "community_name": "[id]/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "input()"
     },
     {
@@ -2562,8 +2683,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_ui_skeleton",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "skeleton.tsx"
     },
     {
@@ -2573,8 +2694,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_ui_skeleton_skeleton",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "skeleton()"
     },
     {
@@ -2837,8 +2958,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "lib_data_user",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 25,
+      "community_name": "agenda/page.tsx",
       "norm_label": "user"
     },
     {
@@ -2848,8 +2969,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "lib_data_cliente",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 0,
+      "community_name": "data.ts",
       "norm_label": "cliente"
     },
     {
@@ -2859,8 +2980,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "lib_data_processo",
-      "community": 26,
-      "community_name": "processos/page.tsx",
+      "community": 25,
+      "community_name": "agenda/page.tsx",
       "norm_label": "processo"
     },
     {
@@ -2991,8 +3112,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_domain_beneficio_index",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "beneficio/index.ts"
     },
     {
@@ -3002,8 +3123,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_domain_beneficio_index_especies_beneficio",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "especies_beneficio"
     },
     {
@@ -3013,8 +3134,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "lib_domain_beneficio_index_isespecieconhecida",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "isespecieconhecida()"
     },
     {
@@ -3024,8 +3145,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "lib_domain_beneficio_index_opcoesespecie",
-      "community": 7,
-      "community_name": "cn",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "opcoesespecie()"
     },
     {
@@ -3035,8 +3156,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_domain_processo_index",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "processo/index.ts"
     },
     {
@@ -3046,8 +3167,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_domain_processo_status",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "status.ts"
     },
     {
@@ -3057,8 +3178,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "lib_domain_processo_status_processostatus",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "processostatus"
     },
     {
@@ -3068,8 +3189,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "lib_domain_processo_status_processo_status_values",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "processo_status_values"
     },
     {
@@ -3079,8 +3200,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "lib_domain_processo_status_processo_status_labels",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 26,
+      "community_name": "processos/page.tsx",
       "norm_label": "processo_status_labels"
     },
     {
@@ -3101,8 +3222,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "lib_domain_processo_status_getprocessostatuslabel",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "getprocessostatuslabel()"
     },
     {
@@ -3112,8 +3233,8 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "lib_domain_processo_status_compareprocessostatus",
-      "community": 28,
-      "community_name": "status-badge.tsx",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "compareprocessostatus()"
     },
     {
@@ -3131,7 +3252,7 @@
       "label": "Gravidade",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L19",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_gravidade",
       "community": 29,
@@ -3142,7 +3263,7 @@
       "label": "Pendencia",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L21",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_pendencia",
       "community": 29,
@@ -3153,7 +3274,7 @@
       "label": "STATUS_EM_ANDAMENTO",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L33",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_status_em_andamento",
       "community": 29,
@@ -3164,7 +3285,7 @@
       "label": "DOCUMENTOS_COMUNS",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L40",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_documentos_comuns",
       "community": 29,
@@ -3175,7 +3296,7 @@
       "label": "DOCUMENTOS_POR_ESPECIE",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L53",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_documentos_por_especie",
       "community": 29,
@@ -3186,7 +3307,7 @@
       "label": "documentosDaEspecie()",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L126",
+      "source_location": "L135",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_documentosdaespecie",
       "community": 29,
@@ -3197,7 +3318,7 @@
       "label": "ClienteParaPreparo",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L139",
+      "source_location": "L148",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_clienteparapreparo",
       "community": 29,
@@ -3208,7 +3329,7 @@
       "label": "ProcessoParaPreparo",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L146",
+      "source_location": "L155",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_processoparapreparo",
       "community": 29,
@@ -3219,7 +3340,7 @@
       "label": "avaliarPreparo()",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L161",
+      "source_location": "L170",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_avaliarpreparo",
       "community": 29,
@@ -3230,7 +3351,7 @@
       "label": "temBloqueio()",
       "file_type": "code",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L252",
+      "source_location": "L261",
       "_origin": "ast",
       "id": "lib_domain_protocolo_index_tembloqueio",
       "community": 29,
@@ -3409,8 +3530,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "lib_integracoes_contrato_documentoinss",
-      "community": 10,
-      "community_name": "index.ts",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "documentoinss"
     },
     {
@@ -3486,8 +3607,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_integracoes_datajud",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "datajud.ts"
     },
     {
@@ -3497,8 +3618,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_trf_endpoints",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "trf_endpoints"
     },
     {
@@ -3508,8 +3629,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_datajudresultado",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "datajudresultado"
     },
     {
@@ -3519,8 +3640,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_limparnumero",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "limparnumero()"
     },
     {
@@ -3530,8 +3651,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_normalizardata",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "normalizardata()"
     },
     {
@@ -3541,8 +3662,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_detectarendpoint",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "detectarendpoint()"
     },
     {
@@ -3552,8 +3673,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "lib_integracoes_datajud_consultarprocessodatajud",
-      "community": 21,
-      "community_name": "agenda/page.tsx",
+      "community": 10,
+      "community_name": "index.ts",
       "norm_label": "consultarprocessodatajud()"
     },
     {
@@ -4168,8 +4289,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_prisma",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 12,
+      "community_name": "validators/index.ts",
       "norm_label": "prisma.ts"
     },
     {
@@ -4179,8 +4300,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "lib_prisma_globalforprisma",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 12,
+      "community_name": "validators/index.ts",
       "norm_label": "globalforprisma"
     },
     {
@@ -4300,9 +4421,53 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "lib_session_getsession",
+      "community": 5,
+      "community_name": "(dashboard)/page.tsx",
+      "norm_label": "getsession()"
+    },
+    {
+      "label": "limpeza.ts",
+      "file_type": "code",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "lib_storage_limpeza",
       "community": 1,
       "community_name": "getCurrentUser",
-      "norm_label": "getsession()"
+      "norm_label": "limpeza.ts"
+    },
+    {
+      "label": "remover()",
+      "file_type": "code",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "lib_storage_limpeza_remover",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "remover()"
+    },
+    {
+      "label": "removerArquivosDoProcesso()",
+      "file_type": "code",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "lib_storage_limpeza_removerarquivosdoprocesso",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "removerarquivosdoprocesso()"
+    },
+    {
+      "label": "removerArquivosDoCliente()",
+      "file_type": "code",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "lib_storage_limpeza_removerarquivosdocliente",
+      "community": 1,
+      "community_name": "getCurrentUser",
+      "norm_label": "removerarquivosdocliente()"
     },
     {
       "label": "client.ts",
@@ -4421,8 +4586,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "lib_validators_aplicacao",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "aplicacao.ts"
     },
     {
@@ -4432,8 +4597,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "lib_validators_aplicacao_aplicarimportacaoschema",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "aplicarimportacaoschema"
     },
     {
@@ -4443,8 +4608,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "lib_validators_aplicacao_aplicarimportacaoinput",
-      "community": 1,
-      "community_name": "getCurrentUser",
+      "community": 7,
+      "community_name": "cn",
       "norm_label": "aplicarimportacaoinput"
     },
     {
@@ -4476,8 +4641,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "lib_validators_auth_registerschema",
-      "community": 5,
-      "community_name": "(dashboard)/page.tsx",
+      "community": 12,
+      "community_name": "validators/index.ts",
       "norm_label": "registerschema"
     },
     {
@@ -4831,6 +4996,28 @@
       "community": 12,
       "community_name": "validators/index.ts",
       "norm_label": "protocoloinput"
+    },
+    {
+      "label": "TarefaProtocoloSchema",
+      "file_type": "code",
+      "source_file": "lib/validators/processo.ts",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "lib_validators_processo_tarefaprotocoloschema",
+      "community": 12,
+      "community_name": "validators/index.ts",
+      "norm_label": "tarefaprotocoloschema"
+    },
+    {
+      "label": "TarefaProtocoloInput",
+      "file_type": "code",
+      "source_file": "lib/validators/processo.ts",
+      "source_location": "L65",
+      "_origin": "ast",
+      "id": "lib_validators_processo_tarefaprotocoloinput",
+      "community": 12,
+      "community_name": "validators/index.ts",
+      "norm_label": "tarefaprotocoloinput"
     },
     {
       "label": "tarefa.ts",
@@ -6871,7 +7058,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -6924,6 +7111,30 @@
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
       "target": "components_dashboard_status_badge_statusbadge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_dashboard_clientes_id_page",
+      "target": "components_integracoes_documentos_processo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_dashboard_clientes_id_page",
+      "target": "components_integracoes_documentos_processo_documentosprocesso",
       "confidence_score": 1.0
     },
     {
@@ -7159,7 +7370,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -7171,7 +7382,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -7183,7 +7394,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -7195,7 +7406,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -7207,7 +7418,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -7219,7 +7430,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -7231,7 +7442,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -7243,7 +7454,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -7255,7 +7466,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page",
@@ -7268,7 +7479,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/(dashboard)/clientes/[id]/page.tsx",
-      "source_location": "L402",
+      "source_location": "L406",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_dashboard_clientes_id_page_clientedetalhe",
@@ -9868,7 +10079,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L95",
+      "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route",
@@ -9879,7 +10090,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route",
@@ -9890,7 +10101,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L43",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route",
@@ -9926,6 +10137,30 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/api/clientes/[id]/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_clientes_id_route",
+      "target": "lib_storage_limpeza",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/clientes/[id]/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_clientes_id_route",
+      "target": "lib_storage_limpeza_removerarquivosdocliente",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/clientes/[id]/route.ts",
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
@@ -9950,7 +10185,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L5",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route",
@@ -9962,7 +10197,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L5",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route",
@@ -9974,7 +10209,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L5",
+      "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route",
@@ -10011,7 +10246,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route_get",
@@ -10023,7 +10258,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route_get",
@@ -10035,7 +10270,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L48",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route_put",
@@ -10047,7 +10282,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L83",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route_put",
@@ -10059,7 +10294,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L68",
+      "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route_put",
@@ -10071,7 +10306,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L56",
+      "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route_put",
@@ -10083,11 +10318,23 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/clientes/[id]/route.ts",
-      "source_location": "L100",
+      "source_location": "L101",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_clientes_id_route_delete",
       "target": "lib_auth_getcurrentuser"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/clientes/[id]/route.ts",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_clientes_id_route_delete",
+      "target": "lib_storage_limpeza_removerarquivosdocliente"
     },
     {
       "relation": "contains",
@@ -10290,6 +10537,77 @@
       "_origin": "ast",
       "source": "app_api_clientes_route_post",
       "target": "lib_validators_cliente_clienteschema"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/arquivo/route.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_arquivo_route",
+      "target": "app_api_documentos_id_arquivo_route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/arquivo/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_arquivo_route",
+      "target": "lib_auth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/arquivo/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_arquivo_route",
+      "target": "lib_auth_getcurrentuser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/arquivo/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_arquivo_route",
+      "target": "lib_supabase_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/[id]/arquivo/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_arquivo_route",
+      "target": "lib_supabase_server_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/documentos/[id]/arquivo/route.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_id_arquivo_route_get",
+      "target": "lib_auth_getcurrentuser"
     },
     {
       "relation": "contains",
@@ -10717,6 +11035,124 @@
       "_origin": "ast",
       "source": "app_api_documentos_route_post",
       "target": "lib_validators_documento_documentoschema"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route",
+      "target": "app_api_documentos_upload_route_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route",
+      "target": "app_api_documentos_upload_route_tipos_aceitos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route",
+      "target": "lib_auth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route",
+      "target": "lib_auth_getcurrentuser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route",
+      "target": "lib_supabase_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route",
+      "target": "lib_supabase_server_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route",
+      "target": "lib_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route",
+      "target": "lib_utils_tocamelcase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route_post",
+      "target": "lib_auth_getcurrentuser"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/documentos/upload/route.ts",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_documentos_upload_route_post",
+      "target": "lib_utils_tocamelcase"
     },
     {
       "relation": "contains",
@@ -13209,7 +13645,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L184",
+      "source_location": "L185",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route",
@@ -13220,7 +13656,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route",
@@ -13231,7 +13667,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L54",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route",
@@ -13242,7 +13678,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L132",
+      "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route",
@@ -13271,6 +13707,30 @@
       "_origin": "ast",
       "source": "app_api_processos_id_route",
       "target": "lib_auth_getcurrentuser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_route",
+      "target": "lib_storage_limpeza",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_route",
+      "target": "lib_storage_limpeza_removerarquivosdoprocesso",
       "confidence_score": 1.0
     },
     {
@@ -13375,7 +13835,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_get",
@@ -13387,7 +13847,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_get",
@@ -13399,7 +13859,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L59",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_patch",
@@ -13411,7 +13871,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L120",
+      "source_location": "L121",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_patch",
@@ -13423,7 +13883,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L66",
+      "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_patch",
@@ -13435,7 +13895,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L137",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_put",
@@ -13447,7 +13907,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L172",
+      "source_location": "L173",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_put",
@@ -13459,7 +13919,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L157",
+      "source_location": "L158",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_put",
@@ -13471,7 +13931,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L145",
+      "source_location": "L146",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_put",
@@ -13483,11 +13943,226 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "app/api/processos/[id]/route.ts",
-      "source_location": "L189",
+      "source_location": "L190",
       "weight": 1.0,
       "_origin": "ast",
       "source": "app_api_processos_id_route_delete",
       "target": "lib_auth_getcurrentuser"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/processos/[id]/route.ts",
+      "source_location": "L199",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_route_delete",
+      "target": "lib_storage_limpeza_removerarquivosdoprocesso"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "app_api_processos_id_tarefa_protocolo_route_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_auth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_auth_getcurrentuser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_domain_protocolo_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_domain_protocolo_index_avaliarpreparo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_domain_protocolo_index_tembloqueio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_supabase_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_supabase_server_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_utils_tocamelcase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_validators_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route",
+      "target": "lib_validators_processo_tarefaprotocoloschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route_post",
+      "target": "lib_auth_getcurrentuser"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L97",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route_post",
+      "target": "lib_domain_protocolo_index_avaliarpreparo"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L155",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route_post",
+      "target": "lib_domain_protocolo_index_tembloqueio"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L171",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route_post",
+      "target": "lib_utils_tocamelcase"
+    },
+    {
+      "relation": "references",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "app/api/processos/[id]/tarefa-protocolo/route.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_api_processos_id_tarefa_protocolo_route_post",
+      "target": "lib_validators_processo_tarefaprotocoloschema"
     },
     {
       "relation": "contains",
@@ -15351,6 +16026,51 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "components/integracoes/documentos-processo.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_integracoes_documentos_processo",
+      "target": "components_integracoes_documentos_processo_documento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/integracoes/documentos-processo.tsx",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_integracoes_documentos_processo",
+      "target": "components_integracoes_documentos_processo_documentosprocesso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/integracoes/documentos-processo.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_integracoes_documentos_processo",
+      "target": "components_integracoes_documentos_processo_formatartamanho",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "components/integracoes/documentos-processo.tsx",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "components_integracoes_documentos_processo_documentosprocesso",
+      "target": "components_integracoes_documentos_processo_formatartamanho",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "components/integracoes/painel-inss.tsx",
       "source_location": "L58",
       "weight": 1.0,
@@ -15760,7 +16480,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L37",
+      "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_preparo_protocolo",
@@ -15771,7 +16491,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L44",
+      "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_preparo_protocolo",
@@ -15782,7 +16502,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L60",
+      "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_preparo_protocolo",
@@ -15793,7 +16513,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_preparo_protocolo",
@@ -15938,7 +16658,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L82",
+      "source_location": "L125",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_preparo_protocolo_preparoprotocolo",
@@ -15950,7 +16670,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L91",
+      "source_location": "L134",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_preparo_protocolo_preparoprotocolo",
@@ -15962,7 +16682,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/integracoes/preparo-protocolo.tsx",
-      "source_location": "L88",
+      "source_location": "L131",
       "weight": 1.0,
       "_origin": "ast",
       "source": "components_integracoes_preparo_protocolo_preparoprotocolo",
@@ -17798,7 +18518,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L161",
+      "source_location": "L170",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17809,7 +18529,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L139",
+      "source_location": "L148",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17820,7 +18540,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L40",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17831,7 +18551,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L53",
+      "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17842,7 +18562,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L126",
+      "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17853,7 +18573,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L19",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17864,7 +18584,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L21",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17875,7 +18595,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L146",
+      "source_location": "L155",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17886,7 +18606,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L33",
+      "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17897,7 +18617,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L252",
+      "source_location": "L261",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index",
@@ -17910,7 +18630,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L214",
+      "source_location": "L223",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index_avaliarpreparo",
@@ -17921,7 +18641,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "lib/domain/protocolo/index.ts",
-      "source_location": "L241",
+      "source_location": "L250",
       "weight": 1.0,
       "_origin": "ast",
       "source": "lib_domain_protocolo_index_avaliarpreparo",
@@ -19736,6 +20456,99 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_storage_limpeza",
+      "target": "lib_storage_limpeza_remover",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_storage_limpeza",
+      "target": "lib_storage_limpeza_removerarquivosdocliente",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_storage_limpeza",
+      "target": "lib_storage_limpeza_removerarquivosdoprocesso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_storage_limpeza",
+      "target": "lib_supabase_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_storage_limpeza",
+      "target": "lib_supabase_server_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_storage_limpeza_removerarquivosdocliente",
+      "target": "lib_storage_limpeza_remover",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_storage_limpeza_removerarquivosdoprocesso",
+      "target": "lib_storage_limpeza_remover",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/storage/limpeza.ts",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_storage_limpeza_removerarquivosdocliente",
+      "target": "lib_storage_limpeza_removerarquivosdoprocesso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "lib/supabase/client.ts",
       "source_location": "L12",
       "weight": 1.0,
@@ -20453,6 +21266,28 @@
       "_origin": "ast",
       "source": "lib_validators_processo",
       "target": "lib_validators_processo_protocoloschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/validators/processo.ts",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_validators_processo",
+      "target": "lib_validators_processo_tarefaprotocoloinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib/validators/processo.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "lib_validators_processo",
+      "target": "lib_validators_processo_tarefaprotocoloschema",
       "confidence_score": 1.0
     },
     {
@@ -21718,5 +22553,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ff0c8bcb5b12e21685addec2adb4700bdcf19a65"
+  "built_at_commit": "092b627af7a2a046f272ede5911b331e76c43e68"
 }

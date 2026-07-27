@@ -9,6 +9,7 @@ import {
   documentosDaEspecie,
   temBloqueio,
   URL_GERID,
+  URL_MEU_INSS,
   type Pendencia,
 } from "@/lib/domain/protocolo"
 import { AlertTriangle, CheckCircle2, ExternalLink, Loader2 } from "lucide-react"
@@ -32,6 +33,7 @@ type ProcessoPreparo = {
   esfera?: string | null
   status: string
   protocoloInss?: string | null
+  responsavelId?: string | null
 }
 
 type ClientePreparo = {
@@ -62,12 +64,15 @@ export function PreparoProtocolo({
   processo,
   outrosProcessos,
   baseLegal,
+  usuarios,
   onProtocolado,
 }: {
   cliente: ClientePreparo
   processo: ProcessoPreparo
   outrosProcessos: ProcessoPreparo[]
   baseLegal: { temVigente: boolean; temPdf: boolean }
+  /** Quem pode receber a tarefa de protocolar. */
+  usuarios: { id: string; name: string }[]
   onProtocolado?: () => void
 }) {
   const [aberto, setAberto] = useState(false)
@@ -75,6 +80,44 @@ export function PreparoProtocolo({
   const [dataEntrada, setDataEntrada] = useState("")
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
+  const [aviso, setAviso] = useState<string | null>(null)
+
+  const [destinatario, setDestinatario] = useState("")
+  const [observacao, setObservacao] = useState("")
+  // Padrão de hoje: a tarefa nasce com data, senão o formulário exige
+  // uma decisão que raramente muda.
+  const [dataTarefa, setDataTarefa] = useState(
+    new Date().toISOString().slice(0, 10)
+  )
+
+  async function gerarTarefa() {
+    setEnviando(true)
+    setErro(null)
+    setAviso(null)
+    try {
+      const res = await fetch(`/api/processos/${processo.id}/tarefa-protocolo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          responsavelId: destinatario || undefined,
+          data: dataTarefa,
+          observacao: observacao || undefined,
+          baseLegal,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setErro(data.error)
+        return
+      }
+      setObservacao("")
+      setAviso(data.message)
+    } catch {
+      setErro("Erro de conexão.")
+    } finally {
+      setEnviando(false)
+    }
+  }
 
   const administrativo = (processo.esfera ?? "ADMINISTRATIVO") === "ADMINISTRATIVO"
   if (!administrativo || processo.protocoloInss) return null
@@ -142,6 +185,15 @@ export function PreparoProtocolo({
 
       {aberto && (
         <div className="mt-2 space-y-3 text-sm">
+          {erro && (
+            <p className="text-xs text-red-600 dark:text-red-400">{erro}</p>
+          )}
+          {aviso && (
+            <p className="text-xs text-emerald-700 dark:text-emerald-400">
+              {aviso}
+            </p>
+          )}
+
           {pendencias.length > 0 ? (
             <ul className="space-y-1 text-xs">
               {pendencias.map((p, i) => (
@@ -175,14 +227,68 @@ export function PreparoProtocolo({
             </p>
           </details>
 
-          <a
-            href={URL_GERID}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
-          >
-            <ExternalLink size={15} /> Abrir o GERID para protocolar
-          </a>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={URL_GERID}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+            >
+              <ExternalLink size={15} /> GERID (advogado)
+            </a>
+            <a
+              href={URL_MEU_INSS}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+            >
+              <ExternalLink size={15} /> Meu INSS
+            </a>
+          </div>
+
+          {/* Passe de bastão: quem monta o caso raramente é quem
+              protocola. A tarefa leva o contexto junto. */}
+          <div className="space-y-1.5 rounded-lg border border-slate-200 p-2.5 dark:border-zinc-800">
+            <p className="text-xs font-medium">Passar para quem vai protocolar</p>
+            <select
+              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+              value={destinatario}
+              onChange={(e) => setDestinatario(e.target.value)}
+            >
+              <option value="">
+                {processo.responsavelId
+                  ? "Responsável do caso"
+                  : "Eu mesmo"}
+              </option>
+              {usuarios.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.name}
+                </option>
+              ))}
+            </select>
+            <label className="block text-xs text-slate-600 dark:text-zinc-400">
+              Para quando
+              <Input
+                type="date"
+                value={dataTarefa}
+                onChange={(e) => setDataTarefa(e.target.value)}
+              />
+            </label>
+            <Input
+              placeholder="Observação para quem vai protocolar (opcional)"
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={enviando || !dataTarefa}
+              onClick={gerarTarefa}
+            >
+              {enviando ? <Loader2 size={15} className="animate-spin" /> : null}
+              Gerar tarefa de protocolo
+            </Button>
+          </div>
 
           <div className="space-y-1.5 rounded-lg border border-slate-200 p-2.5 dark:border-zinc-800">
             <p className="text-xs font-medium">Protocolou? Registre aqui</p>
@@ -199,9 +305,6 @@ export function PreparoProtocolo({
                 onChange={(e) => setDataEntrada(e.target.value)}
               />
             </label>
-            {erro && (
-              <p className="text-xs text-red-600 dark:text-red-400">{erro}</p>
-            )}
             <Button
               size="sm"
               disabled={enviando || protocolo.trim().length < 3}

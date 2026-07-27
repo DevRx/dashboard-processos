@@ -107,11 +107,33 @@ export async function DELETE(
 
     const { id } = await params
 
+    // Levanta o caminho antes de apagar a linha: depois não há como
+    // saber qual arquivo remover, e ele ficaria órfão no bucket — dado
+    // pessoal fora do alcance de qualquer expurgo.
+    const { data: documento } = await supabase
+      .from("documentos")
+      .select("caminho")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .maybeSingle()
+
     const { error } = await supabase
       .from("documentos")
       .delete()
       .eq("id", id)
       .eq("user_id", user.id)
+
+    if (!error && documento?.caminho) {
+      const { error: erroStorage } = await supabase.storage
+        .from("documentos")
+        .remove([documento.caminho])
+      if (erroStorage) {
+        console.error(
+          "Delete documento: arquivo não removido do storage",
+          erroStorage.message
+        )
+      }
+    }
 
     if (error) {
       console.error("Delete documento error:", error)

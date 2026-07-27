@@ -13,8 +13,17 @@
 // sistema não tem como saber o que está na pasta física.
 // ─────────────────────────────────────────────────────────
 
-/** Link do canal oficial. O GERID não publica deep link por serviço. */
+/**
+ * Canais oficiais. Nenhum dos dois publica deep link por serviço, então
+ * o link é a porta de entrada — o login acontece lá, como sempre.
+ *
+ * GERID é a via do advogado cadastrado pela OAB; Meu INSS é a do
+ * titular ou do procurador com procuração cadastrada. Qual usar depende
+ * de como o escritório opera, então o sistema oferece as duas em vez de
+ * escolher por você.
+ */
 export const URL_GERID = "https://novorequerimento.inss.gov.br/"
+export const URL_MEU_INSS = "https://meu.inss.gov.br/"
 
 export type Gravidade = "bloqueio" | "aviso"
 

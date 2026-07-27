@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase/server"
 import { ProcessoSchema, ProtocoloSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
+import { removerArquivosDoProcesso } from "@/lib/storage/limpeza"
 
 export async function GET(
   _request: NextRequest,
@@ -192,6 +193,10 @@ export async function DELETE(
     }
 
     const { id } = await params
+
+    // Os documentos caem por cascade, mas os arquivos no bucket não —
+    // e depois de apagar a linha não há como saber quais eram.
+    await removerArquivosDoProcesso(id, user.id)
 
     const { error } = await supabase
       .from("processos")

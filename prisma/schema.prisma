@@ -213,7 +213,12 @@ model Documento {
   processoId String   @map("processo_id")
   userId     String   @map("user_id")
   nome       String
-  url        String
+  /// Endereço externo, quando o documento mora fora (sistema de
+  /// tribunal, por exemplo). Arquivo enviado pelo CRM usa `caminho`.
+  url        String?
+  /// Caminho no bucket privado `documentos`. Não é URL: bucket privado
+  /// só entrega por URL assinada, que expira.
+  caminho    String?
   tipo       String?
   tamanho    Int?
   createdAt  DateTime @default(now()) @map("created_at")

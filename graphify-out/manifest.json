@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "app/api/clientes/[id]/route.ts": {
-    "mtime": 1785124461.5890062,
-    "ast_hash": "b0c9025821de0bd469068833efb2fc49",
+    "mtime": 1785125976.5858214,
+    "ast_hash": "6a4624db0ddfb3f1b80d275dfb138b30",
     "semantic_hash": ""
   },
   "app/api/clientes/route.ts": {
@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "app/api/documentos/[id]/route.ts": {
-    "mtime": 1784997558.758585,
-    "ast_hash": "c0dccbbe523b69e676c461eff83bf293",
+    "mtime": 1785125942.1202073,
+    "ast_hash": "e4696d2642fb4172d9018bbdba06ce0a",
     "semantic_hash": ""
   },
   "app/api/documentos/route.ts": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "app/api/processos/[id]/route.ts": {
-    "mtime": 1785125199.2302797,
-    "ast_hash": "78c2f2a7c6ed1f84b7fe0d9158a804ba",
+    "mtime": 1785125994.532712,
+    "ast_hash": "d41dcbf7b8b6ab00ea7b9716b9068c8e",
     "semantic_hash": ""
   },
   "app/api/processos/route.ts": {
@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/[id]/page.tsx": {
-    "mtime": 1785125095.703905,
-    "ast_hash": "f621de74e0aa71d6bf132b53d77e2937",
+    "mtime": 1785126166.3504508,
+    "ast_hash": "b7fd154fe79e817c89c22b5d9be50e84",
     "semantic_hash": ""
   },
   "app/(dashboard)/clientes/page.tsx": {
@@ -360,8 +360,8 @@
     "semantic_hash": ""
   },
   "lib/validators/processo.ts": {
-    "mtime": 1785124984.5851107,
-    "ast_hash": "8b3ed8262aaf9f1f22b7d6986959f9c9",
+    "mtime": 1785126030.720301,
+    "ast_hash": "be832279472db93ef77fb93e122f0fff",
     "semantic_hash": ""
   },
   "lib/validators/tarefa.ts": {
@@ -575,13 +575,43 @@
     "semantic_hash": ""
   },
   "components/integracoes/preparo-protocolo.tsx": {
-    "mtime": 1785125258.701446,
-    "ast_hash": "790b24e6f92bdafd7951f5ed9ca9b2fc",
+    "mtime": 1785126153.982936,
+    "ast_hash": "9f026f6afa12c5a6f41391c5e4dbc3f8",
     "semantic_hash": ""
   },
   "lib/domain/protocolo/index.ts": {
-    "mtime": 1785124971.894425,
-    "ast_hash": "22b0f72ff80b6eca107323b72603bd6e",
+    "mtime": 1785126086.3754275,
+    "ast_hash": "55bc7ec4e6291a6f8b68a2eb1b1a3b2d",
+    "semantic_hash": ""
+  },
+  "app/api/documentos/[id]/arquivo/route.ts": {
+    "mtime": 1785125926.1726353,
+    "ast_hash": "0c0912aee97778364cb56c64f41ec58b",
+    "semantic_hash": ""
+  },
+  "app/api/documentos/upload/route.ts": {
+    "mtime": 1785125914.9045675,
+    "ast_hash": "157aec69ac3522d19d4e11501093c949",
+    "semantic_hash": ""
+  },
+  "app/api/processos/[id]/tarefa-protocolo/route.ts": {
+    "mtime": 1785126021.8807058,
+    "ast_hash": "472cab09768f19a73b1e7711f8fd7646",
+    "semantic_hash": ""
+  },
+  "components/integracoes/documentos-processo.tsx": {
+    "mtime": 1785126384.0790875,
+    "ast_hash": "91a584379d4d24de6e0b97d11d9b5526",
+    "semantic_hash": ""
+  },
+  "lib/storage/limpeza.ts": {
+    "mtime": 1785125960.524405,
+    "ast_hash": "4fb0894bd62ae5cd4beeaef843879552",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260727100000_documentos_upload.sql": {
+    "mtime": 1785125869.359391,
+    "ast_hash": "c5d2920a3c375fb0d626067501175269",
     "semantic_hash": ""
   }
 }

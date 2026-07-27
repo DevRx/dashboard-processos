@@ -45,3 +45,22 @@ export const ProtocoloSchema = z.object({
 
 export type ProtocoloInput = z.infer<typeof ProtocoloSchema>
 
+/**
+ * Passe de bastão para quem vai protocolar.
+ *
+ * `baseLegal` vem da interface porque quem já carregou o painel sabe
+ * disso; o servidor reconsultaria as mesmas linhas sem ganho.
+ */
+export const TarefaProtocoloSchema = z.object({
+  /** Ausente, cai no responsável do processo e depois em quem pediu. */
+  responsavelId: z.string().uuid("Responsável inválido").optional(),
+  data: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Informe a data da tarefa"),
+  observacao: z.string().max(500).optional(),
+  baseLegal: z.object({
+    temVigente: z.boolean(),
+    temPdf: z.boolean(),
+  }),
+})
+
+export type TarefaProtocoloInput = z.infer<typeof TarefaProtocoloSchema>
+

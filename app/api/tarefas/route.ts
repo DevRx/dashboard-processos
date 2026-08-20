@@ -16,7 +16,9 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from("tarefas")
-      .select("*, processo:processos(beneficio, numero)")
+      .select(
+        "*, processo:processos(beneficio, numero), responsavel:users!tarefas_responsavel_id_fkey(id, name)"
+      )
       .eq("user_id", user.id)
       .order("data", { ascending: true })
 
@@ -89,7 +91,7 @@ export async function POST(request: NextRequest) {
         ...toSnakeCase(validatedFields.data),
         user_id: user.id,
       })
-      .select()
+      .select("*, responsavel:users!tarefas_responsavel_id_fkey(id, name)")
       .single()
 
     if (error || !tarefa) {

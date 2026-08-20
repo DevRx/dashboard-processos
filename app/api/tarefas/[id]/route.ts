@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
-import { TarefaSchema } from "@/lib/validators"
+import { TarefaSchema, TarefaPatchSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
 
@@ -88,6 +88,57 @@ export async function PUT(
     )
   } catch (error) {
     console.error("Update tarefa error:", error)
+    return NextResponse.json(
+      { error: "Erro interno do servidor" },
+      { status: 500 }
+    )
+  }
+}
+
+/**
+ * Edição pontual, usada pelo quadro de tarefas: trocar setor, passar
+ * para outro responsável, mudar o status. O PUT acima continua sendo o
+ * caminho do formulário completo.
+ */
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const user = await getCurrentUser()
+    if (!user) {
+      return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+    }
+
+    const { id } = await params
+    const parsed = TarefaPatchSchema.safeParse(await request.json())
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? "Dados inválidos" },
+        { status: 400 }
+      )
+    }
+
+    const { data: tarefa, error } = await supabase
+      .from("tarefas")
+      .update(toSnakeCase(parsed.data))
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .select("*, responsavel:users!tarefas_responsavel_id_fkey(id, name)")
+      .maybeSingle()
+
+    if (error || !tarefa) {
+      console.error("Patch tarefa error:", error?.message)
+      return NextResponse.json(
+        { error: "Tarefa não encontrada" },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json({ tarefa: toCamelCase(tarefa) }, { status: 200 })
+  } catch (error) {
+    console.error("Patch tarefa error:", error)
     return NextResponse.json(
       { error: "Erro interno do servidor" },
       { status: 500 }

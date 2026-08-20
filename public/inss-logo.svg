@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 110" width="380" height="110" role="img" aria-label="INSS — Instituto Nacional do Seguro Social">
+  <title>INSS — Instituto Nacional do Seguro Social</title>
+  <defs>
+    <linearGradient id="seloInss" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a6fd4"/>
+      <stop offset="1" stop-color="#0c3f80"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Selo: a proteção social como guarda-chuva sobre o segurado -->
+  <rect x="6" y="11" width="88" height="88" rx="19" fill="url(#seloInss)"/>
+  <path d="M16 56C16 34.5 30.3 22 50 22s34 12.5 34 34q-8.5-9.5-17 0-8.5-9.5-17 0-8.5-9.5-17 0-8.5-9.5-17 0Z" fill="#ffffff"/>
+  <path d="M50 56v18a8.5 8.5 0 0 0 17 0" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round"/>
+  <circle cx="50" cy="34" r="6.5" fill="#1a6fd4"/>
+  <rect x="20" y="86" width="60" height="5" rx="2.5" fill="#168821"/>
+
+  <!-- Assinatura institucional -->
+  <text x="112" y="63" font-family="'IBM Plex Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="46" font-weight="700" letter-spacing="1.5" fill="#0c3f80">INSS</text>
+  <text x="114" y="85" font-family="'IBM Plex Sans','Segoe UI',Helvetica,Arial,sans-serif" font-size="12.5" font-weight="500" letter-spacing="0.35" fill="#5b6b7c">Instituto Nacional do Seguro Social</text>
+</svg>

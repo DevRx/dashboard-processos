@@ -44,3 +44,5 @@ export function opcoesEspecie(valorAtual?: string | null): string[] {
   }
   return [...ESPECIES_BENEFICIO]
 }
+
+export * from "./categorias"

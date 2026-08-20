@@ -8,7 +8,11 @@ import {
   Users,
   FileText,
   CalendarDays,
+  ChevronRight,
+  Gavel,
   Landmark,
+  ListChecks,
+  MapPin,
   Wallet,
   Settings,
   Scale,
@@ -23,6 +27,8 @@ type MenuItem = {
   name: string
   icon: LucideIcon
   href: string
+  /** Esferas de um processo — hoje só o administrativo. */
+  filhos?: MenuItem[]
 }
 
 type MenuGroup = {
@@ -36,9 +42,18 @@ const menuGroups: MenuGroup[] = [
     items: [
       { name: "Dashboard", icon: LayoutDashboard, href: "/" },
       { name: "Clientes", icon: Users, href: "/clientes" },
-      { name: "Processos", icon: FileText, href: "/processos" },
-      { name: "INSS", icon: Landmark, href: "/inss" },
+      { name: "Tarefas", icon: ListChecks, href: "/tarefas" },
+      {
+        name: "Processos",
+        icon: FileText,
+        href: "/processos",
+        filhos: [
+          { name: "Administrativo", icon: Landmark, href: "/inss" },
+          { name: "Judicial", icon: Gavel, href: "/judicial" },
+        ],
+      },
       { name: "Agenda", icon: CalendarDays, href: "/agenda" },
+      { name: "Mapa", icon: MapPin, href: "/mapa" },
     ],
   },
   {
@@ -79,6 +94,160 @@ function Marca({ trilho }: { trilho: boolean }) {
   )
 }
 
+/**
+ * Um item do menu e, quando existirem, as esferas abaixo dele.
+ *
+ * O filho é recuado e ganha um traço à esquerda em vez de ícone
+ * próprio: ele não é um destino paralelo, é um recorte do pai. Em
+ * trilho (tablet) os filhos somem — sobra largura para um ícone só, e
+ * o pai leva à mesma área.
+ *
+ * As esferas ficam recolhidas: o menu do dia a dia é curto, e quem
+ * precisa de uma delas abre pela seta. O nome do pai continua sendo
+ * link — clicar em "Processos" leva a Processos, não abre a gaveta.
+ */
+function ItemNavegacao({
+  item,
+  trilho,
+  pathname,
+  onNavegar,
+  filho = false,
+}: {
+  item: MenuItem
+  trilho: boolean
+  pathname: string
+  onNavegar?: () => void
+  filho?: boolean
+}) {
+  const Icon = item.icon
+
+  // Subpáginas contam como o mesmo item: em /inss/pensao o menu
+  // precisa continuar dizendo "você está no Administrativo". "/" é
+  // exceção — prefixo de tudo.
+  const ativo =
+    item.href === "/"
+      ? pathname === "/"
+      : pathname === item.href || pathname.startsWith(`${item.href}/`)
+
+  // O pai não acende junto com o filho: /inss não é /processos. O que
+  // ele ganha é um tom mais claro que o de repouso, para a seção
+  // inteira não parecer desligada.
+  const filhoAtivo = Boolean(
+    item.filhos?.some(
+      (f) => pathname === f.href || pathname.startsWith(`${f.href}/`)
+    )
+  )
+
+  // Estando dentro de uma esfera, a gaveta abre sozinha: um menu que
+  // esconde a página em que você está não diz onde você está.
+  const [aberto, setAberto] = useState(filhoAtivo)
+
+  const link = (
+    <Link
+      href={item.href}
+      onClick={onNavegar}
+      aria-current={ativo ? "page" : undefined}
+      title={trilho ? item.name : undefined}
+      className={cn(
+        "group relative flex h-9 flex-1 items-center gap-2.5 rounded-lg text-[13px] tracking-[-0.005em] transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70 focus-visible:ring-offset-0",
+        trilho ? "justify-center px-0 lg:justify-start lg:px-3" : "px-3",
+        filho && !trilho && "ml-3 h-8 pl-2.5",
+        filho && trilho && "ml-0 h-8 lg:ml-3 lg:pl-2.5",
+        ativo
+          ? "bg-sidebar-accent font-medium text-sidebar-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] ring-1 ring-white/[0.06] ring-inset"
+          : filhoAtivo
+            ? "font-normal text-sidebar-foreground/75 hover:bg-sidebar-accent/55"
+            : "font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent/55 hover:text-sidebar-foreground/90"
+      )}
+    >
+      {filho && (
+        <span
+          aria-hidden
+          className={cn(
+            "h-4 w-px shrink-0 bg-sidebar-border",
+            trilho && "hidden lg:block"
+          )}
+        />
+      )}
+
+      <Icon
+        size={filho ? 15 : 17}
+        strokeWidth={1.75}
+        className={cn(
+          "shrink-0 transition-colors duration-150",
+          ativo
+            ? "text-sidebar-foreground"
+            : "text-sidebar-foreground/40 group-hover:text-sidebar-foreground/75"
+        )}
+      />
+      <span
+        className={cn(
+          "truncate",
+          trilho && "hidden lg:inline",
+          filho && "text-[12.5px]"
+        )}
+      >
+        {item.name}
+      </span>
+    </Link>
+  )
+
+  if (!item.filhos?.length) return link
+
+  const idGaveta = `submenu-${item.href.replace(/\W/g, "") || "raiz"}`
+
+  return (
+    <>
+      {/* A seta é um botão à parte, e não dentro do link: um dentro do
+          outro é HTML inválido, e são duas ações diferentes. */}
+      <div className="flex items-center gap-0.5">
+        {link}
+
+        <button
+          type="button"
+          onClick={() => setAberto((v) => !v)}
+          aria-expanded={aberto}
+          aria-controls={idGaveta}
+          aria-label={`${aberto ? "Ocultar" : "Mostrar"} esferas de ${item.name}`}
+          title={`${aberto ? "Ocultar" : "Mostrar"} esferas de ${item.name}`}
+          className={cn(
+            "flex size-7 shrink-0 items-center justify-center rounded-md text-sidebar-foreground/40 transition-colors duration-150 outline-none hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
+            // Em trilho não há espaço nem gaveta: o pai leva à área.
+            trilho && "hidden lg:flex"
+          )}
+        >
+          <ChevronRight
+            size={15}
+            strokeWidth={2}
+            className={cn(
+              "transition-transform duration-200",
+              aberto && "rotate-90"
+            )}
+          />
+        </button>
+      </div>
+
+      {aberto && (
+        <div
+          id={idGaveta}
+          className="animate-in fade-in slide-in-from-top-1 flex flex-col gap-0.5 duration-150"
+        >
+          {item.filhos.map((sub) => (
+            <ItemNavegacao
+              key={sub.name}
+              item={sub}
+              trilho={trilho}
+              pathname={pathname}
+              onNavegar={onNavegar}
+              filho
+            />
+          ))}
+        </div>
+      )}
+    </>
+  )
+}
+
 function Navegacao({ trilho, onNavegar }: Modo) {
   const pathname = usePathname()
 
@@ -109,41 +278,15 @@ function Navegacao({ trilho, onNavegar }: Modo) {
             />
           )}
 
-          {grupo.items.map((item) => {
-            const Icon = item.icon
-            const ativo = pathname === item.href
-
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={onNavegar}
-                aria-current={ativo ? "page" : undefined}
-                title={trilho ? item.name : undefined}
-                className={cn(
-                  "group relative flex h-9 items-center gap-2.5 rounded-lg text-[13px] tracking-[-0.005em] transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70 focus-visible:ring-offset-0",
-                  trilho ? "justify-center px-0 lg:justify-start lg:px-3" : "px-3",
-                  ativo
-                    ? "bg-sidebar-accent font-medium text-sidebar-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] ring-1 ring-white/[0.06] ring-inset"
-                    : "font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent/55 hover:text-sidebar-foreground/90"
-                )}
-              >
-                <Icon
-                  size={17}
-                  strokeWidth={1.75}
-                  className={cn(
-                    "shrink-0 transition-colors duration-150",
-                    ativo
-                      ? "text-sidebar-foreground"
-                      : "text-sidebar-foreground/40 group-hover:text-sidebar-foreground/75"
-                  )}
-                />
-                <span className={cn("truncate", trilho && "hidden lg:inline")}>
-                  {item.name}
-                </span>
-              </Link>
-            )
-          })}
+          {grupo.items.map((item) => (
+            <ItemNavegacao
+              key={item.name}
+              item={item}
+              trilho={trilho}
+              pathname={pathname}
+              onNavegar={onNavegar}
+            />
+          ))}
         </div>
       ))}
     </nav>

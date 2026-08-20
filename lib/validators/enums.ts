@@ -31,6 +31,15 @@ export const TarefaPrioridadeEnum = z.enum([
   "URGENTE",
 ])
 
+/** Times do escritório. A coluna no banco ainda se chama `setor`. */
+export const TimeTarefaEnum = z.enum([
+  "VERMELHO",
+  "PRETO",
+  "AZUL",
+  "AMARELO",
+  "VERDE",
+])
+
 export const LancamentoTipoEnum = z.enum(["ENTRADA", "SAIDA"])
 
 export const EsferaProcessoEnum = z.enum(["ADMINISTRATIVO", "JUDICIAL"])

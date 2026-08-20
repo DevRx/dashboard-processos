@@ -44,6 +44,17 @@ enum TarefaPrioridade {
   URGENTE
 }
 
+/// Setores do escritório. A identidade de cada um é a cor: no quadro
+/// de tarefas ela é lida antes de qualquer texto, que é o ponto —
+/// saber de quem é a tarefa sem parar para ler.
+enum SetorTarefa {
+  VERMELHO
+  PRETO
+  AZUL
+  AMARELO
+  VERDE
+}
+
 enum LancamentoTipo {
   ENTRADA
   SAIDA
@@ -55,6 +66,16 @@ enum LancamentoTipo {
 enum EsferaProcesso {
   ADMINISTRATIVO
   JUDICIAL
+}
+
+/// Acompanhamento da perícia no auxílio por incapacidade. O
+/// `ProcessoStatus` descreve o processo inteiro; esta etiqueta
+/// descreve só a próxima ação da perícia, que é o que a equipe
+/// administrativa precisa ver de relance na fila.
+enum SituacaoPericia {
+  MARCAR_PERICIA
+  PERICIA_MARCADA
+  PRORROGACAO
 }
 
 enum FonteIntegracao {
@@ -114,17 +135,20 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relações
-  clientes    Cliente[]
-  processos   Processo[]             @relation("UserProcessos")
-  andamentos  Andamento[]
-  tarefas     Tarefa[]
-  documentos  Documento[]
-  auditorias  Auditoria[]
-  lancamentos LancamentoFinanceiro[]
-  consentimentos ConsentimentoLGPD[]
-  importacoes    ImportacaoIntegracao[]
+  clientes             Cliente[]
+  processos            Processo[]             @relation("UserProcessos")
+  andamentos           Andamento[]
+  tarefas              Tarefa[]
+  documentos           Documento[]
+  auditorias           Auditoria[]
+  lancamentos          LancamentoFinanceiro[]
+  consentimentos       ConsentimentoLGPD[]
+  importacoes          ImportacaoIntegracao[]
   // Processos onde este usuário é o responsável
-  processosResponsavel Processo[] @relation("ResponsavelProcesso")
+  processosResponsavel Processo[]             @relation("ResponsavelProcesso")
+  // Tarefas atribuídas a este usuário
+  tarefasResponsavel   Tarefa[]               @relation("ResponsavelTarefa")
+  comunicacoesDjen     ComunicacaoDjen[]
 
   @@map("users")
 }
@@ -139,6 +163,17 @@ model Cliente {
   endereco       String?
   dataNascimento DateTime? @map("data_nascimento") @db.Date
   beneficio      String?
+  /// Senha do Meu INSS do titular, guardada cifrada (AES-256-GCM) —
+  /// ver lib/seguranca/cofre.ts. A cifra protege dump e backup; a tela
+  /// interna mostra o valor em claro para quem opera o escritório.
+  senhaMeuInss   String?   @map("senha_meu_inss")
+  /// Comentários da equipe na ficha administrativa.
+  observacoes    String?
+  /// Ponto no mapa de atendimento. Preenchido a partir do município
+  /// reconhecido no endereço, ou escolhido à mão na tela do Mapa —
+  /// ver lib/domain/localizacao.
+  latitude       Float?
+  longitude      Float?
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
 
@@ -153,38 +188,41 @@ model Cliente {
 }
 
 model Processo {
-  id            String         @id @default(uuid())
-  userId        String         @map("user_id")
-  clienteId     String         @map("cliente_id")
-  beneficio     String
-  esfera        EsferaProcesso @default(ADMINISTRATIVO)
+  id              String           @id @default(uuid())
+  userId          String           @map("user_id")
+  clienteId       String           @map("cliente_id")
+  beneficio       String
+  esfera          EsferaProcesso   @default(ADMINISTRATIVO)
   /// Número único CNJ. Só existe na esfera judicial.
-  numero        String?
+  numero          String?
   /// Protocolo do requerimento no INSS, mostrado pelo GERID.
-  protocoloInss String?        @map("protocolo_inss")
+  protocoloInss   String?          @map("protocolo_inss")
   /// NB, presente na carta de concessão e no extrato de pagamento.
-  numeroBeneficio String?      @map("numero_beneficio")
-  status        ProcessoStatus @default(EM_ANALISE)
-  responsavelId String?        @map("responsavel_id")
-  dataEntrada   DateTime?      @map("data_entrada") @db.Date
-  dataConclusao DateTime?      @map("data_conclusao") @db.Date
-  prazo         DateTime?      @db.Date
-  valorCausa    Float?         @map("valor_causa")
-  tribunal      String?
-  vara          String?
-  comarca       String?
-  observacoes   String?
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
+  numeroBeneficio String?          @map("numero_beneficio")
+  status          ProcessoStatus   @default(EM_ANALISE)
+  /// Só faz sentido em auxílio por incapacidade. Nulo = sem etiqueta.
+  situacaoPericia SituacaoPericia? @map("situacao_pericia")
+  responsavelId   String?          @map("responsavel_id")
+  dataEntrada     DateTime?        @map("data_entrada") @db.Date
+  dataConclusao   DateTime?        @map("data_conclusao") @db.Date
+  prazo           DateTime?        @db.Date
+  valorCausa      Float?           @map("valor_causa")
+  tribunal        String?
+  vara            String?
+  comarca         String?
+  observacoes     String?
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
 
   // Relações
-  user        User        @relation("UserProcessos", fields: [userId], references: [id])
-  cliente     Cliente     @relation(fields: [clienteId], references: [id], onDelete: Cascade)
-  responsavel User?       @relation("ResponsavelProcesso", fields: [responsavelId], references: [id])
-  andamentos  Andamento[]
-  tarefas     Tarefa[]
-  documentos  Documento[]
-  importacoes ImportacaoIntegracao[]
+  user         User                   @relation("UserProcessos", fields: [userId], references: [id])
+  cliente      Cliente                @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  responsavel  User?                  @relation("ResponsavelProcesso", fields: [responsavelId], references: [id])
+  andamentos   Andamento[]
+  tarefas      Tarefa[]
+  documentos   Documento[]
+  importacoes  ImportacaoIntegracao[]
+  comunicacoes ComunicacaoDjen[]
 
   @@map("processos")
 }
@@ -206,21 +244,28 @@ model Andamento {
 }
 
 model Tarefa {
-  id         String           @id @default(uuid())
-  userId     String           @map("user_id")
-  processoId String?          @map("processo_id")
-  titulo     String
-  descricao  String?
-  data       DateTime         @db.Date
-  hora       String?
-  status     TarefaStatus     @default(PENDENTE)
-  prioridade TarefaPrioridade @default(MEDIA)
-  createdAt  DateTime         @default(now()) @map("created_at")
-  updatedAt  DateTime         @updatedAt @map("updated_at")
+  id            String           @id @default(uuid())
+  userId        String           @map("user_id")
+  processoId    String?          @map("processo_id")
+  titulo        String
+  descricao     String?
+  data          DateTime         @db.Date
+  hora          String?
+  status        TarefaStatus     @default(PENDENTE)
+  prioridade    TarefaPrioridade @default(MEDIA)
+  /// Setor do escritório dono da tarefa, identificado por cor no quadro.
+  setor         SetorTarefa?
+  /// Quem executa. `userId` é quem cadastrou — os dois raramente são a
+  /// mesma pessoa num escritório com equipe.
+  responsavelId String?          @map("responsavel_id")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
 
   // Relações
-  user     User      @relation(fields: [userId], references: [id])
-  processo Processo? @relation(fields: [processoId], references: [id], onDelete: SetNull)
+  user         User              @relation(fields: [userId], references: [id])
+  responsavel  User?             @relation("ResponsavelTarefa", fields: [responsavelId], references: [id])
+  processo     Processo?         @relation(fields: [processoId], references: [id], onDelete: SetNull)
+  comunicacoes ComunicacaoDjen[]
 
   @@map("tarefas")
 }
@@ -230,11 +275,11 @@ model Tarefa {
 /// pertencem ao cliente; o vínculo com um processo é opcional, para o
 /// que é específico de um pedido (laudo, carta de decisão).
 model Documento {
-  id         String            @id @default(uuid())
-  clienteId  String?           @map("cliente_id")
-  processoId String?           @map("processo_id")
+  id         String             @id @default(uuid())
+  clienteId  String?            @map("cliente_id")
+  processoId String?            @map("processo_id")
   categoria  CategoriaDocumento @default(OUTRO)
-  userId     String            @map("user_id")
+  userId     String             @map("user_id")
   nome       String
   /// Endereço externo, quando o documento mora fora (sistema de
   /// tribunal, por exemplo). Arquivo enviado pelo CRM usa `caminho`.
@@ -247,11 +292,11 @@ model Documento {
   /// Leitura por IA, guardada para não reenviar o documento a cada
   /// abertura da tela. `iaModelo` registra quem leu: a extração muda
   /// entre versões de modelo.
-  iaResumo   String?   @map("ia_resumo")
-  iaCampos   Json?     @map("ia_campos")
-  iaLidoEm   DateTime? @map("ia_lido_em")
-  iaModelo   String?   @map("ia_modelo")
-  createdAt  DateTime @default(now()) @map("created_at")
+  iaResumo   String?            @map("ia_resumo")
+  iaCampos   Json?              @map("ia_campos")
+  iaLidoEm   DateTime?          @map("ia_lido_em")
+  iaModelo   String?            @map("ia_modelo")
+  createdAt  DateTime           @default(now()) @map("created_at")
 
   // Relações
   cliente  Cliente?  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
@@ -282,32 +327,32 @@ model LancamentoFinanceiro {
 /// Base legal registrada por titular. Sem uma linha vigente aqui,
 /// a API de importação recusa o tratamento.
 model ConsentimentoLGPD {
-  id             String        @id @default(uuid())
-  userId         String        @map("user_id")
-  clienteId      String        @map("cliente_id")
-  baseLegal      BaseLegalLGPD @map("base_legal")
+  id                String            @id @default(uuid())
+  userId            String            @map("user_id")
+  clienteId         String            @map("cliente_id")
+  baseLegal         BaseLegalLGPD     @map("base_legal")
   /// Finalidade específica do tratamento (art. 6º, I).
-  finalidade     String
+  finalidade        String
   /// Identificação da procuração/termo que sustenta a base legal.
-  procuracaoRef  String?       @map("procuracao_ref")
+  procuracaoRef     String?           @map("procuracao_ref")
   /// Caminho do PDF no bucket privado `procuracoes`. Não é URL: URL de
   /// bucket privado expira, e guardá-la aqui a deixaria vencida.
-  procuracaoArquivo String?    @map("procuracao_arquivo")
-  procuracaoNome    String?    @map("procuracao_nome")
+  procuracaoArquivo String?           @map("procuracao_arquivo")
+  procuracaoNome    String?           @map("procuracao_nome")
   /// Fontes que esta base legal autoriza — limita o escopo da importação.
-  fontes         FonteIntegracao[]
+  fontes            FonteIntegracao[]
   /// Autoriza mandar documentos do titular para leitura por IA —
   /// operador novo e transferência internacional (art. 33), que o
   /// consentimento de consultar o INSS não cobre. Desligada por padrão.
-  iaAutorizada   Boolean       @default(false) @map("ia_autorizada")
-  vigenteDesde   DateTime      @default(now()) @map("vigente_desde")
-  retencaoAte    DateTime?     @map("retencao_ate") @db.Date
+  iaAutorizada      Boolean           @default(false) @map("ia_autorizada")
+  vigenteDesde      DateTime          @default(now()) @map("vigente_desde")
+  retencaoAte       DateTime?         @map("retencao_ate") @db.Date
   /// Revogação (art. 8º, §5º). A linha nunca é deletada: o histórico
   /// é a prova de que houve base legal no período.
-  revogadoEm     DateTime?     @map("revogado_em")
-  revogadoMotivo String?       @map("revogado_motivo")
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
+  revogadoEm        DateTime?         @map("revogado_em")
+  revogadoMotivo    String?           @map("revogado_motivo")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
 
   // Relações
   user        User                   @relation(fields: [userId], references: [id])
@@ -321,21 +366,21 @@ model ConsentimentoLGPD {
 /// resultado estruturado, nunca o documento bruto — o original
 /// permanece no GERID/Meu INSS, que é a fonte autoritativa.
 model ImportacaoIntegracao {
-  id               String          @id @default(uuid())
-  userId           String          @map("user_id")
-  clienteId        String?         @map("cliente_id")
-  processoId       String?         @map("processo_id")
-  consentimentoId  String?         @map("consentimento_id")
-  fonte            FonteIntegracao
-  documento        DocumentoINSS?
+  id              String          @id @default(uuid())
+  userId          String          @map("user_id")
+  clienteId       String?         @map("cliente_id")
+  processoId      String?         @map("processo_id")
+  consentimentoId String?         @map("consentimento_id")
+  fonte           FonteIntegracao
+  documento       DocumentoINSS?
   /// Campos extraídos, já minimizados pelo parser.
-  dados            Json
+  dados           Json
   /// SHA-256 do texto de origem: prova de correspondência com o
   /// documento oficial e detecção de reimportação, sem guardar o bruto.
-  hashOrigem       String          @map("hash_origem")
-  expurgarEm       DateTime?       @map("expurgar_em") @db.Date
-  expurgadoEm      DateTime?       @map("expurgado_em")
-  createdAt        DateTime        @default(now()) @map("created_at")
+  hashOrigem      String          @map("hash_origem")
+  expurgarEm      DateTime?       @map("expurgar_em") @db.Date
+  expurgadoEm     DateTime?       @map("expurgado_em")
+  createdAt       DateTime        @default(now()) @map("created_at")
 
   // Relações
   user          User               @relation(fields: [userId], references: [id])
@@ -344,6 +389,63 @@ model ImportacaoIntegracao {
   consentimento ConsentimentoLGPD? @relation(fields: [consentimentoId], references: [id])
 
   @@map("importacoes_integracao")
+}
+
+/// Comunicação publicada no DJEN em nome da OAB do escritório.
+///
+/// Guardada localmente por dois motivos: a consulta é por intervalo de
+/// datas e relê tudo a cada busca, e "já tratei isso" é estado do
+/// escritório, que não existe no diário.
+model ComunicacaoDjen {
+  id                    String    @id @default(uuid())
+  userId                String    @map("user_id")
+  /// Id da comunicação no DJEN. Único por usuário: é a chave que
+  /// impede a mesma intimação de entrar duas vezes.
+  djenId                BigInt    @map("djen_id")
+  numeroProcesso        String?   @map("numero_processo")
+  numeroProcessoMascara String?   @map("numero_processo_mascara")
+  siglaTribunal         String?   @map("sigla_tribunal")
+  nomeOrgao             String?   @map("nome_orgao")
+  tipoComunicacao       String?   @map("tipo_comunicacao")
+  tipoDocumento         String?   @map("tipo_documento")
+  nomeClasse            String?   @map("nome_classe")
+  /// Parte representada, como o diário a nomeia.
+  destinatario          String?
+  dataDisponibilizacao  DateTime  @map("data_disponibilizacao") @db.Date
+  texto                 String
+  link                  String?
+  /// Prazo lido do texto e a data-limite estimada em dias úteis —
+  /// ver lib/integracoes/djen.ts. Estimativa, não cálculo oficial.
+  prazoDias             Int?      @map("prazo_dias")
+  prazoTrecho           String?   @map("prazo_trecho")
+  prazoEstimado         DateTime? @map("prazo_estimado") @db.Date
+  /// Casado pelo número do processo, quando ele já existe na base.
+  processoId            String?   @map("processo_id")
+  /// Tarefa criada a partir do prazo desta intimação.
+  tarefaId              String?   @map("tarefa_id")
+  /// Leitura da intimação por IA — ver lib/ia/analista-intimacao.ts.
+  /// Rascunho de triagem: diz do que se trata e o que fazer, para a
+  /// fila ser priorizada sem abrir o texto inteiro.
+  iaTipoAto             String?   @map("ia_tipo_ato")
+  iaResumo              String?   @map("ia_resumo")
+  iaProvidencia         String?   @map("ia_providencia")
+  iaUrgencia            String?   @map("ia_urgencia")
+  /// De quem é o prazo do texto: ESCRITORIO, OUTRA_PARTE ou NENHUM.
+  iaPrazoDeQuem         String?   @map("ia_prazo_de_quem")
+  iaAlertas             Json?     @map("ia_alertas")
+  iaModelo              String?   @map("ia_modelo")
+  iaAnalisadaEm         DateTime? @map("ia_analisada_em")
+  tratadaEm             DateTime? @map("tratada_em")
+  createdAt             DateTime  @default(now()) @map("created_at")
+
+  // Relações
+  user     User      @relation(fields: [userId], references: [id])
+  processo Processo? @relation(fields: [processoId], references: [id], onDelete: SetNull)
+  tarefa   Tarefa?   @relation(fields: [tarefaId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, djenId])
+  @@index([dataDisponibilizacao])
+  @@map("comunicacoes_djen")
 }
 
 model Auditoria {

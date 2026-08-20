@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Agendador do macOS para a rotina do DJEN.
+
+  Roda de segunda a sexta, 8h e 14h. Duas passadas porque publicação
+  não tem hora certa e o app pode estar desligado numa delas — rodar de
+  novo não duplica nada.
+
+  Instalar (trocar CAMINHO_DO_PROJETO):
+    cp scripts/com.zecaaposenta.djen.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.zecaaposenta.djen.plist
+
+  Conferir:  launchctl list | grep djen
+  Remover:   launchctl unload ~/Library/LaunchAgents/com.zecaaposenta.djen.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.zecaaposenta.djen</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>CAMINHO_DO_PROJETO/scripts/cron-djen.sh</string>
+  </array>
+
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict><key>Weekday</key><integer>1</integer><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>2</integer><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>3</integer><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>4</integer><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>5</integer><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>1</integer><key>Hour</key><integer>14</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>2</integer><key>Hour</key><integer>14</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>3</integer><key>Hour</key><integer>14</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>4</integer><key>Hour</key><integer>14</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>5</integer><key>Hour</key><integer>14</integer><key>Minute</key><integer>0</integer></dict>
+  </array>
+
+  <key>RunAtLoad</key>
+  <false/>
+</dict>
+</plist>

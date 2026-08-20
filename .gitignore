@@ -47,3 +47,6 @@ prisma_generate.txt
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Postgres local (fallback, caso o cluster fique no projeto)
+.pgdata/

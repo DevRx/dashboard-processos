@@ -1,0 +1,12 @@
+{
+  "cliente": "Maria da Silva",
+  "cpf": "123.456.789-00",
+  "beneficio": "Aposentadoria por Tempo de Contribuição",
+  "nit": "123.45678.90-1",
+  "observacoes": "Requer o cômputo e averbação do período especial de 01/01/2010 a 05/05/2015, conforme PPP anexo, com conversão em tempo comum pelo multiplicador 1.4.",
+  "documentos": [
+    { "id": "d1", "nome": "RG e CPF.pdf", "categoria": "IDENTIFICACAO", "caminho": "documentos/rg-cpf.pdf" },
+    { "id": "d2", "nome": "CNIS completo.pdf", "categoria": "CNIS", "caminho": "documentos/cnis.pdf" },
+    { "id": "d3", "nome": "PPP empresa X.pdf", "categoria": "OUTRO", "caminho": "documentos/ppp.pdf" }
+  ]
+}

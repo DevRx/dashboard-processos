@@ -1,0 +1,32 @@
+{
+  "versao": "rascunho-2026-08-21 (escrito contra um site de ensaio; SUBSTITUIR pelas telas reais do Meu INSS)",
+  "telas": [
+    {
+      "id": "busca-de-servico",
+      "reconhecer": { "tem": [{ "placeholder": "do que você precisa" }] },
+      "leitura": "Central de serviços. Vou procurar o benefício.",
+      "acoes": [
+        { "tipo": "preencher", "onde": { "placeholder": "do que você precisa" }, "de": "beneficio", "porque": "o campo de busca recebe o nome do benefício requerido" },
+        { "tipo": "clicar", "onde": { "tag": "button", "texto": "buscar" }, "porque": "abrir a lista de resultados" }
+      ]
+    },
+    {
+      "id": "resultados",
+      "reconhecer": { "urlContem": "/busca" },
+      "leitura": "Resultados da busca. Vou abrir o serviço.",
+      "acoes": [
+        { "tipo": "clicar", "onde": { "tag": "a", "qual": 1 }, "porque": "o primeiro resultado é o serviço procurado" }
+      ]
+    },
+    {
+      "id": "requerimento",
+      "reconhecer": { "urlContem": "/requerimento" },
+      "leitura": "Formulário do requerimento.",
+      "acoes": [
+        { "tipo": "preencher", "onde": { "rotulo": "observações" }, "de": "observacoes", "porque": "a fundamentação do caso vai no campo Observações" },
+        { "tipo": "anexar", "onde": { "rotulo": "identificação" }, "categoria": "IDENTIFICACAO", "porque": "o campo pede documento de identificação" },
+        { "tipo": "anexar", "onde": { "rotulo": "cnis" }, "categoria": "CNIS", "porque": "o campo pede o CNIS" }
+      ]
+    }
+  ]
+}

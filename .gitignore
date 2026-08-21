@@ -50,3 +50,6 @@ next-env.d.ts
 
 # Postgres local (fallback, caso o cluster fique no projeto)
 .pgdata/
+
+# prints de falha do preenchimento assistido
+/scripts/protocolo/falhas/

@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase/server"
 import { OAB_PADRAO } from "@/lib/integracoes/oab"
 import { sincronizarDjen } from "@/lib/intimacoes/sincronizar"
 import { TimeTarefaEnum } from "@/lib/validators"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Caixa de entrada do DJEN.
@@ -49,7 +50,7 @@ export async function GET() {
         .select(
           "*, processo:processos(id, numero, cliente:clientes(id, nome)), tarefa:tarefas(id, setor, data, status)"
         )
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
         .order("data_disponibilizacao", { ascending: false })
         .limit(400),
       // Última passada da rotina automática, para a tela poder dizer
@@ -58,7 +59,7 @@ export async function GET() {
       supabase
         .from("auditorias")
         .select("created_at, detalhes")
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
         .eq("acao", "DJEN_SINCRONIZACAO_AUTOMATICA")
         .order("created_at", { ascending: false })
         .limit(1)

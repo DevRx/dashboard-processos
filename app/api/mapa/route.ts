@@ -5,6 +5,7 @@ import {
   municipioDoEndereco,
   municipioPorCoordenada,
 } from "@/lib/domain/localizacao"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Mapa de atendimento: onde estão os clientes do escritório.
@@ -37,7 +38,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from("clientes")
       .select("id, nome, endereco, latitude, longitude, processos(id, esfera, status)")
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .order("nome")
 
     if (error) {

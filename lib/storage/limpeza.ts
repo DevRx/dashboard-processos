@@ -1,5 +1,6 @@
 import "server-only"
 import { supabase } from "@/lib/supabase/server"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Remoção dos arquivos que o cascade do banco não alcança.
@@ -33,14 +34,13 @@ async function remover(bucket: string, caminhos: string[]) {
  * RG que vale para todos os outros casos.
  */
 export async function removerArquivosDoProcesso(
-  processoId: string,
-  userId: string
+  processoId: string
 ) {
   const { data } = await supabase
     .from("documentos")
     .select("caminho")
     .eq("processo_id", processoId)
-    .eq("user_id", userId)
+    .in("user_id", await idsDoEscritorio())
     .is("cliente_id", null)
     .not("caminho", "is", null)
 
@@ -52,14 +52,13 @@ export async function removerArquivosDoProcesso(
 
 /** Toda a pasta do cliente, mais as procurações da base legal. */
 export async function removerArquivosDoCliente(
-  clienteId: string,
-  userId: string
+  clienteId: string
 ) {
   const { data: documentos } = await supabase
     .from("documentos")
     .select("caminho")
     .eq("cliente_id", clienteId)
-    .eq("user_id", userId)
+    .in("user_id", await idsDoEscritorio())
     .not("caminho", "is", null)
 
   await remover(
@@ -71,7 +70,7 @@ export async function removerArquivosDoCliente(
     .from("consentimentos_lgpd")
     .select("procuracao_arquivo")
     .eq("cliente_id", clienteId)
-    .eq("user_id", userId)
+    .in("user_id", await idsDoEscritorio())
     .not("procuracao_arquivo", "is", null)
 
   await remover(

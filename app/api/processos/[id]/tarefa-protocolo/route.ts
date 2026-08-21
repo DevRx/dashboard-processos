@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase/server"
 import { toCamelCase } from "@/lib/utils"
 import { TarefaProtocoloSchema } from "@/lib/validators"
 import { avaliarPreparo, temBloqueio } from "@/lib/domain/protocolo"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Passe de bastão: cria a tarefa de protocolar o requerimento.
@@ -45,7 +46,7 @@ export async function POST(
       .from("processos")
       .select("*, cliente:clientes(nome, cpf, data_nascimento, telefone, email)")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!processo) {
@@ -84,7 +85,7 @@ export async function POST(
       .from("processos")
       .select("id, beneficio, esfera, status, protocolo_inss")
       .eq("cliente_id", processo.cliente_id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
 
     const cliente = processo.cliente as {
       nome: string

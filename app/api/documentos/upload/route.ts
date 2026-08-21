@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { toCamelCase } from "@/lib/utils"
 import { isCategoriaDocumento } from "@/lib/domain/documento"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Upload de documento do caso.
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
       .from("clientes")
       .select("id")
       .eq("id", clienteId)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!cliente) {
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
         .select("id")
         .eq("id", processoId)
         .eq("cliente_id", clienteId)
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
         .maybeSingle()
 
       if (!processo) {

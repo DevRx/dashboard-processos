@@ -4,6 +4,7 @@ import { ClienteSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { removerArquivosDoCliente } from "@/lib/storage/limpeza"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 export async function GET(
   _request: NextRequest,
@@ -21,7 +22,7 @@ export async function GET(
       .from("clientes")
       .select("*, processos(*)")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .single()
 
     if (error || !cliente) {
@@ -68,7 +69,7 @@ export async function PUT(
       .from("clientes")
       .update(toSnakeCase(validatedFields.data))
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select()
       .single()
 
@@ -108,13 +109,13 @@ export async function DELETE(
     // Antes de apagar: o cascade do banco não alcança o storage, e
     // depois da exclusão não há mais como descobrir quais arquivos
     // pertenciam a este cliente.
-    await removerArquivosDoCliente(id, user.id)
+    await removerArquivosDoCliente(id)
 
     const { error } = await supabase
       .from("clientes")
       .delete()
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
 
     if (error) {
       console.error("Delete cliente error:", error)

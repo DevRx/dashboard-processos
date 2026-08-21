@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Estado da intimação dentro do escritório: tratada ou não, e a qual
@@ -51,7 +52,7 @@ export async function PATCH(
           .from("processos")
           .select("id")
           .eq("id", parsed.data.processoId)
-          .eq("user_id", user.id)
+          .in("user_id", await idsDoEscritorio())
           .maybeSingle()
 
         if (!processo) {
@@ -69,7 +70,7 @@ export async function PATCH(
       .from("comunicacoes_djen")
       .update(campos)
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select("id, tratada_em, processo_id")
       .maybeSingle()
 

@@ -3,6 +3,7 @@ import { z } from "zod"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { SITUACOES_PERICIA } from "@/lib/domain/processo"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Etiqueta de perícia do auxílio por incapacidade, trocada direto na
@@ -36,7 +37,7 @@ export async function PATCH(
       .from("processos")
       .update({ situacao_pericia: parsed.data.situacaoPericia })
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select("id, situacao_pericia")
       .maybeSingle()
 

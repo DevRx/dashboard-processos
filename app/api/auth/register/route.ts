@@ -1,10 +1,42 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
+import { getCurrentUser } from "@/lib/auth"
 import { RegisterSchema } from "@/lib/validators"
 
+/**
+ * Criar conta deixou de ser público.
+ *
+ * Enquanto cada pessoa via apenas o que ela mesma cadastrou, um
+ * cadastro aberto custava pouco: o desconhecido entrava numa conta
+ * vazia. Agora que a carteira é do escritório, a mesma porta entrega
+ * CPF, laudo médico e consentimento de todos os clientes a quem
+ * preencher um formulário. Quem admite alguém no escritório passa a ser
+ * o ADMIN.
+ *
+ * A exceção é a instalação vazia: sem nenhum usuário no banco, exigir
+ * um ADMIN logado trancaria o sistema por fora. O primeiro cadastro
+ * abre a porta e a fecha atrás de si.
+ */
 export async function POST(request: NextRequest) {
   try {
+    const total = await prisma.user.count()
+
+    if (total > 0) {
+      const atual = await getCurrentUser()
+
+      if (!atual) {
+        return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+      }
+
+      if (atual.role !== "ADMIN") {
+        return NextResponse.json(
+          { error: "Apenas um administrador cadastra novas pessoas" },
+          { status: 403 }
+        )
+      }
+    }
+
     const body = await request.json()
 
     const validatedFields = RegisterSchema.safeParse(body)

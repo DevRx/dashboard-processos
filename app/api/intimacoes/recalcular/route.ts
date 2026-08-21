@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { calcularPrazoFinal } from "@/lib/domain/prazo"
 import { prioridadePorPrazo } from "@/lib/domain/intimacao"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Recalcula as datas-limite com o calendário forense atual.
@@ -16,6 +17,17 @@ import { prioridadePorPrazo } from "@/lib/domain/intimacao"
  * prazo que se afastou deixa de ser urgente. Tarefa concluída não é
  * tocada: mexer na data de algo já feito só reescreve o passado.
  */
+
+/**
+ * Quantas intimações são gravadas ao mesmo tempo.
+ *
+ * Cada intimação custa até duas idas ao banco, e uma não depende do
+ * resultado da outra — enfileirar todas em série fazia o recálculo de
+ * uma carteira grande levar minutos de espera parada. O lote existe
+ * para não trocar essa fila por uma enxurrada de conexões simultâneas.
+ */
+const TAMANHO_DO_LOTE = 8
+
 export async function POST() {
   try {
     const user = await getCurrentUser()
@@ -28,7 +40,7 @@ export async function POST() {
       .select(
         "id, data_disponibilizacao, prazo_dias, prazo_estimado, sigla_tribunal, tarefa_id"
       )
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .not("prazo_dias", "is", null)
 
     if (error) {
@@ -39,10 +51,9 @@ export async function POST() {
       )
     }
 
-    let atualizadas = 0
-    let tarefasMovidas = 0
-
-    for (const item of data ?? []) {
+    // A conta é local e barata: dá para separar antes quem realmente
+    // mudou e só levar esses ao banco.
+    const paraGravar = (data ?? []).flatMap((item) => {
       const novo = calcularPrazoFinal(
         String(item.data_disponibilizacao),
         item.prazo_dias as number,
@@ -53,38 +64,47 @@ export async function POST() {
         ? String(item.prazo_estimado).slice(0, 10)
         : null
 
-      if (atual === novo) continue
+      return atual === novo ? [] : [{ id: item.id, tarefaId: item.tarefa_id, novo }]
+    })
 
+    let atualizadas = 0
+    let tarefasMovidas = 0
+
+    async function gravar(alvo: (typeof paraGravar)[number]) {
       const { error: erroIntimacao } = await supabase
         .from("comunicacoes_djen")
-        .update({ prazo_estimado: novo })
-        .eq("id", item.id)
-        .eq("user_id", user.id)
+        .update({ prazo_estimado: alvo.novo })
+        .eq("id", alvo.id)
+        .in("user_id", await idsDoEscritorio())
 
       if (erroIntimacao) {
         console.error("Recalcular intimação:", erroIntimacao.message)
-        continue
+        return
       }
 
       atualizadas++
 
-      if (!item.tarefa_id) continue
+      if (!alvo.tarefaId) return
 
       const { data: tarefa, error: erroTarefa } = await supabase
         .from("tarefas")
-        .update({ data: novo, prioridade: prioridadePorPrazo(novo) })
-        .eq("id", item.tarefa_id)
-        .eq("user_id", user.id)
+        .update({ data: alvo.novo, prioridade: prioridadePorPrazo(alvo.novo) })
+        .eq("id", alvo.tarefaId)
+        .in("user_id", await idsDoEscritorio())
         .neq("status", "CONCLUIDA")
         .select("id")
         .maybeSingle()
 
       if (erroTarefa) {
         console.error("Mover tarefa do prazo:", erroTarefa.message)
-        continue
+        return
       }
 
       if (tarefa) tarefasMovidas++
+    }
+
+    for (let i = 0; i < paraGravar.length; i += TAMANHO_DO_LOTE) {
+      await Promise.all(paraGravar.slice(i, i + TAMANHO_DO_LOTE).map(gravar))
     }
 
     return NextResponse.json({ atualizadas, tarefasMovidas }, { status: 200 })

@@ -3,6 +3,7 @@ import { z } from "zod"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { cifrar, decifrar } from "@/lib/seguranca/cofre"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Campos da ficha administrativa que a equipe edita direto na fila,
@@ -57,7 +58,7 @@ export async function PATCH(
       .from("clientes")
       .update(campos)
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select("id, observacoes, senha_meu_inss")
       .maybeSingle()
 

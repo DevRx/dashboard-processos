@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { eliminarDadosImportados } from "@/lib/lgpd/retencao"
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Eliminação a pedido do titular (art. 18, VI).
@@ -35,7 +36,7 @@ export async function DELETE(
       .from("clientes")
       .select("id")
       .eq("id", clienteId)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!cliente) {
@@ -45,7 +46,7 @@ export async function DELETE(
       )
     }
 
-    const resultado = await eliminarDadosImportados(clienteId, user.id)
+    const resultado = await eliminarDadosImportados(clienteId)
 
     if (resultado.erro) {
       return NextResponse.json(
@@ -61,7 +62,7 @@ export async function DELETE(
         revogado_motivo: "Eliminação solicitada pelo titular (art. 18, VI)",
       })
       .eq("cliente_id", clienteId)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .is("revogado_em", null)
 
     await registrarTratamento({

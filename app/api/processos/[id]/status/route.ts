@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { ProcessoStatusEnum } from "@/lib/validators"
 import { getProcessoStatusLabel } from "@/lib/domain/processo"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Troca de status pelo quadro, sem passar pelo formulário inteiro.
@@ -35,7 +36,7 @@ export async function PATCH(
       .from("processos")
       .update({ status: parsed.data.status })
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select("id, status")
       .maybeSingle()
 

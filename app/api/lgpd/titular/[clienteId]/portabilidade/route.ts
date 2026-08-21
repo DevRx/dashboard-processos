@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase/server"
 import { toCamelCase } from "@/lib/utils"
 import { listarConsentimentos } from "@/lib/lgpd/consentimento"
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Acesso e portabilidade (art. 18, II e V).
@@ -33,7 +34,7 @@ export async function GET(
       .from("clientes")
       .select("*")
       .eq("id", clienteId)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!cliente) {
@@ -49,14 +50,14 @@ export async function GET(
           .from("processos")
           .select("*, andamentos(*), documentos(nome, tipo, created_at)")
           .eq("cliente_id", clienteId)
-          .eq("user_id", user.id),
+          .in("user_id", await idsDoEscritorio()),
         supabase
           .from("importacoes_integracao")
           .select("*")
           .eq("cliente_id", clienteId)
-          .eq("user_id", user.id)
+          .in("user_id", await idsDoEscritorio())
           .order("created_at", { ascending: false }),
-        listarConsentimentos(clienteId, user.id),
+        listarConsentimentos(clienteId),
       ])
 
     await registrarTratamento({

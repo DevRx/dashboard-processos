@@ -12,6 +12,7 @@ import {
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
 import { refTitular, removerIdentificadores } from "@/lib/lgpd/mascarar"
 import { podeSerLidoPorIa } from "@/lib/domain/documento"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Recebe fotos de um documento, monta um PDF e manda a IA lê-lo.
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
       .from("clientes")
       .select("id, nome, cpf")
       .eq("id", clienteId)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!cliente) {
@@ -113,7 +114,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const consentimento = await buscarConsentimentoVigente(clienteId, user.id)
+    const consentimento = await buscarConsentimentoVigente(clienteId)
     const podeTratar = avaliarBaseLegal(consentimento)
 
     if (!podeTratar.ok) {

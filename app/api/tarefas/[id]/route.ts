@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase/server"
 import { TarefaSchema, TarefaPatchSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 export async function GET(
   _request: NextRequest,
@@ -20,7 +21,7 @@ export async function GET(
       .from("tarefas")
       .select("*, processo:processos(beneficio, numero)")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .single()
 
     if (error || !tarefa) {
@@ -70,7 +71,7 @@ export async function PUT(
       .from("tarefas")
       .update(toSnakeCase(validatedFields.data))
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select()
       .single()
 
@@ -124,7 +125,7 @@ export async function PATCH(
       .from("tarefas")
       .update(toSnakeCase(parsed.data))
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select("*, responsavel:users!tarefas_responsavel_id_fkey(id, name)")
       .maybeSingle()
 
@@ -162,7 +163,7 @@ export async function DELETE(
       .from("tarefas")
       .delete()
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
 
     if (error) {
       console.error("Delete tarefa error:", error)

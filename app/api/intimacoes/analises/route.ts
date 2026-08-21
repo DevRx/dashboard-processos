@@ -3,6 +3,7 @@ import { z } from "zod"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { analisarIntimacoes } from "@/lib/intimacoes/analisar"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Triagem por IA — uma intimação (com `id`) ou o lote das que ainda
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
     let consulta = supabase
       .from("comunicacoes_djen")
       .select("id, texto, tipo_documento, nome_orgao, nome_classe")
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
 
     if (parsed.data.id) {
       // Reanalisar uma já lida é legítimo: o texto pode ter sido
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
       .select(
         "id, ia_tipo_ato, ia_resumo, ia_providencia, ia_urgencia, ia_prazo_de_quem, ia_alertas, ia_analisada_em"
       )
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .in("id", (data ?? []).map((d) => d.id))
 
     return NextResponse.json(

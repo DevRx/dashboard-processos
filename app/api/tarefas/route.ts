@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase/server"
 import { TarefaSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
       .select(
         "*, processo:processos(beneficio, numero), responsavel:users!tarefas_responsavel_id_fkey(id, name)"
       )
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .order("data", { ascending: true })
 
     if (processoId) {
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
         .from("processos")
         .select("id")
         .eq("id", validatedFields.data.processoId)
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
         .single()
 
       if (processoError || !processo) {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Fila judicial: um item por ação em curso.
@@ -40,7 +41,7 @@ export async function GET() {
       .select(
         "id, cliente_id, beneficio, esfera, numero, status, tribunal, vara, comarca, valor_causa, data_entrada, prazo, cliente:clientes(nome, cpf), andamentos(data, descricao)"
       )
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .eq("esfera", "JUDICIAL")
 
     if (error) {

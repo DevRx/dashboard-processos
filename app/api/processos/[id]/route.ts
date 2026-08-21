@@ -4,6 +4,7 @@ import { ProcessoSchema, ProtocoloSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
 import { removerArquivosDoProcesso } from "@/lib/storage/limpeza"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 export async function GET(
   _request: NextRequest,
@@ -21,7 +22,7 @@ export async function GET(
       .from("processos")
       .select("*, cliente:clientes(*)")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .single()
 
     if (error || !processo) {
@@ -89,7 +90,7 @@ export async function PATCH(
       .from("processos")
       .update(campos)
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select()
       .maybeSingle()
 
@@ -157,7 +158,7 @@ export async function PUT(
       .from("processos")
       .update(toSnakeCase(validatedFields.data))
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select()
       .single()
 
@@ -196,13 +197,13 @@ export async function DELETE(
 
     // Os documentos caem por cascade, mas os arquivos no bucket não —
     // e depois de apagar a linha não há como saber quais eram.
-    await removerArquivosDoProcesso(id, user.id)
+    await removerArquivosDoProcesso(id)
 
     const { error } = await supabase
       .from("processos")
       .delete()
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
 
     if (error) {
       console.error("Delete processo error:", error)

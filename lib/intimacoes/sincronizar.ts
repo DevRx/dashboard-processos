@@ -4,6 +4,7 @@ import { consultarComunicacoesDjen } from "@/lib/integracoes/djen"
 import { calcularPrazoFinal } from "@/lib/domain/prazo"
 import { gerarTarefasDasIntimacoes } from "./gerar-tarefas"
 import { analisarIntimacoes } from "./analisar"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Uma passada completa no DJEN: busca, guarda o que é novo e abre as
@@ -61,7 +62,7 @@ export async function sincronizarDjen(params: {
   const { data: processos } = await supabase
     .from("processos")
     .select("id, numero")
-    .eq("user_id", params.userId)
+    .in("user_id", await idsDoEscritorio())
     .not("numero", "is", null)
 
   const porNumero = new Map(
@@ -74,7 +75,7 @@ export async function sincronizarDjen(params: {
   const { data: existentes } = await supabase
     .from("comunicacoes_djen")
     .select("djen_id")
-    .eq("user_id", params.userId)
+    .in("user_id", await idsDoEscritorio())
 
   const jaTenho = new Set((existentes ?? []).map((e) => String(e.djen_id)))
   const novas = resultado.dados.filter((c) => !jaTenho.has(String(c.idDjen)))
@@ -145,7 +146,7 @@ export async function sincronizarDjen(params: {
       .select(
         "id, processo_id, tarefa_id, prazo_estimado, prazo_dias, tipo_documento, tipo_comunicacao, destinatario, numero_processo_mascara, sigla_tribunal, nome_orgao, link, texto, ia_tipo_ato, ia_providencia, ia_urgencia, ia_prazo_de_quem"
       )
-      .eq("user_id", params.userId)
+      .in("user_id", await idsDoEscritorio())
       .in("id", gravadas.map((g) => g.id))
 
     const geracao = await gerarTarefasDasIntimacoes(

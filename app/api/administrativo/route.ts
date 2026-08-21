@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { decifrar } from "@/lib/seguranca/cofre"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Fila administrativa: um item por requerimento em curso no INSS.
@@ -66,14 +67,14 @@ export async function GET() {
       supabase
         .from("clientes")
         .select("id, nome, cpf, created_at, observacoes, senha_meu_inss, beneficio")
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
         .order("nome"),
       supabase
         .from("processos")
         .select(
           "id, cliente_id, beneficio, esfera, status, situacao_pericia, protocolo_inss, data_entrada"
         )
-        .eq("user_id", user.id),
+        .in("user_id", await idsDoEscritorio()),
     ])
 
     if (clientesRes.error || processosRes.error) {

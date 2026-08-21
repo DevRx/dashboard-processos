@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase/server"
 import { ClienteSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 export async function GET() {
   try {
@@ -14,7 +15,7 @@ export async function GET() {
     const { data: clientes, error } = await supabase
       .from("clientes")
       .select("*")
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .order("created_at", { ascending: false })
 
     if (error) {

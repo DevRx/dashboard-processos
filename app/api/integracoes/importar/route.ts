@@ -11,6 +11,7 @@ import {
 } from "@/lib/lgpd/consentimento"
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
 import { refTitular } from "@/lib/lgpd/mascarar"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Importação assistida de documento do Meu INSS / GERID.
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
       .from("clientes")
       .select("id")
       .eq("id", clienteId)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!cliente) {
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const consentimento = await buscarConsentimentoVigente(clienteId, user.id)
+    const consentimento = await buscarConsentimentoVigente(clienteId)
     const podeTratar = avaliarBaseLegal(consentimento)
 
     if (!podeTratar.ok) {

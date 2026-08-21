@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase/server"
 import { ProcessoSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 export async function GET() {
   try {
@@ -14,7 +15,7 @@ export async function GET() {
     const { data: processos, error } = await supabase
       .from("processos")
       .select("*, cliente:clientes(nome)")
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .order("created_at", { ascending: false })
 
     if (error) {
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
       .from("clientes")
       .select("id")
       .eq("id", validatedFields.data.clienteId)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .single()
 
     if (clienteError || !cliente) {

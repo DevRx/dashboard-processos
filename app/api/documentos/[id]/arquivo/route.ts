@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Abre o documento por URL assinada de curta duração.
@@ -28,7 +29,7 @@ export async function GET(
       .from("documentos")
       .select("caminho, url")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!documento) {

@@ -6,6 +6,7 @@ import { AplicarImportacaoSchema } from "@/lib/validators"
 import { derivarAplicacao } from "@/lib/integracoes/aplicar"
 import type { DocumentoINSS } from "@/lib/integracoes/contrato"
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Aplica ao processo o que foi extraído de um documento importado.
@@ -51,7 +52,7 @@ export async function POST(
       .from("importacoes_integracao")
       .select("*")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!importacao) {
@@ -135,7 +136,7 @@ export async function POST(
         .from("processos")
         .select("id, cliente_id, status, beneficio")
         .eq("id", confirmado.processoId!)
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
         .maybeSingle()
 
       if (!existente) {
@@ -196,7 +197,7 @@ export async function POST(
         .from("processos")
         .update(camposProcesso)
         .eq("id", processo.id)
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
 
       if (error) {
         console.error("Aplicar importação — processo:", error.message)
@@ -260,7 +261,7 @@ export async function POST(
         .from("importacoes_integracao")
         .update({ processo_id: processo.id })
         .eq("id", id)
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
     }
 
     await registrarTratamento({

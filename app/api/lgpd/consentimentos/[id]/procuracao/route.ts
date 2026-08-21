@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * PDF da procuração que sustenta a base legal.
@@ -37,7 +38,7 @@ export async function POST(
       .from("consentimentos_lgpd")
       .select("id, cliente_id, procuracao_arquivo")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!consentimento) {
@@ -91,7 +92,7 @@ export async function POST(
       .from("consentimentos_lgpd")
       .update({ procuracao_arquivo: caminho, procuracao_nome: arquivo.name })
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
 
     if (erroUpdate) {
       // Sem a linha apontando para ele, o arquivo seria órfão no bucket
@@ -150,7 +151,7 @@ export async function GET(
       .from("consentimentos_lgpd")
       .select("procuracao_arquivo")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!consentimento?.procuracao_arquivo) {

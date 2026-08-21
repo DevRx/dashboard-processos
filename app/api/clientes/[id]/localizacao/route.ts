@@ -3,6 +3,7 @@ import { z } from "zod"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { municipioPorNome } from "@/lib/domain/localizacao"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Ponto do cliente no mapa, apontado à mão.
@@ -55,7 +56,7 @@ export async function PATCH(
       .from("clientes")
       .update(campos)
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select("id, latitude, longitude")
       .maybeSingle()
 

@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { mensagemWhatsApp } from "@/lib/ia/mensagem-triagem"
 import type { LeituraDocumento } from "@/lib/ia/leitor-documento"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Triagem de um documento, em forma consumível por automação.
@@ -34,7 +35,7 @@ export async function GET(
         "id, nome, categoria, ia_resumo, ia_campos, ia_lido_em, ia_modelo, cliente:clientes(nome)"
       )
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!documento) {

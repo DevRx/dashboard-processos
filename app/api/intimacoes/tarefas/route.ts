@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { gerarTarefasDasIntimacoes } from "@/lib/intimacoes/gerar-tarefas"
 import { TimeTarefaEnum } from "@/lib/validators"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 const MutiraoSchema = z.object({ time: TimeTarefaEnum.nullish() })
 
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
       .select(
         "id, processo_id, tarefa_id, prazo_estimado, prazo_dias, tipo_documento, tipo_comunicacao, destinatario, numero_processo_mascara, sigla_tribunal, nome_orgao, link, texto"
       )
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .is("tarefa_id", null)
       .is("tratada_em", null)
       .not("prazo_estimado", "is", null)

@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase/server"
 import { AndamentoSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 export async function GET(
   _request: NextRequest,
@@ -20,7 +21,7 @@ export async function GET(
       .from("andamentos")
       .select("*")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .single()
 
     if (error || !andamento) {
@@ -70,7 +71,7 @@ export async function PUT(
       .from("andamentos")
       .update(toSnakeCase(validatedFields.data))
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .select()
       .single()
 
@@ -111,7 +112,7 @@ export async function DELETE(
       .from("andamentos")
       .delete()
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
 
     if (error) {
       console.error("Delete andamento error:", error)

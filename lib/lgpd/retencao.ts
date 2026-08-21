@@ -1,5 +1,6 @@
 import "server-only"
 import { supabase } from "@/lib/supabase/server"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Eliminação por término da retenção (art. 15, I e art. 16).
@@ -39,7 +40,7 @@ export async function expurgarImportacoesVencidas(
     .is("expurgado_em", null)
 
   if (userId) {
-    consulta = consulta.eq("user_id", userId)
+    consulta = consulta.in("user_id", await idsDoEscritorio())
   }
 
   const { data, error } = await consulta.select("id")
@@ -64,8 +65,7 @@ export async function expurgarImportacoesVencidas(
  * dashboard mantinha por conveniência.
  */
 export async function eliminarDadosImportados(
-  clienteId: string,
-  userId: string
+  clienteId: string
 ): Promise<ResultadoExpurgo> {
   const { data, error } = await supabase
     .from("importacoes_integracao")
@@ -74,7 +74,7 @@ export async function eliminarDadosImportados(
       expurgado_em: new Date().toISOString(),
     })
     .eq("cliente_id", clienteId)
-    .eq("user_id", userId)
+    .in("user_id", await idsDoEscritorio())
     .is("expurgado_em", null)
     .select("id")
 

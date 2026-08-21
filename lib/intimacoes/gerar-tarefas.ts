@@ -6,6 +6,7 @@ import {
   tituloDaTarefa,
   type IntimacaoParaTarefa,
 } from "@/lib/domain/intimacao"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Transforma prazos de intimação em tarefas do quadro.
@@ -78,7 +79,7 @@ export async function gerarTarefasDasIntimacoes(
       .from("comunicacoes_djen")
       .update({ tarefa_id: tarefa.id })
       .eq("id", intimacao.id)
-      .eq("user_id", userId)
+      .in("user_id", await idsDoEscritorio())
 
     // Sem o vínculo, a próxima busca criaria a tarefa de novo. Melhor
     // apagar a recém-criada do que deixar o quadro duplicar sozinho.

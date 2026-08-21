@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { toCamelCase } from "@/lib/utils"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Histórico de importações de um cliente.
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
       .from("importacoes_integracao")
       .select("*")
       .eq("cliente_id", clienteId)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .order("created_at", { ascending: false })
       .limit(50)
 

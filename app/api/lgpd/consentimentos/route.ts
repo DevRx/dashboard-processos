@@ -5,6 +5,7 @@ import { toCamelCase } from "@/lib/utils"
 import { ConsentimentoSchema } from "@/lib/validators"
 import { listarConsentimentos } from "@/lib/lgpd/consentimento"
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Base legal por titular.
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Informe o cliente" }, { status: 400 })
     }
 
-    const consentimentos = await listarConsentimentos(clienteId, user.id)
+    const consentimentos = await listarConsentimentos(clienteId)
     return NextResponse.json({ consentimentos }, { status: 200 })
   } catch (error) {
     console.error("Get consentimentos error:", error)
@@ -71,7 +72,7 @@ export async function POST(request: NextRequest) {
       .from("clientes")
       .select("id")
       .eq("id", clienteId)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (!cliente) {

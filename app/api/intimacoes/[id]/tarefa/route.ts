@@ -8,6 +8,7 @@ import {
   prioridadePorPrazo,
   tituloDaTarefa,
 } from "@/lib/domain/intimacao"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Transforma o prazo da intimação em tarefa do quadro.
@@ -51,7 +52,7 @@ export async function POST(
         "id, tarefa_id, processo_id, destinatario, tipo_documento, tipo_comunicacao, nome_orgao, sigla_tribunal, numero_processo_mascara, texto, prazo_dias, link, ia_tipo_ato, ia_providencia, ia_urgencia, ia_prazo_de_quem"
       )
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .maybeSingle()
 
     if (erroBusca || !intimacao) {
@@ -103,7 +104,7 @@ export async function POST(
       .from("comunicacoes_djen")
       .update({ tarefa_id: tarefa.id })
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
 
     if (erroVinculo) {
       console.error("Vincular tarefa à intimação:", erroVinculo.message)

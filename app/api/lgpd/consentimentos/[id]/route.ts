@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase/server"
 import { toCamelCase } from "@/lib/utils"
 import { ConsentimentoEdicaoSchema, RevogacaoSchema } from "@/lib/validators"
 import { ipDaRequisicao, registrarTratamento } from "@/lib/lgpd/auditoria"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Retificação da base legal vigente.
@@ -53,7 +54,7 @@ export async function PATCH(
       .from("consentimentos_lgpd")
       .select("*")
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .is("revogado_em", null)
       .maybeSingle()
 
@@ -86,7 +87,7 @@ export async function PATCH(
         .from("consentimentos_lgpd")
         .update(campos)
         .eq("id", id)
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
         .select()
         .single()
 
@@ -122,7 +123,7 @@ export async function PATCH(
         revogado_motivo: "Substituída por retificação da base legal",
       })
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .is("revogado_em", null)
 
     if (erroRevogacao) {
@@ -147,7 +148,7 @@ export async function PATCH(
         .from("consentimentos_lgpd")
         .update({ revogado_em: null, revogado_motivo: null })
         .eq("id", id)
-        .eq("user_id", user.id)
+        .in("user_id", await idsDoEscritorio())
 
       console.error("Substituir base legal — inserção:", erroInsercao?.message)
       return NextResponse.json(
@@ -227,7 +228,7 @@ export async function DELETE(
         revogado_motivo: validado.data.motivo,
       })
       .eq("id", id)
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .is("revogado_em", null)
       .select()
       .maybeSingle()

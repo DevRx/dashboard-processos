@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Visão geral da integração INSS por cliente.
@@ -43,7 +44,7 @@ export async function GET() {
       .select(
         "id, nome, consentimentos_lgpd(id, base_legal, fontes, retencao_ate, revogado_em), importacoes_integracao(id, documento, processo_id, expurgado_em, created_at)"
       )
-      .eq("user_id", user.id)
+      .in("user_id", await idsDoEscritorio())
       .order("nome")
 
     if (error) {

@@ -1,6 +1,7 @@
 import "server-only"
 import { supabase } from "@/lib/supabase/server"
 import { analisarIntimacao } from "@/lib/ia/analista-intimacao"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Analisa intimações e guarda o resultado.
@@ -69,7 +70,7 @@ export async function analisarIntimacoes(
         ia_analisada_em: new Date().toISOString(),
       })
       .eq("id", linha.id)
-      .eq("user_id", userId)
+      .in("user_id", await idsDoEscritorio())
 
     if (error) {
       console.error("Gravar análise:", error.message)

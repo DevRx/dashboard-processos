@@ -2,6 +2,7 @@ import "server-only"
 import { supabase } from "@/lib/supabase/server"
 import { toCamelCase } from "@/lib/utils"
 import type { FonteIntegracao } from "@/lib/integracoes/contrato"
+import { idsDoEscritorio } from "@/lib/escritorio"
 
 /**
  * Porteiro de base legal.
@@ -67,14 +68,13 @@ export const MOTIVO_RECUSA_MENSAGEM: Record<MotivoRecusa, string> = {
 
 /** Consentimento não revogado do cliente, se houver. */
 export async function buscarConsentimentoVigente(
-  clienteId: string,
-  userId: string
+  clienteId: string
 ): Promise<Consentimento | null> {
   const { data, error } = await supabase
     .from("consentimentos_lgpd")
     .select("*")
     .eq("cliente_id", clienteId)
-    .eq("user_id", userId)
+    .in("user_id", await idsDoEscritorio())
     .is("revogado_em", null)
     .maybeSingle()
 
@@ -84,14 +84,13 @@ export async function buscarConsentimentoVigente(
 
 /** Histórico completo, incluindo revogados — é a trilha de prova. */
 export async function listarConsentimentos(
-  clienteId: string,
-  userId: string
+  clienteId: string
 ): Promise<Consentimento[]> {
   const { data, error } = await supabase
     .from("consentimentos_lgpd")
     .select("*")
     .eq("cliente_id", clienteId)
-    .eq("user_id", userId)
+    .in("user_id", await idsDoEscritorio())
     .order("created_at", { ascending: false })
 
   if (error || !data) return []

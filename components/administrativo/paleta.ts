@@ -72,6 +72,38 @@ export const TINTA: Record<CategoriaAdministrativo, Tinta> = {
 }
 
 /**
+ * A mesma identidade, em tinta que o gráfico consegue usar.
+ *
+ * As classes acima são do Tailwind e não servem para o `fill` de um
+ * SVG, então a cor vira variável CSS — e vira uma só, aqui, pelo mesmo
+ * motivo que a `TINTA` existe: fatia e cartão precisam ser a mesma
+ * coisa aos olhos de quem lê.
+ *
+ * O degrau não é sempre o mesmo da classe. Lado a lado num gráfico as
+ * cores se comparam entre si, o que os cartões nunca fazem — e nesse
+ * regime `teal-600` e `emerald-600` eram literalmente a mesma fatia
+ * verde (ΔE 5,2 para visão normal, onde o piso é 15). Os degraus foram
+ * escolhidos por busca sobre as rampas do Tailwind, validados com o
+ * script de paleta do guia de dataviz: no modo claro o conjunto passa
+ * em todos os testes (pior par ΔE 8,7 em daltonismo, 17,6 em visão
+ * normal, com sete fatias na tela).
+ *
+ * No escuro a banda de luminosidade util e estreita (L 0,48–0,67) e
+ * sete matizes não cabem nela com folga: o melhor alcançável é ΔE 13,7,
+ * abaixo do piso. Por isso o gráfico nunca entrega identidade só pela
+ * cor — toda fatia carrega rótulo e a legenda repete nome e contagem.
+ */
+export const COR_CATEGORIA: Record<CategoriaAdministrativo, string> = {
+  APOSENTADORIA: "var(--cat-aposentadoria)",
+  BPC_DEFICIENTE: "var(--cat-bpc-deficiente)",
+  AUXILIO_DOENCA: "var(--cat-auxilio-doenca)",
+  PENSAO: "var(--cat-pensao)",
+  MATERNIDADE: "var(--cat-maternidade)",
+  PROCEDIMENTO_ADM: "var(--cat-procedimento-adm)",
+  OUTROS: "var(--cat-outros)",
+}
+
+/**
  * Cores das etiquetas de perícia. Vivem aqui porque aparecem em três
  * lugares — o cartão do quadro, a linha do cliente e o menu de troca —
  * e precisam ser a mesma cor nos três.

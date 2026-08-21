@@ -76,6 +76,21 @@
      favicon e material institucional. A interface de trabalho não a usa. */
   --brand: #db2777;
 
+  /* Famílias de benefício no gráfico.
+
+     Mesma identidade dos cartões do Administrativo, em degrau escolhido
+     para a fatia: no gráfico as cores se comparam entre si, e nesse
+     regime teal-600 e emerald-600 colidiam. Validado com sete fatias —
+     pior par ΔE 8,7 (daltonismo) e 17,6 (visão normal). Não editar sem
+     revalidar: ver COR_CATEGORIA em components/administrativo/paleta.ts. */
+  --cat-aposentadoria: #0084d1;    /* sky-600     */
+  --cat-bpc-deficiente: #4f39f6;   /* indigo-600  */
+  --cat-auxilio-doenca: #9f0712;   /* red-800     */
+  --cat-pensao: #00bba7;           /* teal-500    */
+  --cat-maternidade: #e60076;      /* pink-600    */
+  --cat-procedimento-adm: #e17100; /* amber-600   */
+  --cat-outros: #007a55;           /* emerald-700 */
+
   /* Superfícies: três níveis */
   --background: #f7f8fa;
   --card: #ffffff;
@@ -137,6 +152,21 @@
 .dark {
   /* Escuro reequilibrado, não invertido: o acento sobe em luminosidade
      para manter contraste sobre fundo escuro. */
+
+  /* As mesmas famílias, repisadas para a superfície escura — não é o
+     conjunto claro espelhado. A banda útil aqui é estreita (L
+     0,48–0,67) e sete matizes não cabem com folga: o melhor par possível
+     fica em ΔE 13,7, abaixo do piso de 15. É por isso que o gráfico
+     rotula toda fatia e repete a contagem na legenda, em vez de confiar
+     na cor sozinha. */
+  --cat-aposentadoria: #0084d1;    /* sky-600     */
+  --cat-bpc-deficiente: #4f39f6;   /* indigo-600  */
+  --cat-auxilio-doenca: #e7000b;   /* red-600     */
+  --cat-pensao: #009689;           /* teal-600    */
+  --cat-maternidade: #f6339a;      /* pink-500    */
+  --cat-procedimento-adm: #e17100; /* amber-600   */
+  --cat-outros: #007a55;           /* emerald-700 */
+
   --background: #0d1117;
   --card: #141a21;
   --popover: #141a21;

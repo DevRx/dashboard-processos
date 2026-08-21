@@ -28,6 +28,18 @@ const MapaAtendimento = dynamic(
   }
 )
 
+/**
+ * As opções de cidade são as mesmas para todo mundo e não mudam em
+ * tempo de execução. Montadas aqui uma vez, os 77 municípios deixam de
+ * ser reconstruídos por cliente da lista a cada render — com a fila
+ * cheia, era esse laço que dominava o custo da tela.
+ */
+const OPCOES_DE_CIDADE = MUNICIPIOS.map((m) => (
+  <option key={`${m.nome}|${m.uf}`} value={`${m.nome}|${m.uf}`}>
+    {m.nome}/{m.uf}
+  </option>
+))
+
 type SemLocalizacao = {
   id: string
   nome: string
@@ -231,11 +243,7 @@ export default function MapaPage() {
                       className="h-8 w-full rounded-lg border border-input bg-card px-2 text-[12.5px] outline-none"
                     >
                       <option value="">Apontar cidade…</option>
-                      {MUNICIPIOS.map((m) => (
-                        <option key={`${m.nome}|${m.uf}`} value={`${m.nome}|${m.uf}`}>
-                          {m.nome}/{m.uf}
-                        </option>
-                      ))}
+                      {OPCOES_DE_CIDADE}
                     </select>
                   </li>
                 ))}

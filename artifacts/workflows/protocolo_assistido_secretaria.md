@@ -146,7 +146,9 @@ Essa última é a parte importante. Se o gov.br pedir captcha, ou trocar o layou
 
 E você termina o login à mão, exatamente como na versão sem configurar. O login automático é um atalho, nunca uma dependência.
 
-Uma trava a mais, que você não vê: a senha só é digitada em página do próprio `sso.acesso.gov.br`. Se o navegador tiver parado em qualquer outro endereço, o robô não digita e chama você.
+Uma trava a mais, que você não vê: a senha só é digitada em página do próprio `sso.acesso.gov.br`. Se o navegador tiver parado em qualquer outro endereço — inclusive num domínio parecido —, o robô não digita e chama você.
+
+Essas garantias não são promessa: `npm run ensaio:login` exercita as cinco, contra um gov.br simulado, sem rede e sem conta. Se o site mudar e alguma parar de valer, é esse comando que avisa.
 
 ### 3. Ele preenche — dizendo o que entendeu e por quê
 

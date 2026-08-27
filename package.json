@@ -12,7 +12,8 @@
     "setup:local": "./scripts/setup-local.sh",
     "db:local": "./scripts/db-local.sh",
     "seed:local": "node --env-file=.env scripts/seed-local.mjs",
-    "protocolo": "node --env-file=.env --import tsx scripts/protocolo/cli.ts"
+    "protocolo": "node --env-file=.env --import tsx scripts/protocolo/cli.ts",
+    "ensaio:login": "node --import tsx scripts/protocolo/ensaio-login.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",

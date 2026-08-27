@@ -10,6 +10,7 @@ import {
   pausaHumana,
   relato,
 } from "./operador"
+import { entrar } from "./login"
 import { PassoFalhou } from "./verificacao"
 import { AcaoBloqueada, executar } from "./executor"
 import { analistaClaude, type Analista, type DadosDoCaso } from "./analista"
@@ -22,15 +23,17 @@ import { capturarTela, lerTela, telaEmTexto } from "./tela"
  *
  *   análise  — lê a tela e diz o que preencher onde (scripts/protocolo/analista.ts)
  *   execução — faz e confere se fez (executor.ts + verificacao.ts)
- *   pessoa   — entra na conta, confere o resultado e envia
+ *   pessoa   — confere o resultado e envia
  *
  * O código não sabe onde ficam os campos, e é de propósito: seletor
  * chumbado envelhece com o site. O que o código garante é o que a
  * análise não pode fazer — enviar o requerimento.
  *
- * Isto NÃO protocola. O acesso exige gov.br com 2FA ou certificado A3,
- * cuja chave privada não sai do token — ver
- * artifacts/workflows/protocolo_administrativo.md.
+ * Isto NÃO protocola, e a razão não é a mesma do login. Entrar na conta
+ * o robô até pode, se você mandar (login.ts): o gov.br não obriga
+ * segundo fator. Enviar o requerimento ele não pode em hipótese nenhuma,
+ * porque protocolar em nome de cliente é ato de quem responde por ele —
+ * ver artifacts/workflows/protocolo_administrativo.md.
  */
 
 const URL_MEU_INSS = process.env.PROTOCOLO_URL ?? "https://meu.inss.gov.br"
@@ -151,17 +154,11 @@ export async function assistirProtocolo(dados: DadosDoCaso, analista?: Analista)
     const page = await browser.newPage()
     await page.goto(URL_MEU_INSS)
 
-    // ── PARADA 1: só a pessoa autentica ───────────────────────────
-    await pausaHumana("faça o login no gov.br", [
-      "O robô não tem e não deve ter a sua senha, nem o seu token A3.",
-      "",
-      "Na janela que abriu:",
-      "  1. clique em 'Entrar com gov.br'",
-      "  2. use a sua senha + 2FA, ou o certificado digital",
-      "  3. espere carregar a área logada",
-      "",
-      "Sem pressa — o robô espera o tempo que for preciso.",
-    ])
+    // ── PARADA 1: a entrada na conta ──────────────────────────────
+    // Por padrão para aqui e espera a pessoa. Com PROTOCOLO_CPF e
+    // PROTOCOLO_SENHA no .env, entra sozinho — e volta a parar sozinho
+    // se o gov.br pedir captcha ou mudar de tela (ver login.ts).
+    await entrar(page)
 
     relato.tentando("confirmando que o login valeu")
     try {

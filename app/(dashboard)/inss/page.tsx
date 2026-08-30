@@ -10,11 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { EmptyState } from "@/components/dashboard/empty-state"
-import {
-  CartaoCategoria,
-  type ChipEtiqueta,
-} from "@/components/administrativo/cartao-categoria"
-import { TOM_PERICIA, TOM_STATUS } from "@/components/administrativo/paleta"
+import { QuadroKanbanAdministrativo } from "@/components/administrativo/quadro-kanban"
 import { ListaClientes } from "@/components/administrativo/lista-clientes"
 import { useFilaAdministrativa } from "@/components/administrativo/usar-fila"
 import type { ItemFila } from "@/components/administrativo/tipos"
@@ -23,13 +19,7 @@ import {
   categorizarBeneficio,
   type CategoriaAdministrativo,
 } from "@/lib/domain/beneficio"
-import {
-  PERICIA_LABEL,
-  SITUACOES_PERICIA,
-  getProcessoStatusLabel,
-  isSituacaoPericia,
-  periciaSugerida,
-} from "@/lib/domain/processo"
+import { isSituacaoPericia, periciaSugerida } from "@/lib/domain/processo"
 import { Landmark, Search, Stethoscope, Users } from "lucide-react"
 
 /**
@@ -113,60 +103,6 @@ export default function AdministrativoPage() {
       }).length,
     [porCategoria]
   )
-
-  /**
-   * As etiquetas do cartão. No auxílio-doença são as de perícia — as
-   * únicas que a equipe troca à mão. Nas outras famílias, o estado do
-   * processo cumpre o mesmo papel: dizer o que há dentro da fila sem
-   * precisar entrar nela.
-   */
-  const etiquetasPorCategoria = useMemo(() => {
-    const mapa = {} as Record<CategoriaAdministrativo, ChipEtiqueta[]>
-
-    for (const categoria of CATEGORIAS_ADMINISTRATIVO) {
-      const itens = porCategoria[categoria]
-
-      if (categoria === "AUXILIO_DOENCA") {
-        const contagem = new Map(SITUACOES_PERICIA.map((s) => [s, 0]))
-
-        for (const i of itens) {
-          const etiqueta = isSituacaoPericia(i.situacaoPericia)
-            ? i.situacaoPericia
-            : periciaSugerida(i.status ?? "")
-          contagem.set(etiqueta, (contagem.get(etiqueta) ?? 0) + 1)
-        }
-
-        mapa[categoria] = SITUACOES_PERICIA.filter(
-          (s) => (contagem.get(s) ?? 0) > 0
-        ).map((s) => ({
-          rotulo: PERICIA_LABEL[s],
-          total: contagem.get(s) ?? 0,
-          tom: TOM_PERICIA[s],
-        }))
-        continue
-      }
-
-      const contagem = new Map<string, number>()
-      for (const i of itens) {
-        const chave = i.status ?? "SEM_PROCESSO"
-        contagem.set(chave, (contagem.get(chave) ?? 0) + 1)
-      }
-
-      mapa[categoria] = [...contagem.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([status, total]) => ({
-          rotulo:
-            status === "SEM_PROCESSO"
-              ? "sem processo"
-              : getProcessoStatusLabel(status),
-          total,
-          tom: TOM_STATUS[status] ?? TOM_STATUS.SEM_PROCESSO,
-        }))
-    }
-
-    return mapa
-  }, [porCategoria])
 
   const buscando = busca.trim().length > 0
 
@@ -305,31 +241,17 @@ export default function AdministrativoPage() {
               />
             )
           ) : carregando ? (
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7">
               {Array.from({ length: 7 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full" />
+                <Skeleton key={i} className="h-56 w-full" />
               ))}
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-              {CATEGORIAS_ADMINISTRATIVO.map((categoria) => (
-                <CartaoCategoria
-                  key={categoria}
-                  categoria={categoria}
-                  total={porCategoria[categoria].length}
-                  etiquetas={etiquetasPorCategoria[categoria]}
-                  alerta={
-                    categoria === "AUXILIO_DOENCA" && aMarcarPericia > 0
-                      ? `${aMarcarPericia} ${
-                          aMarcarPericia === 1
-                            ? "perícia a marcar"
-                            : "perícias a marcar"
-                        }`
-                      : null
-                  }
-                />
-              ))}
-            </div>
+            <QuadroKanbanAdministrativo
+              itens={ativos}
+              onSalvarFicha={salvarFicha}
+              onTrocarPericia={trocarPericia}
+            />
           )}
 
           <Card>

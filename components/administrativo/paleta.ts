@@ -24,6 +24,11 @@ export type Tinta = {
   /** Fundo suave do ícone. */
   selo: string
   contorno: string
+  /** Título da coluna no kanban. */
+  texto: string
+  /** Fundo da coluna no kanban — mais lavado que o `selo`, porque
+      cobre uma faixa alta da tela e os cartões brancos moram nele. */
+  fundo: string
 }
 
 export const TINTA: Record<CategoriaAdministrativo, Tinta> = {
@@ -32,42 +37,56 @@ export const TINTA: Record<CategoriaAdministrativo, Tinta> = {
     barra: "bg-sky-600",
     selo: "bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300",
     contorno: "ring-sky-600/25",
+    texto: "text-sky-700 dark:text-sky-300",
+    fundo: "bg-sky-50/70 dark:bg-sky-950/25",
   },
   BPC_DEFICIENTE: {
     icone: Accessibility,
     barra: "bg-indigo-600",
     selo: "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300",
     contorno: "ring-indigo-600/25",
+    texto: "text-indigo-700 dark:text-indigo-300",
+    fundo: "bg-indigo-50/70 dark:bg-indigo-950/25",
   },
   AUXILIO_DOENCA: {
     icone: Stethoscope,
     barra: "bg-red-600",
     selo: "bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300",
     contorno: "ring-red-600/25",
+    texto: "text-red-700 dark:text-red-300",
+    fundo: "bg-red-50/70 dark:bg-red-950/25",
   },
   PENSAO: {
     icone: HeartHandshake,
     barra: "bg-teal-600",
     selo: "bg-teal-50 text-teal-700 dark:bg-teal-950/60 dark:text-teal-300",
     contorno: "ring-teal-600/25",
+    texto: "text-teal-700 dark:text-teal-300",
+    fundo: "bg-teal-50/70 dark:bg-teal-950/25",
   },
   MATERNIDADE: {
     icone: Baby,
     barra: "bg-pink-600",
     selo: "bg-pink-50 text-pink-700 dark:bg-pink-950/60 dark:text-pink-300",
     contorno: "ring-pink-600/25",
+    texto: "text-pink-700 dark:text-pink-300",
+    fundo: "bg-pink-50/70 dark:bg-pink-950/25",
   },
   PROCEDIMENTO_ADM: {
     icone: ClipboardList,
     barra: "bg-amber-500",
     selo: "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300",
     contorno: "ring-amber-500/30",
+    texto: "text-amber-700 dark:text-amber-300",
+    fundo: "bg-amber-50/70 dark:bg-amber-950/25",
   },
   OUTROS: {
     icone: Layers,
     barra: "bg-emerald-600",
     selo: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300",
     contorno: "ring-emerald-600/25",
+    texto: "text-emerald-700 dark:text-emerald-300",
+    fundo: "bg-emerald-50/70 dark:bg-emerald-950/25",
   },
 }
 

@@ -138,14 +138,25 @@ function ItemNavegacao({
     )
   )
 
-  // Estando dentro de uma esfera, a gaveta abre sozinha: um menu que
-  // esconde a página em que você está não diz onde você está.
-  const [aberto, setAberto] = useState(filhoAtivo)
+  // A gaveta já nasce aberta quando você está na seção — dentro de uma
+  // esfera ou na própria página do pai. Um menu que esconde a página em
+  // que você está não diz onde você está; e em /processos as duas
+  // esferas são justamente o que se foi buscar ali.
+  const [aberto, setAberto] = useState(filhoAtivo || ativo)
+
+  const temFilhos = Boolean(item.filhos?.length)
 
   const link = (
     <Link
       href={item.href}
-      onClick={onNavegar}
+      onClick={() => {
+        // Clicar em "Processos" abre as esferas, além de levar à
+        // página. Antes só a seta abria, e mirar uma seta de 15px para
+        // chegar em "Administrativo" é trabalho que o menu não devia
+        // dar. A seta continua existindo — é ela que fecha.
+        if (temFilhos) setAberto(true)
+        onNavegar?.()
+      }}
       aria-current={ativo ? "page" : undefined}
       title={trilho ? item.name : undefined}
       className={cn(
@@ -192,7 +203,7 @@ function ItemNavegacao({
     </Link>
   )
 
-  if (!item.filhos?.length) return link
+  if (!temFilhos) return link
 
   const idGaveta = `submenu-${item.href.replace(/\W/g, "") || "raiz"}`
 
@@ -232,7 +243,7 @@ function ItemNavegacao({
           id={idGaveta}
           className="animate-in fade-in slide-in-from-top-1 flex flex-col gap-0.5 duration-150"
         >
-          {item.filhos.map((sub) => (
+          {item.filhos?.map((sub) => (
             <ItemNavegacao
               key={sub.name}
               item={sub}

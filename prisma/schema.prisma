@@ -44,6 +44,22 @@ enum TarefaPrioridade {
   URGENTE
 }
 
+/// Uma dúvida é uma tarefa como as outras — entra no quadro, tem
+/// responsável e prazo. O que a distingue é ter uma mãe: ela nasceu de
+/// outra tarefa que parou à espera da resposta.
+enum TarefaTipo {
+  NORMAL
+  DUVIDA
+}
+
+/// O que o histórico de uma tarefa registra. Append-only: ver
+/// supabase/migrations/20260830180000_duvidas_e_historico.sql.
+enum EventoTarefaTipo {
+  DUVIDA_ABERTA
+  DUVIDA_RESPONDIDA
+  STATUS_ALTERADO
+}
+
 /// Setores do escritório. A identidade de cada um é a cor: no quadro
 /// de tarefas ela é lida antes de qualquer texto, que é o ponto —
 /// saber de quem é a tarefa sem parar para ler.
@@ -148,6 +164,9 @@ model User {
   processosResponsavel Processo[]             @relation("ResponsavelProcesso")
   // Tarefas atribuídas a este usuário
   tarefasResponsavel   Tarefa[]               @relation("ResponsavelTarefa")
+  // Dúvidas que este usuário respondeu
+  duvidasRespondidas   Tarefa[]               @relation("QuemRespondeuDuvida")
+  eventosTarefa        EventoTarefa[]
   comunicacoesDjen     ComunicacaoDjen[]
 
   @@map("users")
@@ -258,16 +277,57 @@ model Tarefa {
   /// Quem executa. `userId` é quem cadastrou — os dois raramente são a
   /// mesma pessoa num escritório com equipe.
   responsavelId String?          @map("responsavel_id")
+  tipo          TarefaTipo       @default(NORMAL)
+  /// A tarefa que parou à espera desta pergunta. Só dúvida tem mãe —
+  /// há um CHECK no banco garantindo isso.
+  tarefaPaiId   String?          @map("tarefa_pai_id")
+  /// A resposta mora na dúvida, junto da pergunta: é ela que fecha a
+  /// dúvida, e quem reabre o caso meses depois procura as duas juntas.
+  resposta      String?
+  respondidaEm  DateTime?        @map("respondida_em")
+  respondidaPor String?          @map("respondida_por")
   createdAt     DateTime         @default(now()) @map("created_at")
   updatedAt     DateTime         @updatedAt @map("updated_at")
 
   // Relações
   user         User              @relation(fields: [userId], references: [id])
   responsavel  User?             @relation("ResponsavelTarefa", fields: [responsavelId], references: [id])
+  quemRespondeu User?            @relation("QuemRespondeuDuvida", fields: [respondidaPor], references: [id])
   processo     Processo?         @relation(fields: [processoId], references: [id], onDelete: SetNull)
+  tarefaPai    Tarefa?           @relation("DuvidaDaTarefa", fields: [tarefaPaiId], references: [id], onDelete: Cascade)
+  duvidas      Tarefa[]          @relation("DuvidaDaTarefa")
+  eventos      EventoTarefa[]
   comunicacoes ComunicacaoDjen[]
 
+  @@index([tarefaPaiId])
+  @@index([tipo])
   @@map("tarefas")
+}
+
+/// Histórico da tarefa. Append-only: um histórico que se edita não é
+/// histórico — quem errou o registro corrige acrescentando.
+///
+/// O evento da dúvida é gravado no clone, não na mãe. A tela da tarefa
+/// principal alcança as perguntas pelo laço `tarefaPaiId`, em vez de
+/// manter uma segunda cópia que um dia discorda da primeira.
+model EventoTarefa {
+  id         String           @id @default(uuid())
+  tarefaId   String           @map("tarefa_id")
+  tipo       EventoTarefaTipo
+  /// `SetNull`: a saída de alguém do escritório não apaga o que
+  /// aconteceu. O evento continua, sem o nome.
+  autorId    String?          @map("autor_id")
+  /// A pergunta, em DUVIDA_ABERTA; a resposta, em DUVIDA_RESPONDIDA.
+  texto      String?
+  statusDe   TarefaStatus?    @map("status_de")
+  statusPara TarefaStatus?    @map("status_para")
+  createdAt  DateTime         @default(now()) @map("created_at")
+
+  tarefa Tarefa @relation(fields: [tarefaId], references: [id], onDelete: Cascade)
+  autor  User?  @relation(fields: [autorId], references: [id])
+
+  @@index([tarefaId, createdAt])
+  @@map("eventos_tarefa")
 }
 
 /// Documentos do titular. RG, CPF e comprovante de residência valem

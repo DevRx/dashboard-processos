@@ -1,21 +1,20 @@
-# Graph Report - dashboard-processos  (2026-08-30)
+# Graph Report - .  (2026-08-30)
 
 ## Corpus Check
-- 216 files · ~102,902 words
-- Verdict: corpus is large enough that graph structure adds value.
+- cluster-only mode — file stats not available
 
 ## Summary
-- 1086 nodes · 2726 edges · 77 communities (38 shown, 39 thin omitted)
+- 1086 nodes · 2726 edges · 78 communities (38 shown, 40 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 17 edges (avg confidence: 0.64)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `00b89572`
+- Built from commit: `c502f9ae`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- financeiro/page.tsx
+- processos/page.tsx
 - getCurrentUser
 - dependencies
 - devDependencies
@@ -90,6 +89,7 @@
 - db-local.sh
 - dev-local.sh
 - setup-local.sh
+- bcryptjs
 
 ## God Nodes (most connected - your core abstractions)
 1. `getCurrentUser()` - 117 edges
@@ -118,19 +118,19 @@
 ## Import Cycles
 - None detected.
 
-## Communities (77 total, 39 thin omitted)
+## Communities (78 total, 40 thin omitted)
 
-### Community 0 - "financeiro/page.tsx"
+### Community 0 - "processos/page.tsx"
 Cohesion: 0.22
 Nodes (11): emptyForm, Button(), ButtonProps, Dialog(), DialogClose(), DialogContent(), DialogDescription(), DialogFooter() (+3 more)
 
 ### Community 1 - "getCurrentUser"
 Cohesion: 0.11
-Nodes (39): DELETE(), GET(), PUT(), GET(), POST(), GET(), GET(), POST() (+31 more)
+Nodes (38): DELETE(), GET(), PUT(), GET(), POST(), GET(), POST(), GET() (+30 more)
 
 ### Community 2 - "dependencies"
 Cohesion: 0.29
-Nodes (7): @anthropic-ai/sdk, bcryptjs, dependencies, @anthropic-ai/sdk, bcryptjs, react, react
+Nodes (7): @anthropic-ai/sdk, dependencies, @anthropic-ai/sdk, react, tw-animate-css, react, tw-animate-css
 
 ### Community 3 - "devDependencies"
 Cohesion: 0.05
@@ -205,16 +205,16 @@ Cohesion: 0.27
 Nodes (7): getResumo(), metadata, ResumoEmbedPage(), compareProcessoStatus(), PROCESSO_STATUS_LABELS, PROCESSO_STATUS_VALUES, ProcessoStatus
 
 ### Community 29 - "protocolo/index.ts"
-Cohesion: 0.10
-Nodes (26): POST(), LocalizacaoSchema, PATCH(), POST(), TIPOS_ACEITOS, ConsentimentoBruto, GET(), ImportacaoBruta (+18 more)
+Cohesion: 0.09
+Nodes (29): LocalizacaoSchema, PATCH(), GET(), GET(), ConsentimentoBruto, GET(), ImportacaoBruta, AnaliseSchema (+21 more)
 
 ### Community 30 - "sincronizar.ts"
 Cohesion: 0.07
 Nodes (42): executar(), GET(), POST(), usuarioDaRotina(), POST(), TarefaDaIntimacaoSchema, descricaoDaTarefa(), IntimacaoParaTarefa (+34 more)
 
 ### Community 31 - "ipDaRequisicao"
-Cohesion: 0.14
-Nodes (23): POST(), GET(), POST(), DELETE(), PATCH(), GET(), POST(), POST() (+15 more)
+Cohesion: 0.16
+Nodes (20): POST(), GET(), POST(), DELETE(), PATCH(), GET(), POST(), POST() (+12 more)
 
 ### Community 32 - "processar/route.ts"
 Cohesion: 0.16
@@ -229,8 +229,8 @@ Cohesion: 0.11
 Nodes (17): 1. Ele pergunta se pode começar, 2. O login — seu, de um jeito ou de outro, 3. Ele preenche — dizendo o que entendeu e por quê, 4. ⏸ PARE — a conferência é sua, 5. O número do protocolo, Antes de começar, Com login automático, Como rodar (+9 more)
 
 ### Community 35 - "idsDoEscritorio"
-Cohesion: 0.30
-Nodes (12): DELETE(), GET(), PUT(), DELETE(), GET(), PATCH(), idsDoEscritorio, remover() (+4 more)
+Cohesion: 0.33
+Nodes (11): DELETE(), GET(), PUT(), DELETE(), GET(), PATCH(), idsDoEscritorio, remover() (+3 more)
 
 ### Community 36 - "judicial/intimacoes/page.tsx"
 Cohesion: 0.23
@@ -267,19 +267,19 @@ Nodes (4): handleStorage(), PORT, proxyRest(), readBody()
 ## Knowledge Gaps
 - **326 isolated node(s):** `emptyForm`, `emptyForm`, `ClienteIntegracao`, `BASE_LEGAL_CURTO`, `Filtro` (+321 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **39 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **40 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `linha()` connect `index.ts` to `processos/page.tsx`?**
   _High betweenness centrality (0.107) - this node is a cross-community bridge._
-- **Why does `getCurrentUser()` connect `getCurrentUser` to `processar/route.ts`, `idsDoEscritorio`, `ficha/route.ts`, `localizacao/index.ts`, `cn`, `administrativo/route.ts`, `intimacoes/route.ts`, `validators/index.ts`, `index.ts`, `[id]/page.tsx`, `documentos-cliente.tsx`, `protocolo/index.ts`, `sincronizar.ts`, `ipDaRequisicao`?**
+- **Why does `getCurrentUser()` connect `getCurrentUser` to `processar/route.ts`, `idsDoEscritorio`, `tw-animate-css`, `ficha/route.ts`, `localizacao/index.ts`, `cn`, `administrativo/route.ts`, `intimacoes/route.ts`, `validators/index.ts`, `index.ts`, `[id]/page.tsx`, `documentos-cliente.tsx`, `protocolo/index.ts`, `sincronizar.ts`, `ipDaRequisicao`?**
   _High betweenness centrality (0.058) - this node is a cross-community bridge._
 - **What connects `emptyForm`, `emptyForm`, `ClienteIntegracao` to the rest of the system?**
   _326 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `getCurrentUser` be split into smaller, more focused modules?**
-  _Cohesion score 0.11043771043771043 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11178451178451178 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.05 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**

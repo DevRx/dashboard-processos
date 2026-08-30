@@ -71,10 +71,6 @@ enum SetorTarefa {
   VERDE
 }
 
-enum LancamentoTipo {
-  ENTRADA
-  SAIDA
-}
 
 /// O trabalho previdenciário começa no administrativo (requerimento no
 /// INSS, identificado por protocolo) e só vira judicial — com número
@@ -157,7 +153,6 @@ model User {
   tarefas              Tarefa[]
   documentos           Documento[]
   auditorias           Auditoria[]
-  lancamentos          LancamentoFinanceiro[]
   consentimentos       ConsentimentoLGPD[]
   importacoes          ImportacaoIntegracao[]
   // Processos onde este usuário é o responsável
@@ -368,21 +363,6 @@ model Documento {
   @@map("documentos")
 }
 
-model LancamentoFinanceiro {
-  id        String         @id @default(uuid())
-  userId    String         @map("user_id")
-  descricao String
-  valor     Float
-  tipo      LancamentoTipo
-  data      DateTime       @db.Date
-  createdAt DateTime       @default(now()) @map("created_at")
-  updatedAt DateTime       @updatedAt @map("updated_at")
-
-  // Relações
-  user User @relation(fields: [userId], references: [id])
-
-  @@map("lancamentos_financeiros")
-}
 
 /// Base legal registrada por titular. Sem uma linha vigente aqui,
 /// a API de importação recusa o tratamento.

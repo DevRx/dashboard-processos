@@ -14,7 +14,6 @@ export type TarefaStatus = "PENDENTE" | "EM_ANDAMENTO" | "CONCLUIDA" | "CANCELAD
 
 export type TarefaPrioridade = "BAIXA" | "MEDIA" | "ALTA" | "URGENTE"
 
-export type LancamentoTipo = "ENTRADA" | "SAIDA"
 
 /** Fase do caso: requerimento no INSS ou ação judicial. */
 export type EsferaProcesso = "ADMINISTRATIVO" | "JUDICIAL"
@@ -95,17 +94,6 @@ export type Tarefa = {
   updatedAt: string
 }
 
-export type LancamentoFinanceiro = {
-  id: string
-  userId: string
-  descricao: string
-  valor: number
-  tipo: LancamentoTipo
-  data: string
-  createdAt: string
-  updatedAt: string
-}
-
 export type Documento = {
   id: string
   processoId: string
@@ -161,11 +149,3 @@ export const TAREFA_PRIORIDADE_VALUES = Object.keys(
   TAREFA_PRIORIDADE_LABELS
 ) as TarefaPrioridade[]
 
-export const LANCAMENTO_TIPO_LABELS: Record<LancamentoTipo, string> = {
-  ENTRADA: "Entrada",
-  SAIDA: "Saída",
-}
-
-export const LANCAMENTO_TIPO_VALUES = Object.keys(
-  LANCAMENTO_TIPO_LABELS
-) as LancamentoTipo[]

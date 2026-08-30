@@ -40,7 +40,6 @@ export const TimeTarefaEnum = z.enum([
   "VERDE",
 ])
 
-export const LancamentoTipoEnum = z.enum(["ENTRADA", "SAIDA"])
 
 export const EsferaProcessoEnum = z.enum(["ADMINISTRATIVO", "JUDICIAL"])
 

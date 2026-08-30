@@ -13,7 +13,6 @@ import {
   Landmark,
   ListChecks,
   MapPin,
-  Wallet,
   Settings,
   Scale,
   Menu,
@@ -59,7 +58,6 @@ const menuGroups: MenuGroup[] = [
   {
     label: "Escritório",
     items: [
-      { name: "Financeiro", icon: Wallet, href: "/financeiro" },
       { name: "Configurações", icon: Settings, href: "/configuracoes" },
     ],
   },

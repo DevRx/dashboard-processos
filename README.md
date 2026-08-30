@@ -39,10 +39,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Rodando localmente (demonstração)
 
-O app usa Supabase (PostgREST) em quase toda a camada de dados e Prisma no
-login. Para demonstrar sem depender de um projeto Supabase na nuvem, o
-ambiente local sobe um Postgres embarcado + PostgREST + um gateway que
-serve a mesma superfície de API do Supabase.
+O app usa Supabase (PostgREST) em toda a camada de dados. Para demonstrar
+sem depender de um projeto Supabase na nuvem, o ambiente local sobe um
+Postgres embarcado + PostgREST + um gateway que serve a mesma superfície
+de API do Supabase.
 
 **Preparação (uma vez):**
 

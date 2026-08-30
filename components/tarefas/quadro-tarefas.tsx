@@ -1,11 +1,12 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { CalendarClock, Check, Loader2, Plus, UserRound } from "lucide-react"
+import { CalendarClock, Check, CircleHelp, Loader2, Plus, UserRound } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { PainelTarefa } from "./painel-tarefa"
 import { cn } from "@/lib/utils"
 import {
   TIMES_TAREFA,
@@ -40,6 +41,9 @@ type Tarefa = {
   responsavelId: string | null
   responsavel: Responsavel | null
   processo: { beneficio: string; numero: string | null } | null
+  tipo?: string | null
+  tarefaPaiId?: string | null
+  resposta?: string | null
 }
 
 type Usuario = { id: string; name: string; role: string }
@@ -184,6 +188,7 @@ function CartaoTarefa({
   onTrocarTime,
   onTrocarResponsavel,
   onConcluir,
+  onAbrir,
 }: {
   tarefa: Tarefa
   usuarios: Usuario[]
@@ -193,6 +198,7 @@ function CartaoTarefa({
   onTrocarTime: (time: TimeTarefa | null) => void
   onTrocarResponsavel: (responsavelId: string | null) => void
   onConcluir: () => void
+  onAbrir: () => void
 }) {
   const prazo = formatarData(tarefa.data)
   const atrasada = tarefa.data.slice(0, 10) < hojeISO()
@@ -268,9 +274,24 @@ function CartaoTarefa({
           >
             {responsavel ? nomeCurto(responsavel.name) : "Sem responsável"}
           </p>
-          <p className="mt-0.5 text-[12.5px] leading-snug text-foreground/90">
-            {tarefa.titulo}
-          </p>
+          {/* O título abre a tarefa: é onde moram as dúvidas e o
+              histórico. Botão e não div com onClick — a tarefa precisa
+              abrir pelo teclado como abre pelo mouse. */}
+          <button
+            type="button"
+            onClick={onAbrir}
+            className="mt-0.5 flex w-full items-start gap-1 rounded text-left text-[12.5px] leading-snug text-foreground/90 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            {tarefa.tipo === "DUVIDA" ? (
+              <CircleHelp
+                size={12}
+                strokeWidth={2.2}
+                aria-label="dúvida"
+                className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400"
+              />
+            ) : null}
+            <span className="min-w-0 flex-1">{tarefa.titulo}</span>
+          </button>
         </div>
 
       </div>
@@ -473,6 +494,7 @@ export function QuadroTarefas() {
   const [carregando, setCarregando] = useState(true)
   const [arrastando, setArrastando] = useState<string | null>(null)
   const [colunaAlvo, setColunaAlvo] = useState<string | null>(null)
+  const [aberta, setAberta] = useState<Tarefa | null>(null)
 
   useEffect(() => {
     const lista = fetch("/api/tarefas")
@@ -486,6 +508,18 @@ export function QuadroTarefas() {
     Promise.all([lista, equipe])
       .catch((err) => console.error("Erro ao carregar tarefas:", err))
       .finally(() => setCarregando(false))
+  }, [])
+
+  /**
+   * Abrir ou responder uma dúvida mexe no quadro de fora do quadro:
+   * nasce um cartão, ou some um. Recarregar a lista inteira é mais
+   * barato que costurar o caso na mão e errar um deles.
+   */
+  const recarregar = useCallback(() => {
+    fetch("/api/tarefas")
+      .then((r) => (r.ok ? r.json() : { tarefas: [] }))
+      .then((d) => setTarefas(d.tarefas ?? []))
+      .catch((err) => console.error("Erro ao recarregar tarefas:", err))
   }, [])
 
   const patch = useCallback(
@@ -642,6 +676,7 @@ export function QuadroTarefas() {
                     onTrocarTime={(s) => patch(t.id, { setor: s })}
                     onTrocarResponsavel={(r) => patch(t.id, { responsavelId: r })}
                     onConcluir={() => patch(t.id, { status: "CONCLUIDA" })}
+                    onAbrir={() => setAberta(t)}
                   />
                 ))}
 
@@ -693,11 +728,21 @@ export function QuadroTarefas() {
                 onTrocarTime={(s) => patch(t.id, { setor: s })}
                 onTrocarResponsavel={(r) => patch(t.id, { responsavelId: r })}
                 onConcluir={() => patch(t.id, { status: "CONCLUIDA" })}
+                    onAbrir={() => setAberta(t)}
               />
             ))}
           </div>
         </section>
       )}
+
+      <PainelTarefa
+        tarefaId={aberta?.id ?? null}
+        titulo={aberta?.titulo ?? ""}
+        ehDuvida={aberta?.tipo === "DUVIDA"}
+        aberto={aberta !== null}
+        onFechar={() => setAberta(null)}
+        onMudou={recarregar}
+      />
     </div>
   )
 }

@@ -162,15 +162,27 @@ function SenhaMeuInss({
   )
 }
 
+/**
+ * Onde a ficha está montada.
+ *
+ * `painel` é a gaveta da lista: ela abre colada na linha do cliente e
+ * precisa da borda e do fundo para se distinguir dela. `caixa` é a
+ * janela do kanban, onde a moldura já é do diálogo — repetir fundo e
+ * borda ali daria duas caixas, uma dentro da outra.
+ */
+export type MolduraFicha = "painel" | "caixa"
+
 export function FichaClienteAdministrativa({
   cliente,
   onSalvarFicha,
+  moldura = "painel",
 }: {
   cliente: FichaCliente
   onSalvarFicha: (patch: {
     observacoes?: string
     senhaMeuInss?: string
   }) => Promise<void>
+  moldura?: MolduraFicha
 }) {
   const [comentarios, setComentarios] = useState(cliente.observacoes ?? "")
   const [salvando, setSalvando] = useState(false)
@@ -190,8 +202,19 @@ export function FichaClienteAdministrativa({
   }
 
   return (
-    <div className="rounded-b-lg border-t border-foreground/10 bg-muted/40 px-4 py-4">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div
+      className={cn(
+        moldura === "painel"
+          ? "rounded-b-lg border-t border-foreground/10 bg-muted/40 px-4 py-4"
+          : "px-0.5 py-0.5"
+      )}
+    >
+      <div
+        className={cn(
+          "grid gap-4 sm:grid-cols-2",
+          moldura === "painel" && "xl:grid-cols-4"
+        )}
+      >
         <Campo rotulo="Cliente">
           <span className="font-medium">{cliente.nome}</span>
         </Campo>

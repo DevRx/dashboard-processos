@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "seed": "node --import tsx lib/seed.ts",
@@ -12,7 +12,9 @@
     "setup:local": "./scripts/setup-local.sh",
     "db:local": "./scripts/db-local.sh",
     "seed:local": "node --env-file=.env scripts/seed-local.mjs",
-    "protocolo": "node --env-file=.env --import tsx scripts/protocolo/cli.ts"
+    "protocolo": "node --env-file=.env --import tsx scripts/protocolo/cli.ts",
+    "ensaio:login": "node --import tsx scripts/protocolo/ensaio-login.ts",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",

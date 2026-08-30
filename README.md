@@ -39,10 +39,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Rodando localmente (demonstração)
 
-O app usa Supabase (PostgREST) em quase toda a camada de dados e Prisma no
-login. Para demonstrar sem depender de um projeto Supabase na nuvem, o
-ambiente local sobe um Postgres embarcado + PostgREST + um gateway que
-serve a mesma superfície de API do Supabase.
+O app usa Supabase (PostgREST) em toda a camada de dados. Para demonstrar
+sem depender de um projeto Supabase na nuvem, o ambiente local sobe um
+Postgres embarcado + PostgREST + um gateway que serve a mesma superfície
+de API do Supabase.
 
 **Preparação (uma vez):**
 
@@ -82,8 +82,42 @@ Para parar o banco: `npm run db:local stop`.
 ### Em produção
 
 `.env` aponta para o ambiente local. Para usar um projeto Supabase real,
-basta trocar `SUPABASE_URL`/`SUPABASE_SECRET_KEY` e `DATABASE_URL` — nada
-no código depende do gateway local.
+basta trocar `SUPABASE_URL`/`SUPABASE_SECRET_KEY` — nada no código
+depende do gateway local.
+
+**Três variáveis, e o sistema não sobe sem elas:**
+
+| Variável | Para que serve |
+| --- | --- |
+| `SUPABASE_URL` | Endereço do projeto Supabase. |
+| `SUPABASE_SECRET_KEY` | Chave de serviço. Todo acesso a dado passa por ela. |
+| `SESSION_SECRET` | Assina o cookie de sessão. |
+
+Faltando qualquer uma, **a build quebra** — e é para quebrar ali. As
+duas do Supabase já quebravam; o `SESSION_SECRET` não, e era o pior dos
+dois mundos: sem ele o sistema subia e assinava sessão com uma chave de
+zero byte, em silêncio. Erro de configuração pertence ao lugar onde
+alguém está olhando, não à tela de quem tentou entrar.
+
+Não existe mais `DATABASE_URL` em produção. O Prisma continua sendo o
+dono do schema (`prisma/schema.prisma`, e as migrations em
+`supabase/migrations/`), mas nenhuma rota fala com o banco por conexão
+direta — tudo passa pelo Supabase. Foi justamente a exceção que quebrava
+o deploy: login e cadastro usavam Prisma, pediam uma variável que
+nenhuma outra rota usava, e `prisma generate` não reclamava da falta
+dela na build.
+
+Para mexer no schema, `npm run db:generate` gera o cliente do Prisma
+localmente. A build de produção não precisa dele.
+
+**Deploy quebrado? `/api/saude` responde antes de você abrir o log.**
+Ela diz quais variáveis faltam, se o Supabase responde e se as
+migrations foram aplicadas — cada pendência com o nome do arquivo a
+aplicar. Devolve 503 enquanto houver alguma, 200 quando não houver, e
+não exige login: exigir sessão a tornaria inútil justamente quando o
+login é o que está quebrado. Ela nunca mostra valor de variável, nem
+endereço, nem a mensagem crua do banco — só "configurada" ou
+"FALTANDO".
 
 A tela **Administrativo** guarda a senha do Meu INSS do titular cifrada
 (AES-256-GCM). A chave sai de `SENHA_INSS_KEY`; sem ela, é derivada do

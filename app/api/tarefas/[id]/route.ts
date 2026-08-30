@@ -121,11 +121,27 @@ export async function PATCH(
       )
     }
 
+    const doEscritorio = await idsDoEscritorio()
+
+    // O status de antes, lido antes de escrever: é a metade do evento
+    // que deixa de existir depois do UPDATE. Só é buscado quando o
+    // PATCH mexe em status — trocar o time não vira histórico.
+    let statusAntes: string | null = null
+    if (parsed.data.status !== undefined) {
+      const { data: anterior } = await supabase
+        .from("tarefas")
+        .select("status")
+        .eq("id", id)
+        .in("user_id", doEscritorio)
+        .maybeSingle()
+      statusAntes = anterior?.status ?? null
+    }
+
     const { data: tarefa, error } = await supabase
       .from("tarefas")
       .update(toSnakeCase(parsed.data))
       .eq("id", id)
-      .in("user_id", await idsDoEscritorio())
+      .in("user_id", doEscritorio)
       .select("*, responsavel:users!tarefas_responsavel_id_fkey(id, name)")
       .maybeSingle()
 
@@ -135,6 +151,26 @@ export async function PATCH(
         { error: "Tarefa não encontrada" },
         { status: 404 }
       )
+    }
+
+    // Status que não mudou não é evento: marcar "concluída" numa tarefa
+    // já concluída encheria o histórico de linhas que não aconteceram.
+    if (parsed.data.status !== undefined && parsed.data.status !== statusAntes) {
+      const { error: erroEvento } = await supabase
+        .from("eventos_tarefa")
+        .insert({
+          tarefa_id: id,
+          tipo: "STATUS_ALTERADO",
+          autor_id: user.id,
+          status_de: statusAntes,
+          status_para: parsed.data.status,
+        })
+
+      // A edição valeu; o registro dela não. Não vira 500: devolver
+      // erro aqui faria a tela desfazer uma mudança que o banco já tem.
+      if (erroEvento) {
+        console.error("Evento de status não gravado:", erroEvento.message)
+      }
     }
 
     return NextResponse.json({ tarefa: toCamelCase(tarefa) }, { status: 200 })

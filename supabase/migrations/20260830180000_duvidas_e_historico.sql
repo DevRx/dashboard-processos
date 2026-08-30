@@ -16,22 +16,29 @@
 -- onde ela veio.
 -- ─────────────────────────────────────────────────────────
 
-create type "TarefaTipo" as enum ('NORMAL', 'DUVIDA');
+-- `create type` não aceita IF NOT EXISTS. O bloco existe para esta
+-- migration poder ser reexecutada sem quebrar: ela é aplicada à mão no
+-- editor do Supabase, e colar de novo depois de uma falha no meio é o
+-- caminho normal de quem está consertando, não um descuido.
+do $$ begin
+  create type "TarefaTipo" as enum ('NORMAL', 'DUVIDA');
+exception when duplicate_object then null;
+end $$;
 
 alter table "tarefas"
-  add column "tipo" "TarefaTipo" not null default 'NORMAL',
+  add column if not exists "tipo" "TarefaTipo" not null default 'NORMAL',
   -- `cascade`: dúvida sem a tarefa que a originou não significa nada,
   -- e deixá-la órfã no quadro seria pior do que perdê-la.
-  add column "tarefa_pai_id" uuid references "tarefas"("id") on delete cascade,
+  add column if not exists "tarefa_pai_id" uuid references "tarefas"("id") on delete cascade,
   -- A resposta mora na dúvida, não num evento solto: é ela que a
   -- fecha, e quem reabre a tarefa meses depois procura a resposta
   -- junto da pergunta.
-  add column "resposta" text,
-  add column "respondida_em" timestamp with time zone,
-  add column "respondida_por" uuid references "users"("id") on delete set null;
+  add column if not exists "resposta" text,
+  add column if not exists "respondida_em" timestamp with time zone,
+  add column if not exists "respondida_por" uuid references "users"("id") on delete set null;
 
-create index "idx_tarefas_tarefa_pai_id" on "tarefas"("tarefa_pai_id");
-create index "idx_tarefas_tipo" on "tarefas"("tipo");
+create index if not exists "idx_tarefas_tarefa_pai_id" on "tarefas"("tarefa_pai_id");
+create index if not exists "idx_tarefas_tipo" on "tarefas"("tipo");
 
 -- Só dúvida tem mãe. Sem isso, `tarefa_pai_id` viraria um campo de
 -- "relacionada a", e o histórico da tarefa principal passaria a puxar
@@ -40,10 +47,13 @@ create index "idx_tarefas_tipo" on "tarefas"("tipo");
 -- A regra irmã — dúvida não gera dúvida, para o fio ter fim — não cabe
 -- num CHECK, que não enxerga a linha da mãe. Ela é conferida em
 -- app/api/tarefas/[id]/duvidas/route.ts, antes de inserir.
-alter table "tarefas"
-  add constraint "so_duvida_tem_mae" check (
-    "tarefa_pai_id" is null or "tipo" = 'DUVIDA'
-  );
+do $$ begin
+  alter table "tarefas"
+    add constraint "so_duvida_tem_mae" check (
+      "tarefa_pai_id" is null or "tipo" = 'DUVIDA'
+    );
+exception when duplicate_object then null;
+end $$;
 
 -- ─────────────────────────────────────────────────────────
 -- O histórico
@@ -58,13 +68,16 @@ alter table "tarefas"
 -- discorda da primeira.
 -- ─────────────────────────────────────────────────────────
 
-create type "EventoTarefaTipo" as enum (
-  'DUVIDA_ABERTA',
-  'DUVIDA_RESPONDIDA',
-  'STATUS_ALTERADO'
-);
+do $$ begin
+  create type "EventoTarefaTipo" as enum (
+    'DUVIDA_ABERTA',
+    'DUVIDA_RESPONDIDA',
+    'STATUS_ALTERADO'
+  );
+exception when duplicate_object then null;
+end $$;
 
-create table "eventos_tarefa" (
+create table if not exists "eventos_tarefa" (
   "id" uuid primary key default gen_random_uuid(),
   "tarefa_id" uuid not null references "tarefas"("id") on delete cascade,
   "tipo" "EventoTarefaTipo" not null,
@@ -81,4 +94,4 @@ create table "eventos_tarefa" (
 
 -- A leitura é sempre "os eventos desta tarefa, do mais novo ao mais
 -- velho": o índice é composto para não ordenar em memória.
-create index "idx_eventos_tarefa_tarefa_id" on "eventos_tarefa"("tarefa_id", "created_at" desc);
+create index if not exists "idx_eventos_tarefa_tarefa_id" on "eventos_tarefa"("tarefa_id", "created_at" desc);

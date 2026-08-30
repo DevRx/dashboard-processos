@@ -25,8 +25,28 @@ import { supabase } from "@/lib/supabase/server"
  * configurado, o que a tela de erro já entregava.
  */
 
-/** Colunas que uma migration recente trouxe. Ver supabase/migrations/. */
+/**
+ * Colunas que o código lê e que uma migration precisa ter criado.
+ *
+ * A lista nasceu curta e cresceu por um motivo: sete campos e uma
+ * tabela inteira estavam declarados em prisma/schema.prisma sem
+ * migration correspondente, e ninguém percebia porque o Prisma não é
+ * quem fala com o banco em produção. O sintoma foi o pior possível —
+ * `/api/administrativo` pede `observacoes` junto do resto, e um select
+ * com coluna inexistente falha inteiro, então a fila chegava vazia e o
+ * quadro parecia um escritório sem clientes.
+ *
+ * Uma coluna por tela, escolhida entre as que a migration trouxe: se
+ * ela existe, a migration passou por ali.
+ */
 const EXIGIDAS = [
+  { tabela: "clientes", coluna: "observacoes", migration: "20260830210000_schema_alcanca_o_codigo" },
+  { tabela: "clientes", coluna: "senha_meu_inss", migration: "20260830210000_schema_alcanca_o_codigo" },
+  { tabela: "clientes", coluna: "latitude", migration: "20260830210000_schema_alcanca_o_codigo" },
+  { tabela: "processos", coluna: "situacao_pericia", migration: "20260830210000_schema_alcanca_o_codigo" },
+  { tabela: "tarefas", coluna: "setor", migration: "20260830210000_schema_alcanca_o_codigo" },
+  { tabela: "tarefas", coluna: "responsavel_id", migration: "20260830210000_schema_alcanca_o_codigo" },
+  { tabela: "comunicacoes_djen", coluna: "djen_id", migration: "20260830210000_schema_alcanca_o_codigo" },
   { tabela: "tarefas", coluna: "tipo", migration: "20260830180000_duvidas_e_historico" },
   { tabela: "eventos_tarefa", coluna: "id", migration: "20260830180000_duvidas_e_historico" },
 ] as const

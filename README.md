@@ -82,8 +82,33 @@ Para parar o banco: `npm run db:local stop`.
 ### Em produção
 
 `.env` aponta para o ambiente local. Para usar um projeto Supabase real,
-basta trocar `SUPABASE_URL`/`SUPABASE_SECRET_KEY` e `DATABASE_URL` — nada
-no código depende do gateway local.
+basta trocar `SUPABASE_URL`/`SUPABASE_SECRET_KEY` — nada no código
+depende do gateway local.
+
+**Três variáveis, e o sistema não sobe sem elas:**
+
+| Variável | Para que serve |
+| --- | --- |
+| `SUPABASE_URL` | Endereço do projeto Supabase. |
+| `SUPABASE_SECRET_KEY` | Chave de serviço. Todo acesso a dado passa por ela. |
+| `SESSION_SECRET` | Assina o cookie de sessão. |
+
+Faltando qualquer uma, **a build quebra** — e é para quebrar ali. As
+duas do Supabase já quebravam; o `SESSION_SECRET` não, e era o pior dos
+dois mundos: sem ele o sistema subia e assinava sessão com uma chave de
+zero byte, em silêncio. Erro de configuração pertence ao lugar onde
+alguém está olhando, não à tela de quem tentou entrar.
+
+Não existe mais `DATABASE_URL` em produção. O Prisma continua sendo o
+dono do schema (`prisma/schema.prisma`, e as migrations em
+`supabase/migrations/`), mas nenhuma rota fala com o banco por conexão
+direta — tudo passa pelo Supabase. Foi justamente a exceção que quebrava
+o deploy: login e cadastro usavam Prisma, pediam uma variável que
+nenhuma outra rota usava, e `prisma generate` não reclamava da falta
+dela na build.
+
+Para mexer no schema, `npm run db:generate` gera o cliente do Prisma
+localmente. A build de produção não precisa dele.
 
 A tela **Administrativo** guarda a senha do Meu INSS do titular cifrada
 (AES-256-GCM). A chave sai de `SENHA_INSS_KEY`; sem ela, é derivada do

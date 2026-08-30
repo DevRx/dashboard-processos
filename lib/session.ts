@@ -3,7 +3,22 @@ import { SignJWT, jwtVerify } from "jose"
 import { cookies } from "next/headers"
 import { UserRole } from "@/lib/data"
 
+/**
+ * Sem `SESSION_SECRET` isto virava uma chave de zero byte — em
+ * silêncio. O sistema subia, assinava sessão com nada e só se
+ * denunciava depois, do jeito mais confuso possível: gente deslogada
+ * sem motivo, e um cookie de sessão que qualquer um forja.
+ *
+ * Falta de segredo é erro de configuração, e erro de configuração tem
+ * que quebrar a build — que é onde alguém está olhando —, não a tela de
+ * quem tentou entrar. Mesma regra de lib/supabase/server.ts.
+ */
 const secretKey = process.env.SESSION_SECRET
+
+if (!secretKey) {
+  throw new Error("SESSION_SECRET environment variable is required")
+}
+
 const encodedKey = new TextEncoder().encode(secretKey)
 
 export type SessionPayload = {

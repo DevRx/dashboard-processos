@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { prisma } from "@/lib/prisma"
+import { supabase } from "@/lib/supabase/server"
 import { getCurrentUser } from "@/lib/auth"
 import { RegisterSchema } from "@/lib/validators"
 
@@ -17,12 +17,30 @@ import { RegisterSchema } from "@/lib/validators"
  * A exceção é a instalação vazia: sem nenhum usuário no banco, exigir
  * um ADMIN logado trancaria o sistema por fora. O primeiro cadastro
  * abre a porta e a fecha atrás de si.
+ *
+ * Fala com o Supabase como todo o resto — ver o comentário em
+ * ../login/route.ts sobre por que o Prisma saiu daqui.
  */
 export async function POST(request: NextRequest) {
   try {
-    const total = await prisma.user.count()
+    // `head: true` traz só a contagem, sem as linhas: aqui a pergunta é
+    // "existe alguém?", e trazer a carteira inteira para responder isso
+    // seria caro à toa.
+    const { count, error: erroContagem } = await supabase
+      .from("users")
+      .select("id", { count: "exact", head: true })
 
-    if (total > 0) {
+    if (erroContagem) {
+      console.error("Register error:", erroContagem.message)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
+
+    // Contagem desconhecida trata como "há gente": o lado seguro do
+    // erro é exigir ADMIN, não abrir o cadastro para a rua.
+    if ((count ?? 1) > 0) {
       const atual = await getCurrentUser()
 
       if (!atual) {
@@ -51,9 +69,13 @@ export async function POST(request: NextRequest) {
 
     const { name, email, password, role } = validatedFields.data
 
-    const existingUser = await prisma.user.findUnique({ where: { email } })
+    const { data: existente } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle()
 
-    if (existingUser) {
+    if (existente) {
       return NextResponse.json(
         { error: "E-mail já cadastrado" },
         { status: 400 }
@@ -62,15 +84,27 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const user = await prisma.user.create({
-      data: {
+    const { data: user, error } = await supabase
+      .from("users")
+      .insert({
         name,
         email,
         password: hashedPassword,
         role: role || "USER",
-      },
-      select: { id: true, name: true, email: true, role: true },
-    })
+      })
+      .select("id, name, email, role")
+      .single()
+
+    if (error || !user) {
+      // O índice único do e-mail é quem decide de verdade: entre a
+      // conferência acima e este insert cabe outro cadastro igual.
+      const duplicado = error?.code === "23505"
+      console.error("Register error:", error?.message)
+      return NextResponse.json(
+        { error: duplicado ? "E-mail já cadastrado" : "Erro interno do servidor" },
+        { status: duplicado ? 400 : 500 }
+      )
+    }
 
     return NextResponse.json(
       { message: "Usuário criado com sucesso", user },

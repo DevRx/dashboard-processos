@@ -110,6 +110,15 @@ dela na build.
 Para mexer no schema, `npm run db:generate` gera o cliente do Prisma
 localmente. A build de produção não precisa dele.
 
+**Deploy quebrado? `/api/saude` responde antes de você abrir o log.**
+Ela diz quais variáveis faltam, se o Supabase responde e se as
+migrations foram aplicadas — cada pendência com o nome do arquivo a
+aplicar. Devolve 503 enquanto houver alguma, 200 quando não houver, e
+não exige login: exigir sessão a tornaria inútil justamente quando o
+login é o que está quebrado. Ela nunca mostra valor de variável, nem
+endereço, nem a mensagem crua do banco — só "configurada" ou
+"FALTANDO".
+
 A tela **Administrativo** guarda a senha do Meu INSS do titular cifrada
 (AES-256-GCM). A chave sai de `SENHA_INSS_KEY`; sem ela, é derivada do
 `SESSION_SECRET`. Definir `SENHA_INSS_KEY` é o recomendado — assim

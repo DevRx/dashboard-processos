@@ -19,6 +19,7 @@ import {
   CATEGORIA_LABEL,
   categoriaPorSlug,
   categorizarBeneficio,
+  precisaClassificar,
 } from "@/lib/domain/beneficio"
 import { isSituacaoPericia, periciaSugerida } from "@/lib/domain/processo"
 import { cn } from "@/lib/utils"
@@ -50,7 +51,11 @@ export default function FilaCategoriaPage() {
     if (!categoria) return []
 
     const daFamilia = ativos.filter(
-      (i) => categorizarBeneficio(i.beneficio) === categoria
+      // Cliente sem benefício informado não pertence a família nenhuma —
+      // ele mora na faixa "A classificar" do quadro. Sem esta linha ele
+      // cairia em Procedimento Adm., que é onde texto vazio classifica.
+      (i) => !precisaClassificar(i.beneficio) &&
+        categorizarBeneficio(i.beneficio) === categoria
     )
     const termo = normalizar(busca.trim())
     const digitos = termo.replace(/\D/g, "")

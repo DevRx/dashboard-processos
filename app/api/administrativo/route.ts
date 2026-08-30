@@ -14,9 +14,15 @@ import { idsDoEscritorio } from "@/lib/escritorio"
  * equipe precisa dela à mão na hora de protocolar. A cifra continua no
  * banco — ela protege o dump e o backup, não a tela.
  *
- * Cliente cadastrado com benefício e ainda sem processo entra como
- * item "sem requerimento aberto": ele já é trabalho, e some da fila se
- * a lista vier só de `processos`.
+ * Cliente sem processo entra como item "sem requerimento aberto": ele já
+ * é trabalho, e some da fila se a lista vier só de `processos`.
+ *
+ * Inclusive sem benefício informado — o campo é opcional no cadastro.
+ * Antes esses eram descartados aqui, e o efeito era o pior possível: a
+ * pessoa cadastrava o cliente, ia ao Administrativo e não o encontrava,
+ * sem nada na tela explicando por quê. Agora ele aparece, e a falta do
+ * benefício vira o que de fato é — uma pendência visível, não um
+ * sumiço.
  */
 
 /** Quem opera o escritório. Os demais recebem a fila sem as senhas. */
@@ -123,11 +129,13 @@ export async function GET() {
     const comProcesso = new Set(administrativos.map((p) => p.cliente_id))
 
     const semRequerimento = clientes
-      .filter((c) => !comProcesso.has(c.id) && c.beneficio?.trim())
+      .filter((c) => !comProcesso.has(c.id))
       .map((c) => ({
         id: `c:${c.id}`,
         processoId: null,
-        beneficio: c.beneficio as string,
+        // Vazio quando não informado. A tela lê essa string vazia como
+        // "a classificar" — ver precisaClassificar em lib/domain/beneficio.
+        beneficio: c.beneficio?.trim() ?? "",
         status: null,
         situacaoPericia: null,
         protocoloInss: null,

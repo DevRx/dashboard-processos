@@ -68,6 +68,23 @@ export function categoriaPorSlug(
   return achada ?? null
 }
 
+/**
+ * O cliente foi cadastrado, mas ninguém disse o que ele veio pedir.
+ *
+ * Não é uma família de benefício — é a ausência de uma. Por isso não
+ * virou uma oitava categoria: as sete existem para dizer que trabalho é
+ * aquele, e "não sabemos ainda" não é um tipo de trabalho, é uma
+ * pendência. O quadro a mostra numa faixa à parte, como o de tarefas já
+ * faz com quem está sem time.
+ *
+ * `categorizarBeneficio` continua devolvendo PROCEDIMENTO_ADM para
+ * texto vazio: ela classifica processos, e processo sem benefício
+ * escrito é outra história — já existe, já é um requerimento.
+ */
+export function precisaClassificar(beneficio?: string | null): boolean {
+  return !beneficio?.trim()
+}
+
 /** Tira acento e caixa: "Salário-Maternidade" e "salario maternidade" viram o mesmo. */
 function normalizar(valor: string) {
   return valor

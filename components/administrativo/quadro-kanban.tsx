@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ArrowUpRight, Inbox } from "lucide-react"
+import { ArrowUpRight, CircleDashed, Inbox } from "lucide-react"
 
 import {
   Dialog,
@@ -20,6 +20,7 @@ import {
   CATEGORIA_LABEL,
   CATEGORIA_SLUG,
   categorizarBeneficio,
+  precisaClassificar,
   type CategoriaAdministrativo,
 } from "@/lib/domain/beneficio"
 
@@ -95,8 +96,13 @@ function CartaoCliente({
           </p>
         </div>
 
-        <p className="pointer-events-none relative z-10 truncate text-[11px] leading-tight text-muted-foreground">
-          {item.beneficio}
+        <p
+          className={cn(
+            "pointer-events-none relative z-10 truncate text-[11px] leading-tight",
+            item.beneficio ? "text-muted-foreground" : "text-muted-foreground/70 italic"
+          )}
+        >
+          {item.beneficio || "benefício não informado"}
         </p>
 
         <div className="relative z-10 flex flex-wrap items-center gap-1.5">
@@ -143,14 +149,23 @@ export function QuadroKanbanAdministrativo({
 }) {
   const [abertoId, setAbertoId] = useState<string | null>(null)
 
-  const porCategoria = useMemo(() => {
+  const { mapa: porCategoria, aClassificar } = useMemo(() => {
     const mapa = Object.fromEntries(
       CATEGORIAS_ADMINISTRATIVO.map((c) => [c, [] as ItemFila[]])
     ) as Record<CategoriaAdministrativo, ItemFila[]>
 
+    const aClassificar: ItemFila[] = []
+
     for (const item of itens) {
-      mapa[categorizarBeneficio(item.beneficio)].push(item)
+      // Sem benefício informado não cabe em nenhuma das sete famílias:
+      // elas dizem que trabalho é aquele, e aqui ninguém disse ainda.
+      if (precisaClassificar(item.beneficio)) aClassificar.push(item)
+      else mapa[categorizarBeneficio(item.beneficio)].push(item)
     }
+
+    aClassificar.sort((a, b) =>
+      a.cliente.nome.localeCompare(b.cliente.nome, "pt-BR")
+    )
 
     for (const categoria of CATEGORIAS_ADMINISTRATIVO) {
       mapa[categoria].sort((a, b) =>
@@ -158,7 +173,7 @@ export function QuadroKanbanAdministrativo({
       )
     }
 
-    return mapa
+    return { mapa, aClassificar }
   }, [itens])
 
   // A ficha é procurada na lista viva, não guardada no estado: assim o
@@ -257,6 +272,34 @@ export function QuadroKanbanAdministrativo({
           )
         })}
       </div>
+
+      {/* Cadastrado e ainda sem dizer o que veio pedir.
+          Faixa e não oitava coluna: as sete são famílias de benefício, e
+          isto é a ausência de uma. Mesmo desenho que o quadro de tarefas
+          usa para quem está sem time. */}
+      {aClassificar.length > 0 && (
+        <section
+          aria-label={`A classificar — ${aClassificar.length} cliente(s)`}
+          className="mt-3 rounded-xl bg-muted/40 p-3 ring-1 ring-foreground/10 ring-inset"
+        >
+          <h3 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-muted-foreground uppercase">
+            <CircleDashed size={13} strokeWidth={2} />
+            A classificar — {aClassificar.length}{" "}
+            {aClassificar.length === 1 ? "cliente" : "clientes"} sem benefício
+            informado
+          </h3>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7">
+            {aClassificar.map((item) => (
+              <CartaoCliente
+                key={item.id}
+                item={item}
+                onAbrir={() => setAbertoId(item.id)}
+                onTrocarPericia={() => Promise.resolve()}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       <Dialog
         open={aberto !== null}

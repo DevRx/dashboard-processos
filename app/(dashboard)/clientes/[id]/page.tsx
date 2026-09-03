@@ -194,11 +194,11 @@ export default function ClienteDetalhe() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+      <div className="flex min-h-screen bg-background text-foreground">
         <Sidebar />
         <div className="flex flex-1 flex-col">
           <Header title="Clientes" subtitle="Carregando detalhes..." />
-          <main className="flex-1 space-y-3 p-6">
+          <main className="flex-1 space-y-3 p-5 md:p-7">
             <Skeleton className="h-8 w-64" />
             <Skeleton className="h-40 w-full" />
           </main>
@@ -209,12 +209,12 @@ export default function ClienteDetalhe() {
 
   if (!cliente) {
     return (
-      <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+      <div className="flex min-h-screen bg-background text-foreground">
         <Sidebar />
         <div className="flex flex-1 flex-col">
           <Header title="Clientes" subtitle="Cliente não encontrado" />
-          <main className="flex-1 p-6">
-            <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <main className="flex-1 p-5 md:p-7">
+            <Card>
               <EmptyState icon={UserX} title="Cliente não encontrado" />
             </Card>
           </main>
@@ -224,11 +224,11 @@ export default function ClienteDetalhe() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
       <div className="flex flex-1 flex-col">
         <Header title={cliente.nome} subtitle="Detalhes do cliente" />
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-5 md:p-7">
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -331,7 +331,7 @@ export default function ClienteDetalhe() {
               existem. Requerimento no INSS tem protocolo; número CNJ,
               tribunal e vara só passam a existir na via judicial. */}
           <select
-            className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+            className="h-9 w-full rounded-lg border border-input bg-card px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
             value={novoProcesso.esfera}
             onChange={(e) =>
               setNovoProcesso({
@@ -352,7 +352,7 @@ export default function ClienteDetalhe() {
                de uma revelação, para quem está cadastrando um
                requerimento que já foi apresentado. */
             <details className="text-xs">
-              <summary className="cursor-pointer text-slate-600 dark:text-zinc-400">
+              <summary className="cursor-pointer text-muted-foreground">
                 Já foi protocolado no INSS?
               </summary>
               <Input
@@ -410,7 +410,7 @@ export default function ClienteDetalhe() {
             onChange={(e) =>
               setNovoProcesso({ ...novoProcesso, beneficio: e.target.value })
             }
-            className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+            className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
           >
             <option value="">Tipo de benefício…</option>
             {opcoesEspecie(novoProcesso.beneficio).map((especie) => (
@@ -425,7 +425,7 @@ export default function ClienteDetalhe() {
             onChange={(e) =>
               setNovoProcesso({ ...novoProcesso, status: e.target.value })
             }
-            className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+            className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
           >
             {PROCESSO_STATUS_VALUES.map((status) => (
               <option key={status} value={status}>
@@ -439,7 +439,7 @@ export default function ClienteDetalhe() {
             onChange={(e) =>
               setNovoProcesso({ ...novoProcesso, responsavelId: e.target.value })
             }
-            className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+            className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
           >
             <option value="">Sem responsável</option>
             {users.map((user) => (
@@ -495,7 +495,7 @@ export default function ClienteDetalhe() {
             }
           />
           <Button onClick={salvarProcesso}>
-            <Save size={16} className="mr-2" />
+            <Save size={16} />
             Salvar Processo
           </Button>
         </CardContent>

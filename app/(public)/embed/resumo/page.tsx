@@ -53,9 +53,9 @@ async function getResumo() {
 
 function Metric({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-      <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-zinc-900 dark:text-zinc-100">{value}</p>
+    <div className="rounded-2xl bg-card p-4 shadow-card">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 text-2xl font-bold text-foreground">{value}</p>
     </div>
   )
 }
@@ -68,14 +68,14 @@ export default async function ResumoEmbedPage() {
   })
 
   return (
-    <div className="min-h-screen bg-zinc-50 p-5 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <div className="min-h-screen bg-background p-5 text-foreground">
       <div className="mb-4 flex items-center gap-2">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-500 via-pink-600 to-red-600">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-brand shadow-glow">
           <Scale size={16} className="text-white" />
         </div>
         <div>
           <p className="text-sm font-bold leading-tight">Zeca Aposenta</p>
-          <p className="bg-gradient-to-r from-fuchsia-500 via-pink-600 to-red-600 bg-clip-text text-[10px] font-extrabold tracking-widest text-transparent uppercase leading-tight">
+          <p className="text-gradient-brand text-[10px] font-extrabold tracking-widest uppercase leading-tight">
             O Terror do INSS
           </p>
         </div>
@@ -89,8 +89,8 @@ export default async function ResumoEmbedPage() {
       </div>
 
       {Object.keys(resumo.porStatus).length > 0 && (
-        <div className="mt-4 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="mb-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+        <div className="mt-4 rounded-2xl bg-card p-4 shadow-card">
+          <p className="mb-2 text-xs font-medium text-muted-foreground">
             Processos por status
           </p>
           <div className="flex flex-col gap-1.5">
@@ -104,15 +104,15 @@ export default async function ResumoEmbedPage() {
         </div>
       )}
 
-      <div className="mt-4 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <p className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+      <div className="mt-4 rounded-2xl bg-card p-4 shadow-card">
+        <p className="mb-3 text-xs font-medium text-muted-foreground">
           Dados de clientes e processos são protegidos por login
         </p>
         <div className="flex flex-wrap gap-2">
           <Link
             href="/clientes"
             target="_top"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-glow transition-colors hover:bg-primary-hover"
           >
             <Users size={14} />
             Ver clientes
@@ -121,7 +121,7 @@ export default async function ResumoEmbedPage() {
           <Link
             href="/processos"
             target="_top"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-input px-3 py-1.5 text-xs font-medium hover:bg-background"
           >
             <FileText size={14} />
             Ver processos completos
@@ -130,7 +130,7 @@ export default async function ResumoEmbedPage() {
           <Link
             href="/"
             target="_top"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-input px-3 py-1.5 text-xs font-medium hover:bg-background"
           >
             <Scale size={14} />
             Abrir sistema completo
@@ -139,7 +139,7 @@ export default async function ResumoEmbedPage() {
         </div>
       </div>
 
-      <p className="mt-4 text-right text-[10px] text-zinc-400">
+      <p className="mt-4 text-right text-[10px] text-muted-foreground">
         Atualizado em {atualizadoEm}
       </p>
     </div>

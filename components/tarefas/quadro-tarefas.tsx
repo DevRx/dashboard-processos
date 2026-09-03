@@ -170,7 +170,7 @@ function MenuSuspenso({
       {aberto && (
         <div
           role="menu"
-          className="animate-in fade-in slide-in-from-top-1 absolute right-0 z-40 mt-1.5 max-h-64 w-56 overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 duration-150"
+          className="animate-in fade-in slide-in-from-top-1 absolute right-0 z-40 mt-1.5 max-h-64 w-56 overflow-y-auto rounded-xl bg-popover p-1.5 text-popover-foreground shadow-float duration-150"
         >
           {children(() => setAberto(false))}
         </div>
@@ -214,7 +214,7 @@ function CartaoTarefa({
       }}
       onDragEnd={onArrastarFim}
       className={cn(
-        "relative cursor-grab rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-opacity active:cursor-grabbing has-[[aria-expanded=true]]:z-30",
+        "relative cursor-grab rounded-xl bg-card p-3 shadow-card transition-[opacity,box-shadow,transform] hover:shadow-float active:cursor-grabbing has-[[aria-expanded=true]]:z-30",
         arrastando && "opacity-40"
       )}
     >
@@ -225,7 +225,7 @@ function CartaoTarefa({
             className={cn(
               "flex size-7 shrink-0 items-center justify-center rounded-full text-[10.5px] font-bold",
               responsavel
-                ? "bg-primary text-primary-foreground"
+                ? "bg-gradient-brand text-white shadow-[0_3px_10px_-3px_rgba(219,39,119,0.6)]"
                 : "bg-muted text-muted-foreground"
             )}
           >
@@ -300,7 +300,7 @@ function CartaoTarefa({
         {prazo ? (
           <span
             className={cn(
-              "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10.5px] font-semibold",
+              "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-semibold",
               atrasada && tarefa.status !== "CONCLUIDA"
                 ? "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-300"
                 : "bg-muted text-muted-foreground"
@@ -315,7 +315,7 @@ function CartaoTarefa({
         {tarefa.prioridade !== "MEDIA" && tarefa.prioridade !== "BAIXA" ? (
           <span
             className={cn(
-              "rounded px-1.5 py-0.5 text-[10.5px] font-bold tracking-wide uppercase",
+              "rounded-full px-2 py-0.5 text-[10.5px] font-bold tracking-wide uppercase",
               PRIORIDADE_TOM[tarefa.prioridade] ?? PRIORIDADE_TOM.MEDIA
             )}
           >
@@ -324,7 +324,7 @@ function CartaoTarefa({
         ) : null}
 
         <MenuSuspenso titulo="Trocar time" gatilho={() => (
-          <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10.5px] font-semibold text-muted-foreground ring-1 ring-foreground/10">
+          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10.5px] font-semibold text-muted-foreground">
             <span
               className={cn(
                 "size-2 rounded-full",
@@ -429,7 +429,7 @@ function NovaTarefa({
       <button
         type="button"
         onClick={() => setAberto(true)}
-        className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-foreground/15 py-2 text-[12px] font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+        className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-foreground/15 py-2 text-[12px] font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:bg-card/60 hover:text-primary"
       >
         <Plus size={13} />
         Nova tarefa
@@ -438,7 +438,7 @@ function NovaTarefa({
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg bg-card p-2.5 ring-1 ring-foreground/15">
+    <div className="flex flex-col gap-2 rounded-xl bg-card p-3 shadow-float">
       <Input
         autoFocus
         value={titulo}
@@ -456,7 +456,7 @@ function NovaTarefa({
           value={responsavelId}
           onChange={(e) => setResponsavelId(e.target.value)}
           aria-label="Responsável"
-          className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-card px-2 text-[12.5px] outline-none"
+          className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
         >
           <option value="">Sem responsável</option>
           {usuarios.map((u) => (
@@ -471,13 +471,13 @@ function NovaTarefa({
           value={data}
           onChange={(e) => setData(e.target.value)}
           aria-label="Data"
-          className="h-8 shrink-0 rounded-lg border border-input bg-card px-2 text-[12.5px] outline-none"
+          className="h-8 shrink-0 rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
         />
       </div>
 
       <div className="flex gap-1.5">
         <Button size="sm" onClick={criar} disabled={salvando || !titulo.trim()}>
-          {salvando ? <Loader2 size={13} className="mr-1 animate-spin" /> : null}
+          {salvando ? <Loader2 size={13} className="animate-spin" /> : null}
           Criar
         </Button>
         <Button size="sm" variant="ghost" onClick={() => setAberto(false)}>
@@ -638,7 +638,7 @@ export function QuadroTarefas() {
               }
               onDrop={(e) => soltar(e, time)}
               className={cn(
-                "flex flex-col rounded-xl ring-1 ring-foreground/10 ring-inset transition-shadow",
+                "flex flex-col overflow-visible rounded-2xl shadow-card transition-shadow",
                 cor.fundo,
                 // Enquanto se arrasta, a coluna sob o cursor levanta a
                 // mão: sem isso, soltar vira aposta.
@@ -647,7 +647,7 @@ export function QuadroTarefas() {
             >
               <span
                 aria-hidden
-                className={cn("h-1.5 w-full shrink-0 rounded-t-xl", cor.faixa)}
+                className={cn("h-1.5 w-full shrink-0 rounded-t-2xl", cor.faixa)}
               />
 
               <header className="flex items-center gap-2 px-3 py-2.5">
@@ -659,7 +659,7 @@ export function QuadroTarefas() {
                 >
                   {TIME_LABEL[time]}
                 </h3>
-                <span className="rounded-full bg-card px-2 py-0.5 text-[11px] font-bold tabular-nums ring-1 ring-foreground/10">
+                <span className="rounded-full bg-card px-2.5 py-0.5 text-[11px] font-bold tabular-nums shadow-card">
                   {lista.length}
                 </span>
               </header>
@@ -707,7 +707,7 @@ export function QuadroTarefas() {
           }
           onDrop={(e) => soltar(e, null)}
           className={cn(
-            "rounded-xl bg-muted/40 p-3 ring-1 ring-foreground/10 ring-inset transition-shadow",
+            "rounded-2xl bg-muted/40 p-3 shadow-card transition-shadow",
             colunaAlvo === "SEM_TIME" && "shadow-md ring-2 ring-foreground/30"
           )}
         >

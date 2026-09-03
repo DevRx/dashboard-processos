@@ -137,7 +137,7 @@ export default async function HomePage() {
           }
         />
 
-        <main className="flex-1 space-y-6 p-6">
+        <main className="flex-1 space-y-6 p-5 md:p-7">
           <div className="grid gap-4 md:grid-cols-3">
             <MetricCard
               icon={FileText}
@@ -147,12 +147,14 @@ export default async function HomePage() {
             />
             <MetricCard
               icon={Users}
+              tom="brand"
               title="Clientes"
               value={String(totalClientes)}
               description="Cadastrados"
             />
             <MetricCard
               icon={CalendarDays}
+              tom="success"
               title="Agenda"
               value={String(tarefasHoje)}
               description="Compromissos hoje"

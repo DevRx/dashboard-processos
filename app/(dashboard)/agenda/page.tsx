@@ -172,7 +172,7 @@ export default function AgendaPage() {
   function renderGrupo(titulo: string, itens: Tarefa[]) {
     if (itens.length === 0) return null
     return (
-      <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <Card>
         <CardHeader>
           <CardTitle className="text-base">{titulo}</CardTitle>
         </CardHeader>
@@ -180,7 +180,7 @@ export default function AgendaPage() {
           {itens.map((tarefa) => (
             <div
               key={tarefa.id}
-              className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-2 rounded-lg border border-border p-3 sm:flex-row sm:items-center sm:justify-between"
             >
               <div>
                 <div className="flex items-center gap-2">
@@ -216,14 +216,14 @@ export default function AgendaPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
       <div className="flex flex-1 flex-col">
         <Header title="Agenda" subtitle="Gerencie compromissos e prazos." />
-        <main className="flex-1 space-y-4 p-6">
+        <main className="flex-1 space-y-4 p-5 md:p-7">
           <div className="mb-2 flex items-center justify-end">
             <Button onClick={openNewDialog}>
-              <Plus size={16} className="mr-2" />
+              <Plus size={16} />
               Novo Compromisso
             </Button>
           </div>
@@ -270,7 +270,7 @@ export default function AgendaPage() {
                   onChange={(e) =>
                     setForm({ ...form, status: e.target.value as typeof emptyForm.status })
                   }
-                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                  className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
                 >
                   {TAREFA_STATUS_VALUES.map((status) => (
                     <option key={status} value={status}>
@@ -284,7 +284,7 @@ export default function AgendaPage() {
                   onChange={(e) =>
                     setForm({ ...form, prioridade: e.target.value as typeof emptyForm.prioridade })
                   }
-                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                  className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
                 >
                   {TAREFA_PRIORIDADE_VALUES.map((prioridade) => (
                     <option key={prioridade} value={prioridade}>
@@ -296,7 +296,7 @@ export default function AgendaPage() {
                 <select
                   value={form.processoId}
                   onChange={(e) => setForm({ ...form, processoId: e.target.value })}
-                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                  className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
                 >
                   <option value="">Sem processo vinculado</option>
                   {processos.map((processo) => (
@@ -310,7 +310,7 @@ export default function AgendaPage() {
               <DialogFooter>
                 <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
                 <Button onClick={salvarTarefa}>
-                  <Save size={16} className="mr-2" />
+                  <Save size={16} />
                   Salvar
                 </Button>
               </DialogFooter>
@@ -318,7 +318,7 @@ export default function AgendaPage() {
           </Dialog>
 
           {loading ? (
-            <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+            <Card>
               <CardContent className="space-y-3 p-6">
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
@@ -326,7 +326,7 @@ export default function AgendaPage() {
               </CardContent>
             </Card>
           ) : tarefas.length === 0 ? (
-            <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+            <Card>
               <EmptyState
                 icon={CalendarDays}
                 title="Nenhum compromisso cadastrado"

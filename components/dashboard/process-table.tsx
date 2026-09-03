@@ -26,16 +26,27 @@ function formatarData(data: string | null) {
   return data.slice(0, 10).split("-").reverse().join("/")
 }
 
+function iniciais(nome: string) {
+  const partes = nome.trim().split(/\s+/).filter(Boolean)
+  if (partes.length === 0) return "?"
+  return (partes[0][0] + (partes.length > 1 ? partes[partes.length - 1][0] : "")).toUpperCase()
+}
+
 export function ProcessTable({ processos }: { processos: ProcessoRecente[] }) {
   return (
-    <section className="flex flex-col overflow-hidden rounded-xl bg-card text-card-foreground ring-1 ring-foreground/10">
-      <div className="flex items-center justify-between gap-4 border-b border-border px-4 py-3">
-        <h2 className="font-heading text-base leading-snug font-medium">
-          Processos recentes
-        </h2>
+    <section className="flex flex-col overflow-hidden rounded-2xl bg-card text-card-foreground shadow-card">
+      <div className="flex items-center justify-between gap-4 px-5 py-4">
+        <div>
+          <h2 className="font-heading text-[15px] leading-snug font-semibold tracking-[-0.01em]">
+            Processos recentes
+          </h2>
+          <p className="text-[12.5px] text-muted-foreground">
+            Os últimos cadastrados no escritório
+          </p>
+        </div>
         <Link
           href="/processos"
-          className="inline-flex items-center gap-1 rounded-md text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex h-8 items-center gap-1.5 rounded-full bg-muted px-3 text-[12.5px] font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground"
         >
           Ver todos
           <ArrowRight size={14} />
@@ -52,38 +63,35 @@ export function ProcessTable({ processos }: { processos: ProcessoRecente[] }) {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className="px-4 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                Cliente
-              </TableHead>
-              <TableHead className="px-4 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                Benefício
-              </TableHead>
-              <TableHead className="px-4 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                Status
-              </TableHead>
-              <TableHead className="px-4 text-right text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                Entrada
-              </TableHead>
+              <TableHead className="px-5">Cliente</TableHead>
+              <TableHead className="px-5">Benefício</TableHead>
+              <TableHead className="px-5">Status</TableHead>
+              <TableHead className="px-5 text-right">Entrada</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {processos.map((processo) => (
               <TableRow key={processo.id}>
-                <TableCell className="px-4 py-3">
+                <TableCell className="px-5 py-3">
                   <Link
                     href={`/clientes/${processo.clienteId}`}
-                    className="font-medium underline-offset-4 hover:underline"
+                    className="group inline-flex items-center gap-2.5 font-medium"
                   >
-                    {processo.clienteNome}
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-[10.5px] font-bold text-accent-foreground">
+                      {iniciais(processo.clienteNome)}
+                    </span>
+                    <span className="underline-offset-4 group-hover:underline">
+                      {processo.clienteNome}
+                    </span>
                   </Link>
                 </TableCell>
-                <TableCell className="px-4 py-3 text-muted-foreground">
+                <TableCell className="px-5 py-3 text-muted-foreground">
                   {processo.beneficio}
                 </TableCell>
-                <TableCell className="px-4 py-3">
+                <TableCell className="px-5 py-3">
                   <StatusBadge status={processo.status} />
                 </TableCell>
-                <TableCell className="px-4 py-3 text-right font-mono text-xs tabular-nums text-muted-foreground">
+                <TableCell className="px-5 py-3 text-right font-mono text-xs tabular-nums text-muted-foreground">
                   {formatarData(processo.dataEntrada)}
                 </TableCell>
               </TableRow>

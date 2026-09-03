@@ -99,7 +99,7 @@ export default function FilaCategoriaPage() {
           title={CATEGORIA_LABEL[categoria]}
           subtitle={CATEGORIA_DESCRICAO[categoria]}
         />
-        <main className="flex-1 space-y-5 p-6">
+        <main className="flex-1 space-y-5 p-5 md:p-7">
           <Link
             href="/inss"
             className="inline-flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"

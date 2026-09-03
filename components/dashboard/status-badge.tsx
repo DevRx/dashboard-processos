@@ -35,11 +35,12 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-semibold",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap",
         CLASSES_POR_TOM[tom],
         className
       )}
     >
+      <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-current opacity-80" />
       {label}
     </span>
   )

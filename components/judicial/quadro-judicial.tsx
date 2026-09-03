@@ -180,7 +180,7 @@ function MenuFase({
       {aberto && (
         <div
           role="menu"
-          className="animate-in fade-in slide-in-from-top-1 absolute left-0 z-40 mt-1.5 w-52 rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 duration-150"
+          className="animate-in fade-in slide-in-from-top-1 absolute left-0 z-40 mt-1.5 w-52 rounded-xl bg-popover p-1.5 text-popover-foreground shadow-float duration-150"
         >
           {STATUS_JUDICIAIS.map((s) => (
             <button
@@ -304,7 +304,7 @@ function PainelDataJud({
                 className="mt-1 h-7 px-2 text-[11px]"
               >
                 {registrando ? (
-                  <Loader2 size={11} className="mr-1 animate-spin" />
+                  <Loader2 size={11} className="animate-spin" />
                 ) : registrado ? (
                   <Check size={11} className="mr-1" />
                 ) : null}
@@ -334,7 +334,7 @@ function CartaoJudicial({
   const juizo = [item.vara, item.comarca ?? item.tribunal].filter(Boolean).join(" · ")
 
   return (
-    <div className="relative rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 has-[[aria-expanded=true]]:z-30">
+    <div className="relative rounded-lg bg-card p-2.5 shadow-card has-[[aria-expanded=true]]:z-30">
       <Link
         href={`/clientes/${item.clienteId}`}
         className="group flex items-start gap-1 text-[13px] leading-tight font-semibold hover:underline"
@@ -445,7 +445,7 @@ export function QuadroJudicial({
           <section
             key={fase}
             className={cn(
-              "flex flex-col rounded-xl ring-1 ring-foreground/10 ring-inset",
+              "flex flex-col rounded-xl shadow-card ring-inset",
               tinta.fundo
             )}
           >
@@ -464,7 +464,7 @@ export function QuadroJudicial({
                 >
                   {FASE_LABEL[fase]}
                 </h3>
-                <span className="rounded-full bg-card px-2 py-0.5 text-[11px] font-bold tabular-nums ring-1 ring-foreground/10">
+                <span className="rounded-full bg-card px-2 py-0.5 text-[11px] font-bold tabular-nums shadow-card">
                   {lista.length}
                 </span>
               </div>

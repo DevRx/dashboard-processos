@@ -72,7 +72,7 @@ function CartaoCliente({
         // Sem `overflow-hidden`: o menu da etiqueta de perícia escapa
         // do cartão e seria recortado. O cartão com menu aberto sobe de
         // camada para não ser pintado pelos vizinhos.
-        "relative rounded-lg bg-card ring-1 ring-foreground/10 transition-shadow",
+        "relative rounded-lg bg-card shadow-card transition-shadow",
         "has-[[aria-haspopup=menu][aria-expanded=true]]:z-30 hover:shadow-sm"
       )}
     >
@@ -196,7 +196,7 @@ export function QuadroKanbanAdministrativo({
               key={categoria}
               aria-label={`${CATEGORIA_LABEL[categoria]} — ${lista.length} na fila`}
               className={cn(
-                "flex flex-col rounded-xl ring-1 ring-foreground/10 ring-inset",
+                "flex flex-col rounded-xl shadow-card ring-inset",
                 tinta.fundo
               )}
             >
@@ -226,7 +226,7 @@ export function QuadroKanbanAdministrativo({
                   >
                     {CATEGORIA_LABEL[categoria]}
                   </h3>
-                  <span className="shrink-0 rounded-full bg-card px-1.5 py-0.5 text-[10.5px] font-bold tabular-nums ring-1 ring-foreground/10">
+                  <span className="shrink-0 rounded-full bg-card px-1.5 py-0.5 text-[10.5px] font-bold tabular-nums shadow-card">
                     {lista.length}
                   </span>
                 </div>
@@ -280,7 +280,7 @@ export function QuadroKanbanAdministrativo({
       {aClassificar.length > 0 && (
         <section
           aria-label={`A classificar — ${aClassificar.length} cliente(s)`}
-          className="mt-3 rounded-xl bg-muted/40 p-3 ring-1 ring-foreground/10 ring-inset"
+          className="mt-3 rounded-xl bg-muted/40 p-3 shadow-card ring-inset"
         >
           <h3 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-muted-foreground uppercase">
             <CircleDashed size={13} strokeWidth={2} />

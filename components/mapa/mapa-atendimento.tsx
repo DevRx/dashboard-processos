@@ -194,7 +194,7 @@ export function MapaAtendimento({
       ref={containerRef}
       role="application"
       aria-label="Mapa de atendimento"
-      className="h-[420px] w-full overflow-hidden rounded-xl ring-1 ring-foreground/10 ring-inset lg:h-[540px]"
+      className="h-[420px] w-full overflow-hidden rounded-xl shadow-card ring-inset lg:h-[540px]"
     />
   )
 }

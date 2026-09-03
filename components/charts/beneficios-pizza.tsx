@@ -61,11 +61,11 @@ export function BeneficiosPizza({
   return (
     <section
       aria-labelledby={tituloId}
-      className="flex flex-col rounded-xl bg-card p-4 ring-1 ring-foreground/10"
+      className="flex flex-col rounded-2xl bg-card p-5 shadow-card"
     >
       <h3
         id={tituloId}
-        className="font-heading text-[14px] leading-tight font-semibold"
+        className="font-heading text-[15px] leading-tight font-semibold tracking-[-0.01em]"
       >
         {titulo}
       </h3>
@@ -91,10 +91,12 @@ export function BeneficiosPizza({
                   cx="50%"
                   cy="50%"
                   outerRadius="92%"
-                  // A borda na cor da superfície é o respiro entre fatias:
-                  // sem ela, duas cores próximas encostam e viram uma só.
-                  stroke="var(--card)"
-                  strokeWidth={2}
+                  innerRadius="58%"
+                  paddingAngle={2}
+                  cornerRadius={4}
+                  // O respiro entre fatias vem do `paddingAngle`: sem ele,
+                  // duas cores próximas encostam e viram uma só.
+                  stroke="none"
                   isAnimationActive={false}
                 >
                   {dados.map((f) => (
@@ -109,7 +111,8 @@ export function BeneficiosPizza({
                   contentStyle={{
                     background: "var(--popover)",
                     border: "1px solid var(--border)",
-                    borderRadius: 8,
+                    borderRadius: 12,
+                    boxShadow: "var(--shadow-float)",
                     fontSize: 12,
                     color: "var(--popover-foreground)",
                   }}
@@ -123,7 +126,7 @@ export function BeneficiosPizza({
               <li key={f.categoria} className="flex items-baseline gap-2">
                 <span
                   aria-hidden
-                  className="size-2.5 shrink-0 translate-y-px rounded-[3px]"
+                  className="size-2.5 shrink-0 translate-y-px rounded-full"
                   style={{ background: f.cor }}
                 />
                 <span className="min-w-0 flex-1 truncate text-[12.5px]">

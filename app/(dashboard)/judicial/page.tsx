@@ -123,10 +123,10 @@ export default function JudicialPage() {
           title="Judicial"
           subtitle="Ações em curso, por fase, com consulta ao DataJud"
         />
-        <main className="flex-1 space-y-5 p-6">
+        <main className="flex-1 space-y-5 p-5 md:p-7">
           <AbasJudicial />
 
-          <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+          <section className="overflow-hidden rounded-xl bg-card shadow-card">
             <span
               aria-hidden
               className="block h-1 w-full bg-gradient-to-r from-slate-500 via-blue-600 to-violet-600"

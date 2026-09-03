@@ -107,10 +107,10 @@ export function KanbanBoard({
         return (
           <div
             key={nomeColuna}
-            className={`flex w-72 shrink-0 flex-col rounded-xl border p-3 transition-colors ${
+            className={`flex w-72 shrink-0 flex-col rounded-2xl p-3 ring-1 ring-inset transition-all ${
               isDropTarget
                 ? "border-pink-500 bg-pink-50 dark:border-pink-500 dark:bg-pink-950/20"
-                : "border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50"
+                : "border-border bg-background"
             }`}
             onDragOver={(e) => {
               e.preventDefault()
@@ -126,7 +126,7 @@ export function KanbanBoard({
             }}
           >
             <div className="mb-3 flex items-center justify-between px-1">
-              <h3 className="text-sm font-semibold">{nomeColuna}</h3>
+              <h3 className="font-heading truncate text-[13px] font-semibold tracking-[-0.005em]">{nomeColuna}</h3>
               <Badge variant="outline">{itens.length}</Badge>
             </div>
 
@@ -145,7 +145,7 @@ export function KanbanBoard({
                       e.dataTransfer.effectAllowed = "move"
                     }}
                     onDragEnd={() => setDragId(null)}
-                    className={`cursor-grab rounded-lg border border-zinc-200 bg-white p-3 shadow-sm transition-opacity active:cursor-grabbing dark:border-zinc-800 dark:bg-zinc-900 ${
+                    className={`cursor-grab rounded-xl bg-card p-3 shadow-card transition-[opacity,box-shadow] hover:shadow-float active:cursor-grabbing ${
                       dragId === processo.id || movendo === processo.id ? "opacity-40" : ""
                     }`}
                   >
@@ -161,7 +161,7 @@ export function KanbanBoard({
                       {iniciais && (
                         <span
                           title={users.find((u) => u.id === processo.responsavelId)?.name}
-                          className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-600 text-[10px] font-bold text-white"
+                          className="flex size-5 items-center justify-center rounded-full bg-gradient-brand text-[10px] font-bold text-white"
                         >
                           {iniciais}
                         </span>
@@ -175,7 +175,7 @@ export function KanbanBoard({
                             ? "text-red-600 dark:text-red-400"
                             : prazo.tom === "proximo"
                               ? "text-orange-600 dark:text-orange-400"
-                              : "text-zinc-500 dark:text-zinc-400"
+                              : "text-muted-foreground"
                         }`}
                       >
                         {prazo.tom === "ok" ? (

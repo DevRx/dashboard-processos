@@ -7,11 +7,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-plex-sans);
-  --font-mono: var(--font-plex-mono);
-  --font-heading: var(--font-plex-sans);
+  --font-sans: var(--font-sans-app);
+  --font-mono: var(--font-mono-app);
+  --font-heading: var(--font-heading-app);
   --spacing: 0.25rem;
   --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -29,6 +30,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -37,6 +39,7 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -58,31 +61,32 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --shadow-card: var(--shadow-card);
+  --shadow-float: var(--shadow-float);
+  --shadow-glow: var(--shadow-glow);
 }
 
 /* ─────────────────────────────────────────────────────────
-   Direção A — "Instituição"  (RFC Sprint 3, Seção 4)
+   Sistema visual — versão modernizada
 
-   Neutros de viés levemente frio, escolhidos e não herdados.
-   Um único acento, derivado da marca (#db2777) e rebaixado a um
-   vinho sóbrio — conforme o Princípio 10 da RFC v1.1: a marca
-   aparece, a interface trabalha.
+   Superfícies limpas com profundidade por sombra (e não por
+   contorno), acento índigo-naval, raios maiores, tipografia
+   geométrica nos títulos e humanista no corpo.
 
-   Trocar o acento é uma alteração de uma linha: --primary.
+   O que NÃO muda aqui, de propósito:
+   - as cores das famílias de benefício (--cat-*), validadas para o
+     gráfico e para os cartões do Administrativo;
+   - as cores dos times no quadro de tarefas, que vivem em
+     components/tarefas/quadro-tarefas.tsx.
    ───────────────────────────────────────────────────────── */
 
 :root {
-  /* A marca tem um endereço só (Princípio 10 da RFC v1.1): logo, login,
-     favicon e material institucional. A interface de trabalho não a usa. */
+  /* Marca: continua sendo o único ponto quente da interface. */
   --brand: #db2777;
+  --brand-soft: #fdf2f8;
 
-  /* Famílias de benefício no gráfico.
-
-     Mesma identidade dos cartões do Administrativo, em degrau escolhido
-     para a fatia: no gráfico as cores se comparam entre si, e nesse
-     regime teal-600 e emerald-600 colidiam. Validado com sete fatias —
-     pior par ΔE 8,7 (daltonismo) e 17,6 (visão normal). Não editar sem
-     revalidar: ver COR_CATEGORIA em components/administrativo/paleta.ts. */
+  /* Famílias de benefício — inalteradas. Ver COR_CATEGORIA em
+     components/administrativo/paleta.ts antes de mexer. */
   --cat-aposentadoria: #0084d1;    /* sky-600     */
   --cat-bpc-deficiente: #4f39f6;   /* indigo-600  */
   --cat-auxilio-doenca: #9f0712;   /* red-800     */
@@ -91,50 +95,62 @@
   --cat-procedimento-adm: #e17100; /* amber-600   */
   --cat-outros: #007a55;           /* emerald-700 */
 
-  /* Superfícies: três níveis */
-  --background: #f7f8fa;
+  /* Superfícies */
+  --background: #f4f6fb;
   --card: #ffffff;
   --popover: #ffffff;
-  --secondary: #eef1f4;
-  --muted: #eef1f4;
+  --secondary: #eef1f7;
+  --muted: #eef1f7;
 
-  /* Tinta: três pesos */
-  --foreground: #0f1720;
-  --card-foreground: #0f1720;
-  --popover-foreground: #0f1720;
-  --secondary-foreground: #253038;
-  --muted-foreground: #6b7783;
+  /* Tinta */
+  --foreground: #0b1220;
+  --card-foreground: #0b1220;
+  --popover-foreground: #0b1220;
+  --secondary-foreground: #1f2937;
+  --muted-foreground: #64748b;
 
-  /* Acento único: naval. Frio de propósito — deixa o rosa da marca ser
-     o único ponto quente da tela, reforçando o Princípio 10. */
-  --primary: #1e3a5f;
+  /* Acento: índigo-naval, mais vivo que o naval antigo e com folga
+     de contraste sobre branco (8.9:1). */
+  --primary: #2a4a8f;
+  --primary-hover: #1f3a75;
   --primary-foreground: #ffffff;
-  --accent: #ecf0f6;
-  --accent-foreground: #1e3a5f;
-  --ring: #1e3a5f;
+  --accent: #e9eefb;
+  --accent-foreground: #2a4a8f;
+  --ring: #3b5fc4;
 
-  --destructive: #b3261e;
-  --border: #e3e7ec;
-  --input: #cfd6de;
-  --radius: 0.5rem;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e5e9f2;
+  --input: #d7dde9;
+  --radius: 0.75rem;
 
-  /* Gráficos: sequência contida, do acento aos neutros */
-  --chart-1: #1e3a5f;
-  --chart-2: #3d6289;
-  --chart-3: #6b8098;
-  --chart-4: #97a5b3;
-  --chart-5: #c2cbd4;
+  /* Sombras: a profundidade vem daqui, não do contorno. */
+  --shadow-card:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 1px 3px rgba(15, 23, 42, 0.05),
+    0 0 0 1px rgba(15, 23, 42, 0.04);
+  --shadow-float:
+    0 12px 32px -12px rgba(15, 23, 42, 0.22),
+    0 4px 12px -4px rgba(15, 23, 42, 0.08),
+    0 0 0 1px rgba(15, 23, 42, 0.05);
+  --shadow-glow: 0 8px 24px -8px rgba(42, 74, 143, 0.55);
 
-  /* Sidebar: neutro profundo, sem roxo. A estrutura do componente
-     permanece intocada até a Fase 3. */
-  --sidebar: #131a21;
-  --sidebar-foreground: #e6ebf0;
-  --sidebar-primary: #5b87c2;
+  /* Gráficos */
+  --chart-1: #2a4a8f;
+  --chart-2: #4f6fb8;
+  --chart-3: #7c93cc;
+  --chart-4: #a9b8de;
+  --chart-5: #d2dbef;
+
+  /* Sidebar: azul-noite profundo com leve degradê. */
+  --sidebar: #0c1425;
+  --sidebar-foreground: #e6ebf5;
+  --sidebar-primary: #7c9ff0;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1e2831;
+  --sidebar-accent: rgba(255, 255, 255, 0.07);
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #232e38;
-  --sidebar-ring: #5b87c2;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #7c9ff0;
 
   /* Estados de processo */
   --status-info: #e0f2fe;
@@ -145,20 +161,15 @@
   --status-warning-foreground: #c2410c;
   --status-danger: #fee2e2;
   --status-danger-foreground: #b91c1c;
-  --status-muted: #f4f4f5;
-  --status-muted-foreground: #52525b;
+  --status-muted: #f1f5f9;
+  --status-muted-foreground: #475569;
 }
 
 .dark {
-  /* Escuro reequilibrado, não invertido: o acento sobe em luminosidade
-     para manter contraste sobre fundo escuro. */
+  --brand: #ec4899;
+  --brand-soft: rgba(236, 72, 153, 0.12);
 
-  /* As mesmas famílias, repisadas para a superfície escura — não é o
-     conjunto claro espelhado. A banda útil aqui é estreita (L
-     0,48–0,67) e sete matizes não cabem com folga: o melhor par possível
-     fica em ΔE 13,7, abaixo do piso de 15. É por isso que o gráfico
-     rotula toda fatia e repete a contagem na legenda, em vez de confiar
-     na cor sozinha. */
+  /* As mesmas famílias, repisadas para a superfície escura. */
   --cat-aposentadoria: #0084d1;    /* sky-600     */
   --cat-bpc-deficiente: #4f39f6;   /* indigo-600  */
   --cat-auxilio-doenca: #e7000b;   /* red-600     */
@@ -167,55 +178,62 @@
   --cat-procedimento-adm: #e17100; /* amber-600   */
   --cat-outros: #007a55;           /* emerald-700 */
 
-  --background: #0d1117;
-  --card: #141a21;
-  --popover: #141a21;
-  --secondary: #1c242c;
-  --muted: #1c242c;
+  --background: #090d16;
+  --card: #10172a;
+  --popover: #131b30;
+  --secondary: #1a2338;
+  --muted: #1a2338;
 
-  --foreground: #e6ebf0;
-  --card-foreground: #e6ebf0;
-  --popover-foreground: #e6ebf0;
-  --secondary-foreground: #e6ebf0;
-  --muted-foreground: #92a0ac;
+  --foreground: #e8edf7;
+  --card-foreground: #e8edf7;
+  --popover-foreground: #e8edf7;
+  --secondary-foreground: #e8edf7;
+  --muted-foreground: #8b9bb4;
 
-  /* O naval do tema claro reprova em AA sobre fundo escuro (3.7:1 com texto
-     branco). Escurecido até 6.8:1 em vez de simplesmente clareado. */
-  --primary: #2f5c8f;
+  --primary: #5b7fd6;
+  --primary-hover: #6f90e0;
   --primary-foreground: #ffffff;
-  --accent: #16202c;
-  --accent-foreground: #9dbbde;
-  --ring: #4a7ab3;
+  --accent: #1a2540;
+  --accent-foreground: #a9bff5;
+  --ring: #6f90e0;
 
-  --destructive: #e5645c;
-  --border: oklch(1 0 0 / 11%);
-  --input: oklch(1 0 0 / 15%);
+  --destructive: #f26b6b;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.14);
 
-  --chart-1: #5b87c2;
-  --chart-2: #3d6289;
-  --chart-3: #7c8b99;
-  --chart-4: #5a6b7a;
-  --chart-5: #3d4a56;
+  --shadow-card:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  --shadow-float:
+    0 16px 40px -12px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-glow: 0 8px 24px -8px rgba(91, 127, 214, 0.6);
 
-  --sidebar: #0b1016;
-  --sidebar-foreground: #e6ebf0;
-  --sidebar-primary: #5b87c2;
+  --chart-1: #7c9ff0;
+  --chart-2: #5b7fd6;
+  --chart-3: #4460a8;
+  --chart-4: #34497f;
+  --chart-5: #253458;
+
+  --sidebar: #070b14;
+  --sidebar-foreground: #e6ebf5;
+  --sidebar-primary: #7c9ff0;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #182028;
+  --sidebar-accent: rgba(255, 255, 255, 0.07);
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: #5b87c2;
+  --sidebar-border: rgba(255, 255, 255, 0.07);
+  --sidebar-ring: #7c9ff0;
 
-  /* Estados de processo */
-  --status-info: #0c4a6e;
+  --status-info: #0c3a5a;
   --status-info-foreground: #7dd3fc;
-  --status-success: #14532d;
+  --status-success: #113f27;
   --status-success-foreground: #86efac;
-  --status-warning: #7c2d12;
+  --status-warning: #5c2410;
   --status-warning-foreground: #fdba74;
-  --status-danger: #7f1d1d;
+  --status-danger: #5e1a1a;
   --status-danger-foreground: #fca5a5;
-  --status-muted: #27272a;
+  --status-muted: #1f2937;
   --status-muted-foreground: #a1a1aa;
 }
 
@@ -223,10 +241,115 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    @apply font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
   body {
     @apply bg-background text-foreground;
+    /* Um véu suave de luz no topo: separa a tela do "branco de
+       sistema" sem competir com o conteúdo. */
+    background-image:
+      radial-gradient(1200px 500px at 15% -10%, rgba(42, 74, 143, 0.07), transparent 60%),
+      radial-gradient(900px 400px at 100% 0%, rgba(219, 39, 119, 0.05), transparent 55%);
+    background-attachment: fixed;
   }
-  html {
-    @apply font-sans;
+
+  .dark body {
+    background-image:
+      radial-gradient(1200px 500px at 15% -10%, rgba(91, 127, 214, 0.12), transparent 60%),
+      radial-gradient(900px 400px at 100% 0%, rgba(236, 72, 153, 0.07), transparent 55%);
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 22%, transparent);
+  }
+
+  /* Barra de rolagem discreta em toda a interface. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--foreground) 18%, transparent) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--foreground) 18%, transparent);
+    border-radius: 999px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Campos nativos herdam a mesma linguagem dos inputs. */
+  select,
+  input[type="date"],
+  input[type="time"] {
+    color-scheme: light;
+  }
+  .dark select,
+  .dark input[type="date"],
+  .dark input[type="time"] {
+    color-scheme: dark;
+  }
+}
+
+@layer utilities {
+  /* Superfície padrão: cartão branco com sombra suave. Substitui o
+     antigo par `ring-1 ring-foreground/10`. */
+  .surface {
+    @apply rounded-xl bg-card text-card-foreground shadow-card;
+  }
+
+  /* Vidro fosco para barras fixas e menus. */
+  .glass {
+    background: color-mix(in oklab, var(--card) 78%, transparent);
+    backdrop-filter: saturate(160%) blur(14px);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
+  }
+
+  /* Título com degradê da marca ao acento — usado com parcimônia. */
+  .text-gradient-brand {
+    background-image: linear-gradient(100deg, var(--brand), #7c3aed 55%, var(--primary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bg-gradient-brand {
+    background-image: linear-gradient(135deg, var(--brand), #9333ea 60%, var(--primary));
+  }
+
+  /* Padrão de grade fino, para painéis de destaque. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  @keyframes shimmer {
+    100% { transform: translateX(100%) }
+  }
+
+  .animate-float {
+    animation: float 7s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) }
+    50% { transform: translateY(-10px) }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float {
+      animation: none;
+    }
   }
 }

@@ -125,7 +125,7 @@ function LeituraIA({
         </span>
 
         {intimacao.ia_tipo_ato ? (
-          <span className="rounded bg-card px-1.5 py-0.5 text-[10.5px] font-semibold ring-1 ring-foreground/10">
+          <span className="rounded bg-card px-1.5 py-0.5 text-[10.5px] font-semibold shadow-card">
             {intimacao.ia_tipo_ato}
           </span>
         ) : null}
@@ -258,7 +258,7 @@ export function CartaoIntimacao({
   return (
     <article
       className={cn(
-        "rounded-xl bg-card ring-1 ring-foreground/10 transition-opacity",
+        "rounded-xl bg-card shadow-card transition-opacity",
         tratada && "opacity-60"
       )}
     >
@@ -498,7 +498,7 @@ export function CartaoIntimacao({
             <select
               value={responsavelId}
               onChange={(e) => setResponsavelId(e.target.value)}
-              className="h-8 rounded-lg border border-input bg-card px-2 text-[12.5px] outline-none"
+              className="h-8 rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
             >
               <option value="">Sem responsável</option>
               {usuarios.map((u) => (
@@ -516,7 +516,7 @@ export function CartaoIntimacao({
             <select
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="h-8 rounded-lg border border-input bg-card px-2 text-[12.5px] outline-none"
+              className="h-8 rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
             >
               <option value="">Sem time</option>
               {TIMES_TAREFA.map((t) => (
@@ -528,7 +528,7 @@ export function CartaoIntimacao({
           </label>
 
           <Button size="sm" onClick={criar} disabled={criando} className="h-8">
-            {criando ? <Loader2 size={13} className="mr-1 animate-spin" /> : null}
+            {criando ? <Loader2 size={13} className="animate-spin" /> : null}
             Criar tarefa
           </Button>
         </div>

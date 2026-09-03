@@ -160,7 +160,7 @@ export function PreparoProtocolo({
   }
 
   return (
-    <div className="mt-2 border-t border-slate-100 pt-2 dark:border-zinc-800">
+    <div className="mt-2 border-t border-border/70 pt-2">
       <button
         type="button"
         onClick={() => setAberto((a) => !a)}
@@ -208,10 +208,10 @@ export function PreparoProtocolo({
           )}
 
           <details className="text-xs">
-            <summary className="cursor-pointer text-slate-600 dark:text-zinc-400">
+            <summary className="cursor-pointer text-muted-foreground">
               Documentos para montar a pasta
             </summary>
-            <ul className="mt-1.5 ml-4 list-disc space-y-0.5 text-slate-700 dark:text-zinc-300">
+            <ul className="mt-1.5 ml-4 list-disc space-y-0.5 text-foreground/85">
               {documentos.comuns.map((d) => (
                 <li key={d}>{d}</li>
               ))}
@@ -221,7 +221,7 @@ export function PreparoProtocolo({
                 </li>
               ))}
             </ul>
-            <p className="mt-1.5 text-slate-500 dark:text-zinc-500">
+            <p className="mt-1.5 text-muted-foreground">
               Guia de conferência, não lista legal exaustiva — a exigência varia
               com o caso e o INSS a altera por instrução normativa.
             </p>
@@ -232,7 +232,7 @@ export function PreparoProtocolo({
               href={URL_GERID}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-input bg-card px-3 text-sm font-medium shadow-xs transition-colors hover:bg-muted"
             >
               <ExternalLink size={15} /> GERID (advogado)
             </a>
@@ -240,7 +240,7 @@ export function PreparoProtocolo({
               href={URL_MEU_INSS}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-input bg-card px-3 text-sm font-medium shadow-xs transition-colors hover:bg-muted"
             >
               <ExternalLink size={15} /> Meu INSS
             </a>
@@ -248,10 +248,10 @@ export function PreparoProtocolo({
 
           {/* Passe de bastão: quem monta o caso raramente é quem
               protocola. A tarefa leva o contexto junto. */}
-          <div className="space-y-1.5 rounded-lg border border-slate-200 p-2.5 dark:border-zinc-800">
+          <div className="space-y-1.5 rounded-lg border border-border p-2.5">
             <p className="text-xs font-medium">Passar para quem vai protocolar</p>
             <select
-              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+              className="h-9 w-full rounded-lg border border-input bg-card px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
               value={destinatario}
               onChange={(e) => setDestinatario(e.target.value)}
             >
@@ -266,7 +266,7 @@ export function PreparoProtocolo({
                 </option>
               ))}
             </select>
-            <label className="block text-xs text-slate-600 dark:text-zinc-400">
+            <label className="block text-xs text-muted-foreground">
               Para quando
               <Input
                 type="date"
@@ -290,14 +290,14 @@ export function PreparoProtocolo({
             </Button>
           </div>
 
-          <div className="space-y-1.5 rounded-lg border border-slate-200 p-2.5 dark:border-zinc-800">
+          <div className="space-y-1.5 rounded-lg border border-border p-2.5">
             <p className="text-xs font-medium">Protocolou? Registre aqui</p>
             <Input
               placeholder="Número do protocolo"
               value={protocolo}
               onChange={(e) => setProtocolo(e.target.value)}
             />
-            <label className="block text-xs text-slate-600 dark:text-zinc-400">
+            <label className="block text-xs text-muted-foreground">
               Data de entrada do requerimento (DER)
               <Input
                 type="date"

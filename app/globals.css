@@ -347,8 +347,196 @@
     50% { transform: translateY(-10px) }
   }
 
+  /* ─────────────────────────────────────────────────────────
+     Lema das telas de acesso — "Crescer para Servir"
+
+     A frase é a própria animação: as três palavras sobem uma a uma
+     de dentro da própria linha e crescem a partir da base; "Servir"
+     recebe a tinta em degradê como se fosse pintada; uma barra curta
+     se estende por baixo e um único ponto rosa nasce no instante em
+     que a pintura termina. A marca responde com um pulso só.
+
+     Regra de ouro: o estado NATURAL de cada elemento é o estado
+     FINAL — as keyframes só descrevem o caminho até ele (usam `from`,
+     nunca `to`). Com prefers-reduced-motion basta desligar a animação
+     e o painel aparece pronto. Só CSS: sem estado React, sem Date,
+     sem random — hidratação limpa.
+
+     Atrasos chegam por `--lema-delay`, definido inline no JSX; os
+     easings vivem no painel (`.lema-painel`) para valerem em tudo.
+     ───────────────────────────────────────────────────────── */
+  .lema-painel {
+    --lema-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --lema-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+    --lema-ease-longo: cubic-bezier(0.16, 1, 0.3, 1);
+    --lema-ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --lema-tinta: linear-gradient(
+      90deg,
+      #fbcfe8 0%,
+      #f472b6 30%,
+      #e879f9 55%,
+      #a5b4fc 80%,
+      #7c9ff0 100%
+    );
+  }
+
+  /* Entrada genérica: selo, parágrafo e destaques. */
+  .lema-entra {
+    animation: lema-entra 600ms var(--lema-ease-out) var(--lema-delay, 0ms) both;
+  }
+  @keyframes lema-entra {
+    from { opacity: 0; transform: translateY(10px); }
+  }
+
+  /* Cada palavra vive numa linha recortada, com folga em cima e
+     embaixo para o glifo nunca ser cortado quando assenta. A palavra
+     parte de fora dessa folga. */
+  .lema-linha {
+    display: block;
+    clip-path: inset(-0.25em 0 -0.35em 0);
+  }
+  .lema-palavra {
+    display: inline-block;
+    transform-origin: 0% 100%;
+    animation: lema-sobe 760ms var(--lema-ease-out) var(--lema-delay, 0ms) both;
+  }
+  @keyframes lema-sobe {
+    from { opacity: 0; transform: translateY(130%) scale(0.92); }
+    60%  { opacity: 1; }
+  }
+
+  /* "Servir": o texto em si já é o degradê (estado final). Por cima,
+     um pseudo-elemento branco com o mesmo texto é recolhido da
+     esquerda para a direita — é a "pintura". Ao terminar não sobra
+     sobreposição, então as bordas dos glifos ficam limpas. Sendo
+     pseudo-elemento, a cópia não entra em seleção, cópia nem Ctrl+F.
+     A folga à direita cobre o último glifo, que o tracking negativo
+     empurra para fora da caixa. */
+  .lema-servir {
+    position: relative;
+    padding-right: 0.06em;
+    background-image: var(--lema-tinta);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .lema-servir::before {
+    content: attr(data-texto);
+    position: absolute;
+    inset: 0;
+    color: #fff;
+    clip-path: inset(0 0 0 100%);
+    animation: lema-tinta 700ms var(--lema-ease-inout) var(--lema-delay-tinta, 0ms) both;
+  }
+  @keyframes lema-tinta {
+    from { clip-path: inset(0 0 0 0); }
+  }
+
+  /* Barra curta sob o lema (não é régua de progresso: é uma
+     assinatura). Estende da esquerda; o ponto nasce na ponta. */
+  .lema-barra {
+    position: relative;
+    display: block;
+    width: 112px;
+    height: 3px;
+    margin-top: 1.25rem;
+    border-radius: 999px;
+    background-image: linear-gradient(90deg, var(--brand), #9333ea 60%, var(--sidebar-primary));
+    transform-origin: 0% 50%;
+    animation: lema-estende 700ms var(--lema-ease-longo) var(--lema-delay, 0ms) both;
+  }
+  @keyframes lema-estende {
+    from { transform: scaleX(0); }
+  }
+  .lema-ponto {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.35), 0 0 16px 4px rgba(219, 39, 119, 0.7);
+    transform: translate(50%, -50%);
+    animation: lema-nasce 500ms var(--lema-ease-pop) var(--lema-delay, 0ms) both;
+  }
+  @keyframes lema-nasce {
+    from { transform: translate(50%, -50%) scale(0); opacity: 0; }
+  }
+  /* O único loop que o lema acrescenta: um halo respirando, só
+     opacity/transform. O repouso é igual ao primeiro keyframe, para
+     não haver salto quando o loop começa. */
+  .lema-ponto::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(219, 39, 119, 0.55), transparent 70%);
+    opacity: 0.35;
+    animation: lema-respira 6s ease-in-out 2600ms infinite;
+  }
+  @keyframes lema-respira {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50%      { opacity: 0.9;  transform: scale(1.35); }
+  }
+
+  /* A marca responde ao lema com um anel que se expande uma vez. */
+  .lema-marca::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.75);
+    opacity: 0;
+    pointer-events: none;
+    animation: lema-anel 1.2s var(--lema-ease-longo) var(--lema-delay, 0ms) both;
+  }
+  @keyframes lema-anel {
+    from { opacity: 0.9; transform: scale(1); }
+    to   { opacity: 0;   transform: scale(1.9); }
+  }
+
+  /* Revisita na mesma aba: sem cascata, tudo já no lugar. A classe
+     entra no <html> por um script inline ANTES do primeiro paint
+     (ver auth-shell.tsx), por isso não há salto. */
+  .lema-pronto .lema-entra,
+  .lema-pronto .lema-palavra,
+  .lema-pronto .lema-servir::before,
+  .lema-pronto .lema-barra,
+  .lema-pronto .lema-ponto,
+  .lema-pronto .lema-marca::after {
+    animation-duration: 0s;
+    animation-delay: 0s;
+  }
+  .lema-pronto .lema-ponto::after {
+    animation-delay: 0s;
+  }
+
+  /* Telas baixas (1366x768 é comum): o lema cabe numa linha só. */
+  @media (max-height: 760px) {
+    .lema-titulo {
+      font-size: 34px;
+    }
+    .lema-linha {
+      display: inline-block;
+      margin-right: 0.15em;
+      clip-path: inset(-0.25em -0.1em -0.35em 0);
+    }
+    .lema-linha-para {
+      margin: 0 0.25em 0 0;
+      vertical-align: 0.5em;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .animate-float {
+    .animate-float,
+    .lema-entra,
+    .lema-palavra,
+    .lema-servir::before,
+    .lema-barra,
+    .lema-ponto,
+    .lema-ponto::after,
+    .lema-marca::after {
       animation: none;
     }
   }

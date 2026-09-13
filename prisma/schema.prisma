@@ -168,6 +168,7 @@ model User {
   duvidasRespondidas   Tarefa[]               @relation("QuemRespondeuDuvida")
   eventosTarefa        EventoTarefa[]
   comunicacoesDjen     ComunicacaoDjen[]
+  comentariosCliente   HistoricoCliente[]
 
   @@map("users")
 }
@@ -186,7 +187,10 @@ model Cliente {
   /// ver lib/seguranca/cofre.ts. A cifra protege dump e backup; a tela
   /// interna mostra o valor em claro para quem opera o escritório.
   senhaMeuInss   String?   @map("senha_meu_inss")
-  /// Comentários da equipe na ficha administrativa.
+  /// Legado. Era o campo único de comentários da ficha administrativa;
+  /// hoje eles vivem em `historico`, um registro por comentário, com
+  /// autor e hora. A migration 20260913120000_historico_do_cliente
+  /// copiou o que havia aqui para lá. Ninguém mais lê nem escreve.
   observacoes    String?
   /// Ponto no mapa de atendimento. Preenchido a partir do município
   /// reconhecido no endereço, ou escolhido à mão na tela do Mapa —
@@ -202,8 +206,32 @@ model Cliente {
   documentos     Documento[]
   consentimentos ConsentimentoLGPD[]
   importacoes    ImportacaoIntegracao[]
+  historico      HistoricoCliente[]
 
   @@map("clientes")
+}
+
+/// Comentários da equipe na ficha administrativa, um por registro.
+///
+/// O banco guarda só os 3 mais recentes de cada cliente — um trigger
+/// poda o resto a cada insert (ver a migration
+/// 20260913120000_historico_do_cliente.sql). A ficha é lida de relance
+/// antes de ligar para o cliente: importa o que foi combinado por
+/// último, com quem registrou e quando.
+model HistoricoCliente {
+  id        String   @id @default(uuid())
+  clienteId String   @map("cliente_id")
+  /// `SetNull`: a saída de alguém do escritório não apaga o que ela
+  /// registrou. O comentário continua, sem o nome.
+  autorId   String?  @map("autor_id")
+  texto     String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  cliente Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  autor   User?   @relation(fields: [autorId], references: [id])
+
+  @@index([clienteId, createdAt])
+  @@map("historico_cliente")
 }
 
 model Processo {

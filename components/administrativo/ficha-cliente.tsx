@@ -2,12 +2,27 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowUpRight, Check, Copy, KeyRound, Loader2, Save } from "lucide-react"
+import {
+  ArrowUpRight,
+  Check,
+  Copy,
+  KeyRound,
+  Loader2,
+  MessageSquarePlus,
+  Save,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { LIMITE_HISTORICO } from "@/lib/domain/cliente"
 import { cn } from "@/lib/utils"
-import { formatarCpf, formatarData, type FichaCliente } from "./tipos"
+import {
+  formatarCpf,
+  formatarData,
+  type ComentarioCliente,
+  type FichaCliente,
+  type PatchFicha,
+} from "./tipos"
 
 /**
  * Ficha administrativa do titular, aberta dentro da própria fila.
@@ -162,6 +177,63 @@ function SenhaMeuInss({
   )
 }
 
+function quando(iso: string) {
+  const d = new Date(iso)
+  return `${d.toLocaleDateString("pt-BR")} ${d.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`
+}
+
+/**
+ * O histórico de comentários: quem escreveu, quando, o quê — do mais
+ * novo ao mais velho.
+ *
+ * É uma lista e não um campo de texto porque duas pessoas cuidam do
+ * mesmo cliente. Num campo só, o segundo recado apagava o primeiro sem
+ * deixar rastro; aqui cada um fica com nome e hora, e ninguém
+ * sobrescreve ninguém. Só os LIMITE_HISTORICO mais recentes ficam: a
+ * ficha é para ser lida de relance, e o que importa é o que foi
+ * combinado por último.
+ */
+function HistoricoComentarios({ historico }: { historico: ComentarioCliente[] }) {
+  if (historico.length === 0) {
+    return (
+      <p className="mt-1 text-[13px] text-muted-foreground italic">
+        Nenhum comentário ainda.
+      </p>
+    )
+  }
+
+  return (
+    <ol className="mt-1 space-y-1.5" aria-label="Histórico de comentários">
+      {historico.map((c, i) => (
+        <li
+          key={c.id}
+          className={cn(
+            "rounded-lg border border-foreground/10 bg-card px-3 py-2",
+            // O mais recente é o que a equipe procura: ganha o texto
+            // cheio; os anteriores ficam em tom de contexto.
+            i > 0 && "text-muted-foreground"
+          )}
+        >
+          <p className="flex flex-wrap items-baseline gap-x-2 text-[11px] text-muted-foreground">
+            <span className="font-semibold text-foreground/80">
+              {c.autor?.name ?? "Registro sem autor"}
+            </span>
+            <time dateTime={c.criadoEm} className="tabular-nums">
+              {quando(c.criadoEm)}
+            </time>
+          </p>
+          <p className="mt-0.5 text-[13.5px] leading-relaxed whitespace-pre-wrap">
+            {c.texto}
+          </p>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
 /**
  * Onde a ficha está montada.
  *
@@ -178,24 +250,30 @@ export function FichaClienteAdministrativa({
   moldura = "painel",
 }: {
   cliente: FichaCliente
-  onSalvarFicha: (patch: {
-    observacoes?: string
-    senhaMeuInss?: string
-  }) => Promise<void>
+  onSalvarFicha: (patch: PatchFicha) => Promise<void>
   moldura?: MolduraFicha
 }) {
-  const [comentarios, setComentarios] = useState(cliente.observacoes ?? "")
+  const [comentario, setComentario] = useState("")
   const [salvando, setSalvando] = useState(false)
   const [salvo, setSalvo] = useState(false)
+  const [erro, setErro] = useState<string | null>(null)
 
-  const sujo = comentarios !== (cliente.observacoes ?? "")
+  const historico = cliente.historico ?? []
+  const podeRegistrar = comentario.trim().length > 0
 
-  async function salvarComentarios() {
+  async function registrarComentario() {
+    if (!podeRegistrar) return
     setSalvando(true)
     setSalvo(false)
+    setErro(null)
     try {
-      await onSalvarFicha({ observacoes: comentarios })
+      await onSalvarFicha({ comentario: comentario.trim() })
+      // O registro entrou no histórico (que chega atualizado pela
+      // fila); a caixa esvazia para o próximo.
+      setComentario("")
       setSalvo(true)
+    } catch {
+      setErro("Não foi possível registrar")
     } finally {
       setSalvando(false)
     }
@@ -245,33 +323,61 @@ export function FichaClienteAdministrativa({
       </div>
 
       <div className="mt-4">
-        <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
-          Comentários
+        <p className="flex flex-wrap items-baseline gap-x-2 text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+          Histórico de comentários
+          <span className="font-normal tracking-normal normal-case">
+            os {LIMITE_HISTORICO} mais recentes
+          </span>
         </p>
+
+        <HistoricoComentarios historico={historico} />
+
+        <label
+          htmlFor={`novo-comentario-${cliente.id}`}
+          className="mt-3 block text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase"
+        >
+          Novo comentário
+        </label>
         <textarea
-          value={comentarios}
+          id={`novo-comentario-${cliente.id}`}
+          value={comentario}
           onChange={(e) => {
-            setComentarios(e.target.value)
+            setComentario(e.target.value)
             setSalvo(false)
+            setErro(null)
           }}
-          rows={3}
-          placeholder="Anotações da equipe sobre este cliente — combinados, pendências, o que já foi tentado."
+          onKeyDown={(e) => {
+            // Ctrl/Cmd+Enter registra: quem digita um recado curto não
+            // quer soltar o teclado para clicar.
+            if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+              e.preventDefault()
+              registrarComentario()
+            }
+          }}
+          rows={2}
+          placeholder="Combinados, pendências, o que já foi tentado — fica registrado com seu nome e a hora."
           className="mt-1 w-full resize-y rounded-lg border border-input bg-card px-3 py-2 text-[13.5px] leading-relaxed outline-none transition focus-visible:ring-2 focus-visible:ring-ring/50"
         />
 
         <div className="mt-2 flex items-center gap-3">
-          <Button size="sm" onClick={salvarComentarios} disabled={!sujo || salvando}>
+          <Button
+            size="sm"
+            onClick={registrarComentario}
+            disabled={!podeRegistrar || salvando}
+          >
             {salvando ? (
               <Loader2 size={13} className="mr-1 animate-spin" />
             ) : (
-              <Save size={13} className="mr-1" />
+              <MessageSquarePlus size={13} className="mr-1" />
             )}
-            Salvar comentários
+            Registrar comentário
           </Button>
 
-          {salvo && !sujo ? (
-            <span className="text-xs text-muted-foreground">Salvo.</span>
+          {salvo && !podeRegistrar ? (
+            <span className="text-xs text-muted-foreground">Registrado.</span>
           ) : null}
+
+          {erro ? <span className="text-xs text-destructive">{erro}</span> : null}
 
           <Link
             href={`/clientes/${cliente.id}`}

@@ -27,7 +27,7 @@ import {
 import { EtiquetaPericia } from "./etiqueta-pericia"
 import { FichaClienteAdministrativa } from "./ficha-cliente"
 import { TINTA } from "./paleta"
-import { formatarCpf, formatarData, type ItemFila } from "./tipos"
+import { formatarCpf, formatarData, type ItemFila, type PatchFicha } from "./tipos"
 
 /**
  * O quadro do administrativo, uma coluna por família de benefício.
@@ -138,10 +138,7 @@ export function QuadroKanbanAdministrativo({
   onTrocarPericia,
 }: {
   itens: ItemFila[]
-  onSalvarFicha: (
-    clienteId: string,
-    patch: { observacoes?: string; senhaMeuInss?: string }
-  ) => Promise<void>
+  onSalvarFicha: (clienteId: string, patch: PatchFicha) => Promise<void>
   onTrocarPericia: (
     processoId: string,
     situacao: SituacaoPericia

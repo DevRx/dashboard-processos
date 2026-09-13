@@ -141,6 +141,15 @@ projeto:
 | `20260818_mapa_atendimento` | `clientes.latitude`, `clientes.longitude` |
 | `20260818_comunicacoes_djen` | tabela `comunicacoes_djen` |
 | `20260818_analise_intimacao` | colunas `ia_*` em `comunicacoes_djen` |
+| `20260913120000_historico_do_cliente` | tabela `historico_cliente` e o trigger que a limita a 3 registros por cliente |
+
+Os comentários da ficha são um **histórico**, não um campo de texto:
+cada pessoa registra o seu, com nome e hora, e ninguém sobrescreve o
+que a outra escreveu. O banco guarda os **3 mais recentes** de cada
+cliente e poda o resto sozinho, a cada novo registro — a ficha é para
+ser lida de relance, e o que importa é o que foi combinado por último.
+O que já estava em `clientes.observacoes` virou o primeiro registro do
+histórico ao aplicar a migration.
 
 Os times são identificados por cor (`VERMELHO`, `PRETO`, `AZUL`,
 `AMARELO`, `VERDE`). Para dar nome próprio a cada um sem mexer no

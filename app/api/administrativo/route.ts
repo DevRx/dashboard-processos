@@ -3,6 +3,13 @@ import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { decifrar } from "@/lib/seguranca/cofre"
 import { idsDoEscritorio } from "@/lib/escritorio"
+import {
+  LIMITE_HISTORICO,
+  SELECT_HISTORICO,
+  comentarioDaLinha,
+  type ComentarioBruto,
+  type ComentarioCliente,
+} from "@/lib/domain/cliente"
 
 /**
  * Fila administrativa: um item por requerimento em curso no INSS.
@@ -33,7 +40,6 @@ type ClienteBruto = {
   nome: string
   cpf: string | null
   created_at: string
-  observacoes: string | null
   senha_meu_inss: string | null
 }
 
@@ -48,13 +54,17 @@ type ProcessoBruto = {
   data_entrada: string | null
 }
 
-function fichaDoCliente(c: ClienteBruto, comSenha: boolean) {
+function fichaDoCliente(
+  c: ClienteBruto,
+  historico: ComentarioCliente[],
+  comSenha: boolean
+) {
   return {
     id: c.id,
     nome: c.nome,
     cpf: c.cpf,
     criadoEm: c.created_at,
-    observacoes: c.observacoes,
+    historico,
     // `null` tanto para "não cadastrada" quanto para "não abriu com a
     // chave atual": nos dois casos não há senha usável para mostrar.
     senhaMeuInss:
@@ -72,7 +82,7 @@ export async function GET() {
     const [clientesRes, processosRes] = await Promise.all([
       supabase
         .from("clientes")
-        .select("id, nome, cpf, created_at, observacoes, senha_meu_inss, beneficio")
+        .select("id, nome, cpf, created_at, senha_meu_inss, beneficio")
         .in("user_id", await idsDoEscritorio())
         .order("nome"),
       supabase
@@ -93,6 +103,41 @@ export async function GET() {
         { status: 500 }
       )
     }
+
+    // O histórico de todos os clientes numa consulta só, em vez de uma
+    // por ficha aberta. A tabela é pequena por construção — o trigger
+    // deixa no máximo LIMITE_HISTORICO linhas por cliente.
+    const idsClientes = (clientesRes.data ?? []).map((c) => c.id as string)
+    const historicoRes = idsClientes.length
+      ? await supabase
+          .from("historico_cliente")
+          .select(`cliente_id, ${SELECT_HISTORICO}`)
+          .in("cliente_id", idsClientes)
+          .order("created_at", { ascending: false })
+          .order("id", { ascending: false })
+      : { data: [], error: null }
+
+    if (historicoRes.error) {
+      console.error("Fila administrativa error:", historicoRes.error.message)
+      return NextResponse.json(
+        { error: "Erro interno do servidor" },
+        { status: 500 }
+      )
+    }
+
+    const historicoPorCliente = new Map<string, ComentarioCliente[]>()
+    for (const linha of (historicoRes.data ?? []) as (ComentarioBruto & {
+      cliente_id: string
+    })[]) {
+      const lista = historicoPorCliente.get(linha.cliente_id) ?? []
+      // A consulta já vem ordenada do mais novo ao mais velho, então
+      // os primeiros LIMITE_HISTORICO de cada cliente são os que ficam.
+      if (lista.length < LIMITE_HISTORICO) lista.push(comentarioDaLinha(linha))
+      historicoPorCliente.set(linha.cliente_id, lista)
+    }
+
+    const historicoDe = (clienteId: string) =>
+      historicoPorCliente.get(clienteId) ?? []
 
     const comSenha = PAPEIS_COM_SENHA.has(user.role)
 
@@ -121,7 +166,7 @@ export async function GET() {
           situacaoPericia: p.situacao_pericia,
           protocoloInss: p.protocolo_inss,
           dataEntrada: p.data_entrada,
-          cliente: fichaDoCliente(ficha, comSenha),
+          cliente: fichaDoCliente(ficha, historicoDe(ficha.id), comSenha),
         },
       ]
     })
@@ -140,7 +185,7 @@ export async function GET() {
         situacaoPericia: null,
         protocoloInss: null,
         dataEntrada: null,
-        cliente: fichaDoCliente(c, comSenha),
+        cliente: fichaDoCliente(c, historicoDe(c.id), comSenha),
       }))
 
     return NextResponse.json(

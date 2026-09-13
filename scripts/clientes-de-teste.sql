@@ -43,6 +43,18 @@ from (
 -- Rodar duas vezes não duplica: o CPF é único, e estes são reservados.
 on conflict ("cpf") do nothing;
 
+-- O comentário de cada um entra no histórico da ficha, que é onde a
+-- tela lê (a coluna `observacoes` é legado — ver a migration
+-- 20260913120000_historico_do_cliente). Sem autor, como o que foi
+-- migrado do campo antigo. Só em quem ainda não tem histórico, para
+-- rodar de novo não duplicar.
+insert into "historico_cliente" ("cliente_id", "autor_id", "texto")
+select c."id", null, c."observacoes"
+from "clientes" c
+where c."nome" like '%(TESTE)'
+  and c."observacoes" is not null
+  and not exists (select 1 from "historico_cliente" h where h."cliente_id" = c."id");
+
 -- ─────────────────────────────────────────────────────────
 -- Requerimentos para 5 deles
 --

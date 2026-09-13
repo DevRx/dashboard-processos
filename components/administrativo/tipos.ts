@@ -1,11 +1,26 @@
+import type { ComentarioCliente } from "@/lib/domain/cliente"
+
+export type { ComentarioCliente }
+
 export type FichaCliente = {
   id: string
   nome: string
   cpf: string | null
   criadoEm: string
-  observacoes: string | null
+  /** Do mais novo ao mais velho, no máximo LIMITE_HISTORICO. */
+  historico: ComentarioCliente[]
   /** Em claro: uso interno. A cifra vale no banco, não na tela. */
   senhaMeuInss: string | null
+}
+
+/**
+ * O que a ficha deixa editar direto na fila. `comentario` acrescenta
+ * um registro ao histórico — não substitui nada. `senhaMeuInss` vazia
+ * remove a senha guardada.
+ */
+export type PatchFicha = {
+  comentario?: string
+  senhaMeuInss?: string
 }
 
 /**

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import type { SituacaoPericia } from "@/lib/domain/processo"
 
-import type { ItemFila } from "./tipos"
+import type { ItemFila, PatchFicha } from "./tipos"
 
 /** Fase encerrada não é fila de trabalho: some do quadro. */
 const STATUS_ENCERRADOS = new Set(["CONCLUIDO", "ARQUIVADO"])
@@ -32,10 +32,7 @@ export function useFilaAdministrativa() {
   }, [carregar])
 
   const salvarFicha = useCallback(
-    async (
-      clienteId: string,
-      patch: { observacoes?: string; senhaMeuInss?: string }
-    ) => {
+    async (clienteId: string, patch: PatchFicha) => {
       const r = await fetch(`/api/clientes/${clienteId}/ficha`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -46,7 +43,9 @@ export function useFilaAdministrativa() {
       const dados = await r.json()
 
       // O mesmo cliente pode ocupar mais de uma família (BPC e revisão,
-      // por exemplo). A ficha é uma só: atualiza em todas.
+      // por exemplo). A ficha é uma só: atualiza em todas. O histórico
+      // vem inteiro da resposta, já podado — é a API quem sabe o que
+      // ficou depois do novo registro.
       setItens((atuais) =>
         atuais.map((item) =>
           item.cliente.id === clienteId
@@ -54,7 +53,7 @@ export function useFilaAdministrativa() {
                 ...item,
                 cliente: {
                   ...item.cliente,
-                  observacoes: dados.observacoes ?? null,
+                  historico: dados.historico ?? item.cliente.historico,
                   senhaMeuInss: dados.senhaMeuInss ?? null,
                 },
               }

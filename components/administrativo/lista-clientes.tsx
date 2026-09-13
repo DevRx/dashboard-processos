@@ -13,13 +13,10 @@ import type { SituacaoPericia } from "@/lib/domain/processo"
 
 import { EtiquetaPericia } from "./etiqueta-pericia"
 import { FichaClienteAdministrativa } from "./ficha-cliente"
-import { formatarCpf, formatarData, type ItemFila } from "./tipos"
+import { formatarCpf, formatarData, type ItemFila, type PatchFicha } from "./tipos"
 
 export type AcoesFila = {
-  onSalvarFicha: (
-    clienteId: string,
-    patch: { observacoes?: string; senhaMeuInss?: string }
-  ) => Promise<void>
+  onSalvarFicha: (clienteId: string, patch: PatchFicha) => Promise<void>
   onTrocarPericia: (processoId: string, situacao: SituacaoPericia) => Promise<void>
 }
 
@@ -37,10 +34,7 @@ function LinhaCliente({
   mostrarCategoria: boolean
   aberto: boolean
   onAlternar: () => void
-  onSalvarFicha: (patch: {
-    observacoes?: string
-    senhaMeuInss?: string
-  }) => Promise<void>
+  onSalvarFicha: (patch: PatchFicha) => Promise<void>
   onTrocarPericia: (situacao: SituacaoPericia) => Promise<void>
 }) {
   const cpf = formatarCpf(item.cliente.cpf)

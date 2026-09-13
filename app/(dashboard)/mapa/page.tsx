@@ -123,9 +123,9 @@ export default function MapaPage() {
           title="Mapa"
           subtitle="Onde estão os clientes do escritório"
         />
-        <main className="flex-1 space-y-5 p-6">
+        <main className="flex-1 space-y-5 p-5 md:p-7">
           <div className="grid gap-3 sm:grid-cols-3">
-            <div className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/10">
+            <div className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 shadow-card">
               <MapPin size={18} className="shrink-0 text-primary" />
               <div>
                 <p className="font-heading text-xl leading-none font-semibold tabular-nums">
@@ -137,7 +137,7 @@ export default function MapaPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/10">
+            <div className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 shadow-card">
               <Users size={18} className="shrink-0 text-primary" />
               <div>
                 <p className="font-heading text-xl leading-none font-semibold tabular-nums">
@@ -149,7 +149,7 @@ export default function MapaPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/10">
+            <div className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 shadow-card">
               <MapPinOff size={18} className="shrink-0 text-muted-foreground" />
               <div>
                 <p className="font-heading text-xl leading-none font-semibold tabular-nums">
@@ -178,7 +178,7 @@ export default function MapaPage() {
             <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
               <MapaAtendimento clientes={clientes} />
 
-              <div className="rounded-xl bg-card p-4 ring-1 ring-foreground/10">
+              <div className="rounded-xl bg-card p-4 shadow-card">
                 <h2 className="font-heading text-[14px] leading-tight font-semibold">
                   Onde estamos atendendo
                 </h2>
@@ -210,7 +210,7 @@ export default function MapaPage() {
           )}
 
           {semLocalizacao.length > 0 && (
-            <section className="rounded-xl bg-muted/40 p-4 ring-1 ring-foreground/10 ring-inset">
+            <section className="rounded-xl bg-muted/40 p-4 shadow-card ring-inset">
               <h2 className="font-heading text-[14px] leading-tight font-semibold">
                 Sem localização — {semLocalizacao.length} a apontar
               </h2>
@@ -223,7 +223,7 @@ export default function MapaPage() {
                 {semLocalizacao.map((c) => (
                   <li
                     key={c.id}
-                    className="flex flex-col gap-1.5 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10"
+                    className="flex flex-col gap-1.5 rounded-lg bg-card p-2.5 shadow-card"
                   >
                     <Link
                       href={`/clientes/${c.id}`}
@@ -240,7 +240,7 @@ export default function MapaPage() {
                       disabled={salvando === c.id}
                       onChange={(e) => apontar(c.id, e.target.value)}
                       aria-label={`Cidade de ${c.nome}`}
-                      className="h-8 w-full rounded-lg border border-input bg-card px-2 text-[12.5px] outline-none"
+                      className="h-8 w-full rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
                     >
                       <option value="">Apontar cidade…</option>
                       {OPCOES_DE_CIDADE}

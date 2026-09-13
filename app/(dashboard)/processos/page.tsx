@@ -177,20 +177,20 @@ export default function Processos() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
       <div className="flex flex-1 flex-col">
         <Header title="Processos" subtitle="Gestão de processos do escritório" />
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-5 md:p-7">
       <div className="mb-6 flex items-center justify-end">
         <div className="flex items-center gap-2">
-          <div className="flex rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
+          <div className="flex rounded-lg border border-border p-1">
             <Button
               variant={visao === "board" ? "default" : "ghost"}
               size="sm"
               onClick={() => setVisao("board")}
             >
-              <LayoutGrid size={16} className="mr-2" />
+              <LayoutGrid size={16} />
               Board
             </Button>
             <Button
@@ -198,7 +198,7 @@ export default function Processos() {
               size="sm"
               onClick={() => setVisao("lista")}
             >
-              <List size={16} className="mr-2" />
+              <List size={16} />
               Lista
             </Button>
           </div>
@@ -208,7 +208,7 @@ export default function Processos() {
               setDialogOpen(true)
             }}
           >
-            <Plus size={16} className="mr-2" />
+            <Plus size={16} />
             Novo Processo
           </Button>
         </div>
@@ -229,7 +229,7 @@ export default function Processos() {
                 onChange={(e) =>
                   setNovoProcesso({ ...novoProcesso, clienteId: e.target.value })
                 }
-                className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
               >
                 <option value="">Selecione um cliente</option>
                 {clientes.map((cliente) => (
@@ -285,7 +285,7 @@ export default function Processos() {
                 onChange={(e) =>
                   setNovoProcesso({ ...novoProcesso, status: e.target.value })
                 }
-                className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
               >
                 {PROCESSO_STATUS_VALUES.map((status) => (
                   <option key={status} value={status}>
@@ -299,7 +299,7 @@ export default function Processos() {
                 onChange={(e) =>
                   setNovoProcesso({ ...novoProcesso, responsavelId: e.target.value })
                 }
-                className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
               >
                 <option value="">Sem responsável</option>
                 {users.map((user) => (
@@ -356,7 +356,7 @@ export default function Processos() {
           <DialogFooter>
             <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
             <Button onClick={salvarProcesso}>
-              <Save size={16} className="mr-2" />
+              <Save size={16} />
               Salvar
             </Button>
           </DialogFooter>
@@ -364,7 +364,7 @@ export default function Processos() {
       </Dialog>
 
       {loading ? (
-        <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <Card>
           <CardContent className="space-y-3 p-6">
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
@@ -372,7 +372,7 @@ export default function Processos() {
           </CardContent>
         </Card>
       ) : processos.length === 0 ? (
-        <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <Card>
           <EmptyState
             icon={FolderSearch}
             title="Nenhum processo cadastrado"
@@ -387,11 +387,11 @@ export default function Processos() {
           onUpdated={fetchData}
         />
       ) : (
-        <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <Card>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-zinc-50 dark:bg-zinc-800">
+                <thead className="bg-muted/50 text-[11px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">
                   <tr>
                     <th className="p-4 text-left">Cliente</th>
                     <th className="p-4 text-left">Benefício</th>
@@ -403,7 +403,7 @@ export default function Processos() {
                 </thead>
                 <tbody>
                   {processos.map((processo) => (
-                    <tr key={processo.id} className="border-t border-zinc-200 dark:border-zinc-800">
+                    <tr key={processo.id} className="border-t border-border/70 transition-colors hover:bg-muted/40">
                       <td className="p-4">
                         <Link
                           href={`/clientes/${processo.clienteId}`}

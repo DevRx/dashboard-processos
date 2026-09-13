@@ -141,14 +141,14 @@ export default function FinanceiroPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
       <div className="flex flex-1 flex-col">
         <Header title="Financeiro" subtitle="Controle simples de entradas e saídas." />
-        <main className="flex-1 space-y-6 p-6">
+        <main className="flex-1 space-y-6 p-5 md:p-7">
           <div className="mb-2 flex items-center justify-end">
             <Button onClick={openNewDialog}>
-              <Plus size={16} className="mr-2" />
+              <Plus size={16} />
               Novo Lançamento
             </Button>
           </div>
@@ -203,7 +203,7 @@ export default function FinanceiroPage() {
                   onChange={(e) =>
                     setForm({ ...form, tipo: e.target.value as typeof emptyForm.tipo })
                   }
-                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
+                  className="w-full h-9 rounded-lg border border-input bg-card px-3 text-[14px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
                 >
                   {LANCAMENTO_TIPO_VALUES.map((tipo) => (
                     <option key={tipo} value={tipo}>
@@ -221,14 +221,14 @@ export default function FinanceiroPage() {
               <DialogFooter>
                 <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
                 <Button onClick={salvarLancamento}>
-                  <Save size={16} className="mr-2" />
+                  <Save size={16} />
                   Salvar
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
-          <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <Card>
             <CardHeader>
               <CardTitle>Lançamentos</CardTitle>
             </CardHeader>
@@ -248,7 +248,7 @@ export default function FinanceiroPage() {
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-zinc-50 text-left dark:bg-zinc-800">
+                    <thead className="bg-muted/50 text-left text-[11px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">
                       <tr>
                         <th className="p-3">Data</th>
                         <th className="p-3">Descrição</th>
@@ -259,7 +259,7 @@ export default function FinanceiroPage() {
                     </thead>
                     <tbody>
                       {lancamentos.map((lancamento) => (
-                        <tr key={lancamento.id} className="border-t border-zinc-200 dark:border-zinc-800">
+                        <tr key={lancamento.id} className="border-t border-border/70 transition-colors hover:bg-muted/40">
                           <td className="p-3">
                             {lancamento.data.slice(0, 10).split("-").reverse().join("/")}
                           </td>

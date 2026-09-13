@@ -564,10 +564,10 @@ export default function IntimacoesPage() {
           title="Intimações"
           subtitle="Publicações do DJEN em nome da OAB do escritório"
         />
-        <main className="flex-1 space-y-5 p-6">
+        <main className="flex-1 space-y-5 p-5 md:p-7">
           <AbasJudicial pendentes={pendentes.length} />
 
-          <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+          <section className="overflow-hidden rounded-xl bg-card shadow-card">
             <span
               aria-hidden
               className="block h-1 w-full bg-gradient-to-r from-amber-500 via-red-600 to-violet-600"
@@ -687,7 +687,7 @@ export default function IntimacoesPage() {
           </section>
 
           {semLeitura > 0 && (
-            <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 ring-1 ring-foreground/10">
+            <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 shadow-card">
               <SparklesIcon size={15} className="shrink-0 text-primary" />
               <p className="min-w-0 flex-1 text-[12.5px]">
                 <span className="font-semibold">{semLeitura}</span> publicação(ões)
@@ -710,7 +710,7 @@ export default function IntimacoesPage() {
           )}
 
           {semTarefa > 0 && (
-            <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 ring-1 ring-foreground/10">
+            <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 shadow-card">
               <Wand2 size={15} className="shrink-0 text-primary" />
               <p className="min-w-0 flex-1 text-[12.5px]">
                 <span className="font-semibold">{semTarefa}</span> prazo(s)

@@ -143,7 +143,7 @@ function AbrirDuvida({
   }
 
   return (
-    <div className="rounded-lg bg-muted/50 p-3 ring-1 ring-foreground/10">
+    <div className="rounded-lg bg-muted/50 p-3 shadow-card">
       <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
         Tirar uma dúvida
       </p>
@@ -165,7 +165,7 @@ function AbrirDuvida({
           disabled={pergunta.trim().length < 5 || enviando}
         >
           {enviando ? (
-            <Loader2 size={13} className="mr-1 animate-spin" />
+            <Loader2 size={13} className="animate-spin" />
           ) : (
             <CircleHelp size={13} className="mr-1" />
           )}
@@ -201,7 +201,7 @@ function Responder({
   }
 
   return (
-    <div className="rounded-lg bg-muted/50 p-3 ring-1 ring-foreground/10">
+    <div className="rounded-lg bg-muted/50 p-3 shadow-card">
       <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
         Responder
       </p>
@@ -216,7 +216,7 @@ function Responder({
       <div className="mt-2 flex flex-wrap items-center gap-3">
         <Button size="sm" onClick={enviar} disabled={!resposta.trim() || enviando}>
           {enviando ? (
-            <Loader2 size={13} className="mr-1 animate-spin" />
+            <Loader2 size={13} className="animate-spin" />
           ) : (
             <Send size={13} className="mr-1" />
           )}

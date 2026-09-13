@@ -142,10 +142,10 @@ export default function AdministrativoPage() {
           title="Administrativo"
           subtitle="Requerimentos no INSS por família de benefício"
         />
-        <main className="flex-1 space-y-5 p-6">
+        <main className="flex-1 space-y-5 p-5 md:p-7">
           {/* A logo mora numa placa clara própria: no tema escuro ela
               continua legível sem precisar de uma segunda arte. */}
-          <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+          <section className="overflow-hidden rounded-xl bg-card shadow-card">
             <span
               aria-hidden
               className="block h-1 w-full bg-gradient-to-r from-[#1351B4] via-[#FFCD07] to-[#168821]"

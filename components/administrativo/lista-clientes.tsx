@@ -63,7 +63,7 @@ function LinhaCliente({
         // da linha e seria recortado por ele. E a linha cujo menu está
         // aberto sobe de camada — senão as etiquetas das linhas
         // seguintes, empatadas no mesmo nível, pintam por cima dele.
-        "relative rounded-lg bg-card ring-1 ring-foreground/10 transition-shadow has-[[aria-haspopup=menu][aria-expanded=true]]:z-30",
+        "relative rounded-lg bg-card shadow-card transition-shadow has-[[aria-haspopup=menu][aria-expanded=true]]:z-30",
         aberto && "shadow-sm ring-foreground/20"
       )}
     >

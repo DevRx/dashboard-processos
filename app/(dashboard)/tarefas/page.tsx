@@ -20,8 +20,8 @@ export default function TarefasPage() {
           title="Tarefas"
           subtitle="Quadro do escritório por time e responsável"
         />
-        <main className="flex-1 space-y-4 p-6">
-          <p className="text-[12.5px] text-muted-foreground">
+        <main className="flex-1 space-y-4 p-5 md:p-7">
+          <p className="max-w-3xl text-[13px] leading-relaxed text-muted-foreground">
             A cor é o time; o nome no alto do cartão é quem responde por ela.
             Arraste o cartão de uma coluna para outra para mudar de time, e
             clique nas iniciais para passar a tarefa a outra pessoa.

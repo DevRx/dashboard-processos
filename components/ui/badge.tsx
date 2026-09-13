@@ -1,16 +1,34 @@
 import * as React from "react"
 
-function Badge({ className, variant = "default", ...props }: React.HTMLAttributes<HTMLSpanElement> & { variant?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "link" }) {
-  const variants: Record<string, string> = {
-    default: "border-transparent bg-primary text-white",
-    secondary: "border-transparent bg-slate-100 text-slate-700 dark:bg-zinc-800 dark:text-zinc-200",
-    destructive: "border-transparent bg-red-600 text-white",
-    outline: "border-slate-300 bg-white text-slate-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200",
-    ghost: "border-transparent bg-transparent text-slate-700 dark:text-zinc-200",
-    link: "border-transparent bg-transparent p-0 text-blue-600 underline dark:text-blue-400",
-  }
+import { cn } from "@/lib/utils"
 
-  return <span className={["inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold", variants[variant], className].filter(Boolean).join(" ")} {...props} />
+type Variant = "default" | "secondary" | "destructive" | "outline" | "ghost" | "link"
+
+const VARIANTS: Record<Variant, string> = {
+  default: "bg-primary text-primary-foreground",
+  secondary: "bg-secondary text-secondary-foreground",
+  destructive: "bg-status-danger text-status-danger-foreground",
+  outline: "bg-card text-foreground ring-1 ring-inset ring-border",
+  ghost: "bg-transparent text-muted-foreground",
+  link: "bg-transparent p-0 text-primary underline underline-offset-4",
+}
+
+function Badge({
+  className,
+  variant = "default",
+  ...props
+}: React.HTMLAttributes<HTMLSpanElement> & { variant?: Variant }) {
+  return (
+    <span
+      data-slot="badge"
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold whitespace-nowrap tabular-nums",
+        VARIANTS[variant],
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
 export { Badge }

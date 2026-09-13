@@ -3,23 +3,21 @@
 import { useState } from "react"
 import Link from "next/link"
 import { AlertTriangle, Clock } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { Avatar } from "@/components/ui/avatar"
 import { StatusBadge } from "@/components/dashboard/status-badge"
+import { diasAte, formatarData, prazoRelativo } from "@/lib/formatar"
+import { cn } from "@/lib/utils"
 import { type Processo, type Cliente, type User } from "@/lib/data"
 
 const SEM_BENEFICIO = "Sem benefício definido"
 
 function prazoInfo(prazo?: string | null) {
   if (!prazo) return null
-  const hoje = new Date().toISOString().slice(0, 10)
-  const dataPrazo = prazo.slice(0, 10)
-  const diffDias = Math.round(
-    (new Date(dataPrazo).getTime() - new Date(hoje).getTime()) / (1000 * 60 * 60 * 24)
-  )
-  const label = dataPrazo.split("-").reverse().join("/")
+  const dias = diasAte(prazo)
+  const label = `${formatarData(prazo)} · ${prazoRelativo(prazo)}`
 
-  if (diffDias < 0) return { label, tom: "vencido" as const }
-  if (diffDias <= 3) return { label, tom: "proximo" as const }
+  if (dias < 0) return { label, tom: "vencido" as const }
+  if (dias <= 3) return { label, tom: "proximo" as const }
   return { label, tom: "ok" as const }
 }
 
@@ -42,6 +40,10 @@ function payloadFromProcesso(processo: Processo, overrides: Partial<Processo> = 
   }
 }
 
+/**
+ * Quadro de processos por benefício. Arrastar um cartão para outra
+ * coluna troca o benefício do processo.
+ */
 export function KanbanBoard({
   processos,
   clientes,
@@ -61,10 +63,9 @@ export function KanbanBoard({
     return clientes.find((c) => c.id === clienteId)?.nome || "—"
   }
 
-  function getResponsavelIniciais(responsavelId?: string | null) {
+  function getResponsavelNome(responsavelId?: string | null) {
     if (!responsavelId) return null
-    const nome = users.find((u) => u.id === responsavelId)?.name
-    return nome ? nome.trim().slice(0, 1).toUpperCase() : null
+    return users.find((u) => u.id === responsavelId)?.name ?? null
   }
 
   const colunas = new Map<string, Processo[]>()
@@ -107,11 +108,12 @@ export function KanbanBoard({
         return (
           <div
             key={nomeColuna}
-            className={`flex w-72 shrink-0 flex-col rounded-xl border p-3 transition-colors ${
+            className={cn(
+              "flex w-72 shrink-0 flex-col rounded-xl p-3 ring-1 transition-colors",
               isDropTarget
-                ? "border-pink-500 bg-pink-50 dark:border-pink-500 dark:bg-pink-950/20"
-                : "border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50"
-            }`}
+                ? "bg-accent ring-primary/50"
+                : "bg-muted/60 ring-foreground/5"
+            )}
             onDragOver={(e) => {
               e.preventDefault()
               setColunaAlvo(nomeColuna)
@@ -125,15 +127,20 @@ export function KanbanBoard({
               if (processo) moverProcesso(processo, nomeColuna)
             }}
           >
-            <div className="mb-3 flex items-center justify-between px-1">
-              <h3 className="text-sm font-semibold">{nomeColuna}</h3>
-              <Badge variant="outline">{itens.length}</Badge>
+            <div className="mb-3 flex items-center justify-between gap-2 px-1">
+              <h3 className="font-heading truncate text-[13.5px] font-semibold" title={nomeColuna}>
+                {nomeColuna}
+              </h3>
+              <span className="shrink-0 rounded-full bg-card px-2 py-0.5 text-[11.5px] font-semibold tabular-nums ring-1 ring-foreground/10">
+                {itens.length}
+              </span>
             </div>
 
             <div className="flex flex-col gap-2">
               {itens.map((processo) => {
                 const prazo = prazoInfo(processo.prazo)
-                const iniciais = getResponsavelIniciais(processo.responsavelId)
+                const responsavel = getResponsavelNome(processo.responsavelId)
+                const nomeCliente = getClienteNome(processo.clienteId)
 
                 return (
                   <div
@@ -145,44 +152,43 @@ export function KanbanBoard({
                       e.dataTransfer.effectAllowed = "move"
                     }}
                     onDragEnd={() => setDragId(null)}
-                    className={`cursor-grab rounded-lg border border-zinc-200 bg-white p-3 shadow-sm transition-opacity active:cursor-grabbing dark:border-zinc-800 dark:bg-zinc-900 ${
-                      dragId === processo.id || movendo === processo.id ? "opacity-40" : ""
-                    }`}
+                    className={cn(
+                      "cursor-grab rounded-lg bg-card p-3 shadow-xs ring-1 ring-foreground/10 transition-opacity active:cursor-grabbing",
+                      (dragId === processo.id || movendo === processo.id) && "opacity-40"
+                    )}
                   >
-                    <Link
-                      href={`/clientes/${processo.clienteId}`}
-                      className="text-sm font-medium hover:underline"
-                    >
-                      {getClienteNome(processo.clienteId)}
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Avatar nome={nomeCliente} tamanho="xs" />
+                      <Link
+                        href={`/clientes/${processo.clienteId}`}
+                        className="min-w-0 flex-1 truncate text-[13px] font-medium hover:underline"
+                      >
+                        {nomeCliente}
+                      </Link>
+                      {responsavel && (
+                        <Avatar nome={responsavel} tamanho="xs" className="ring-2 ring-card" />
+                      )}
+                    </div>
 
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                      <StatusBadge status={processo.status} className="text-[10px]" />
-                      {iniciais && (
-                        <span
-                          title={users.find((u) => u.id === processo.responsavelId)?.name}
-                          className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-600 text-[10px] font-bold text-white"
-                        >
-                          {iniciais}
+                      <StatusBadge status={processo.status} className="text-[10.5px]" />
+                      {processo.numero && (
+                        <span className="truncate font-mono text-[10.5px] text-muted-foreground">
+                          {processo.numero}
                         </span>
                       )}
                     </div>
 
                     {prazo && (
                       <div
-                        className={`mt-2 flex items-center gap-1 text-xs ${
-                          prazo.tom === "vencido"
-                            ? "text-red-600 dark:text-red-400"
-                            : prazo.tom === "proximo"
-                              ? "text-orange-600 dark:text-orange-400"
-                              : "text-zinc-500 dark:text-zinc-400"
-                        }`}
-                      >
-                        {prazo.tom === "ok" ? (
-                          <Clock size={12} />
-                        ) : (
-                          <AlertTriangle size={12} />
+                        className={cn(
+                          "mt-2 flex items-center gap-1 text-[11.5px]",
+                          prazo.tom === "vencido" && "font-medium text-status-danger-foreground",
+                          prazo.tom === "proximo" && "font-medium text-status-warning-foreground",
+                          prazo.tom === "ok" && "text-muted-foreground"
                         )}
+                      >
+                        {prazo.tom === "ok" ? <Clock size={12} /> : <AlertTriangle size={12} />}
                         {prazo.label}
                       </div>
                     )}

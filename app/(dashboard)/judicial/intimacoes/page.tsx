@@ -20,8 +20,7 @@ import {
   Wand2,
 } from "lucide-react"
 
-import { Sidebar } from "@/components/layout/sidebar"
-import { Header } from "@/components/layout/header"
+import { Pagina } from "@/components/layout/pagina"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -557,280 +556,271 @@ export default function IntimacoesPage() {
     ]
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
-      <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <Header
-          title="Intimações"
-          subtitle="Publicações do DJEN em nome da OAB do escritório"
+    <Pagina titulo="Intimações" subtitulo="Publicações do DJEN em nome da OAB do escritório">
+      <AbasJudicial pendentes={pendentes.length} />
+
+      <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+        <span
+          aria-hidden
+          className="block h-1 w-full bg-gradient-to-r from-amber-500 via-red-600 to-violet-600"
         />
-        <main className="flex-1 space-y-5 p-6">
-          <AbasJudicial pendentes={pendentes.length} />
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 px-5 py-4">
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+            <Bell size={24} strokeWidth={1.9} />
+          </span>
 
-          <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
-            <span
-              aria-hidden
-              className="block h-1 w-full bg-gradient-to-r from-amber-500 via-red-600 to-violet-600"
-            />
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 px-5 py-4">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-                <Bell size={24} strokeWidth={1.9} />
-              </span>
-
-              <div className="min-w-0 flex-1">
-                <p className="font-heading text-[17px] leading-tight font-semibold">
-                  Diário de Justiça Eletrônico Nacional
-                </p>
-                <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">
-                  Uma busca cobre todos os tribunais em que a OAB atua. Cada
-                  publicação com prazo já vira tarefa na data do vencimento —
-                  data estimada em dias úteis com feriados nacionais, ainda sem
-                  as suspensões de cada tribunal.
-                </p>
-
-                <label className="mt-2 inline-flex cursor-pointer items-center gap-2 text-[12.5px] font-medium">
-                  <input
-                    type="checkbox"
-                    checked={automatico}
-                    onChange={(e) => alternarAutomatico(e.target.checked)}
-                    className="size-4 accent-[var(--primary)]"
-                  />
-                  <Sparkles size={13} className="text-primary" />
-                  Criar tarefa automaticamente para cada prazo encontrado
-                </label>
-
-                <RotinaAutomatica ultima={ultimaAutomatica} />
-
-                {automatico && (
-                  <label className="mt-1.5 flex items-center gap-2 text-[12px] text-muted-foreground">
-                    Entregar ao
-                    <select
-                      value={timePadrao}
-                      onChange={(e) => definirTimePadrao(e.target.value)}
-                      aria-label="Time que recebe as tarefas automáticas"
-                      className="h-7 rounded-lg border border-input bg-card px-2 text-[12px] text-foreground outline-none"
-                    >
-                      <option value="">Sem time (caixa de entrada)</option>
-                      {TIMES_TAREFA.map((t) => (
-                        <option key={t} value={t}>
-                          {TIME_LABEL[t]}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                )}
-              </div>
-
-              <div className="flex shrink-0 items-end gap-2">
-                <label className="flex flex-col gap-1">
-                  <span className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
-                    OAB
-                  </span>
-                  <div className="flex gap-1">
-                    <Input
-                      value={oab.numero}
-                      onChange={(e) =>
-                        setOab((o) => ({ ...o, numero: e.target.value }))
-                      }
-                      aria-label="Número da OAB"
-                      className="h-9 w-24 text-sm"
-                    />
-                    <Input
-                      value={oab.uf}
-                      onChange={(e) =>
-                        setOab((o) => ({ ...o, uf: e.target.value.toUpperCase() }))
-                      }
-                      aria-label="UF da OAB"
-                      maxLength={2}
-                      className="h-9 w-14 text-center text-sm"
-                    />
-                  </div>
-                </label>
-
-                <Button onClick={buscarNoDjen} disabled={buscando} className="h-9">
-                  {buscando ? (
-                    <Loader2 size={14} className="mr-1.5 animate-spin" />
-                  ) : (
-                    <Download size={14} className="mr-1.5" />
-                  )}
-                  Buscar no DJEN
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  onClick={recalcularPrazos}
-                  disabled={recalculando}
-                  title="Use depois de cadastrar feriados ou suspensões de tribunal"
-                  className="h-9 px-2"
-                >
-                  {recalculando ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    <RefreshCw size={14} />
-                  )}
-                </Button>
-              </div>
-            </div>
-
-            {aviso && (
-              <p
-                className={cn(
-                  "border-t px-5 py-2 text-[12.5px]",
-                  aviso.tipo === "ok"
-                    ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200"
-                    : "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200"
-                )}
-              >
-                {aviso.texto}
-              </p>
-            )}
-          </section>
-
-          {semLeitura > 0 && (
-            <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 ring-1 ring-foreground/10">
-              <SparklesIcon size={15} className="shrink-0 text-primary" />
-              <p className="min-w-0 flex-1 text-[12.5px]">
-                <span className="font-semibold">{semLeitura}</span> publicação(ões)
-                sem leitura por IA. A leitura diz do que se trata, o que fazer e
-                se o prazo é do escritório.
-              </p>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={analisarPendentes}
-                disabled={analisandoLote}
-                className="h-8"
-              >
-                {analisandoLote ? (
-                  <Loader2 size={13} className="mr-1.5 animate-spin" />
-                ) : null}
-                Ler {Math.min(semLeitura, 30)} com IA
-              </Button>
-            </div>
-          )}
-
-          {semTarefa > 0 && (
-            <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 ring-1 ring-foreground/10">
-              <Wand2 size={15} className="shrink-0 text-primary" />
-              <p className="min-w-0 flex-1 text-[12.5px]">
-                <span className="font-semibold">{semTarefa}</span> prazo(s)
-                pendente(s) ainda sem tarefa — de antes da criação automática.
-              </p>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={gerarPendentes}
-                disabled={gerando}
-                className="h-8"
-              >
-                {gerando ? (
-                  <Loader2 size={13} className="mr-1.5 animate-spin" />
-                ) : null}
-                Criar as {semTarefa} tarefas
-              </Button>
-            </div>
-          )}
-
-          {vencidas.length > 0 && (
-            <p className="flex items-center gap-2 rounded-lg bg-red-50 px-3.5 py-2.5 text-[12.5px] font-medium text-red-800 ring-1 ring-red-200 dark:bg-red-950/50 dark:text-red-200 dark:ring-red-900">
-              <AlertTriangle size={15} className="shrink-0" />
-              {vencidas.length} intimação(ões) pendente(s) com prazo estimado já
-              vencido. {comPrazoVivo.length} ainda no prazo.
+          <div className="min-w-0 flex-1">
+            <p className="font-heading text-[17px] leading-tight font-semibold">
+              Diário de Justiça Eletrônico Nacional
             </p>
-          )}
+            <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">
+              Uma busca cobre todos os tribunais em que a OAB atua. Cada
+              publicação com prazo já vira tarefa na data do vencimento —
+              data estimada em dias úteis com feriados nacionais, ainda sem
+              as suspensões de cada tribunal.
+            </p>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex rounded-lg bg-muted p-0.5">
-              {abas.map((aba) => (
-                <button
-                  key={aba.chave}
-                  type="button"
-                  onClick={() => setFiltroEscolhido(aba.chave)}
-                  className={cn(
-                    "rounded-md px-3 py-1.5 text-[12.5px] font-medium transition-colors",
-                    filtro === aba.chave
-                      ? "bg-card text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
+            <label className="mt-2 inline-flex cursor-pointer items-center gap-2 text-[12.5px] font-medium">
+              <input
+                type="checkbox"
+                checked={automatico}
+                onChange={(e) => alternarAutomatico(e.target.checked)}
+                className="size-4 accent-[var(--primary)]"
+              />
+              <Sparkles size={13} className="text-primary" />
+              Criar tarefa automaticamente para cada prazo encontrado
+            </label>
+
+            <RotinaAutomatica ultima={ultimaAutomatica} />
+
+            {automatico && (
+              <label className="mt-1.5 flex items-center gap-2 text-[12px] text-muted-foreground">
+                Entregar ao
+                <select
+                  value={timePadrao}
+                  onChange={(e) => definirTimePadrao(e.target.value)}
+                  aria-label="Time que recebe as tarefas automáticas"
+                  className="h-7 rounded-lg border border-input bg-card px-2 text-[12px] text-foreground outline-none"
                 >
-                  {aba.rotulo}
-                  <span
-                    className={cn(
-                      "ml-1.5 rounded px-1 tabular-nums",
-                      // A contagem de urgente é a única que precisa
-                      // gritar: as outras são navegação, esta é aviso.
-                      aba.alerta && aba.total > 0
-                        ? "bg-red-600 font-bold text-white"
-                        : "opacity-70"
-                    )}
-                  >
-                    {aba.total}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            <div className="relative max-w-xs flex-1">
-              <Search
-                size={15}
-                strokeWidth={1.9}
-                className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
-              />
-              <Input
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                placeholder="Buscar por parte, órgão, número ou texto"
-                aria-label="Buscar nas intimações"
-                className="pl-9 text-sm"
-              />
-            </div>
+                  <option value="">Sem time (caixa de entrada)</option>
+                  {TIMES_TAREFA.map((t) => (
+                    <option key={t} value={t}>
+                      {TIME_LABEL[t]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
           </div>
 
-          {carregando ? (
-            <div className="space-y-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-28 w-full" />
-              ))}
-            </div>
-          ) : filtradas.length === 0 ? (
-            <Card>
-              <CardContent>
-                <EmptyState
-                  icon={Bell}
-                  title={
-                    intimacoes.length === 0
-                      ? "Nenhuma intimação guardada"
-                      : filtro === "urgente"
-                        ? "Nenhum prazo apertado"
-                        : "Nada neste filtro"
+          <div className="flex shrink-0 items-end gap-2">
+            <label className="flex flex-col gap-1">
+              <span className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
+                OAB
+              </span>
+              <div className="flex gap-1">
+                <Input
+                  value={oab.numero}
+                  onChange={(e) =>
+                    setOab((o) => ({ ...o, numero: e.target.value }))
                   }
-                  description={
-                    intimacoes.length === 0
-                      ? "Clique em “Buscar no DJEN” para trazer as publicações dos últimos 30 dias."
-                      : filtro === "urgente"
-                        ? `Nada vencendo em ${DIAS_URGENTE} dias ou menos entre as pendentes.`
-                        : "Troque o filtro ou limpe a busca."
+                  aria-label="Número da OAB"
+                  className="h-9 w-24 text-sm"
+                />
+                <Input
+                  value={oab.uf}
+                  onChange={(e) =>
+                    setOab((o) => ({ ...o, uf: e.target.value.toUpperCase() }))
                   }
+                  aria-label="UF da OAB"
+                  maxLength={2}
+                  className="h-9 w-14 text-center text-sm"
                 />
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {filtradas.map((i) => (
-                <CartaoIntimacao
-                  key={i.id}
-                  intimacao={i}
-                  usuarios={usuarios}
-                  onCriarTarefa={(dados) => criarTarefa(i.id, dados)}
-                  onAlternarTratada={(t) => alternarTratada(i.id, t)}
-                  onDirecionar={(time) => direcionar(i, time)}
-                  onAnalisar={() => analisar(i.id)}
-                />
-              ))}
-            </div>
-          )}
-        </main>
+              </div>
+            </label>
+
+            <Button onClick={buscarNoDjen} disabled={buscando} className="h-9">
+              {buscando ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Download size={14} />
+              )}
+              Buscar no DJEN
+            </Button>
+
+            <Button
+              variant="ghost"
+              onClick={recalcularPrazos}
+              disabled={recalculando}
+              title="Use depois de cadastrar feriados ou suspensões de tribunal"
+              className="h-9 px-2"
+            >
+              {recalculando ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <RefreshCw size={14} />
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {aviso && (
+          <p
+            className={cn(
+              "border-t px-5 py-2 text-[12.5px]",
+              aviso.tipo === "ok"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200"
+                : "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200"
+            )}
+          >
+            {aviso.texto}
+          </p>
+        )}
+      </section>
+
+      {semLeitura > 0 && (
+        <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 ring-1 ring-foreground/10">
+          <SparklesIcon size={15} className="shrink-0 text-primary" />
+          <p className="min-w-0 flex-1 text-[12.5px]">
+            <span className="font-semibold">{semLeitura}</span> publicação(ões)
+            sem leitura por IA. A leitura diz do que se trata, o que fazer e
+            se o prazo é do escritório.
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={analisarPendentes}
+            disabled={analisandoLote}
+            className="h-8"
+          >
+            {analisandoLote ? (
+              <Loader2 size={13} className="animate-spin" />
+            ) : null}
+            Ler {Math.min(semLeitura, 30)} com IA
+          </Button>
+        </div>
+      )}
+
+      {semTarefa > 0 && (
+        <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 ring-1 ring-foreground/10">
+          <Wand2 size={15} className="shrink-0 text-primary" />
+          <p className="min-w-0 flex-1 text-[12.5px]">
+            <span className="font-semibold">{semTarefa}</span> prazo(s)
+            pendente(s) ainda sem tarefa — de antes da criação automática.
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={gerarPendentes}
+            disabled={gerando}
+            className="h-8"
+          >
+            {gerando ? (
+              <Loader2 size={13} className="animate-spin" />
+            ) : null}
+            Criar as {semTarefa} tarefas
+          </Button>
+        </div>
+      )}
+
+      {vencidas.length > 0 && (
+        <p className="flex items-center gap-2 rounded-lg bg-red-50 px-3.5 py-2.5 text-[12.5px] font-medium text-red-800 ring-1 ring-red-200 dark:bg-red-950/50 dark:text-red-200 dark:ring-red-900">
+          <AlertTriangle size={15} className="shrink-0" />
+          {vencidas.length} intimação(ões) pendente(s) com prazo estimado já
+          vencido. {comPrazoVivo.length} ainda no prazo.
+        </p>
+      )}
+
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex rounded-lg bg-muted p-0.5">
+          {abas.map((aba) => (
+            <button
+              key={aba.chave}
+              type="button"
+              onClick={() => setFiltroEscolhido(aba.chave)}
+              className={cn(
+                "rounded-md px-3 py-1.5 text-[12.5px] font-medium transition-colors",
+                filtro === aba.chave
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {aba.rotulo}
+              <span
+                className={cn(
+                  "ml-1.5 rounded px-1 tabular-nums",
+                  // A contagem de urgente é a única que precisa
+                  // gritar: as outras são navegação, esta é aviso.
+                  aba.alerta && aba.total > 0
+                    ? "bg-red-600 font-bold text-white"
+                    : "opacity-70"
+                )}
+              >
+                {aba.total}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="relative max-w-xs flex-1">
+          <Search
+            size={15}
+            strokeWidth={1.9}
+            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Buscar por parte, órgão, número ou texto"
+            aria-label="Buscar nas intimações"
+            className="pl-9 text-sm"
+          />
+        </div>
       </div>
-    </div>
+
+      {carregando ? (
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-28 w-full" />
+          ))}
+        </div>
+      ) : filtradas.length === 0 ? (
+        <Card>
+          <CardContent>
+            <EmptyState
+              icon={Bell}
+              title={
+                intimacoes.length === 0
+                  ? "Nenhuma intimação guardada"
+                  : filtro === "urgente"
+                    ? "Nenhum prazo apertado"
+                    : "Nada neste filtro"
+              }
+              description={
+                intimacoes.length === 0
+                  ? "Clique em “Buscar no DJEN” para trazer as publicações dos últimos 30 dias."
+                  : filtro === "urgente"
+                    ? `Nada vencendo em ${DIAS_URGENTE} dias ou menos entre as pendentes.`
+                    : "Troque o filtro ou limpe a busca."
+              }
+            />
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {filtradas.map((i) => (
+            <CartaoIntimacao
+              key={i.id}
+              intimacao={i}
+              usuarios={usuarios}
+              onCriarTarefa={(dados) => criarTarefa(i.id, dados)}
+              onAlternarTratada={(t) => alternarTratada(i.id, t)}
+              onDirecionar={(time) => direcionar(i, time)}
+              onAnalisar={() => analisar(i.id)}
+            />
+          ))}
+        </div>
+      )}
+    </Pagina>
   )
 }

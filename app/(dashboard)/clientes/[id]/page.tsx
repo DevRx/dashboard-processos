@@ -1,28 +1,101 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Cake,
+  FolderPlus,
+  FolderSearch,
+  Gavel,
+  IdCard,
+  Landmark,
+  Mail,
+  MapPin,
+  Pencil,
+  Phone,
+  Trash2,
+  UserX,
+  type LucideIcon,
+} from "lucide-react"
+
+import { Pagina } from "@/components/layout/pagina"
+import { Avatar } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Sidebar } from "@/components/layout/sidebar"
-import { Header } from "@/components/layout/header"
-import { StatusBadge } from "@/components/dashboard/status-badge"
+import { useConfirmacao } from "@/components/ui/confirmacao"
+import { FAIXA_POR_TOM, StatusBadge, tomDoStatus } from "@/components/dashboard/status-badge"
 import { EmptyState } from "@/components/dashboard/empty-state"
+import { DialogoCliente } from "@/components/clientes/dialogo-cliente"
+import { DialogoProcesso } from "@/components/processos/dialogo-processo"
 import { PainelInss } from "@/components/integracoes/painel-inss"
 import { PreparoProtocolo } from "@/components/integracoes/preparo-protocolo"
 import { DocumentosCliente } from "@/components/integracoes/documentos-cliente"
-import { opcoesEspecie } from "@/lib/domain/beneficio"
-import { Trash2, Save, Search, Loader2, FolderSearch, UserX } from "lucide-react"
 import {
-  PROCESSO_STATUS_LABELS,
-  PROCESSO_STATUS_VALUES,
-  type Cliente,
-  type EsferaProcesso,
-  type Processo,
-  type User,
-} from "@/lib/data"
+  diasAte,
+  formatarCPF,
+  formatarData,
+  formatarTelefone,
+  prazoRelativo,
+} from "@/lib/formatar"
+import { cn } from "@/lib/utils"
+import type { Cliente, Processo, User } from "@/lib/data"
+
+function idade(nascimento?: string | null) {
+  if (!nascimento) return null
+  const [ano, mes, dia] = nascimento.slice(0, 10).split("-").map(Number)
+  if (!ano) return null
+  const hoje = new Date()
+  let anos = hoje.getFullYear() - ano
+  const aniversarioPassou =
+    hoje.getMonth() + 1 > mes || (hoje.getMonth() + 1 === mes && hoje.getDate() >= dia)
+  if (!aniversarioPassou) anos -= 1
+  return anos
+}
+
+/** Um dado da ficha: ícone, nome do dado e o valor — ou o que falta. */
+function Dado({
+  icone: Icone,
+  rotulo,
+  valor,
+  href,
+  mono,
+}: {
+  icone: LucideIcon
+  rotulo: string
+  valor?: string | null
+  href?: string
+  mono?: boolean
+}) {
+  const vazio = !valor
+  const conteudo = (
+    <span
+      className={cn(
+        "block truncate text-[13.5px]",
+        vazio ? "text-muted-foreground/70 italic" : "font-medium",
+        mono && !vazio && "font-mono tabular-nums",
+        href && !vazio && "hover:underline"
+      )}
+    >
+      {vazio ? "não informado" : valor}
+    </span>
+  )
+
+  return (
+    <div className="flex min-w-0 items-start gap-3">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+        <Icone size={17} strokeWidth={1.9} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+          {rotulo}
+        </span>
+        {href && !vazio ? <a href={href}>{conteudo}</a> : conteudo}
+      </span>
+    </div>
+  )
+}
 
 export default function ClienteDetalhe() {
   const params = useParams()
@@ -30,478 +103,378 @@ export default function ClienteDetalhe() {
   const id = params.id as string
 
   const [cliente, setCliente] = useState<Cliente | null>(null)
-  const [loading, setLoading] = useState(true)
   const [users, setUsers] = useState<User[]>([])
-  const [novoProcesso, setNovoProcesso] = useState({
-    beneficio: "",
-    esfera: "ADMINISTRATIVO" as EsferaProcesso,
-    numero: "",
-    protocoloInss: "",
-    status: "EM_ANALISE",
-    responsavelId: "",
-    dataEntrada: "",
-    prazo: "",
-    tribunal: "",
-    vara: "",
-    observacoes: "",
-  })
+  // Id da ficha que já chegou. Enquanto for outro (ou nenhum), a tela
+  // mostra o esqueleto — sem precisar de um `setLoading(true)` dentro
+  // do efeito.
+  const [idCarregado, setIdCarregado] = useState<string | null>(null)
+  const loading = idCarregado !== id
+  const [editando, setEditando] = useState(false)
+  const [novoCaso, setNovoCaso] = useState(false)
+  const { confirmar, dialogo: dialogoConfirmacao } = useConfirmacao()
+  const abridorRef = useRef<HTMLElement | null>(null)
+
   // O preparo do protocolo precisa saber se há procuração vigente e se
   // o PDF está anexado. Buscado aqui em vez de erguido do painel de
   // integração: o endpoint é barato, e plumbing de estado entre irmãos
   // custaria mais do que uma requisição.
-  const [baseLegal, setBaseLegal] = useState({
-    temVigente: false,
-    temPdf: false,
-  })
-  const [buscandoDataJud, setBuscandoDataJud] = useState(false)
-  const [dataJudMsg, setDataJudMsg] = useState<{ tipo: "erro" | "ok"; texto: string } | null>(null)
+  const [baseLegal, setBaseLegal] = useState({ temVigente: false, temPdf: false })
 
   /**
-   * `silencioso` recarrega sem trocar a tela pelo skeleton. O skeleton
-   * desmonta os cards, e desmontar o painel de integração no meio de
-   * uma importação jogaria fora a prévia que o operador está revisando.
+   * Recarregar nunca troca a tela pelo skeleton: o skeleton desmonta os
+   * cards, e desmontar o painel de integração no meio de uma importação
+   * jogaria fora a prévia que o operador está revisando. Só a primeira
+   * carga de cada id mostra o esqueleto — ver `idCarregado`.
    */
-  async function fetchCliente(silencioso = false) {
-    if (!silencioso) setLoading(true)
-    try {
-      const [clienteRes, usersRes, basesRes] = await Promise.all([
-        fetch(`/api/clientes/${id}`),
-        fetch("/api/users"),
-        fetch(`/api/lgpd/consentimentos?clienteId=${id}`),
-      ])
+  const fetchCliente = useCallback(() => {
+    const json = (r: Response) => (r.ok ? r.json() : null)
+    return Promise.all([
+      fetch(`/api/clientes/${id}`).then(json),
+      fetch("/api/users").then(json),
+      fetch(`/api/lgpd/consentimentos?clienteId=${id}`).then(json),
+    ])
+      .then(([clienteData, usersData, basesData]) => {
+        if (clienteData) {
+          setCliente(clienteData.cliente)
+        } else {
+          router.push("/clientes")
+          return
+        }
+        if (usersData) setUsers(usersData.users)
 
-      const clienteData = await clienteRes.json()
-      const usersData = await usersRes.json()
-
-      if (clienteRes.ok) {
-        setCliente(clienteData.cliente)
-      } else {
-        router.push("/clientes")
-      }
-      if (usersRes.ok) setUsers(usersData.users)
-
-      if (basesRes.ok) {
-        const { consentimentos } = await basesRes.json()
-        const vigente = (consentimentos ?? []).find(
-          (c: { revogadoEm: string | null }) => !c.revogadoEm
-        )
-        setBaseLegal({
-          temVigente: Boolean(vigente),
-          temPdf: Boolean(vigente?.procuracaoArquivo),
-        })
-      }
-    } catch (err) {
-      console.error("Erro ao carregar cliente:", err)
-    } finally {
-      setLoading(false)
-    }
-  }
+        if (basesData) {
+          const vigente = (basesData.consentimentos ?? []).find(
+            (c: { revogadoEm: string | null }) => !c.revogadoEm
+          )
+          setBaseLegal({
+            temVigente: Boolean(vigente),
+            temPdf: Boolean(vigente?.procuracaoArquivo),
+          })
+        }
+        setIdCarregado(id)
+      })
+      .catch((err) => console.error("Erro ao carregar cliente:", err))
+  }, [id, router])
 
   useEffect(() => {
     fetchCliente()
-  }, [id])
+  }, [fetchCliente])
 
-  async function salvarProcesso() {
+  async function excluirProcesso(processo: Processo) {
+    const ok = await confirmar({
+      titulo: `Excluir o caso "${processo.beneficio || "sem benefício"}"?`,
+      descricao: "Os andamentos e documentos anexados a ele também serão apagados.",
+      rotuloConfirmar: "Excluir caso",
+    })
+    if (!ok) return
     try {
-      const response = await fetch("/api/processos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...novoProcesso, clienteId: id }),
-      })
-
-      if (response.ok) {
-        setNovoProcesso({
-          beneficio: "",
-          esfera: "ADMINISTRATIVO",
-          numero: "",
-          protocoloInss: "",
-          status: "EM_ANALISE",
-          responsavelId: "",
-          dataEntrada: "",
-          prazo: "",
-          tribunal: "",
-          vara: "",
-          observacoes: "",
-        })
-        setDataJudMsg(null)
-        fetchCliente()
-      }
-    } catch (err) {
-      console.error("Erro ao salvar processo:", err)
-    }
-  }
-
-  async function buscarNoDataJud() {
-    if (!novoProcesso.numero.trim()) return
-    setBuscandoDataJud(true)
-    setDataJudMsg(null)
-    try {
-      const res = await fetch(
-        `/api/processos/lookup?numero=${encodeURIComponent(novoProcesso.numero)}`
-      )
-      const data = await res.json()
-
-      if (!res.ok) {
-        setDataJudMsg({ tipo: "erro", texto: data.error || "Erro ao buscar processo" })
-        return
-      }
-
-      const d = data.dados
-      const infoExtra = [
-        d.classe ? `Classe: ${d.classe}` : null,
-        d.ultimoMovimento
-          ? `Último movimento: ${d.ultimoMovimento.nome}${d.ultimoMovimento.data ? ` (${d.ultimoMovimento.data.slice(0, 10).split("-").reverse().join("/")})` : ""}`
-          : null,
-      ]
-        .filter(Boolean)
-        .join(" — ")
-
-      setNovoProcesso((prev) => ({
-        ...prev,
-        beneficio: d.assuntos?.[0] || prev.beneficio,
-        dataEntrada: d.dataAjuizamento ? d.dataAjuizamento.slice(0, 10) : prev.dataEntrada,
-        tribunal: d.tribunal || prev.tribunal,
-        vara: d.orgaoJulgador || prev.vara,
-        observacoes: infoExtra
-          ? [prev.observacoes, infoExtra].filter(Boolean).join(" | ")
-          : prev.observacoes,
-      }))
-      setDataJudMsg({ tipo: "ok", texto: "Dados encontrados e preenchidos. Confira o benefício antes de salvar." })
-    } catch (err) {
-      console.error("Erro ao buscar no DataJud:", err)
-      setDataJudMsg({ tipo: "erro", texto: "Erro de conexão ao buscar o processo" })
-    } finally {
-      setBuscandoDataJud(false)
-    }
-  }
-
-  async function deleteProcesso(processoId: string) {
-    if (!confirm("Tem certeza que deseja excluir este processo?")) return
-    try {
-      await fetch(`/api/processos/${processoId}`, { method: "DELETE" })
+      await fetch(`/api/processos/${processo.id}`, { method: "DELETE" })
       fetchCliente()
     } catch (err) {
       console.error("Erro ao excluir processo:", err)
     }
   }
 
-  function getResponsavelNome(responsavelId?: string | null) {
-    if (!responsavelId) return "—"
-    return users.find((u) => u.id === responsavelId)?.name || "—"
+  function nomeResponsavel(responsavelId?: string | null) {
+    if (!responsavelId) return null
+    return users.find((u) => u.id === responsavelId)?.name ?? null
   }
 
-  const processos = cliente?.processos || []
+  const voltar = { href: "/clientes", rotulo: "Voltar para a lista de clientes" }
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-        <Sidebar />
-        <div className="flex flex-1 flex-col">
-          <Header title="Clientes" subtitle="Carregando detalhes..." />
-          <main className="flex-1 space-y-3 p-6">
-            <Skeleton className="h-8 w-64" />
-            <Skeleton className="h-40 w-full" />
-          </main>
+      <Pagina titulo="Carregando…" subtitulo="Ficha do cliente" voltar={voltar}>
+        <Skeleton className="h-36 w-full" />
+        <div className="grid gap-5 lg:grid-cols-2">
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-64 w-full" />
         </div>
-      </div>
+      </Pagina>
     )
   }
 
   if (!cliente) {
     return (
-      <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-        <Sidebar />
-        <div className="flex flex-1 flex-col">
-          <Header title="Clientes" subtitle="Cliente não encontrado" />
-          <main className="flex-1 p-6">
-            <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-              <EmptyState icon={UserX} title="Cliente não encontrado" />
-            </Card>
-          </main>
-        </div>
-      </div>
+      <Pagina titulo="Cliente não encontrado" subtitulo="Ficha do cliente" voltar={voltar}>
+        <section className="rounded-xl bg-card ring-1 ring-foreground/10">
+          <EmptyState
+            icon={UserX}
+            title="Cliente não encontrado"
+            description="Ele pode ter sido excluído. Volte para a lista e procure de novo."
+            acao={
+              <Link href="/clientes" className="text-sm font-medium text-primary hover:underline">
+                Ir para a lista de clientes
+              </Link>
+            }
+          />
+        </section>
+      </Pagina>
     )
   }
 
+  const processos = cliente.processos || []
+  const anos = idade(cliente.dataNascimento)
+  const telefoneDigitos = (cliente.telefone ?? "").replace(/\D/g, "")
+
+  const botaoNovoCaso = (
+    <Button
+      onClick={(e) => {
+        abridorRef.current = e.currentTarget
+        setNovoCaso(true)
+      }}
+    >
+      <FolderPlus size={16} />
+      Novo caso
+    </Button>
+  )
+
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-      <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <Header title={cliente.nome} subtitle="Detalhes do cliente" />
-        <main className="flex-1 p-6">
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Dados pessoais</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <p>CPF: {cliente.cpf || "—"}</p>
-            <p>E-mail: {cliente.email || "—"}</p>
-            <p>Telefone: {cliente.telefone || "—"}</p>
-            <p>Endereço: {cliente.endereco || "—"}</p>
-            <p>Data de nascimento: {cliente.dataNascimento || "—"}</p>
-            <p>Benefício: {cliente.beneficio || "—"}</p>
-          </CardContent>
-        </Card>
+    <Pagina
+      titulo={cliente.nome}
+      subtitulo="Ficha do cliente"
+      voltar={voltar}
+      acoes={
+        <>
+          <Button
+            variant="outline"
+            onClick={(e) => {
+              abridorRef.current = e.currentTarget
+              setEditando(true)
+            }}
+          >
+            <Pencil size={15} />
+            Editar dados
+          </Button>
+          {botaoNovoCaso}
+        </>
+      }
+    >
+      {/* Cabeçalho da pessoa: quem é, o que busca, como falar com ela. */}
+      <section className="overflow-hidden rounded-2xl bg-card ring-1 ring-foreground/10">
+        <span aria-hidden className="block h-1 w-full bg-gradient-to-r from-primary via-brand to-primary" />
+        <div className="flex flex-col gap-5 p-5 md:flex-row md:items-start">
+          <Avatar nome={cliente.nome} tamanho="xl" className="ring-4 ring-background" />
 
-        <PainelInss
-          clienteId={cliente.id}
-          processos={processos}
-          onAplicado={() => fetchCliente(true)}
-        />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="font-heading text-[22px] leading-tight font-semibold tracking-[-0.01em]">
+                {cliente.nome}
+              </h2>
+              {cliente.beneficio ? (
+                <Badge variant="info">{cliente.beneficio}</Badge>
+              ) : (
+                <Badge variant="muted">Benefício não definido</Badge>
+              )}
+            </div>
+            <p className="mt-1 text-[13px] text-muted-foreground">
+              {processos.length === 0
+                ? "Nenhum caso aberto ainda"
+                : processos.length === 1
+                  ? "1 caso no escritório"
+                  : `${processos.length} casos no escritório`}
+              {anos !== null && ` · ${anos} anos`}
+              {" · "}cliente desde {formatarData(cliente.createdAt)}
+            </p>
 
-        <DocumentosCliente clienteId={cliente.id} processos={processos} />
+            <div className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2 xl:grid-cols-3">
+              <Dado icone={IdCard} rotulo="CPF" valor={cliente.cpf ? formatarCPF(cliente.cpf) : null} mono />
+              <Dado
+                icone={Phone}
+                rotulo="Telefone / WhatsApp"
+                valor={cliente.telefone ? formatarTelefone(cliente.telefone) : null}
+                href={telefoneDigitos ? `https://wa.me/55${telefoneDigitos}` : undefined}
+              />
+              <Dado
+                icone={Mail}
+                rotulo="E-mail"
+                valor={cliente.email}
+                href={cliente.email ? `mailto:${cliente.email}` : undefined}
+              />
+              <Dado
+                icone={Cake}
+                rotulo="Nascimento"
+                valor={cliente.dataNascimento ? formatarData(cliente.dataNascimento) : null}
+              />
+              <Dado icone={MapPin} rotulo="Endereço" valor={cliente.endereco} />
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Processos</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {processos.length === 0 ? (
-              <EmptyState icon={FolderSearch} title="Nenhum processo cadastrado" />
-            ) : (
-              processos.map((processo: Processo) => (
-                <div
-                  key={processo.id}
-                  className="rounded-lg border p-4"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium">{processo.beneficio}</p>
-                      <p className="text-sm">
-                        Status: <StatusBadge status={processo.status} className="text-xs" />
-                      </p>
+      <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
+        <section className="flex flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+          <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
+            <div>
+              <h3 className="font-heading text-[15px] font-semibold">Casos</h3>
+              <p className="text-[12px] text-muted-foreground">
+                Requerimentos no INSS e ações na Justiça
+              </p>
+            </div>
+            <Button
+              variant="soft"
+              size="sm"
+              onClick={(e) => {
+                abridorRef.current = e.currentTarget
+                setNovoCaso(true)
+              }}
+            >
+              <FolderPlus size={14} />
+              Novo caso
+            </Button>
+          </div>
+
+          {processos.length === 0 ? (
+            <EmptyState
+              icon={FolderSearch}
+              title="Nenhum caso aberto"
+              description="Abra o primeiro caso desta pessoa: um requerimento no INSS ou uma ação na Justiça."
+              acao={botaoNovoCaso}
+            />
+          ) : (
+            <ul className="flex flex-col gap-3 p-4">
+              {processos.map((processo: Processo) => {
+                const judicial = processo.esfera === "JUDICIAL"
+                const responsavel = nomeResponsavel(processo.responsavelId)
+                const dias = processo.prazo ? diasAte(processo.prazo) : null
+
+                return (
+                  <li
+                    key={processo.id}
+                    className={cn(
+                      "rounded-lg border border-l-4 border-border bg-background/40 p-4",
+                      FAIXA_POR_TOM[tomDoStatus(processo.status)]
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge variant={judicial ? "secondary" : "outline"} className="gap-1">
+                            {judicial ? <Gavel /> : <Landmark />}
+                            {judicial ? "Justiça" : "INSS"}
+                          </Badge>
+                          <StatusBadge status={processo.status} />
+                        </div>
+                        <p className="font-heading mt-2 text-[15px] leading-snug font-semibold">
+                          {processo.beneficio || "Benefício não informado"}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title="Excluir caso"
+                        aria-label="Excluir caso"
+                        className="text-muted-foreground hover:bg-status-danger hover:text-status-danger-foreground"
+                        onClick={() => excluirProcesso(processo)}
+                      >
+                        <Trash2 size={15} />
+                      </Button>
+                    </div>
+
+                    <dl className="mt-3 grid gap-x-4 gap-y-2 text-[12.5px] sm:grid-cols-2">
                       {processo.numero && (
-                        <p className="text-sm">Número CNJ: {processo.numero}</p>
+                        <div>
+                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Número CNJ</dt>
+                          <dd className="font-mono tabular-nums">{processo.numero}</dd>
+                        </div>
                       )}
                       {processo.protocoloInss && (
-                        <p className="text-sm">
-                          Protocolo INSS: {processo.protocoloInss}
-                        </p>
+                        <div>
+                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Protocolo INSS</dt>
+                          <dd className="font-mono tabular-nums">{processo.protocoloInss}</dd>
+                        </div>
                       )}
                       {processo.numeroBeneficio && (
-                        <p className="text-sm">NB: {processo.numeroBeneficio}</p>
+                        <div>
+                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">NB</dt>
+                          <dd className="font-mono tabular-nums">{processo.numeroBeneficio}</dd>
+                        </div>
                       )}
-                      {processo.responsavelId && (
-                        <p className="text-sm">
-                          Responsável: {getResponsavelNome(processo.responsavelId)}
-                        </p>
+                      {responsavel && (
+                        <div>
+                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Responsável</dt>
+                          <dd className="flex items-center gap-1.5">
+                            <Avatar nome={responsavel} tamanho="xs" />
+                            {responsavel}
+                          </dd>
+                        </div>
                       )}
                       {processo.dataEntrada && (
-                        <p className="text-sm">
-                          Data de entrada: {processo.dataEntrada}
-                        </p>
+                        <div>
+                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Entrada</dt>
+                          <dd className="font-mono tabular-nums">{formatarData(processo.dataEntrada)}</dd>
+                        </div>
+                      )}
+                      {processo.prazo && dias !== null && (
+                        <div>
+                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Prazo</dt>
+                          <dd
+                            className={cn(
+                              "font-mono tabular-nums",
+                              dias < 0 && "font-semibold text-status-danger-foreground",
+                              dias >= 0 && dias <= 3 && "font-semibold text-status-warning-foreground"
+                            )}
+                          >
+                            {formatarData(processo.prazo)}{" "}
+                            <span className="font-sans font-normal">({prazoRelativo(processo.prazo)})</span>
+                          </dd>
+                        </div>
+                      )}
+                      {(processo.tribunal || processo.vara) && (
+                        <div className="sm:col-span-2">
+                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Onde corre</dt>
+                          <dd>{[processo.tribunal, processo.vara].filter(Boolean).join(" · ")}</dd>
+                        </div>
                       )}
                       {processo.observacoes && (
-                        <p className="text-sm">
-                          Observações: {processo.observacoes}
-                        </p>
+                        <div className="sm:col-span-2">
+                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Observações</dt>
+                          <dd className="leading-relaxed text-foreground/85">{processo.observacoes}</dd>
+                        </div>
                       )}
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => deleteProcesso(processo.id)}
-                    >
-                      <Trash2 size={16} />
-                    </Button>
-                  </div>
+                    </dl>
 
-                  <PreparoProtocolo
-                    cliente={cliente}
-                    processo={processo}
-                    outrosProcessos={processos}
-                    baseLegal={baseLegal}
-                    usuarios={users}
-                    onProtocolado={() => fetchCliente(true)}
-                  />
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>Novo caso</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          {/* A esfera vem primeiro porque decide quais identificadores
-              existem. Requerimento no INSS tem protocolo; número CNJ,
-              tribunal e vara só passam a existir na via judicial. */}
-          <select
-            className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
-            value={novoProcesso.esfera}
-            onChange={(e) =>
-              setNovoProcesso({
-                ...novoProcesso,
-                esfera: e.target.value as EsferaProcesso,
-              })
-            }
-          >
-            <option value="ADMINISTRATIVO">
-              Administrativo — requerimento no INSS
-            </option>
-            <option value="JUDICIAL">Judicial — ação com número CNJ</option>
-          </select>
-
-          {novoProcesso.esfera === "ADMINISTRATIVO" ? (
-            /* O protocolo não é pedido aqui: o caso é aberto justamente
-               para protocolar, e o número só existe depois. Fica atrás
-               de uma revelação, para quem está cadastrando um
-               requerimento que já foi apresentado. */
-            <details className="text-xs">
-              <summary className="cursor-pointer text-slate-600 dark:text-zinc-400">
-                Já foi protocolado no INSS?
-              </summary>
-              <Input
-                className="mt-1.5"
-                placeholder="Protocolo do requerimento"
-                value={novoProcesso.protocoloInss}
-                onChange={(e) =>
-                  setNovoProcesso({
-                    ...novoProcesso,
-                    protocoloInss: e.target.value,
-                  })
-                }
-              />
-            </details>
-          ) : (
-            <div className="flex gap-2">
-              <Input
-                placeholder="Número do processo (CNJ)"
-                value={novoProcesso.numero}
-                onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, numero: e.target.value })
-                }
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={buscarNoDataJud}
-                disabled={buscandoDataJud || !novoProcesso.numero.trim()}
-              >
-                {buscandoDataJud ? (
-                  <Loader2 size={16} className="animate-spin" />
-                ) : (
-                  <Search size={16} />
-                )}
-              </Button>
-            </div>
+                    <PreparoProtocolo
+                      cliente={cliente}
+                      processo={processo}
+                      outrosProcessos={processos}
+                      baseLegal={baseLegal}
+                      usuarios={users}
+                      onProtocolado={() => fetchCliente()}
+                    />
+                  </li>
+                )
+              })}
+            </ul>
           )}
-          {dataJudMsg && (
-            <p
-              className={
-                dataJudMsg.tipo === "erro"
-                  ? "text-sm text-destructive"
-                  : "text-sm text-emerald-600 dark:text-emerald-400"
-              }
-            >
-              {dataJudMsg.texto}
-            </p>
-          )}
+        </section>
 
-          {/* Catálogo em vez de texto livre. `opcoesEspecie` mantém no
-              topo um valor fora da lista — é o caso do benefício que
-              veio do GERID com a redação do INSS. */}
-          <select
-            value={novoProcesso.beneficio}
-            onChange={(e) =>
-              setNovoProcesso({ ...novoProcesso, beneficio: e.target.value })
-            }
-            className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-          >
-            <option value="">Tipo de benefício…</option>
-            {opcoesEspecie(novoProcesso.beneficio).map((especie) => (
-              <option key={especie} value={especie}>
-                {especie}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={novoProcesso.status}
-            onChange={(e) =>
-              setNovoProcesso({ ...novoProcesso, status: e.target.value })
-            }
-            className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-          >
-            {PROCESSO_STATUS_VALUES.map((status) => (
-              <option key={status} value={status}>
-                {PROCESSO_STATUS_LABELS[status]}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={novoProcesso.responsavelId}
-            onChange={(e) =>
-              setNovoProcesso({ ...novoProcesso, responsavelId: e.target.value })
-            }
-            className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-          >
-            <option value="">Sem responsável</option>
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.name} ({user.role})
-              </option>
-            ))}
-          </select>
-
-          <div className="flex gap-2">
-            <Input
-              placeholder="Data de entrada"
-              type="date"
-              value={novoProcesso.dataEntrada}
-              onChange={(e) =>
-                setNovoProcesso({ ...novoProcesso, dataEntrada: e.target.value })
-              }
-            />
-            <Input
-              placeholder="Prazo"
-              type="date"
-              value={novoProcesso.prazo}
-              onChange={(e) =>
-                setNovoProcesso({ ...novoProcesso, prazo: e.target.value })
-              }
-            />
-          </div>
-          {/* Tribunal e vara não existem no administrativo: ali quem
-              analisa é uma APS, não um órgão julgador. */}
-          {novoProcesso.esfera === "JUDICIAL" && (
-            <div className="flex gap-2">
-              <Input
-                placeholder="Tribunal (ex: TRF3)"
-                value={novoProcesso.tribunal}
-                onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, tribunal: e.target.value })
-                }
-              />
-              <Input
-                placeholder="Vara / órgão julgador"
-                value={novoProcesso.vara}
-                onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, vara: e.target.value })
-                }
-              />
-            </div>
-          )}
-          <Input
-            placeholder="Observações"
-            value={novoProcesso.observacoes}
-            onChange={(e) =>
-              setNovoProcesso({ ...novoProcesso, observacoes: e.target.value })
-            }
+        <div className="flex flex-col gap-5">
+          <DocumentosCliente clienteId={cliente.id} processos={processos} />
+          <PainelInss
+            clienteId={cliente.id}
+            processos={processos}
+            onAplicado={() => fetchCliente()}
           />
-          <Button onClick={salvarProcesso}>
-            <Save size={16} className="mr-2" />
-            Salvar Processo
-          </Button>
-        </CardContent>
-      </Card>
-        </main>
+        </div>
       </div>
-    </div>
+
+      <DialogoCliente
+        aberto={editando}
+        onOpenChange={setEditando}
+        cliente={cliente}
+        onSalvo={() => fetchCliente()}
+        finalFocus={abridorRef}
+      />
+      <DialogoProcesso
+        aberto={novoCaso}
+        onOpenChange={setNovoCaso}
+        clienteId={cliente.id}
+        usuarios={users}
+        onSalvo={() => fetchCliente()}
+        finalFocus={abridorRef}
+      />
+      {dialogoConfirmacao}
+    </Pagina>
   )
 }

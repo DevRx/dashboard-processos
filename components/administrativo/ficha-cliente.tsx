@@ -113,9 +113,9 @@ function SenhaMeuInss({
         />
         <Button size="sm" onClick={salvar} disabled={carregando}>
           {carregando ? (
-            <Loader2 size={13} className="mr-1 animate-spin" />
+            <Loader2 size={13} className="animate-spin" />
           ) : (
-            <Save size={13} className="mr-1" />
+            <Save size={13} />
           )}
           Salvar
         </Button>
@@ -153,7 +153,7 @@ function SenhaMeuInss({
         onClick={() => setEditando(true)}
         title={senha ? "Trocar senha" : "Cadastrar senha"}
       >
-        <KeyRound size={13} className="mr-1" />
+        <KeyRound size={13} />
         {senha ? "Trocar" : "Cadastrar"}
       </Button>
 
@@ -262,9 +262,9 @@ export function FichaClienteAdministrativa({
         <div className="mt-2 flex items-center gap-3">
           <Button size="sm" onClick={salvarComentarios} disabled={!sujo || salvando}>
             {salvando ? (
-              <Loader2 size={13} className="mr-1 animate-spin" />
+              <Loader2 size={13} className="animate-spin" />
             ) : (
-              <Save size={13} className="mr-1" />
+              <Save size={13} />
             )}
             Salvar comentários
           </Button>

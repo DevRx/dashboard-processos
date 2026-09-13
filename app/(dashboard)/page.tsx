@@ -1,7 +1,7 @@
-import { CalendarDays, FileText, Users } from "lucide-react"
+import { AlertTriangle, CalendarCheck, FileText, Users } from "lucide-react"
 
-import { Sidebar } from "@/components/layout/sidebar"
-import { Header } from "@/components/layout/header"
+import { Pagina } from "@/components/layout/pagina"
+import { BoasVindas } from "@/components/dashboard/boas-vindas"
 import { MetricCard } from "@/components/dashboard/metric-card"
 import { ProcessTable, type ProcessoRecente } from "@/components/dashboard/process-table"
 import { ProcessosStatusChart } from "@/components/charts/processos-status-chart"
@@ -24,6 +24,7 @@ export default async function HomePage() {
   let processosAtivos = 0
   let totalClientes = 0
   let tarefasHoje = 0
+  let tarefasAtrasadas = 0
   let processosRecentes: ProcessoRecente[] = []
   const porStatus: Record<string, number> = {}
   let beneficiosAdministrativo: FatiaBeneficio[] = []
@@ -31,11 +32,13 @@ export default async function HomePage() {
 
   if (user) {
     const hoje = new Date().toISOString().slice(0, 10)
+    const escritorio = await idsDoEscritorio()
 
     const [
       processosCount,
       clientesCount,
       tarefasCount,
+      atrasadasCount,
       processosRecentesRes,
       todosStatusRes,
       porBeneficioRes,
@@ -43,33 +46,40 @@ export default async function HomePage() {
       supabase
         .from("processos")
         .select("*", { count: "exact", head: true })
-        .in("user_id", await idsDoEscritorio())
+        .in("user_id", escritorio)
         .not("status", "in", "(CONCLUIDO,ARQUIVADO,RECUSADO)"),
       supabase
         .from("clientes")
         .select("*", { count: "exact", head: true })
-        .in("user_id", await idsDoEscritorio()),
+        .in("user_id", escritorio),
       supabase
         .from("tarefas")
         .select("*", { count: "exact", head: true })
-        .in("user_id", await idsDoEscritorio())
+        .in("user_id", escritorio)
         .eq("data", hoje),
+      supabase
+        .from("tarefas")
+        .select("*", { count: "exact", head: true })
+        .in("user_id", escritorio)
+        .lt("data", hoje)
+        .not("status", "in", "(CONCLUIDA,CANCELADA)"),
       supabase
         .from("processos")
         .select("id, cliente_id, beneficio, status, data_entrada, cliente:clientes(nome)")
-        .in("user_id", await idsDoEscritorio())
+        .in("user_id", escritorio)
         .order("created_at", { ascending: false })
         .limit(5),
-      supabase.from("processos").select("status").in("user_id", await idsDoEscritorio()),
+      supabase.from("processos").select("status").in("user_id", escritorio),
       supabase
         .from("processos")
         .select("esfera, beneficio")
-        .in("user_id", await idsDoEscritorio()),
+        .in("user_id", escritorio),
     ])
 
     processosAtivos = processosCount.count ?? 0
     totalClientes = clientesCount.count ?? 0
     tarefasHoje = tarefasCount.count ?? 0
+    tarefasAtrasadas = atrasadasCount.count ?? 0
 
     for (const p of todosStatusRes.data || []) {
       porStatus[p.status] = (porStatus[p.status] || 0) + 1
@@ -124,52 +134,63 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
-      <Sidebar />
+    <Pagina titulo="Início" subtitulo="Visão geral do escritório">
+      <BoasVindas nome={session?.name ?? ""} />
 
-      <div className="flex flex-1 flex-col">
-        <Header
-          title="Visão geral"
-          subtitle={
-            session
-              ? `Bem-vindo, ${session.name}`
-              : "Faça login para acessar o sistema."
-          }
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <MetricCard
+          icon={FileText}
+          tom="info"
+          title="Processos ativos"
+          value={String(processosAtivos)}
+          description="Em andamento no INSS ou na Justiça"
+          href="/processos"
         />
-
-        <main className="flex-1 space-y-6 p-6">
-          <div className="grid gap-4 md:grid-cols-3">
-            <MetricCard
-              icon={FileText}
-              title="Processos ativos"
-              value={String(processosAtivos)}
-              description="Em andamento"
-            />
-            <MetricCard
-              icon={Users}
-              title="Clientes"
-              value={String(totalClientes)}
-              description="Cadastrados"
-            />
-            <MetricCard
-              icon={CalendarDays}
-              title="Agenda"
-              value={String(tarefasHoje)}
-              description="Compromissos hoje"
-            />
-          </div>
-
-          <BeneficiosPorEsfera
-            administrativo={beneficiosAdministrativo}
-            judicial={beneficiosJudicial}
-          />
-
-          <div className="grid gap-6 lg:grid-cols-[1fr_380px] lg:items-start">
-            <ProcessTable processos={processosRecentes} />
-            <ProcessosStatusChart porStatus={porStatus} />
-          </div>
-        </main>
+        <MetricCard
+          icon={Users}
+          tom="neutro"
+          title="Clientes"
+          value={String(totalClientes)}
+          description="Pessoas cadastradas"
+          href="/clientes"
+        />
+        <MetricCard
+          icon={CalendarCheck}
+          tom="marca"
+          title="Para hoje"
+          value={String(tarefasHoje)}
+          description={
+            tarefasHoje === 1 ? "Compromisso ou prazo hoje" : "Compromissos e prazos hoje"
+          }
+          href="/agenda"
+          rotuloLink="Abrir agenda"
+        />
+        <MetricCard
+          icon={AlertTriangle}
+          tom={tarefasAtrasadas > 0 ? "perigo" : "sucesso"}
+          title="Atrasados"
+          value={String(tarefasAtrasadas)}
+          description={
+            tarefasAtrasadas === 0
+              ? "Nada passou do prazo"
+              : tarefasAtrasadas === 1
+                ? "Um item passou do prazo"
+                : "Itens que passaram do prazo"
+          }
+          href="/agenda"
+          rotuloLink="Resolver"
+        />
       </div>
-    </div>
+
+      <BeneficiosPorEsfera
+        administrativo={beneficiosAdministrativo}
+        judicial={beneficiosJudicial}
+      />
+
+      <div className="grid gap-5 lg:grid-cols-[1fr_380px] lg:items-start">
+        <ProcessTable processos={processosRecentes} />
+        <ProcessosStatusChart porStatus={porStatus} />
+      </div>
+    </Pagina>
   )
 }

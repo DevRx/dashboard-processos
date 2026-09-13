@@ -165,9 +165,9 @@ function AbrirDuvida({
           disabled={pergunta.trim().length < 5 || enviando}
         >
           {enviando ? (
-            <Loader2 size={13} className="mr-1 animate-spin" />
+            <Loader2 size={13} className="animate-spin" />
           ) : (
-            <CircleHelp size={13} className="mr-1" />
+            <CircleHelp size={13} />
           )}
           Abrir dúvida
         </Button>
@@ -216,9 +216,9 @@ function Responder({
       <div className="mt-2 flex flex-wrap items-center gap-3">
         <Button size="sm" onClick={enviar} disabled={!resposta.trim() || enviando}>
           {enviando ? (
-            <Loader2 size={13} className="mr-1 animate-spin" />
+            <Loader2 size={13} className="animate-spin" />
           ) : (
-            <Send size={13} className="mr-1" />
+            <Send size={13} />
           )}
           Responder e concluir
         </Button>

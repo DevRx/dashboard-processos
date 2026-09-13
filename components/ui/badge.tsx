@@ -1,16 +1,55 @@
 import * as React from "react"
 
-function Badge({ className, variant = "default", ...props }: React.HTMLAttributes<HTMLSpanElement> & { variant?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "link" }) {
-  const variants: Record<string, string> = {
-    default: "border-transparent bg-primary text-white",
-    secondary: "border-transparent bg-slate-100 text-slate-700 dark:bg-zinc-800 dark:text-zinc-200",
-    destructive: "border-transparent bg-red-600 text-white",
-    outline: "border-slate-300 bg-white text-slate-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200",
-    ghost: "border-transparent bg-transparent text-slate-700 dark:text-zinc-200",
-    link: "border-transparent bg-transparent p-0 text-blue-600 underline dark:text-blue-400",
-  }
+import { cn } from "@/lib/utils"
 
-  return <span className={["inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold", variants[variant], className].filter(Boolean).join(" ")} {...props} />
+export type BadgeVariant =
+  | "default"
+  | "secondary"
+  | "destructive"
+  | "outline"
+  | "ghost"
+  | "link"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "muted"
+
+/**
+ * Etiqueta curta. As variantes de estado (`success`, `warning`,
+ * `danger`, `info`, `muted`) usam os mesmos tokens do StatusBadge de
+ * processo, para "concluído" ter a mesma cor em qualquer tela.
+ */
+const VARIANTES: Record<BadgeVariant, string> = {
+  default: "border-transparent bg-primary text-primary-foreground",
+  secondary: "border-transparent bg-secondary text-secondary-foreground",
+  destructive: "border-transparent bg-status-danger text-status-danger-foreground",
+  outline: "border-border bg-card text-foreground/80",
+  ghost: "border-transparent bg-transparent text-foreground/80",
+  link: "border-transparent bg-transparent p-0 text-primary underline",
+  success: "border-transparent bg-status-success text-status-success-foreground",
+  warning: "border-transparent bg-status-warning text-status-warning-foreground",
+  danger: "border-transparent bg-status-danger text-status-danger-foreground",
+  info: "border-transparent bg-status-info text-status-info-foreground",
+  muted: "border-transparent bg-status-muted text-status-muted-foreground",
+}
+
+function Badge({
+  className,
+  variant = "default",
+  ...props
+}: React.HTMLAttributes<HTMLSpanElement> & { variant?: BadgeVariant }) {
+  return (
+    <span
+      data-slot="badge"
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap [&_svg]:size-3 [&_svg]:shrink-0",
+        VARIANTES[variant],
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
 export { Badge }

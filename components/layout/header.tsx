@@ -3,54 +3,12 @@
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { useTheme } from "next-themes"
-import { ChevronDown, Moon, Search, Settings, Sun } from "lucide-react"
+import { ArrowLeft, ChevronDown, LogOut, Moon, Settings, Sun } from "lucide-react"
 
+import { Avatar } from "@/components/ui/avatar"
 import { LogoutButton } from "@/components/auth/logout-button"
+import { ROTULO_POR_PAPEL, useUsuario } from "@/components/layout/usuario-context"
 import { cn } from "@/lib/utils"
-import type { UserRole } from "@/lib/data"
-
-type Usuario = {
-  id: string
-  name: string
-  email: string
-  role: UserRole
-}
-
-const ROTULO_POR_PAPEL: Record<UserRole, string> = {
-  ADMIN: "Administrador",
-  ADVOGADO: "Advogado",
-  ASSISTENTE: "Assistente",
-  USER: "Usuário",
-}
-
-function iniciais(nome: string) {
-  const partes = nome.trim().split(/\s+/).filter(Boolean)
-  if (partes.length === 0) return "?"
-  const primeira = partes[0][0]
-  const ultima = partes.length > 1 ? partes[partes.length - 1][0] : ""
-  return (primeira + ultima).toUpperCase()
-}
-
-/**
- * Estrutura da busca global. Renderiza desabilitada de propósito: a busca
- * em si não pertence a esta sprint, apenas o lugar dela na barra.
- */
-function CampoBusca() {
-  return (
-    <button
-      type="button"
-      disabled
-      title="Busca global — em breve"
-      className="hidden h-9 w-56 shrink-0 cursor-not-allowed items-center gap-2 rounded-lg border border-input/70 bg-muted/40 px-3 text-left text-[13px] text-muted-foreground/70 md:flex lg:w-72"
-    >
-      <Search size={15} strokeWidth={1.75} className="shrink-0" />
-      <span className="flex-1 truncate">Buscar</span>
-      <kbd className="hidden shrink-0 rounded border border-input/70 bg-card px-1.5 py-0.5 font-mono text-[10px] leading-none text-muted-foreground/70 lg:inline-block">
-        ⌘K
-      </kbd>
-    </button>
-  )
-}
 
 function BotaoTema() {
   const { resolvedTheme, setTheme } = useTheme()
@@ -59,7 +17,8 @@ function BotaoTema() {
     <button
       type="button"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      aria-label="Alternar tema"
+      aria-label="Alternar tema claro e escuro"
+      title="Tema claro / escuro"
       className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors duration-150 outline-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring/60"
     >
       {/* Os dois ícones existem no HTML e o CSS escolhe qual aparece.
@@ -71,24 +30,9 @@ function BotaoTema() {
 }
 
 function MenuUsuario() {
-  const [usuario, setUsuario] = useState<Usuario | null>(null)
+  const usuario = useUsuario()
   const [aberto, setAberto] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    let ativo = true
-
-    fetch("/api/auth/me")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (ativo && data?.user) setUsuario(data.user as Usuario)
-      })
-      .catch(() => {})
-
-    return () => {
-      ativo = false
-    }
-  }, [])
 
   useEffect(() => {
     if (!aberto) return
@@ -121,13 +65,11 @@ function MenuUsuario() {
         aria-expanded={aberto}
         aria-label="Menu do usuário"
         className={cn(
-          "flex h-9 items-center gap-2 rounded-lg pr-1.5 pl-1.5 transition-colors duration-150 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring/60",
+          "flex h-10 items-center gap-2 rounded-lg pr-1.5 pl-1 transition-colors duration-150 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring/60",
           aberto && "bg-accent"
         )}
       >
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
-          {usuario ? iniciais(nome) : ""}
-        </span>
+        <Avatar nome={nome} tamanho="sm" />
 
         <span className="hidden min-w-0 flex-col items-start leading-tight lg:flex">
           <span className="max-w-[10rem] truncate text-[12.5px] font-medium">
@@ -152,13 +94,16 @@ function MenuUsuario() {
         <div
           role="menu"
           aria-label="Conta"
-          className="animate-in fade-in slide-in-from-top-1 absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 duration-150"
+          className="animate-in fade-in slide-in-from-top-1 absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 duration-150"
         >
-          <div className="px-3 py-2.5">
-            <p className="truncate text-[13px] font-medium">{nome || "—"}</p>
-            <p className="truncate text-[11.5px] text-muted-foreground">
-              {usuario?.email ?? ""}
-            </p>
+          <div className="flex items-center gap-3 px-3 py-2.5">
+            <Avatar nome={nome} tamanho="md" />
+            <div className="min-w-0">
+              <p className="truncate text-[13px] font-medium">{nome || "—"}</p>
+              <p className="truncate text-[11.5px] text-muted-foreground">
+                {usuario?.email ?? ""}
+              </p>
+            </div>
           </div>
 
           <div className="my-1 h-px bg-border" />
@@ -173,7 +118,10 @@ function MenuUsuario() {
             Configurações
           </Link>
 
-          <LogoutButton className="h-9 justify-start gap-2.5 px-3 text-[13px] text-foreground/80 hover:bg-accent hover:text-accent-foreground" />
+          <LogoutButton
+            icone={<LogOut size={16} strokeWidth={1.75} className="shrink-0" />}
+            className="h-9 justify-start gap-2.5 px-3 text-[13px] text-foreground/80 hover:bg-accent hover:text-accent-foreground"
+          />
         </div>
       )}
     </div>
@@ -182,23 +130,43 @@ function MenuUsuario() {
 
 export function Header({
   title = "Dashboard",
-  subtitle = "Visão geral do escritório",
+  subtitle,
+  acoes,
+  voltar,
 }: {
   title?: string
   subtitle?: string
+  /** Botões principais da tela. Só aparecem aqui a partir de `sm`. */
+  acoes?: React.ReactNode
+  voltar?: { href: string; rotulo: string }
 }) {
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-border bg-card/85 px-4 text-card-foreground backdrop-blur-md md:px-6">
+      {voltar && (
+        <Link
+          href={voltar.href}
+          aria-label={voltar.rotulo}
+          title={voltar.rotulo}
+          className="flex size-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
+          <ArrowLeft size={18} strokeWidth={1.9} />
+        </Link>
+      )}
+
       <div className="min-w-0 flex-1">
-        <h1 className="font-heading truncate text-[15px] leading-tight font-semibold tracking-[-0.01em]">
+        <h1 className="font-heading truncate text-[15.5px] leading-tight font-semibold tracking-[-0.01em]">
           {title}
         </h1>
-        <p className="truncate text-[12.5px] leading-tight text-muted-foreground">
-          {subtitle}
-        </p>
+        {subtitle && (
+          <p className="truncate text-[12.5px] leading-tight text-muted-foreground">
+            {subtitle}
+          </p>
+        )}
       </div>
 
-      <CampoBusca />
+      {acoes && (
+        <div className="hidden shrink-0 items-center gap-2 sm:flex">{acoes}</div>
+      )}
 
       <div className="flex shrink-0 items-center gap-1">
         <BotaoTema />

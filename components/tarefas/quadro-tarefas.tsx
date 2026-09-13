@@ -477,7 +477,7 @@ function NovaTarefa({
 
       <div className="flex gap-1.5">
         <Button size="sm" onClick={criar} disabled={salvando || !titulo.trim()}>
-          {salvando ? <Loader2 size={13} className="mr-1 animate-spin" /> : null}
+          {salvando ? <Loader2 size={13} className="animate-spin" /> : null}
           Criar
         </Button>
         <Button size="sm" variant="ghost" onClick={() => setAberto(false)}>

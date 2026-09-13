@@ -256,9 +256,9 @@ function PainelDataJud({
         className="h-7 w-full justify-start px-1.5 text-[11.5px]"
       >
         {consultando ? (
-          <Loader2 size={12} className="mr-1.5 animate-spin" />
+          <Loader2 size={12} className="animate-spin" />
         ) : (
-          <RefreshCw size={12} className="mr-1.5" />
+          <RefreshCw size={12} />
         )}
         Consultar DataJud
       </Button>
@@ -304,9 +304,9 @@ function PainelDataJud({
                 className="mt-1 h-7 px-2 text-[11px]"
               >
                 {registrando ? (
-                  <Loader2 size={11} className="mr-1 animate-spin" />
+                  <Loader2 size={11} className="animate-spin" />
                 ) : registrado ? (
-                  <Check size={11} className="mr-1" />
+                  <Check size={11} />
                 ) : null}
                 {registrado ? "Registrado" : "Registrar como andamento"}
               </Button>

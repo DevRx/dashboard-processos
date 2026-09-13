@@ -9,10 +9,13 @@ import { cn } from "@/lib/utils"
 export function LogoutButton({
   className,
   labelClassName,
+  icone,
 }: {
   className?: string
   /** Permite ocultar o rótulo quando a Sidebar está recolhida em trilho. */
   labelClassName?: string
+  /** Troca o ícone padrão (ex.: no menu do usuário, no tamanho do menu). */
+  icone?: React.ReactNode
 }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -41,7 +44,7 @@ export function LogoutButton({
         className
       )}
     >
-      <LogOut size={17} strokeWidth={1.75} className="shrink-0" />
+      {icone ?? <LogOut size={17} strokeWidth={1.75} className="shrink-0" />}
       <span className={cn("truncate", labelClassName)}>
         {loading ? "Saindo..." : "Sair"}
       </span>

@@ -1,25 +1,35 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+  AlertTriangle,
+  Clock,
+  FolderPlus,
+  FolderSearch,
+  Gavel,
+  Landmark,
+  LayoutGrid,
+  List,
+  Search,
+  Trash2,
+} from "lucide-react"
+
+import { Pagina } from "@/components/layout/pagina"
+import { Avatar } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Segmentado } from "@/components/ui/segmentado"
+import { Select } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Sidebar } from "@/components/layout/sidebar"
-import { Header } from "@/components/layout/header"
+import { useConfirmacao } from "@/components/ui/confirmacao"
 import { StatusBadge } from "@/components/dashboard/status-badge"
 import { EmptyState } from "@/components/dashboard/empty-state"
-import { Plus, Trash2, Save, Search, Loader2, LayoutGrid, List, FolderSearch } from "lucide-react"
+import { KanbanBoard } from "@/components/processos/kanban-board"
+import { DialogoProcesso } from "@/components/processos/dialogo-processo"
+import { diasAte, formatarData, prazoRelativo } from "@/lib/formatar"
+import { cn } from "@/lib/utils"
 import {
   PROCESSO_STATUS_LABELS,
   PROCESSO_STATUS_VALUES,
@@ -27,7 +37,13 @@ import {
   type Cliente,
   type User,
 } from "@/lib/data"
-import { KanbanBoard } from "@/components/processos/kanban-board"
+
+function normalizar(valor: string) {
+  return valor
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+}
 
 export default function Processos() {
   const [processos, setProcessos] = useState<Processo[]>([])
@@ -36,409 +52,290 @@ export default function Processos() {
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [visao, setVisao] = useState<"lista" | "board">("board")
-  const [novoProcesso, setNovoProcesso] = useState({
-    clienteId: "",
-    beneficio: "",
-    numero: "",
-    status: "EM_ANALISE",
-    responsavelId: "",
-    dataEntrada: "",
-    prazo: "",
-    tribunal: "",
-    vara: "",
-    observacoes: "",
-  })
-  const [buscandoDataJud, setBuscandoDataJud] = useState(false)
-  const [dataJudMsg, setDataJudMsg] = useState<{ tipo: "erro" | "ok"; texto: string } | null>(null)
+  const [busca, setBusca] = useState("")
+  const [filtroStatus, setFiltroStatus] = useState("")
+  const { confirmar, dialogo: dialogoConfirmacao } = useConfirmacao()
 
-  // Elemento que abriu o modal. O Dialog é controlado, então o base-ui não
-  // descobre sozinho para onde devolver o foco — passamos via `finalFocus`.
-  // Limitação: guardamos o nó DOM; se ele sair da árvore, o foco cai no <body>.
+  // Elemento que abriu o modal — o Dialog é controlado, então o base-ui
+  // não descobre sozinho para onde devolver o foco.
   const abridorRef = useRef<HTMLElement | null>(null)
 
-  async function fetchData() {
-    setLoading(true)
-    try {
-      const [processosRes, clientesRes, usersRes] = await Promise.all([
-        fetch("/api/processos"),
-        fetch("/api/clientes"),
-        fetch("/api/users"),
-      ])
-
-      const processosData = await processosRes.json()
-      const clientesData = await clientesRes.json()
-      const usersData = await usersRes.json()
-
-      if (processosRes.ok) setProcessos(processosData.processos)
-      if (clientesRes.ok) setClientes(clientesData.clientes)
-      if (usersRes.ok) setUsers(usersData.users)
-    } catch (err) {
-      console.error("Erro ao carregar dados:", err)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const fetchData = useCallback(() => {
+    const json = (r: Response) => (r.ok ? r.json() : null)
+    return Promise.all([
+      fetch("/api/processos").then(json),
+      fetch("/api/clientes").then(json),
+      fetch("/api/users").then(json),
+    ])
+      .then(([processosData, clientesData, usersData]) => {
+        if (processosData) setProcessos(processosData.processos)
+        if (clientesData) setClientes(clientesData.clientes)
+        if (usersData) setUsers(usersData.users)
+      })
+      .catch((err) => console.error("Erro ao carregar dados:", err))
+      .finally(() => setLoading(false))
+  }, [])
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [fetchData])
 
-  async function salvarProcesso() {
+  const clientePorId = useMemo(
+    () => new Map(clientes.map((c) => [c.id, c])),
+    [clientes]
+  )
+  const usuarioPorId = useMemo(() => new Map(users.map((u) => [u.id, u])), [users])
+
+  async function excluir(processo: Processo) {
+    const nome = clientePorId.get(processo.clienteId)?.nome ?? "este cliente"
+    const ok = await confirmar({
+      titulo: `Excluir o caso de ${nome}?`,
+      descricao: `${processo.beneficio || "Processo"} — os andamentos e documentos anexados também serão apagados.`,
+      rotuloConfirmar: "Excluir caso",
+    })
+    if (!ok) return
     try {
-      const response = await fetch("/api/processos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(novoProcesso),
-      })
-
-      if (response.ok) {
-        setDialogOpen(false)
-        setNovoProcesso({
-          clienteId: "",
-          beneficio: "",
-          numero: "",
-          status: "EM_ANALISE",
-          responsavelId: "",
-          dataEntrada: "",
-          prazo: "",
-          tribunal: "",
-          vara: "",
-          observacoes: "",
-        })
-        setDataJudMsg(null)
-        fetchData()
-      }
-    } catch (err) {
-      console.error("Erro ao salvar processo:", err)
-    }
-  }
-
-  async function buscarNoDataJud() {
-    if (!novoProcesso.numero.trim()) return
-    setBuscandoDataJud(true)
-    setDataJudMsg(null)
-    try {
-      const res = await fetch(
-        `/api/processos/lookup?numero=${encodeURIComponent(novoProcesso.numero)}`
-      )
-      const data = await res.json()
-
-      if (!res.ok) {
-        setDataJudMsg({ tipo: "erro", texto: data.error || "Erro ao buscar processo" })
-        return
-      }
-
-      const d = data.dados
-      const infoExtra = [
-        d.classe ? `Classe: ${d.classe}` : null,
-        d.ultimoMovimento
-          ? `Último movimento: ${d.ultimoMovimento.nome}${d.ultimoMovimento.data ? ` (${d.ultimoMovimento.data.slice(0, 10).split("-").reverse().join("/")})` : ""}`
-          : null,
-      ]
-        .filter(Boolean)
-        .join(" — ")
-
-      setNovoProcesso((prev) => ({
-        ...prev,
-        beneficio: d.assuntos?.[0] || prev.beneficio,
-        dataEntrada: d.dataAjuizamento ? d.dataAjuizamento.slice(0, 10) : prev.dataEntrada,
-        tribunal: d.tribunal || prev.tribunal,
-        vara: d.orgaoJulgador || prev.vara,
-        observacoes: infoExtra
-          ? [prev.observacoes, infoExtra].filter(Boolean).join(" | ")
-          : prev.observacoes,
-      }))
-      setDataJudMsg({ tipo: "ok", texto: "Dados encontrados e preenchidos. Confira o cliente e o benefício antes de salvar." })
-    } catch (err) {
-      console.error("Erro ao buscar no DataJud:", err)
-      setDataJudMsg({ tipo: "erro", texto: "Erro de conexão ao buscar o processo" })
-    } finally {
-      setBuscandoDataJud(false)
-    }
-  }
-
-  async function deleteProcesso(id: string) {
-    if (!confirm("Tem certeza que deseja excluir este processo?")) return
-    try {
-      await fetch(`/api/processos/${id}`, { method: "DELETE" })
+      await fetch(`/api/processos/${processo.id}`, { method: "DELETE" })
       fetchData()
     } catch (err) {
       console.error("Erro ao excluir processo:", err)
     }
   }
 
-  function getClienteNome(clienteId: string) {
-    return clientes.find((c) => c.id === clienteId)?.nome || "—"
-  }
+  const filtrados = useMemo(() => {
+    const termo = normalizar(busca.trim())
+    const digitos = termo.replace(/\D/g, "")
 
-  function getResponsavelNome(responsavelId?: string | null) {
-    if (!responsavelId) return "—"
-    return users.find((u) => u.id === responsavelId)?.name || "—"
-  }
+    return processos.filter((p) => {
+      if (filtroStatus && p.status !== filtroStatus) return false
+      if (!termo) return true
+
+      const cliente = clientePorId.get(p.clienteId)
+      const numero = (p.numero ?? "").replace(/\D/g, "")
+      const protocolo = (p.protocoloInss ?? "").replace(/\D/g, "")
+      return (
+        normalizar(cliente?.nome ?? "").includes(termo) ||
+        normalizar(p.beneficio ?? "").includes(termo) ||
+        (digitos.length > 0 && (numero.includes(digitos) || protocolo.includes(digitos)))
+      )
+    })
+  }, [processos, busca, filtroStatus, clientePorId])
+
+  const filtrando = Boolean(busca.trim() || filtroStatus)
+
+  const botaoNovo = (
+    <Button
+      onClick={(e) => {
+        abridorRef.current = e.currentTarget
+        setDialogOpen(true)
+      }}
+    >
+      <FolderPlus size={16} />
+      Novo caso
+    </Button>
+  )
 
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
-      <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <Header title="Processos" subtitle="Gestão de processos do escritório" />
-        <main className="flex-1 p-6">
-      <div className="mb-6 flex items-center justify-end">
-        <div className="flex items-center gap-2">
-          <div className="flex rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
-            <Button
-              variant={visao === "board" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setVisao("board")}
-            >
-              <LayoutGrid size={16} className="mr-2" />
-              Board
-            </Button>
-            <Button
-              variant={visao === "lista" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setVisao("lista")}
-            >
-              <List size={16} className="mr-2" />
-              Lista
-            </Button>
-          </div>
-          <Button
-            onClick={(e) => {
-              abridorRef.current = e.currentTarget
-              setDialogOpen(true)
-            }}
-          >
-            <Plus size={16} className="mr-2" />
-            Novo Processo
-          </Button>
+    <Pagina
+      titulo="Processos"
+      subtitulo="Todos os casos do escritório, no INSS e na Justiça"
+      acoes={botaoNovo}
+    >
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div className="relative w-full lg:max-w-sm">
+          <Search
+            size={16}
+            strokeWidth={1.9}
+            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Buscar por cliente, benefício ou número"
+            aria-label="Buscar processo"
+            className="pl-9"
+          />
+        </div>
+
+        <Select
+          value={filtroStatus}
+          onChange={(e) => setFiltroStatus(e.target.value)}
+          aria-label="Filtrar por situação"
+          className="w-full sm:w-56"
+        >
+          <option value="">Todas as situações</option>
+          {PROCESSO_STATUS_VALUES.map((s) => (
+            <option key={s} value={s}>
+              {PROCESSO_STATUS_LABELS[s]}
+            </option>
+          ))}
+        </Select>
+
+        <div className="flex flex-1 items-center justify-between gap-3">
+          {!loading && (
+            <p className="text-[13px] text-muted-foreground tabular-nums">
+              {filtrando
+                ? `${filtrados.length} de ${processos.length}`
+                : `${processos.length} ${processos.length === 1 ? "caso" : "casos"}`}
+            </p>
+          )}
+          <Segmentado
+            valor={visao}
+            onChange={setVisao}
+            aria-label="Modo de visualização"
+            className="ml-auto"
+            opcoes={[
+              { valor: "board", rotulo: "Quadro", icone: LayoutGrid },
+              { valor: "lista", rotulo: "Lista", icone: List },
+            ]}
+          />
         </div>
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-2xl" finalFocus={abridorRef}>
-          <DialogHeader>
-            <DialogTitle>Novo Processo</DialogTitle>
-            <DialogDescription>
-              Informe o número CNJ e use a busca para preencher os dados automaticamente.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex flex-col gap-4">
-              <select
-                value={novoProcesso.clienteId}
-                onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, clienteId: e.target.value })
-                }
-                className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-              >
-                <option value="">Selecione um cliente</option>
-                {clientes.map((cliente) => (
-                  <option key={cliente.id} value={cliente.id}>
-                    {cliente.nome}
-                  </option>
-                ))}
-              </select>
-
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Número do processo (CNJ)"
-                  value={novoProcesso.numero}
-                  onChange={(e) =>
-                    setNovoProcesso({ ...novoProcesso, numero: e.target.value })
-                  }
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={buscarNoDataJud}
-                  disabled={buscandoDataJud || !novoProcesso.numero.trim()}
-                >
-                  {buscandoDataJud ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : (
-                    <Search size={16} />
-                  )}
-                </Button>
-              </div>
-              {dataJudMsg && (
-                <p
-                  className={
-                    dataJudMsg.tipo === "erro"
-                      ? "text-sm text-destructive"
-                      : "text-sm text-emerald-600 dark:text-emerald-400"
-                  }
-                >
-                  {dataJudMsg.texto}
-                </p>
-              )}
-
-              <Input
-                placeholder="Tipo de benefício"
-                value={novoProcesso.beneficio}
-                onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, beneficio: e.target.value })
-                }
-              />
-
-              <select
-                value={novoProcesso.status}
-                onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, status: e.target.value })
-                }
-                className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-              >
-                {PROCESSO_STATUS_VALUES.map((status) => (
-                  <option key={status} value={status}>
-                    {PROCESSO_STATUS_LABELS[status]}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={novoProcesso.responsavelId}
-                onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, responsavelId: e.target.value })
-                }
-                className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base md:text-sm"
-              >
-                <option value="">Sem responsável</option>
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.name} ({user.role})
-                  </option>
-                ))}
-              </select>
-
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Data de entrada"
-                  type="date"
-                  value={novoProcesso.dataEntrada}
-                  onChange={(e) =>
-                    setNovoProcesso({ ...novoProcesso, dataEntrada: e.target.value })
-                  }
-                />
-                <Input
-                  placeholder="Prazo"
-                  type="date"
-                  value={novoProcesso.prazo}
-                  onChange={(e) =>
-                    setNovoProcesso({ ...novoProcesso, prazo: e.target.value })
-                  }
-                />
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Tribunal (ex: TRF3)"
-                  value={novoProcesso.tribunal}
-                  onChange={(e) =>
-                    setNovoProcesso({ ...novoProcesso, tribunal: e.target.value })
-                  }
-                />
-                <Input
-                  placeholder="Vara / órgão julgador"
-                  value={novoProcesso.vara}
-                  onChange={(e) =>
-                    setNovoProcesso({ ...novoProcesso, vara: e.target.value })
-                  }
-                />
-              </div>
-              <Input
-                placeholder="Observações"
-                value={novoProcesso.observacoes}
-                onChange={(e) =>
-                  setNovoProcesso({ ...novoProcesso, observacoes: e.target.value })
-                }
-              />
-
-          </div>
-
-          <DialogFooter>
-            <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
-            <Button onClick={salvarProcesso}>
-              <Save size={16} className="mr-2" />
-              Salvar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       {loading ? (
-        <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-          <CardContent className="space-y-3 p-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </CardContent>
-        </Card>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-56 w-full" />
+          ))}
+        </div>
       ) : processos.length === 0 ? (
-        <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <section className="rounded-xl bg-card ring-1 ring-foreground/10">
           <EmptyState
             icon={FolderSearch}
-            title="Nenhum processo cadastrado"
-            description='Clique em "Novo Processo" para começar.'
+            title="Nenhum caso cadastrado ainda"
+            description="Abra o primeiro caso: um requerimento no INSS ou uma ação na Justiça."
+            acao={botaoNovo}
           />
-        </Card>
+        </section>
+      ) : filtrados.length === 0 ? (
+        <section className="rounded-xl bg-card ring-1 ring-foreground/10">
+          <EmptyState
+            icon={Search}
+            title="Nada encontrado"
+            description="Nenhum caso corresponde à busca e ao filtro escolhidos."
+            acao={
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setBusca("")
+                  setFiltroStatus("")
+                }}
+              >
+                Limpar filtros
+              </Button>
+            }
+          />
+        </section>
       ) : visao === "board" ? (
         <KanbanBoard
-          processos={processos}
+          processos={filtrados}
           clientes={clientes}
           users={users}
           onUpdated={fetchData}
         />
       ) : (
-        <Card className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-zinc-50 dark:bg-zinc-800">
-                  <tr>
-                    <th className="p-4 text-left">Cliente</th>
-                    <th className="p-4 text-left">Benefício</th>
-                    <th className="p-4 text-left">Número</th>
-                    <th className="p-4 text-left">Status</th>
-                    <th className="p-4 text-left">Responsável</th>
-                    <th className="p-4 text-right">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {processos.map((processo) => (
-                    <tr key={processo.id} className="border-t border-zinc-200 dark:border-zinc-800">
-                      <td className="p-4">
-                        <Link
-                          href={`/clientes/${processo.clienteId}`}
-                          className="font-medium hover:underline"
-                        >
-                          {getClienteNome(processo.clienteId)}
-                        </Link>
-                      </td>
-                      <td className="p-4">{processo.beneficio}</td>
-                      <td className="p-4">{processo.numero || "—"}</td>
-                      <td className="p-4">
-                        <StatusBadge status={processo.status} />
-                      </td>
-                      <td className="p-4">
-                        {getResponsavelNome(processo.responsavelId)}
-                      </td>
-                      <td className="p-4 text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteProcesso(processo.id)}
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+        <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+          <ul className="divide-y divide-border">
+            {filtrados.map((processo) => {
+              const cliente = clientePorId.get(processo.clienteId)
+              const responsavel = processo.responsavelId
+                ? usuarioPorId.get(processo.responsavelId)
+                : null
+              const judicial = processo.esfera === "JUDICIAL"
+              const dias = processo.prazo ? diasAte(processo.prazo) : null
+
+              return (
+                <li
+                  key={processo.id}
+                  className="flex flex-col gap-3 px-4 py-3 transition-colors hover:bg-muted/40 md:flex-row md:items-center"
+                >
+                  <Link
+                    href={`/clientes/${processo.clienteId}`}
+                    className="flex min-w-0 flex-1 items-center gap-3 outline-none"
+                  >
+                    <Avatar nome={cliente?.nome} tamanho="md" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[14px] font-semibold hover:underline">
+                        {cliente?.nome ?? "—"}
+                      </span>
+                      <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[12px] text-muted-foreground">
+                        <span className="truncate">{processo.beneficio || "Benefício não informado"}</span>
+                        {(processo.numero || processo.protocoloInss) && (
+                          <span className="font-mono tabular-nums">
+                            {processo.numero || `Prot. ${processo.protocoloInss}`}
+                          </span>
+                        )}
+                      </span>
+                    </span>
+                  </Link>
+
+                  <div className="flex flex-wrap items-center gap-2 md:justify-end">
+                    <Badge variant={judicial ? "secondary" : "outline"} className="gap-1">
+                      {judicial ? <Gavel /> : <Landmark />}
+                      {judicial ? "Justiça" : "INSS"}
+                    </Badge>
+
+                    <StatusBadge status={processo.status} />
+
+                    {processo.prazo && dias !== null && (
+                      <span
+                        title={`Prazo: ${formatarData(processo.prazo)}`}
+                        className={cn(
+                          "inline-flex items-center gap-1 text-[12px]",
+                          dias < 0
+                            ? "font-medium text-status-danger-foreground"
+                            : dias <= 3
+                              ? "font-medium text-status-warning-foreground"
+                              : "text-muted-foreground"
+                        )}
+                      >
+                        {dias <= 3 ? <AlertTriangle size={13} /> : <Clock size={13} />}
+                        {dias < 0 ? "venceu " : "vence "}
+                        {prazoRelativo(processo.prazo)}
+                      </span>
+                    )}
+
+                    {responsavel ? (
+                      <span
+                        className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground"
+                        title={`Responsável: ${responsavel.name}`}
+                      >
+                        <Avatar nome={responsavel.name} tamanho="xs" />
+                        <span className="hidden max-w-[8rem] truncate xl:inline">
+                          {responsavel.name}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="text-[12px] text-muted-foreground/70">Sem responsável</span>
+                    )}
+
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      title="Excluir caso"
+                      aria-label="Excluir caso"
+                      className="text-muted-foreground hover:bg-status-danger hover:text-status-danger-foreground"
+                      onClick={() => excluir(processo)}
+                    >
+                      <Trash2 size={15} />
+                    </Button>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
       )}
-        </main>
-      </div>
-    </div>
+
+      <DialogoProcesso
+        aberto={dialogOpen}
+        onOpenChange={setDialogOpen}
+        clientes={clientes}
+        usuarios={users}
+        onSalvo={fetchData}
+        finalFocus={abridorRef}
+      />
+      {dialogoConfirmacao}
+    </Pagina>
   )
 }

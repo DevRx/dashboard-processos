@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { Scale, Search } from "lucide-react"
 
-import { Sidebar } from "@/components/layout/sidebar"
-import { Header } from "@/components/layout/header"
+import { Pagina } from "@/components/layout/pagina"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -116,117 +115,108 @@ export default function JudicialPage() {
   const semNumero = itens.filter((i) => !i.numero).length
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
-      <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <Header
-          title="Judicial"
-          subtitle="Ações em curso, por fase, com consulta ao DataJud"
+    <Pagina titulo="Judicial" subtitulo="Ações em curso, por fase, com consulta ao DataJud">
+      <AbasJudicial />
+
+      <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+        <span
+          aria-hidden
+          className="block h-1 w-full bg-gradient-to-r from-slate-500 via-blue-600 to-violet-600"
         />
-        <main className="flex-1 space-y-5 p-6">
-          <AbasJudicial />
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-4 px-5 py-4">
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+            <Scale size={24} strokeWidth={1.9} />
+          </span>
 
-          <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
-            <span
-              aria-hidden
-              className="block h-1 w-full bg-gradient-to-r from-slate-500 via-blue-600 to-violet-600"
-            />
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-4 px-5 py-4">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-                <Scale size={24} strokeWidth={1.9} />
-              </span>
-
-              <div className="min-w-0 flex-1">
-                <p className="font-heading text-[17px] leading-tight font-semibold">
-                  Fila judicial
-                </p>
-                <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">
-                  Ações contra o INSS depois do indeferimento. Cada cartão
-                  consulta o DataJud pelo número CNJ e grava o movimento como
-                  andamento.
-                </p>
-              </div>
-
-              <div className="flex shrink-0 items-stretch gap-2.5">
-                <div className="flex items-center gap-2.5 rounded-lg bg-accent px-3.5 py-2 text-accent-foreground">
-                  <span className="font-heading text-xl leading-none font-semibold tabular-nums">
-                    {itens.length}
-                  </span>
-                  <span className="text-[10px] leading-tight font-semibold tracking-wide uppercase">
-                    ações
-                  </span>
-                </div>
-
-                {semNumero > 0 && (
-                  <div className="flex items-center gap-2.5 rounded-lg bg-amber-50 px-3.5 py-2 text-amber-800 ring-1 ring-amber-200 dark:bg-amber-950/50 dark:text-amber-200 dark:ring-amber-900">
-                    <span className="font-heading text-xl leading-none font-semibold tabular-nums">
-                      {semNumero}
-                    </span>
-                    <span className="text-[10px] leading-tight font-semibold tracking-wide uppercase">
-                      sem
-                      <br />
-                      número CNJ
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-
-          <div className="relative max-w-sm">
-            <Search
-              size={15}
-              strokeWidth={1.9}
-              className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
-            />
-            <Input
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              placeholder="Buscar por cliente, número ou CPF"
-              aria-label="Buscar na fila judicial"
-              className="pl-9 text-sm"
-            />
+          <div className="min-w-0 flex-1">
+            <p className="font-heading text-[17px] leading-tight font-semibold">
+              Fila judicial
+            </p>
+            <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">
+              Ações contra o INSS depois do indeferimento. Cada cartão
+              consulta o DataJud pelo número CNJ e grava o movimento como
+              andamento.
+            </p>
           </div>
 
-          {carregando ? (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-40 w-full" />
-              ))}
+          <div className="flex shrink-0 items-stretch gap-2.5">
+            <div className="flex items-center gap-2.5 rounded-lg bg-accent px-3.5 py-2 text-accent-foreground">
+              <span className="font-heading text-xl leading-none font-semibold tabular-nums">
+                {itens.length}
+              </span>
+              <span className="text-[10px] leading-tight font-semibold tracking-wide uppercase">
+                ações
+              </span>
             </div>
-          ) : itens.length === 0 ? (
+
+            {semNumero > 0 && (
+              <div className="flex items-center gap-2.5 rounded-lg bg-amber-50 px-3.5 py-2 text-amber-800 ring-1 ring-amber-200 dark:bg-amber-950/50 dark:text-amber-200 dark:ring-amber-900">
+                <span className="font-heading text-xl leading-none font-semibold tabular-nums">
+                  {semNumero}
+                </span>
+                <span className="text-[10px] leading-tight font-semibold tracking-wide uppercase">
+                  sem
+                  <br />
+                  número CNJ
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <div className="relative max-w-sm">
+        <Search
+          size={15}
+          strokeWidth={1.9}
+          className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+        />
+        <Input
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+          placeholder="Buscar por cliente, número ou CPF"
+          aria-label="Buscar na fila judicial"
+          className="pl-9 text-sm"
+        />
+      </div>
+
+      {carregando ? (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-40 w-full" />
+          ))}
+        </div>
+      ) : itens.length === 0 ? (
+        <Card>
+          <CardContent>
+            <EmptyState
+              icon={Scale}
+              title="Nenhuma ação judicial"
+              description="Processos com esfera judicial aparecem aqui. Um requerimento vira ação quando o INSS indefere."
+            />
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <QuadroJudicial
+            itens={filtrados}
+            onTrocarStatus={trocarStatus}
+            onRegistrarAndamento={registrarAndamento}
+          />
+
+          {busca.trim() && filtrados.length === 0 && (
             <Card>
               <CardContent>
                 <EmptyState
-                  icon={Scale}
-                  title="Nenhuma ação judicial"
-                  description="Processos com esfera judicial aparecem aqui. Um requerimento vira ação quando o INSS indefere."
+                  icon={Search}
+                  title="Nada encontrado"
+                  description={`Nenhuma ação corresponde a "${busca}".`}
                 />
               </CardContent>
             </Card>
-          ) : (
-            <>
-              <QuadroJudicial
-                itens={filtrados}
-                onTrocarStatus={trocarStatus}
-                onRegistrarAndamento={registrarAndamento}
-              />
-
-              {busca.trim() && filtrados.length === 0 && (
-                <Card>
-                  <CardContent>
-                    <EmptyState
-                      icon={Search}
-                      title="Nada encontrado"
-                      description={`Nenhuma ação corresponde a "${busca}".`}
-                    />
-                  </CardContent>
-                </Card>
-              )}
-            </>
           )}
-        </main>
-      </div>
-    </div>
+        </>
+      )}
+    </Pagina>
   )
 }

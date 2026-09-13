@@ -471,7 +471,7 @@ export function CartaoIntimacao({
             onClick={() => setFormAberto((v) => !v)}
             className="ml-auto h-7 px-2 text-[11.5px]"
           >
-            <ListPlus size={12} className="mr-1" />
+            <ListPlus size={12} />
             Criar tarefa do prazo
           </Button>
         )}
@@ -528,7 +528,7 @@ export function CartaoIntimacao({
           </label>
 
           <Button size="sm" onClick={criar} disabled={criando} className="h-8">
-            {criando ? <Loader2 size={13} className="mr-1 animate-spin" /> : null}
+            {criando ? <Loader2 size={13} className="animate-spin" /> : null}
             Criar tarefa
           </Button>
         </div>

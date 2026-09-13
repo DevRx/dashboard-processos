@@ -362,10 +362,13 @@
      e o painel aparece pronto. Só CSS: sem estado React, sem Date,
      sem random — hidratação limpa.
 
-     Atrasos chegam por `--lema-delay`, definido inline no JSX; os
+     Atrasos chegam por `--lema-delay`, definido inline no JSX e já
+     multiplicados pelo fator de tempo; as durações aqui multiplicam o
+     mesmo fator (`--lema-escala`, posto no painel pelo JSX). Os
      easings vivem no painel (`.lema-painel`) para valerem em tudo.
      ───────────────────────────────────────────────────────── */
   .lema-painel {
+    --lema-escala: 1;
     --lema-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     --lema-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
     --lema-ease-longo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -382,7 +385,7 @@
 
   /* Entrada genérica: selo, parágrafo e destaques. */
   .lema-entra {
-    animation: lema-entra 600ms var(--lema-ease-out) var(--lema-delay, 0ms) both;
+    animation: lema-entra calc(600ms * var(--lema-escala)) var(--lema-ease-out) var(--lema-delay, 0ms) both;
   }
   @keyframes lema-entra {
     from { opacity: 0; transform: translateY(10px); }
@@ -398,7 +401,7 @@
   .lema-palavra {
     display: inline-block;
     transform-origin: 0% 100%;
-    animation: lema-sobe 760ms var(--lema-ease-out) var(--lema-delay, 0ms) both;
+    animation: lema-sobe calc(760ms * var(--lema-escala)) var(--lema-ease-out) var(--lema-delay, 0ms) both;
   }
   @keyframes lema-sobe {
     from { opacity: 0; transform: translateY(130%) scale(0.92); }
@@ -426,7 +429,7 @@
     inset: 0;
     color: #fff;
     clip-path: inset(0 0 0 100%);
-    animation: lema-tinta 700ms var(--lema-ease-inout) var(--lema-delay-tinta, 0ms) both;
+    animation: lema-tinta calc(700ms * var(--lema-escala)) var(--lema-ease-inout) var(--lema-delay-tinta, 0ms) both;
   }
   @keyframes lema-tinta {
     from { clip-path: inset(0 0 0 0); }
@@ -443,7 +446,7 @@
     border-radius: 999px;
     background-image: linear-gradient(90deg, var(--brand), #9333ea 60%, var(--sidebar-primary));
     transform-origin: 0% 50%;
-    animation: lema-estende 700ms var(--lema-ease-longo) var(--lema-delay, 0ms) both;
+    animation: lema-estende calc(700ms * var(--lema-escala)) var(--lema-ease-longo) var(--lema-delay, 0ms) both;
   }
   @keyframes lema-estende {
     from { transform: scaleX(0); }
@@ -458,7 +461,7 @@
     background: #fff;
     box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.35), 0 0 16px 4px rgba(219, 39, 119, 0.7);
     transform: translate(50%, -50%);
-    animation: lema-nasce 500ms var(--lema-ease-pop) var(--lema-delay, 0ms) both;
+    animation: lema-nasce calc(500ms * var(--lema-escala)) var(--lema-ease-pop) var(--lema-delay, 0ms) both;
   }
   @keyframes lema-nasce {
     from { transform: translate(50%, -50%) scale(0); opacity: 0; }
@@ -473,7 +476,7 @@
     border-radius: 999px;
     background: radial-gradient(circle, rgba(219, 39, 119, 0.55), transparent 70%);
     opacity: 0.35;
-    animation: lema-respira 6s ease-in-out 2600ms infinite;
+    animation: lema-respira 6s ease-in-out calc(2600ms * var(--lema-escala)) infinite;
   }
   @keyframes lema-respira {
     0%, 100% { opacity: 0.35; transform: scale(1); }
@@ -489,7 +492,7 @@
     box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.75);
     opacity: 0;
     pointer-events: none;
-    animation: lema-anel 1.2s var(--lema-ease-longo) var(--lema-delay, 0ms) both;
+    animation: lema-anel calc(1200ms * var(--lema-escala)) var(--lema-ease-longo) var(--lema-delay, 0ms) both;
   }
   @keyframes lema-anel {
     from { opacity: 0.9; transform: scale(1); }

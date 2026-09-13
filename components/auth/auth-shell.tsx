@@ -36,13 +36,22 @@ function vars(v: Record<`--${string}`, string>) {
   return v as React.CSSProperties
 }
 
+/**
+ * Fator de tempo da coreografia. As durações do CSS (globals.css,
+ * `--lema-escala`) e os atrasos abaixo são multiplicados por ele, então
+ * mudar este número estica ou encolhe a cascata inteira sem alterar a
+ * ordem nem a proporção entre as etapas. Com 4.4 a cascata fecha em
+ * cerca de 15 s.
+ */
+const ESCALA = 4.4
+
 function atraso(ms: number) {
-  return vars({ "--lema-delay": `${ms}ms` })
+  return vars({ "--lema-delay": `${Math.round(ms * ESCALA)}ms` })
 }
 
 /**
- * Coreografia do lema, em ms. Fica num lugar só para o ritmo poder
- * ser ajustado sem caçar números pelo JSX.
+ * Coreografia do lema, em ms na escala 1. Fica num lugar só para o
+ * ritmo poder ser ajustado sem caçar números pelo JSX.
  */
 const RITMO = {
   selo: 0,
@@ -55,7 +64,7 @@ const RITMO = {
   paragrafo: 1500,
   destaques: 1800,
   entreDestaques: 150,
-  anelMarca: 2200,
+  anelMarca: 2200, // termina em 3400 → ~15 s na escala 4.4
 } as const
 
 /**
@@ -127,8 +136,8 @@ function LemaAnimado() {
               className="lema-palavra lema-servir"
               data-texto="Servir"
               style={vars({
-                "--lema-delay": `${RITMO.servir}ms`,
-                "--lema-delay-tinta": `${RITMO.tinta}ms`,
+                "--lema-delay": `${Math.round(RITMO.servir * ESCALA)}ms`,
+                "--lema-delay-tinta": `${Math.round(RITMO.tinta * ESCALA)}ms`,
               })}
             >
               Servir
@@ -208,7 +217,9 @@ export function AuthShell({
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       {/* Painel da marca */}
-      <aside className="lema-painel relative hidden w-[46%] max-w-[640px] shrink-0 overflow-hidden bg-[#0c1425] text-white lg:flex lg:flex-col">
+      <aside
+        style={vars({ "--lema-escala": String(ESCALA) })}
+        className="lema-painel relative hidden w-[46%] max-w-[640px] shrink-0 overflow-hidden bg-[#0c1425] text-white lg:flex lg:flex-col">
         {/* Antes de qualquer elemento animado, para valer no primeiro paint. */}
         <ScriptInline html={SCRIPT_LEMA_PRONTO} />
 

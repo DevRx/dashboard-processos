@@ -13,7 +13,7 @@ export type OpcaoSegmentada<T extends string> = {
 }
 
 const TOM_ATIVO: Record<NonNullable<OpcaoSegmentada<string>["tom"]>, string> = {
-  padrao: "bg-card text-foreground shadow-sm ring-1 ring-foreground/10",
+  padrao: "bg-card text-foreground shadow-sm shadow-card",
   sucesso:
     "bg-status-success text-status-success-foreground shadow-sm ring-1 ring-status-success-foreground/20",
   perigo:

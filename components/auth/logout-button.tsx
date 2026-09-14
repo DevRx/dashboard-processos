@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -14,7 +13,7 @@ export function LogoutButton({
   className?: string
   /** Permite ocultar o rótulo quando a Sidebar está recolhida em trilho. */
   labelClassName?: string
-  /** Troca o ícone padrão (ex.: no menu do usuário, no tamanho do menu). */
+  /** Ícone alternativo — o menu do cabeçalho usa um menor. */
   icone?: React.ReactNode
 }) {
   const router = useRouter()
@@ -33,14 +32,13 @@ export function LogoutButton({
   }
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
+    <button
+      type="button"
       onClick={handleLogout}
       disabled={loading}
       title="Sair"
       className={cn(
-        "h-9 w-full justify-start gap-2.5 rounded-lg text-[13px] font-normal text-sidebar-foreground/55 transition-colors duration-150 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+        "flex h-9.5 w-full items-center justify-start gap-2.5 rounded-lg text-[13px] font-medium text-sidebar-foreground/55 transition-colors duration-150 outline-none hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring/70 disabled:opacity-50",
         className
       )}
     >
@@ -48,6 +46,6 @@ export function LogoutButton({
       <span className={cn("truncate", labelClassName)}>
         {loading ? "Saindo..." : "Sair"}
       </span>
-    </Button>
+    </button>
   )
 }

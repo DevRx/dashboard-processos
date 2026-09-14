@@ -110,7 +110,7 @@ export function EtiquetaPericia({
         <div
           role="menu"
           onClick={(e) => e.stopPropagation()}
-          className="animate-in fade-in slide-in-from-top-1 absolute right-0 z-30 mt-1.5 w-52 overflow-hidden rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 duration-150"
+          className="animate-in fade-in slide-in-from-top-1 absolute right-0 z-30 mt-1.5 w-52 overflow-hidden rounded-xl bg-popover p-1.5 text-popover-foreground shadow-float duration-150"
         >
           {SITUACOES_PERICIA.map((situacao) => (
             <button

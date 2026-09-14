@@ -197,7 +197,7 @@ export default function ClienteDetalhe() {
   if (!cliente) {
     return (
       <Pagina titulo="Cliente não encontrado" subtitulo="Ficha do cliente" voltar={voltar}>
-        <section className="rounded-xl bg-card ring-1 ring-foreground/10">
+        <section className="rounded-xl bg-card shadow-card">
           <EmptyState
             icon={UserX}
             title="Cliente não encontrado"
@@ -251,7 +251,7 @@ export default function ClienteDetalhe() {
       }
     >
       {/* Cabeçalho da pessoa: quem é, o que busca, como falar com ela. */}
-      <section className="overflow-hidden rounded-2xl bg-card ring-1 ring-foreground/10">
+      <section className="overflow-hidden rounded-2xl bg-card shadow-card">
         <span aria-hidden className="block h-1 w-full bg-gradient-to-r from-primary via-brand to-primary" />
         <div className="flex flex-col gap-5 p-5 md:flex-row md:items-start">
           <Avatar nome={cliente.nome} tamanho="xl" className="ring-4 ring-background" />
@@ -303,7 +303,7 @@ export default function ClienteDetalhe() {
       </section>
 
       <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
-        <section className="flex flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+        <section className="flex flex-col overflow-hidden rounded-xl bg-card shadow-card">
           <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
             <div>
               <h3 className="font-heading text-[15px] font-semibold">Casos</h3>

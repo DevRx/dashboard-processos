@@ -38,7 +38,7 @@ export default async function ConfiguracoesPage() {
 
   return (
     <Pagina titulo="Configurações" subtitulo="Seu perfil, a aparência do sistema e a equipe">
-      <section className="overflow-hidden rounded-2xl bg-card ring-1 ring-foreground/10">
+      <section className="overflow-hidden rounded-2xl bg-card shadow-card">
         <span aria-hidden className="block h-1 w-full bg-gradient-to-r from-primary via-brand to-primary" />
         <div className="flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-center">
           <Avatar nome={session?.name} tamanho="xl" />
@@ -58,7 +58,7 @@ export default async function ConfiguracoesPage() {
 
       <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
         <div className="flex flex-col gap-5">
-          <section className="rounded-xl bg-card p-4 ring-1 ring-foreground/10">
+          <section className="rounded-xl bg-card p-4 shadow-card">
             <h2 className="font-heading text-[15px] font-semibold">Aparência</h2>
             <p className="mb-3 text-[12px] text-muted-foreground">
               Vale só para este navegador. O botão de sol e lua no alto faz a mesma troca.
@@ -69,7 +69,7 @@ export default async function ConfiguracoesPage() {
           <Equipe />
         </div>
 
-        <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+        <section className="overflow-hidden rounded-xl bg-card shadow-card">
           <div className="border-b border-border px-4 py-3">
             <h2 className="font-heading text-[15px] font-semibold">Como o sistema se organiza</h2>
             <p className="text-[12px] text-muted-foreground">

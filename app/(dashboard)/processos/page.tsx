@@ -199,7 +199,7 @@ export default function Processos() {
           ))}
         </div>
       ) : processos.length === 0 ? (
-        <section className="rounded-xl bg-card ring-1 ring-foreground/10">
+        <section className="rounded-xl bg-card shadow-card">
           <EmptyState
             icon={FolderSearch}
             title="Nenhum caso cadastrado ainda"
@@ -208,7 +208,7 @@ export default function Processos() {
           />
         </section>
       ) : filtrados.length === 0 ? (
-        <section className="rounded-xl bg-card ring-1 ring-foreground/10">
+        <section className="rounded-xl bg-card shadow-card">
           <EmptyState
             icon={Search}
             title="Nada encontrado"
@@ -234,7 +234,7 @@ export default function Processos() {
           onUpdated={fetchData}
         />
       ) : (
-        <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+        <section className="overflow-hidden rounded-xl bg-card shadow-card">
           <ul className="divide-y divide-border">
             {filtrados.map((processo) => {
               const cliente = clientePorId.get(processo.clienteId)

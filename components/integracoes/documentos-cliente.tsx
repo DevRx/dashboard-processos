@@ -241,7 +241,7 @@ export function DocumentosCliente({
         )}
 
         {porCategoria.length === 0 && !carregando && (
-          <p className="text-sm text-slate-600 dark:text-zinc-400">
+          <p className="text-sm text-muted-foreground">
             Nenhum documento ainda. Suba RG, CPF e comprovante de residência
             para adiantar o protocolo.
           </p>
@@ -249,7 +249,7 @@ export function DocumentosCliente({
 
         {porCategoria.map((grupo) => (
           <div key={grupo.categoria}>
-            <p className="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-zinc-500">
+            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               {CATEGORIA_DOCUMENTO_LABELS[grupo.categoria]}
             </p>
             <ul className="mt-0.5 space-y-0.5 text-sm">
@@ -264,7 +264,7 @@ export function DocumentosCliente({
                     <FileText size={13} className="shrink-0" />
                     <span className="truncate">{doc.nome}</span>
                   </a>
-                  <span className="shrink-0 text-xs text-slate-500 dark:text-zinc-500">
+                  <span className="shrink-0 text-xs text-muted-foreground">
                     {formatarTamanho(doc.tamanho)}
                   </span>
                   {doc.processoId && (
@@ -276,7 +276,7 @@ export function DocumentosCliente({
                   <button
                     type="button"
                     onClick={() => excluir(doc.id, doc.nome)}
-                    className="shrink-0 text-slate-400 hover:text-red-600 dark:hover:text-red-400"
+                    className="shrink-0 text-muted-foreground hover:text-red-600 dark:hover:text-red-400"
                     aria-label={`Excluir ${doc.nome}`}
                   >
                     <Trash2 size={13} />
@@ -286,11 +286,11 @@ export function DocumentosCliente({
                       operador precisa saber que aquilo não foi conferido
                       por ninguém antes de agir com base nisso. */}
                   {doc.iaResumo && (
-                    <span className="w-full text-xs text-slate-600 dark:text-zinc-400">
+                    <span className="w-full text-xs text-muted-foreground">
                       <Sparkles size={11} className="mr-1 inline" />
                       {doc.iaResumo}
                       {resumoTriagem(doc.iaCampos).length > 0 && (
-                        <span className="ml-1 text-slate-500 dark:text-zinc-500">
+                        <span className="ml-1 text-muted-foreground">
                           ({resumoTriagem(doc.iaCampos).join(" · ")})
                         </span>
                       )}
@@ -312,9 +312,9 @@ export function DocumentosCliente({
           <p className="text-xs text-emerald-700 dark:text-emerald-400">{aviso}</p>
         )}
 
-        <div className="space-y-2 border-t border-slate-200 pt-3 dark:border-zinc-800">
+        <div className="space-y-2 border-t border-border pt-3">
           <select
-            className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+            className="h-9 w-full rounded-lg border border-input bg-card px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
             value={categoria}
             onChange={(e) => setCategoria(e.target.value as CategoriaDocumento)}
           >
@@ -329,7 +329,7 @@ export function DocumentosCliente({
               requerimento nenhum, laudo geralmente pertence. */}
           {processos.length > 0 && (
             <select
-              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+              className="h-9 w-full rounded-lg border border-input bg-card px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
               value={processoId}
               onChange={(e) => setProcessoId(e.target.value)}
             >
@@ -363,7 +363,7 @@ export function DocumentosCliente({
               }}
             />
           </label>
-          <span className="ml-2 text-xs text-slate-500 dark:text-zinc-500">
+          <span className="ml-2 text-xs text-muted-foreground">
             PDF, JPG ou PNG até 20 MB
           </span>
 
@@ -389,7 +389,7 @@ export function DocumentosCliente({
               }}
             />
           </label>
-          <span className="ml-5 text-xs text-slate-500 dark:text-zinc-500">
+          <span className="ml-5 text-xs text-muted-foreground">
             Selecione as páginas na ordem, até 10. As fotos são endireitadas e
             o contraste corrigido antes de virar PDF.
           </span>

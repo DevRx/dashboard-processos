@@ -45,7 +45,7 @@ export function BoasVindas({ nome }: { nome: string }) {
   )
 
   return (
-    <section className="overflow-hidden rounded-2xl bg-card ring-1 ring-foreground/10">
+    <section className="overflow-hidden rounded-2xl bg-card shadow-card">
       <span
         aria-hidden
         className="block h-1 w-full bg-gradient-to-r from-primary via-brand to-primary"
@@ -70,7 +70,7 @@ export function BoasVindas({ nome }: { nome: string }) {
                 title={a.dica}
                 className="group flex items-center gap-2.5 rounded-xl bg-accent/70 px-3 py-2.5 text-accent-foreground ring-1 ring-inset ring-foreground/5 transition-colors duration-150 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring sm:flex-col sm:items-start sm:gap-2 sm:px-3.5 sm:py-3"
               >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-card text-primary shadow-xs ring-1 ring-foreground/10 dark:text-accent-foreground">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-card text-primary shadow-card dark:text-accent-foreground">
                   <Icone size={16} strokeWidth={2} />
                 </span>
                 <span className="min-w-0">

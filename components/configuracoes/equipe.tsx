@@ -25,7 +25,7 @@ export function Equipe() {
   }, [])
 
   return (
-    <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+    <section className="overflow-hidden rounded-xl bg-card shadow-card">
       <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
         <div>
           <h2 className="font-heading text-[15px] font-semibold">Equipe</h2>

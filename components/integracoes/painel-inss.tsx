@@ -460,7 +460,7 @@ export function PainelInss({
             href={URL_MEU_INSS}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-input bg-card px-3 text-sm font-medium shadow-xs transition-colors hover:bg-muted"
           >
             <ExternalLink size={15} /> Meu INSS
           </a>
@@ -468,7 +468,7 @@ export function PainelInss({
             href={URL_GERID}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-input bg-card px-3 text-sm font-medium shadow-xs transition-colors hover:bg-muted"
           >
             <ExternalLink size={15} /> GERID (advogado)
           </a>
@@ -494,15 +494,15 @@ export function PainelInss({
         {carregando ? (
           <Skeleton className="h-28 w-full" />
         ) : vigente && !editandoId ? (
-          <div className="space-y-1 rounded-lg border border-slate-200 p-3 text-sm dark:border-zinc-800">
+          <div className="space-y-1 rounded-lg border border-border p-3 text-sm">
             <p className="font-medium">
               {BASE_LEGAL_OPCOES.find((o) => o.valor === vigente.baseLegal)
                 ?.rotulo ?? vigente.baseLegal}
             </p>
-            <p className="text-slate-600 dark:text-zinc-400">
+            <p className="text-muted-foreground">
               {vigente.finalidade}
             </p>
-            <p className="text-slate-600 dark:text-zinc-400">
+            <p className="text-muted-foreground">
               Procuração:{" "}
               {vigente.procuracaoArquivo ? (
                 <a
@@ -552,16 +552,16 @@ export function PainelInss({
             </div>
           </div>
         ) : (
-          <div className="space-y-2 rounded-lg border border-slate-200 p-3 dark:border-zinc-800">
+          <div className="space-y-2 rounded-lg border border-border p-3">
             <p className="text-sm font-medium">
               {editandoId ? "Corrigir base legal" : "Registrar base legal"}
             </p>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">
+            <p className="text-xs text-muted-foreground">
               Dado previdenciário é sensível. Sem isto o sistema não lê nenhum
               documento do titular.
             </p>
             <select
-              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+              className="h-9 w-full rounded-lg border border-input bg-card px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
               value={baseLegal}
               onChange={(e) => setBaseLegal(e.target.value as BaseLegal)}
             >
@@ -585,16 +585,16 @@ export function PainelInss({
               value={procuracaoRef}
               onChange={(e) => setProcuracaoRef(e.target.value)}
             />
-            <label className="block text-xs text-slate-600 dark:text-zinc-400">
+            <label className="block text-xs text-muted-foreground">
               Anexar a procuração em PDF
               <input
                 type="file"
                 accept="application/pdf"
                 onChange={(e) => setProcuracaoPdf(e.target.files?.[0] ?? null)}
-                className="mt-1 block w-full text-sm file:mr-3 file:h-8 file:rounded-lg file:border file:border-slate-300 file:bg-white file:px-3 file:text-sm dark:file:border-zinc-700 dark:file:bg-zinc-900 dark:file:text-zinc-100"
+                className="mt-1 block w-full text-sm file:mr-3 file:h-8 file:rounded-lg file:border file:border-input file:bg-card file:px-3 file:text-sm"
               />
               {procuracaoPdf && (
-                <span className="mt-1 block text-slate-600 dark:text-zinc-400">
+                <span className="mt-1 block text-muted-foreground">
                   {procuracaoPdf.name} ·{" "}
                   {(procuracaoPdf.size / 1024).toFixed(0)} KB
                 </span>
@@ -604,7 +604,7 @@ export function PainelInss({
             {/* Escopo e retenção têm padrão sensato: ambas as fontes,
                 sem prazo. Ficam aqui para quem precisa restringir. */}
             <details className="text-xs">
-              <summary className="cursor-pointer text-slate-600 dark:text-zinc-400">
+              <summary className="cursor-pointer text-muted-foreground">
                 Restringir fontes ou definir retenção
               </summary>
               <div className="mt-2 space-y-2">
@@ -620,7 +620,7 @@ export function PainelInss({
                     </label>
                   ))}
                 </div>
-                <label className="block text-slate-600 dark:text-zinc-400">
+                <label className="block text-muted-foreground">
                   Apagar os dados importados a partir de
                   <Input
                     type="date"
@@ -633,14 +633,14 @@ export function PainelInss({
 
             {/* Fora da revelação: mandar documento do titular para
                 fora do país é decisão consciente, não opção avançada. */}
-            <label className="flex items-start gap-2 rounded-lg border border-slate-200 p-2 text-xs dark:border-zinc-800">
+            <label className="flex items-start gap-2 rounded-lg border border-border p-2 text-xs">
               <input
                 type="checkbox"
                 className="mt-0.5"
                 checked={iaAutorizada}
                 onChange={() => setIaAutorizada((v) => !v)}
               />
-              <span className="text-slate-600 dark:text-zinc-400">
+              <span className="text-muted-foreground">
                 Autorizo enviar documentos deste titular para leitura por IA
                 (Anthropic, nos EUA) — transferência internacional a um
                 operador, art. 33 da LGPD. Sem isto o sistema ainda monta o
@@ -671,13 +671,13 @@ export function PainelInss({
         {vigente && !editandoId && !proposta && (
           <div className="space-y-2">
             <p className="text-sm font-medium">Colar documento do INSS</p>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">
+            <p className="text-xs text-muted-foreground">
               Abra o CNIS, a carta de concessão, o comunicado de decisão, o
               extrato de pagamento ou o requerimento no portal oficial e cole o
               texto. O tipo é reconhecido sozinho.
             </p>
             <textarea
-              className="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 font-mono text-xs shadow-sm outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+              className="min-h-28 w-full rounded-lg border border-input bg-card px-3 py-2 font-mono text-xs shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
               placeholder="Cole aqui…"
               value={texto}
               onChange={(e) => setTexto(e.target.value)}
@@ -685,7 +685,7 @@ export function PainelInss({
 
             {precisaTipo && (
               <select
-                className="h-9 w-full rounded-lg border border-amber-400 bg-white px-2.5 text-sm dark:bg-zinc-950 dark:text-zinc-100"
+                className="h-9 w-full rounded-lg border border-amber-400 bg-card px-3 text-sm shadow-xs outline-none"
                 value={tipoManual}
                 onChange={(e) => setTipoManual(e.target.value as Documento)}
               >
@@ -720,7 +720,7 @@ export function PainelInss({
             <p className="text-sm font-semibold">{proposta.resumo}</p>
 
             {processos.length === 0 ? (
-              <p className="text-sm text-slate-600 dark:text-zinc-400">
+              <p className="text-sm text-muted-foreground">
                 Este cliente ainda não tem caso aberto. O documento abre um
                 requerimento administrativo
                 {proposta.protocoloInss
@@ -730,10 +730,10 @@ export function PainelInss({
               </p>
             ) : (
               processos.length > 1 && (
-                <label className="block text-xs text-slate-600 dark:text-zinc-400">
+                <label className="block text-xs text-muted-foreground">
                   Aplicar ao processo
                   <select
-                    className="mt-1 h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+                    className="mt-1 h-9 w-full rounded-lg border border-input bg-card px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
                     value={processoDestino}
                     onChange={(e) => setProcessoId(e.target.value)}
                   >
@@ -902,10 +902,10 @@ export function PainelInss({
             </div>
 
             <details className="text-xs">
-              <summary className="cursor-pointer text-slate-600 dark:text-zinc-400">
+              <summary className="cursor-pointer text-muted-foreground">
                 Ver campos extraídos
               </summary>
-              <pre className="mt-2 max-h-64 overflow-auto rounded-lg bg-white/70 p-2 dark:bg-zinc-950">
+              <pre className="mt-2 max-h-64 overflow-auto rounded-lg bg-muted p-2">
                 {JSON.stringify(pendente.dados, null, 2)}
               </pre>
             </details>
@@ -920,12 +920,12 @@ export function PainelInss({
               {importacoes.map((imp) => (
                 <li
                   key={imp.id}
-                  className="flex flex-wrap items-center gap-2 border-b border-slate-100 py-1 last:border-0 dark:border-zinc-800"
+                  className="flex flex-wrap items-center gap-2 border-b border-border/70 py-1 last:border-0"
                 >
                   <span className="font-medium">
                     {DOCUMENTO_LABELS[imp.documento ?? ""] ?? imp.fonte}
                   </span>
-                  <span className="text-slate-500 dark:text-zinc-500">
+                  <span className="text-muted-foreground">
                     {formatarData(imp.createdAt)}
                   </span>
                   {imp.expurgadoEm ? (
@@ -952,14 +952,14 @@ export function PainelInss({
             Não são tarefa do dia a dia: ficam recolhidos para não
             competir com o fluxo de importar, mas a um clique quando o
             titular pedir. */}
-        <details className="border-t border-slate-200 pt-3 text-xs dark:border-zinc-800">
-          <summary className="cursor-pointer text-slate-600 dark:text-zinc-400">
+        <details className="border-t border-border pt-3 text-xs">
+          <summary className="cursor-pointer text-muted-foreground">
             Direitos do titular (LGPD)
           </summary>
           <div className="mt-2 flex flex-wrap gap-2">
             <a
               href={`/api/lgpd/titular/${clienteId}/portabilidade`}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-300 px-3 text-sm dark:border-zinc-700"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-input bg-card px-3 text-sm font-medium shadow-xs transition-colors hover:bg-muted"
             >
               <Download size={16} /> Exportar dados
             </a>

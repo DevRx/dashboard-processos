@@ -13,7 +13,7 @@ import { QuadroTarefas } from "@/components/tarefas/quadro-tarefas"
 export default function TarefasPage() {
   return (
     <Pagina titulo="Tarefas" subtitulo="Quadro do escritório por time e responsável" className="space-y-4">
-      <p className="text-[12.5px] text-muted-foreground">
+      <p className="max-w-3xl text-[13px] leading-relaxed text-muted-foreground">
         A cor é o time; o nome no alto do cartão é quem responde por ela.
         Arraste o cartão de uma coluna para outra para mudar de time, e
         clique nas iniciais para passar a tarefa a outra pessoa.

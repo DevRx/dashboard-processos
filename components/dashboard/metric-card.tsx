@@ -11,7 +11,7 @@ const SELO: Record<TomMetrica, string> = {
   sucesso: "bg-status-success text-status-success-foreground",
   alerta: "bg-status-warning text-status-warning-foreground",
   perigo: "bg-status-danger text-status-danger-foreground",
-  marca: "bg-brand/10 text-brand",
+  marca: "bg-brand-soft text-brand",
 }
 
 const VALOR: Record<TomMetrica, string> = {
@@ -96,8 +96,8 @@ export function MetricCard({
   )
 
   const classes = cn(
-    "group flex flex-col rounded-xl bg-card p-4 text-card-foreground ring-1 ring-foreground/10 transition-shadow duration-150",
-    href && "outline-none hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring",
+    "group flex flex-col rounded-2xl bg-card p-5 text-card-foreground shadow-card transition-all duration-200",
+    href && "outline-none hover:-translate-y-0.5 hover:shadow-float focus-visible:ring-2 focus-visible:ring-ring",
     className
   )
 

@@ -232,7 +232,7 @@ export default function FinanceiroPage() {
         />
       </div>
 
-      <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+      <section className="overflow-hidden rounded-xl bg-card shadow-card">
         {loading ? (
           <div className="space-y-2 p-4">
             {Array.from({ length: 5 }).map((_, i) => (

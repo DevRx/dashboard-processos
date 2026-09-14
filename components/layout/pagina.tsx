@@ -36,7 +36,7 @@ export function Pagina({
         </div>
       )}
 
-      <main className={cn("flex-1 space-y-5 p-4 md:p-6", className)}>
+      <main className={cn("flex-1 space-y-5 p-5 md:p-7", className)}>
         {children}
       </main>
     </>

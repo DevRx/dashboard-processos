@@ -47,8 +47,8 @@ export function ProcessosStatusChart({
   const total = data.reduce((soma, item) => soma + item.total, 0)
 
   return (
-    <Card className="gap-0">
-      <CardHeader className="border-b pb-(--card-spacing)">
+    <Card className="gap-0 rounded-2xl">
+      <CardHeader className="border-b border-border/70 pb-(--card-spacing)">
         <CardTitle>Processos por status</CardTitle>
         <CardDescription>
           {total === 1 ? "1 processo no total" : `${total} processos no total`}
@@ -88,12 +88,13 @@ export function ProcessosStatusChart({
                   contentStyle={{
                     background: "var(--popover)",
                     border: "1px solid var(--border)",
-                    borderRadius: 8,
+                    borderRadius: 12,
+                    boxShadow: "var(--shadow-float)",
                     fontSize: 12,
                     color: "var(--popover-foreground)",
                   }}
                 />
-                <Bar dataKey="total" radius={[0, 4, 4, 0]} maxBarSize={22}>
+                <Bar dataKey="total" radius={[0, 8, 8, 0]} maxBarSize={20}>
                   {data.map((entry) => (
                     <Cell key={entry.status} fill={entry.cor} />
                   ))}

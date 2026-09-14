@@ -25,7 +25,7 @@ export type ProcessoRecente = {
  */
 export function ProcessTable({ processos }: { processos: ProcessoRecente[] }) {
   return (
-    <section className="flex flex-col overflow-hidden rounded-xl bg-card text-card-foreground ring-1 ring-foreground/10">
+    <section className="flex flex-col overflow-hidden rounded-xl bg-card text-card-foreground shadow-card">
       <div className="flex items-center justify-between gap-4 border-b border-border px-4 py-3">
         <div>
           <h2 className="font-heading text-[15px] leading-snug font-semibold">

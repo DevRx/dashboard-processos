@@ -75,18 +75,22 @@ function Marca({ trilho }: { trilho: boolean }) {
   return (
     <div
       className={cn(
-        "flex h-16 items-center gap-2.5",
+        "flex h-[68px] items-center gap-3",
         trilho ? "justify-center px-2 lg:justify-start lg:px-5" : "px-5"
       )}
     >
-      <div className="flex size-8 shrink-0 items-center justify-center rounded-[9px] bg-brand">
-        <Scale size={17} strokeWidth={2} className="text-white" />
+      <div className="relative flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-brand shadow-[0_6px_16px_-6px_rgba(219,39,119,0.7)]">
+        <Scale size={18} strokeWidth={2.1} className="text-white" />
+        <span
+          aria-hidden
+          className="absolute inset-0 rounded-xl ring-1 ring-white/25 ring-inset"
+        />
       </div>
       <div className={cn("min-w-0", trilho && "hidden lg:block")}>
-        <p className="font-heading truncate text-[13.5px] leading-tight font-semibold tracking-[-0.01em] text-sidebar-foreground">
+        <p className="font-heading truncate text-[14px] leading-tight font-bold tracking-[-0.01em] text-sidebar-foreground">
           Zeca Aposenta
         </p>
-        <p className="truncate text-[9.5px] leading-tight font-medium tracking-[0.16em] text-sidebar-foreground/35 uppercase">
+        <p className="truncate text-[9.5px] leading-tight font-semibold tracking-[0.18em] text-sidebar-foreground/40 uppercase">
           O Terror do INSS
         </p>
       </div>
@@ -101,10 +105,6 @@ function Marca({ trilho }: { trilho: boolean }) {
  * próprio: ele não é um destino paralelo, é um recorte do pai. Em
  * trilho (tablet) os filhos somem — sobra largura para um ícone só, e
  * o pai leva à mesma área.
- *
- * As esferas ficam recolhidas: o menu do dia a dia é curto, e quem
- * precisa de uma delas abre pela seta. O nome do pai continua sendo
- * link — clicar em "Processos" leva a Processos, não abre a gaveta.
  */
 function ItemNavegacao({
   item,
@@ -121,27 +121,17 @@ function ItemNavegacao({
 }) {
   const Icon = item.icon
 
-  // Subpáginas contam como o mesmo item: em /inss/pensao o menu
-  // precisa continuar dizendo "você está no Administrativo". "/" é
-  // exceção — prefixo de tudo.
   const ativo =
     item.href === "/"
       ? pathname === "/"
       : pathname === item.href || pathname.startsWith(`${item.href}/`)
 
-  // O pai não acende junto com o filho: /inss não é /processos. O que
-  // ele ganha é um tom mais claro que o de repouso, para a seção
-  // inteira não parecer desligada.
   const filhoAtivo = Boolean(
     item.filhos?.some(
       (f) => pathname === f.href || pathname.startsWith(`${f.href}/`)
     )
   )
 
-  // A gaveta já nasce aberta quando você está na seção — dentro de uma
-  // esfera ou na própria página do pai. Um menu que esconde a página em
-  // que você está não diz onde você está; e em /processos as duas
-  // esferas são justamente o que se foi buscar ali.
   const [aberto, setAberto] = useState(filhoAtivo || ativo)
 
   const temFilhos = Boolean(item.filhos?.length)
@@ -150,32 +140,40 @@ function ItemNavegacao({
     <Link
       href={item.href}
       onClick={() => {
-        // Clicar em "Processos" abre as esferas, além de levar à
-        // página. Antes só a seta abria, e mirar uma seta de 15px para
-        // chegar em "Administrativo" é trabalho que o menu não devia
-        // dar. A seta continua existindo — é ela que fecha.
         if (temFilhos) setAberto(true)
         onNavegar?.()
       }}
       aria-current={ativo ? "page" : undefined}
       title={trilho ? item.name : undefined}
       className={cn(
-        "group relative flex h-9 flex-1 items-center gap-2.5 rounded-lg text-[13px] tracking-[-0.005em] transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70 focus-visible:ring-offset-0",
+        "group relative flex h-9.5 flex-1 items-center gap-2.5 rounded-lg text-[13px] tracking-[-0.005em] transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70 focus-visible:ring-offset-0",
         trilho ? "justify-center px-0 lg:justify-start lg:px-3" : "px-3",
         filho && !trilho && "ml-3 h-8 pl-2.5",
         filho && trilho && "ml-0 h-8 lg:ml-3 lg:pl-2.5",
         ativo
-          ? "bg-sidebar-accent font-medium text-sidebar-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] ring-1 ring-white/[0.06] ring-inset"
+          ? "bg-sidebar-accent font-semibold text-sidebar-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.3)]"
           : filhoAtivo
-            ? "font-normal text-sidebar-foreground/75 hover:bg-sidebar-accent/55"
-            : "font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent/55 hover:text-sidebar-foreground/90"
+            ? "font-medium text-sidebar-foreground/75 hover:bg-sidebar-accent/70"
+            : "font-medium text-sidebar-foreground/55 hover:bg-sidebar-accent/70 hover:text-sidebar-foreground/95"
       )}
     >
+      {/* Indicador de página ativa: um traço luminoso na borda. */}
+      {ativo && !filho && (
+        <span
+          aria-hidden
+          className={cn(
+            "absolute top-1/2 left-0 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-sidebar-primary shadow-[0_0_12px_2px_rgba(124,159,240,0.55)]",
+            trilho && "hidden lg:block"
+          )}
+        />
+      )}
+
       {filho && (
         <span
           aria-hidden
           className={cn(
-            "h-4 w-px shrink-0 bg-sidebar-border",
+            "h-4 w-px shrink-0 bg-sidebar-foreground/15",
+            ativo && "bg-sidebar-primary",
             trilho && "hidden lg:block"
           )}
         />
@@ -183,12 +181,12 @@ function ItemNavegacao({
 
       <Icon
         size={filho ? 15 : 17}
-        strokeWidth={1.75}
+        strokeWidth={ativo ? 2.1 : 1.75}
         className={cn(
           "shrink-0 transition-colors duration-150",
           ativo
-            ? "text-sidebar-foreground"
-            : "text-sidebar-foreground/40 group-hover:text-sidebar-foreground/75"
+            ? "text-sidebar-primary"
+            : "text-sidebar-foreground/45 group-hover:text-sidebar-foreground/85"
         )}
       />
       <span
@@ -209,8 +207,6 @@ function ItemNavegacao({
 
   return (
     <>
-      {/* A seta é um botão à parte, e não dentro do link: um dentro do
-          outro é HTML inválido, e são duas ações diferentes. */}
       <div className="flex items-center gap-0.5">
         {link}
 
@@ -223,7 +219,6 @@ function ItemNavegacao({
           title={`${aberto ? "Ocultar" : "Mostrar"} esferas de ${item.name}`}
           className={cn(
             "flex size-7 shrink-0 items-center justify-center rounded-md text-sidebar-foreground/40 transition-colors duration-150 outline-none hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
-            // Em trilho não há espaço nem gaveta: o pai leva à área.
             trilho && "hidden lg:flex"
           )}
         >
@@ -266,17 +261,15 @@ function Navegacao({ trilho, onNavegar }: Modo) {
     <nav
       aria-label="Navegação principal"
       className={cn(
-        "flex flex-1 flex-col gap-6 overflow-y-auto py-2",
+        "flex flex-1 flex-col gap-6 overflow-y-auto py-3",
         trilho ? "px-2 lg:px-3" : "px-3"
       )}
     >
       {menuGroups.map((grupo, i) => (
-        <div key={grupo.label} className="flex flex-col gap-0.5">
-          {/* Em trilho o rótulo do grupo vira um traço: a separação
-              permanece, o ruído não. */}
+        <div key={grupo.label} className="flex flex-col gap-1">
           <p
             className={cn(
-              "px-3 pb-2 text-[10px] leading-none font-semibold tracking-[0.14em] text-sidebar-foreground/30 uppercase",
+              "px-3 pb-2 text-[10px] leading-none font-bold tracking-[0.16em] text-sidebar-foreground/30 uppercase",
               trilho && "hidden lg:block"
             )}
           >
@@ -304,10 +297,13 @@ function Navegacao({ trilho, onNavegar }: Modo) {
   )
 }
 
+/** Fundo do painel: azul-noite com uma luz suave no topo. */
+const FUNDO_SIDEBAR =
+  "bg-sidebar bg-[radial-gradient(600px_300px_at_0%_0%,rgba(124,159,240,0.16),transparent_60%),radial-gradient(400px_260px_at_100%_100%,rgba(219,39,119,0.10),transparent_60%)]"
+
 export function Sidebar() {
   const [drawerAberto, setDrawerAberto] = useState(false)
 
-  // Esc fecha o Drawer e o corpo não rola por trás dele.
   useEffect(() => {
     if (!drawerAberto) return
 
@@ -328,7 +324,12 @@ export function Sidebar() {
   return (
     <>
       {/* Tablet: trilho de 64px. Desktop: 256px. */}
-      <aside className="sticky top-0 hidden h-screen w-16 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-out md:flex lg:w-64">
+      <aside
+        className={cn(
+          "sticky top-0 hidden h-screen w-16 shrink-0 flex-col border-r border-sidebar-border text-sidebar-foreground transition-[width] duration-200 ease-out md:flex lg:w-64",
+          FUNDO_SIDEBAR
+        )}
+      >
         <Marca trilho />
         <Navegacao trilho />
         <div className="border-t border-sidebar-border p-2 lg:p-3">
@@ -339,17 +340,16 @@ export function Sidebar() {
         </div>
       </aside>
 
-      {/* Mobile: gatilho flutuante. Fica fora do fluxo do Header, que
-          pertence a outra sprint. */}
+      {/* Mobile: gatilho flutuante. */}
       <button
         type="button"
         onClick={() => setDrawerAberto(true)}
         aria-label="Abrir menu de navegação"
         aria-expanded={drawerAberto}
         aria-controls="sidebar-drawer"
-        className="fixed bottom-5 left-5 z-40 flex size-11 items-center justify-center rounded-full border border-sidebar-border bg-sidebar text-sidebar-foreground shadow-lg transition-transform duration-150 outline-none active:scale-95 focus-visible:ring-2 focus-visible:ring-sidebar-ring md:hidden"
+        className="fixed bottom-5 left-5 z-40 flex size-12 items-center justify-center rounded-full bg-sidebar text-sidebar-foreground shadow-float ring-1 ring-white/10 transition-transform duration-150 outline-none active:scale-95 focus-visible:ring-2 focus-visible:ring-sidebar-ring md:hidden"
       >
-        <Menu size={19} strokeWidth={1.75} />
+        <Menu size={20} strokeWidth={1.9} />
       </button>
 
       {drawerAberto && (
@@ -357,7 +357,7 @@ export function Sidebar() {
           <div
             role="presentation"
             onClick={() => setDrawerAberto(false)}
-            className="animate-in fade-in absolute inset-0 bg-black/60 backdrop-blur-[2px] duration-200"
+            className="animate-in fade-in absolute inset-0 bg-[#0b1220]/60 backdrop-blur-[3px] duration-200"
           />
 
           <div
@@ -365,7 +365,10 @@ export function Sidebar() {
             role="dialog"
             aria-modal="true"
             aria-label="Menu de navegação"
-            className="animate-in slide-in-from-left absolute inset-y-0 left-0 flex w-[264px] max-w-[82vw] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground duration-200 ease-out"
+            className={cn(
+              "animate-in slide-in-from-left absolute inset-y-0 left-0 flex w-[272px] max-w-[84vw] flex-col border-r border-sidebar-border text-sidebar-foreground shadow-float duration-200 ease-out",
+              FUNDO_SIDEBAR
+            )}
           >
             <div className="flex items-center justify-between pr-2">
               <Marca trilho={false} />

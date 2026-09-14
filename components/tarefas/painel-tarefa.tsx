@@ -143,7 +143,7 @@ function AbrirDuvida({
   }
 
   return (
-    <div className="rounded-lg bg-muted/50 p-3 ring-1 ring-foreground/10">
+    <div className="rounded-lg bg-muted/50 p-3 shadow-card">
       <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
         Tirar uma dúvida
       </p>
@@ -201,7 +201,7 @@ function Responder({
   }
 
   return (
-    <div className="rounded-lg bg-muted/50 p-3 ring-1 ring-foreground/10">
+    <div className="rounded-lg bg-muted/50 p-3 shadow-card">
       <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
         Responder
       </p>

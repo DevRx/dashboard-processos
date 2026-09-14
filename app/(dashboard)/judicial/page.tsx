@@ -118,7 +118,7 @@ export default function JudicialPage() {
     <Pagina titulo="Judicial" subtitulo="Ações em curso, por fase, com consulta ao DataJud">
       <AbasJudicial />
 
-      <section className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+      <section className="overflow-hidden rounded-xl bg-card shadow-card">
         <span
           aria-hidden
           className="block h-1 w-full bg-gradient-to-r from-slate-500 via-blue-600 to-violet-600"

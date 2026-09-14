@@ -131,7 +131,7 @@ export function KanbanBoard({
               <h3 className="font-heading truncate text-[13.5px] font-semibold" title={nomeColuna}>
                 {nomeColuna}
               </h3>
-              <span className="shrink-0 rounded-full bg-card px-2 py-0.5 text-[11.5px] font-semibold tabular-nums ring-1 ring-foreground/10">
+              <span className="shrink-0 rounded-full bg-card px-2 py-0.5 text-[11.5px] font-semibold tabular-nums shadow-card">
                 {itens.length}
               </span>
             </div>
@@ -153,7 +153,7 @@ export function KanbanBoard({
                     }}
                     onDragEnd={() => setDragId(null)}
                     className={cn(
-                      "cursor-grab rounded-lg bg-card p-3 shadow-xs ring-1 ring-foreground/10 transition-opacity active:cursor-grabbing",
+                      "cursor-grab rounded-lg bg-card p-3 shadow-card transition-opacity active:cursor-grabbing",
                       (dragId === processo.id || movendo === processo.id) && "opacity-40"
                     )}
                   >

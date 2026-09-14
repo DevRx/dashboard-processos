@@ -25,16 +25,16 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
  */
 const VARIANTES: Record<NonNullable<ButtonProps["variant"]>, string> = {
   default:
-    "border-transparent bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+    "border-transparent bg-primary text-primary-foreground shadow-glow hover:bg-primary-hover",
   outline:
-    "border-input bg-card text-foreground shadow-xs hover:bg-accent hover:text-accent-foreground",
+    "border-input bg-card text-foreground shadow-xs hover:border-foreground/20 hover:bg-muted",
   secondary:
     "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/70",
   soft: "border-transparent bg-accent text-accent-foreground hover:bg-accent/70",
   ghost:
     "border-transparent bg-transparent text-foreground/80 hover:bg-accent hover:text-accent-foreground",
   destructive:
-    "border-transparent bg-destructive text-white shadow-sm hover:bg-destructive/90",
+    "border-transparent bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90",
   link: "h-auto border-transparent bg-transparent p-0 text-primary underline-offset-4 hover:underline",
 }
 
@@ -58,7 +58,7 @@ function Button({
       type={type}
       data-slot="button"
       className={cn(
-        "inline-flex shrink-0 items-center justify-center rounded-lg border font-medium whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:shrink-0",
+        "inline-flex shrink-0 items-center justify-center rounded-lg border font-medium whitespace-nowrap transition-all duration-150 outline-none select-none active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:shrink-0",
         VARIANTES[variant],
         TAMANHOS[size],
         className

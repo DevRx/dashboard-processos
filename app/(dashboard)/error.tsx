@@ -25,7 +25,7 @@ export default function ErroDaTela({
 
   return (
     <main className="flex flex-1 items-center justify-center p-6">
-      <div className="flex max-w-md flex-col items-center gap-3 rounded-2xl bg-card px-8 py-10 text-center ring-1 ring-foreground/10">
+      <div className="flex max-w-md flex-col items-center gap-3 rounded-2xl bg-card px-8 py-10 text-center shadow-card">
         <span className="flex size-14 items-center justify-center rounded-full bg-status-danger text-status-danger-foreground">
           <AlertTriangle size={26} strokeWidth={2} />
         </span>

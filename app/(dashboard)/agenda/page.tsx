@@ -418,7 +418,7 @@ export default function AgendaPage() {
               <a
                 key={g.chave}
                 href={`#agenda-${g.chave}`}
-                className="flex items-center gap-2.5 rounded-xl bg-card px-3 py-3 ring-1 ring-foreground/10 transition-shadow hover:shadow-md sm:gap-3 sm:px-4"
+                className="flex items-center gap-2.5 rounded-xl bg-card px-3 py-3 shadow-card transition-shadow hover:shadow-md sm:gap-3 sm:px-4"
               >
                 <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", g.bloco)}>
                   <Icone size={18} strokeWidth={2} />
@@ -444,7 +444,7 @@ export default function AgendaPage() {
           ))}
         </div>
       ) : tarefas.length === 0 ? (
-        <section className="rounded-xl bg-card ring-1 ring-foreground/10">
+        <section className="rounded-xl bg-card shadow-card">
           <EmptyState
             icon={CalendarDays}
             title="A agenda está vazia"
@@ -478,7 +478,7 @@ export default function AgendaPage() {
               <details
                 key={grupo.chave}
                 id={`agenda-${grupo.chave}`}
-                className="group overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10"
+                className="group overflow-hidden rounded-xl bg-card shadow-card"
               >
                 <summary className="cursor-pointer list-none select-none [&::-webkit-details-marker]:hidden">
                   {cabecalho}
@@ -496,7 +496,7 @@ export default function AgendaPage() {
             <section
               key={grupo.chave}
               id={`agenda-${grupo.chave}`}
-              className="scroll-mt-20 overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10"
+              className="scroll-mt-20 overflow-hidden rounded-xl bg-card shadow-card"
             >
               {cabecalho}
               {itens.length === 0 ? (

@@ -94,7 +94,7 @@ function MenuUsuario() {
         <div
           role="menu"
           aria-label="Conta"
-          className="animate-in fade-in slide-in-from-top-1 absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-xl bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 duration-150"
+          className="animate-in fade-in slide-in-from-top-1 absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl bg-popover p-1.5 text-popover-foreground shadow-float duration-150"
         >
           <div className="flex items-center gap-3 px-3 py-2.5">
             <Avatar nome={nome} tamanho="md" />
@@ -141,7 +141,7 @@ export function Header({
   voltar?: { href: string; rotulo: string }
 }) {
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-border bg-card/85 px-4 text-card-foreground backdrop-blur-md md:px-6">
+    <header className="glass sticky top-0 z-30 flex h-[68px] shrink-0 items-center gap-3 border-b border-border/80 px-4 text-card-foreground md:px-7">
       {voltar && (
         <Link
           href={voltar.href}
@@ -154,7 +154,7 @@ export function Header({
       )}
 
       <div className="min-w-0 flex-1">
-        <h1 className="font-heading truncate text-[15.5px] leading-tight font-semibold tracking-[-0.01em]">
+        <h1 className="font-heading truncate text-[17px] leading-tight font-bold tracking-[-0.015em]">
           {title}
         </h1>
         {subtitle && (

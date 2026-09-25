@@ -164,10 +164,38 @@ projeto:
 | `20260818_mapa_atendimento` | `clientes.latitude`, `clientes.longitude` |
 | `20260818_comunicacoes_djen` | tabela `comunicacoes_djen` |
 | `20260818_analise_intimacao` | colunas `ia_*` em `comunicacoes_djen` |
+| `20260925120000_tarefas_pasta_e_origem` | `tarefas.pasta`, `tarefas.origem_id` (importação do TickTick) |
 
-Os times são identificados por cor (`VERMELHO`, `PRETO`, `AZUL`,
-`AMARELO`, `VERDE`). Para dar nome próprio a cada um sem mexer no
-banco, edite os rótulos em `lib/domain/tarefa/time.ts`.
+Os times são identificados por cor, e cada cor tem dono: Vermelho é
+o Zeca, Azul a Tay, Amarelo o Guilherme e a Camille, Preto o Ryan;
+Verde está livre. Trocar alguém de time é editar os rótulos em
+`lib/domain/tarefa/time.ts` — o banco continua gravando a cor.
+
+### Tarefas do TickTick
+
+Na tela **Tarefas**, um ADMIN tem o botão **Importar do TickTick**:
+escolha o backup `.csv` (TickTick → Configurações → Backup) e todas as
+tarefas entram — as em aberto no quadro, as concluídas e abandonadas no
+histórico (agenda). Reimportar não duplica: cada tarefa guarda de que
+linha do backup veio.
+
+- **Time** sai da cor da coluna ou da lista no TickTick: 🔴 Vermelho,
+  🔵 Azul, 🌕/🟡 Amarelo. A coluna vale mais que a lista ("TAREFAS ZECA"
+  na coluna "AZUL 🔵" vai para a Tay). Onde não há cor (Cobrança,
+  Inbox) a tarefa entra sem time.
+- **Pasta** é a pasta › lista › coluna do TickTick, sem o que só repete
+  o time. Dentro de cada time do quadro, as pastas aparecem fechadas,
+  com a contagem.
+- **Prioridade**: etiqueta `URGENTE` → urgente; alta do TickTick →
+  alta; baixa → baixa; o resto, média.
+- Anexos viram "📎 nome.pdf" no texto — o arquivo continua no TickTick.
+
+O backup carrega CPF e senha de cliente: **não o coloque no
+repositório.** O arquivo só passa pela requisição; o que fica guardado
+é cada tarefa.
+
+Precisa da migração `20260925120000_tarefas_pasta_e_origem` no Supabase
+(no `npm run demo` ela entra sozinha).
 
 A coluna continua se chamando `setor` de propósito: `time` é tipo de
 dado no Postgres e viraria uma coluna que só funciona entre aspas. O

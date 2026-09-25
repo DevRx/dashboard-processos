@@ -14,27 +14,43 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const processoId = searchParams.get("processoId")
+    // O quadro só mostra o que falta fazer. Com o histórico do TickTick
+    // são milhares de concluídas, e mandá-las para a tela só para ela
+    // jogar fora é o que deixava o quadro lento.
+    const soAbertas = searchParams.get("abertas") === "1"
+    const escritorio = await idsDoEscritorio()
 
-    let query = supabase
-      .from("tarefas")
-      .select(
-        "*, processo:processos(beneficio, numero), responsavel:users!tarefas_responsavel_id_fkey(id, name)"
-      )
-      .in("user_id", await idsDoEscritorio())
-      .order("data", { ascending: true })
+    // O Supabase devolve no máximo mil linhas por consulta, em silêncio.
+    // Sem paginar, o escritório com 5 mil tarefas via as mil mais antigas
+    // — justamente as já concluídas — e nenhuma das que estão em aberto.
+    const PAGINA = 1000
+    const tarefas: Record<string, unknown>[] = []
+    for (let de = 0; ; de += PAGINA) {
+      let query = supabase
+        .from("tarefas")
+        .select(
+          "*, processo:processos(beneficio, numero), responsavel:users!tarefas_responsavel_id_fkey(id, name)"
+        )
+        .in("user_id", escritorio)
+        .order("data", { ascending: true })
+        .order("id", { ascending: true })
+        .range(de, de + PAGINA - 1)
 
-    if (processoId) {
-      query = query.eq("processo_id", processoId)
-    }
+      if (processoId) query = query.eq("processo_id", processoId)
+      if (soAbertas) query = query.not("status", "in", "(CONCLUIDA,CANCELADA)")
 
-    const { data: tarefas, error } = await query
+      const { data, error } = await query
 
-    if (error) {
-      console.error("Get tarefas error:", error)
-      return NextResponse.json(
-        { error: "Erro interno do servidor" },
-        { status: 500 }
-      )
+      if (error) {
+        console.error("Get tarefas error:", error)
+        return NextResponse.json(
+          { error: "Erro interno do servidor" },
+          { status: 500 }
+        )
+      }
+
+      tarefas.push(...(data ?? []))
+      if (!data || data.length < PAGINA) break
     }
 
     return NextResponse.json(

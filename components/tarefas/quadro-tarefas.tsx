@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { CalendarClock, Check, CircleHelp, Loader2, Plus, UserRound } from "lucide-react"
+import { CalendarClock, Check, ChevronRight, CircleHelp, Folder, Loader2, Plus, UserRound } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -44,6 +44,8 @@ type Tarefa = {
   tipo?: string | null
   tarefaPaiId?: string | null
   resposta?: string | null
+  descricao?: string | null
+  pasta?: string | null
 }
 
 type Usuario = { id: string; name: string; role: string }
@@ -387,6 +389,59 @@ function CartaoTarefa({
   )
 }
 
+/**
+ * As pastas de um time — as listas que vieram do TickTick.
+ *
+ * Fechadas por padrão: um time com 150 tarefas em aberto vira uma
+ * coluna que ninguém rola até o fim. Fechadas, a coluna mostra primeiro
+ * o índice ("JUDICIAL › ANDAMENTO · 49") e cada um abre a sua. Tarefa
+ * sem pasta — a criada aqui — fica solta no alto, que é onde se espera
+ * ver o que acabou de nascer.
+ */
+function agruparPorPasta(lista: Tarefa[]) {
+  const soltas: Tarefa[] = []
+  const pastas = new Map<string, Tarefa[]>()
+
+  for (const t of lista) {
+    if (!t.pasta) soltas.push(t)
+    else pastas.set(t.pasta, [...(pastas.get(t.pasta) ?? []), t])
+  }
+
+  return {
+    soltas,
+    pastas: [...pastas.entries()].sort(([a], [b]) => a.localeCompare(b, "pt-BR")),
+  }
+}
+
+function Pasta({
+  nome,
+  quantas,
+  children,
+}: {
+  nome: string
+  quantas: number
+  children: React.ReactNode
+}) {
+  return (
+    <details className="group rounded-xl bg-card/55 shadow-card open:bg-card/30">
+      <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-xl px-2.5 py-2 text-[12px] font-semibold outline-none select-none hover:bg-card focus-visible:ring-2 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
+        <ChevronRight
+          size={13}
+          className="shrink-0 text-muted-foreground transition-transform group-open:rotate-90"
+        />
+        <Folder size={13} className="shrink-0 text-muted-foreground" />
+        <span className="min-w-0 flex-1 truncate" title={nome}>
+          {nome}
+        </span>
+        <span className="rounded-full bg-muted px-1.5 text-[10.5px] font-bold text-muted-foreground tabular-nums">
+          {quantas}
+        </span>
+      </summary>
+      <div className="flex flex-col gap-2 px-1.5 pb-1.5">{children}</div>
+    </details>
+  )
+}
+
 function NovaTarefa({
   time,
   usuarios,
@@ -497,7 +552,7 @@ export function QuadroTarefas() {
   const [aberta, setAberta] = useState<Tarefa | null>(null)
 
   useEffect(() => {
-    const lista = fetch("/api/tarefas")
+    const lista = fetch("/api/tarefas?abertas=1")
       .then((r) => (r.ok ? r.json() : { tarefas: [] }))
       .then((d) => setTarefas(d.tarefas ?? []))
 
@@ -516,7 +571,7 @@ export function QuadroTarefas() {
    * barato que costurar o caso na mão e errar um deles.
    */
   const recarregar = useCallback(() => {
-    fetch("/api/tarefas")
+    fetch("/api/tarefas?abertas=1")
       .then((r) => (r.ok ? r.json() : { tarefas: [] }))
       .then((d) => setTarefas(d.tarefas ?? []))
       .catch((err) => console.error("Erro ao recarregar tarefas:", err))
@@ -665,20 +720,33 @@ export function QuadroTarefas() {
               </header>
 
               <div className="flex min-h-[72px] flex-col gap-2 px-2.5 pb-2.5">
-                {lista.map((t) => (
-                  <CartaoTarefa
-                    key={t.id}
-                    tarefa={t}
-                    usuarios={usuarios}
-                    arrastando={arrastando === t.id}
-                    onArrastarInicio={() => setArrastando(t.id)}
-                    onArrastarFim={() => setArrastando(null)}
-                    onTrocarTime={(s) => patch(t.id, { setor: s })}
-                    onTrocarResponsavel={(r) => patch(t.id, { responsavelId: r })}
-                    onConcluir={() => patch(t.id, { status: "CONCLUIDA" })}
-                    onAbrir={() => setAberta(t)}
-                  />
-                ))}
+                {(() => {
+                  const cartao = (t: Tarefa) => (
+                    <CartaoTarefa
+                      key={t.id}
+                      tarefa={t}
+                      usuarios={usuarios}
+                      arrastando={arrastando === t.id}
+                      onArrastarInicio={() => setArrastando(t.id)}
+                      onArrastarFim={() => setArrastando(null)}
+                      onTrocarTime={(s) => patch(t.id, { setor: s })}
+                      onTrocarResponsavel={(r) => patch(t.id, { responsavelId: r })}
+                      onConcluir={() => patch(t.id, { status: "CONCLUIDA" })}
+                      onAbrir={() => setAberta(t)}
+                    />
+                  )
+                  const { soltas, pastas } = agruparPorPasta(lista)
+                  return (
+                    <>
+                      {soltas.map(cartao)}
+                      {pastas.map(([nome, itens]) => (
+                        <Pasta key={nome} nome={nome} quantas={itens.length}>
+                          {itens.map(cartao)}
+                        </Pasta>
+                      ))}
+                    </>
+                  )
+                })()}
 
                 {lista.length === 0 && arrastando && (
                   <p className="rounded-lg border border-dashed border-foreground/20 py-3 text-center text-[11px] text-muted-foreground">
@@ -738,6 +806,8 @@ export function QuadroTarefas() {
       <PainelTarefa
         tarefaId={aberta?.id ?? null}
         titulo={aberta?.titulo ?? ""}
+        descricao={aberta?.descricao ?? null}
+        pasta={aberta?.pasta ?? null}
         ehDuvida={aberta?.tipo === "DUVIDA"}
         aberto={aberta !== null}
         onFechar={() => setAberta(null)}

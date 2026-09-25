@@ -141,11 +141,16 @@ async function garantirPostgrest() {
 // ── Banco ───────────────────────────────────────────────────────────
 async function prepararBanco(db) {
   const marca = path.join(HOME, ".preparado")
-  if (fs.existsSync(marca)) return
-
-  passo("criando o schema (prisma db push)")
+  const primeiraVez = !fs.existsSync(marca)
   const prisma = path.join(ROOT, "node_modules", "prisma", "build", "index.js")
-  await node(prisma, ["db", "push", "--accept-data-loss", "--skip-generate"], {
+
+  // O schema é conferido a cada subida, não só na primeira: depois de um
+  // `git pull` com coluna nova, o banco da demonstração acompanha sem
+  // ninguém precisar apagar os dados. O `--accept-data-loss` vai sempre
+  // porque o Prisma chama de "perda" até criar um índice único; perda
+  // de verdade só haveria voltando para um código com menos colunas.
+  passo(primeiraVez ? "criando o schema (prisma db push)" : "conferindo o schema")
+  await node(prisma, ["db", "push", "--skip-generate", "--accept-data-loss"], {
     DATABASE_URL,
     DIRECT_URL: DATABASE_URL,
   })
@@ -169,6 +174,8 @@ async function prepararBanco(db) {
         : "now()"
     await db.exec(`alter table "${table_name}" alter column "${column_name}" set default ${expr}`)
   }
+
+  if (!primeiraVez) return
 
   passo("gerando o cliente do Prisma e inserindo os dados de demonstração")
   if (!fs.existsSync(path.join(ROOT, "node_modules", ".prisma", "client", "index.js"))) {

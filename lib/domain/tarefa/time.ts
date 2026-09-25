@@ -24,20 +24,23 @@ export const TIMES_TAREFA = [
 
 export type TimeTarefa = (typeof TIMES_TAREFA)[number]
 
+// Cada cor é gente: quem olha o quadro procura o nome de quem vai
+// fazer, e a cor sozinha obrigava a decorar a tabela. Trocar alguém de
+// time é mexer só aqui — o banco continua gravando a cor.
 export const TIME_LABEL: Record<TimeTarefa, string> = {
-  VERMELHO: "Time Vermelho",
-  PRETO: "Time Preto",
-  AZUL: "Time Azul",
-  AMARELO: "Time Amarelo",
+  VERMELHO: "Vermelho · Zeca",
+  PRETO: "Preto · Ryan",
+  AZUL: "Azul · Tay",
+  AMARELO: "Amarelo · Guilherme e Camille",
   VERDE: "Time Verde",
 }
 
 /** Rótulo curto, para caber dentro de um cartão. */
 export const TIME_LABEL_CURTO: Record<TimeTarefa, string> = {
-  VERMELHO: "Vermelho",
-  PRETO: "Preto",
-  AZUL: "Azul",
-  AMARELO: "Amarelo",
+  VERMELHO: "Zeca",
+  PRETO: "Ryan",
+  AZUL: "Tay",
+  AMARELO: "Guilherme/Camille",
   VERDE: "Verde",
 }
 

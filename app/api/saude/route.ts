@@ -49,6 +49,8 @@ const EXIGIDAS = [
   { tabela: "comunicacoes_djen", coluna: "djen_id", migration: "20260830210000_schema_alcanca_o_codigo" },
   { tabela: "tarefas", coluna: "tipo", migration: "20260830180000_duvidas_e_historico" },
   { tabela: "eventos_tarefa", coluna: "id", migration: "20260830180000_duvidas_e_historico" },
+  { tabela: "tarefas", coluna: "pasta", migration: "20260925120000_tarefas_pasta_e_origem" },
+  { tabela: "tarefas", coluna: "origem_id", migration: "20260925120000_tarefas_pasta_e_origem" },
 ] as const
 
 type Achado = { nome: string; ok: boolean; detalhe: string }

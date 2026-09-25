@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import {
   ArrowUpLeft,
   CircleHelp,
+  Folder,
   Loader2,
   MessageSquareQuote,
   Send,
@@ -436,6 +437,8 @@ function ConteudoPainel({
 export function PainelTarefa({
   tarefaId,
   titulo,
+  descricao,
+  pasta,
   ehDuvida,
   aberto,
   onFechar,
@@ -443,6 +446,9 @@ export function PainelTarefa({
 }: {
   tarefaId: string | null
   titulo: string
+  /** O que a tarefa diz — no TickTick era aqui que morava o caso inteiro. */
+  descricao?: string | null
+  pasta?: string | null
   ehDuvida: boolean
   aberto: boolean
   onFechar: () => void
@@ -462,7 +468,19 @@ export function PainelTarefa({
             ) : null}
             <span className="min-w-0">{titulo}</span>
           </DialogTitle>
+          {pasta ? (
+            <DialogDescription className="flex items-center gap-1">
+              <Folder size={13} className="shrink-0" />
+              {pasta}
+            </DialogDescription>
+          ) : null}
         </DialogHeader>
+
+        {descricao ? (
+          <div className="max-h-72 overflow-y-auto rounded-lg bg-muted/50 px-3 py-2.5 text-[12.5px] leading-relaxed break-words whitespace-pre-wrap">
+            {descricao}
+          </div>
+        ) : null}
 
         {aberto && tarefaId ? (
           <ConteudoPainel

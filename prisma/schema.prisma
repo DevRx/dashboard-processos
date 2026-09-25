@@ -277,6 +277,12 @@ model Tarefa {
   /// Quem executa. `userId` é quem cadastrou — os dois raramente são a
   /// mesma pessoa num escritório com equipe.
   responsavelId String?          @map("responsavel_id")
+  /// Agrupa as tarefas dentro do time — as listas que vieram do
+  /// TickTick ("JUDICIAL › ANDAMENTO"). Livre, sem tabela própria.
+  pasta         String?
+  /// Id da tarefa no sistema de onde ela foi importada. Único: é o que
+  /// deixa reimportar a mesma planilha sem duplicar.
+  origemId      String?          @unique @map("origem_id")
   tipo          TarefaTipo       @default(NORMAL)
   /// A tarefa que parou à espera desta pergunta. Só dúvida tem mãe —
   /// há um CHECK no banco garantindo isso.
@@ -301,6 +307,7 @@ model Tarefa {
 
   @@index([tarefaPaiId])
   @@index([tipo])
+  @@index([status])
   @@map("tarefas")
 }
 

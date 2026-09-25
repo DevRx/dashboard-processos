@@ -13,10 +13,11 @@ import http from "node:http"
 import fs from "node:fs/promises"
 import path from "node:path"
 import { createReadStream } from "node:fs"
+import os from "node:os"
 
 const PORT = Number(process.env.SUPABASE_LOCAL_PORT ?? 54321)
 const PGRST = process.env.PGRST_URL ?? "http://127.0.0.1:3002"
-const STORAGE_DIR = process.env.STORAGE_DIR ?? path.join(process.env.HOME, ".dashboard-processos-pg", "storage")
+const STORAGE_DIR = process.env.STORAGE_DIR ?? path.join(os.homedir(), ".dashboard-processos-pg", "storage")
 
 async function readBody(req) {
   const chunks = []

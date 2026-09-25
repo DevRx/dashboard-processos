@@ -40,11 +40,18 @@ export async function POST(request: NextRequest) {
       .eq("email", email)
       .maybeSingle()
 
+    // Consulta que falha antes de saber se a pessoa existe é o banco fora
+    // de alcance — Supabase pausado, endereço errado, ambiente local sem
+    // subir. "Erro interno do servidor" escondia isso de quem está na
+    // frente da tela; o endereço de diagnóstico, não.
     if (error) {
       console.error("Login error:", error.message)
       return NextResponse.json(
-        { error: "Erro interno do servidor" },
-        { status: 500 }
+        {
+          error:
+            "Não foi possível falar com o banco de dados. Veja /api/saude para saber o que falta.",
+        },
+        { status: 503 }
       )
     }
 

@@ -37,7 +37,30 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ---
 
-## Rodando localmente (demonstração)
+## Demonstração — um comando, qualquer máquina
+
+```bash
+npm install
+npm run demo            # no Windows: clique duas vezes em demo.bat
+```
+
+Abre em http://localhost:3000 com os usuários da tabela abaixo. Não
+precisa de Supabase, de `.env` nem de Postgres instalado: o banco é o
+PGlite (Postgres em WebAssembly, roda dentro do Node), a API é o
+PostgREST — baixado sozinho na primeira execução, por isso ela pede
+internet — e o gateway é o `scripts/supabase-local.mjs`. Na primeira
+vez o banco recebe o schema, os usuários e os 10 clientes de teste; nas
+seguintes os dados continuam onde ficaram. Tudo mora em
+`~/.dashboard-processos-demo` — apagar a pasta recomeça do zero.
+Ctrl+C encerra tudo.
+
+**"Erro interno do servidor" ao entrar** quase sempre é o app sem banco
+atrás: `npm run dev` sozinho, com o `.env` apontando para um gateway
+que não subiu, ou um projeto Supabase pausado por inatividade. Para
+demonstrar, use `npm run demo`. No deploy, `/api/saude` diz qual das
+peças falta.
+
+## Rodando localmente (Mac, Postgres embarcado)
 
 O app usa Supabase (PostgREST) em toda a camada de dados. Para demonstrar
 sem depender de um projeto Supabase na nuvem, o ambiente local sobe um

@@ -116,6 +116,11 @@ depende do gateway local.
 | `SUPABASE_SECRET_KEY` | Chave de serviço. Todo acesso a dado passa por ela. |
 | `SESSION_SECRET` | Assina o cookie de sessão. |
 
+Opcional: `ADMIN_EMAILS` (separados por vírgula) — quem entra com um
+desses e-mails vira ADMIN no login. Sem ela, vale
+`joaoguilherme9ccepmg@gmail.com` (ver `lib/admins.ts`); o sistema não
+tem tela para mudar o papel de alguém.
+
 Faltando qualquer uma, **a build quebra** — e é para quebrar ali. As
 duas do Supabase já quebravam; o `SESSION_SECRET` não, e era o pior dos
 dois mundos: sem ele o sistema subia e assinava sessão com uma chave de

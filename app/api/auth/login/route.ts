@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs"
 import { supabase } from "@/lib/supabase/server"
 import { LoginSchema } from "@/lib/validators"
 import { createSession } from "@/lib/session"
+import { ehAdminFixo } from "@/lib/admins"
 
 /**
  * Entrar.
@@ -71,6 +72,18 @@ export async function POST(request: NextRequest) {
         { error: "Credenciais inválidas" },
         { status: 401 }
       )
+    }
+
+    // Ver lib/admins.ts. Grava no banco, e não só na sessão: o papel
+    // que as rotas conferem é o do banco (lib/auth.ts).
+    if (user.role !== "ADMIN" && ehAdminFixo(user.email)) {
+      const { error: erroPapel } = await supabase
+        .from("users")
+        .update({ role: "ADMIN" })
+        .eq("id", user.id)
+
+      if (erroPapel) console.error("Promover a ADMIN:", erroPapel.message)
+      else user.role = "ADMIN"
     }
 
     await createSession({

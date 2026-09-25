@@ -1,7 +1,7 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { CalendarClock, Check, ChevronRight, CircleHelp, Folder, Loader2, Plus, UserRound } from "lucide-react"
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
+import { CalendarClock, Check, ChevronRight, CircleHelp, Folder, Loader2, Plus, Search, UserRound, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,6 +13,9 @@ import {
   TIME_LABEL,
   TIME_LABEL_CURTO,
   isTimeTarefa,
+  tarefaCombina,
+  termosDaBusca,
+  trechoDaBusca,
   type TimeTarefa,
 } from "@/lib/domain/tarefa"
 
@@ -191,6 +194,7 @@ function CartaoTarefa({
   onTrocarResponsavel,
   onConcluir,
   onAbrir,
+  trecho,
 }: {
   tarefa: Tarefa
   usuarios: Usuario[]
@@ -201,6 +205,8 @@ function CartaoTarefa({
   onTrocarResponsavel: (responsavelId: string | null) => void
   onConcluir: () => void
   onAbrir: () => void
+  /** Onde a busca bateu, quando não foi no título. */
+  trecho?: string | null
 }) {
   const prazo = formatarData(tarefa.data)
   const atrasada = tarefa.data.slice(0, 10) < hojeISO()
@@ -294,6 +300,11 @@ function CartaoTarefa({
             ) : null}
             <span className="min-w-0 flex-1">{tarefa.titulo}</span>
           </button>
+          {trecho ? (
+            <p className="mt-1 rounded-md bg-amber-50 px-1.5 py-1 text-[11px] leading-snug text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+              <span className="line-clamp-2">{trecho}</span>
+            </p>
+          ) : null}
         </div>
 
       </div>
@@ -416,14 +427,17 @@ function agruparPorPasta(lista: Tarefa[]) {
 function Pasta({
   nome,
   quantas,
+  aberta,
   children,
 }: {
   nome: string
   quantas: number
+  /** Durante a busca, pasta com resultado se abre sozinha. */
+  aberta: boolean
   children: React.ReactNode
 }) {
   return (
-    <details className="group rounded-xl bg-card/55 shadow-card open:bg-card/30">
+    <details open={aberta} className="group rounded-xl bg-card/55 shadow-card open:bg-card/30">
       <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-xl px-2.5 py-2 text-[12px] font-semibold outline-none select-none hover:bg-card focus-visible:ring-2 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
         <ChevronRight
           size={13}
@@ -551,6 +565,51 @@ export function QuadroTarefas() {
   const [colunaAlvo, setColunaAlvo] = useState<string | null>(null)
   const [aberta, setAberta] = useState<Tarefa | null>(null)
 
+  // Busca: a de cima vale para o quadro inteiro; a lupa de cada time,
+  // só para a coluna dele. As duas somam.
+  const [busca, setBusca] = useState("")
+  const [buscaDoTime, setBuscaDoTime] = useState<Partial<Record<TimeTarefa, string>>>({})
+  const [comConcluidas, setComConcluidas] = useState(false)
+  const [concluidas, setConcluidas] = useState<Tarefa[] | null>(null)
+  const campoBusca = useRef<HTMLInputElement>(null)
+  const buscaAdiada = useDeferredValue(busca)
+  const termos = termosDaBusca(buscaAdiada)
+  const buscaDoTimeAdiada = useDeferredValue(buscaDoTime)
+
+  // "/" leva à busca de qualquer lugar do quadro, como no Gmail.
+  useEffect(() => {
+    const aoTeclar = (e: KeyboardEvent) => {
+      const alvo = e.target as HTMLElement
+      if (e.key !== "/" || alvo.closest("input, textarea, select, [contenteditable]")) return
+      e.preventDefault()
+      campoBusca.current?.focus()
+    }
+    document.addEventListener("keydown", aoTeclar)
+    return () => document.removeEventListener("keydown", aoTeclar)
+  }, [])
+
+  /**
+   * As concluídas não vêm com o quadro — são milhares. Só descem quando
+   * alguém pede para buscar nelas, e uma vez só.
+   */
+  const ligarConcluidas = useCallback(
+    (ligar: boolean) => {
+      setComConcluidas(ligar)
+      if (!ligar || concluidas) return
+      fetch("/api/tarefas")
+        .then((r) => (r.ok ? r.json() : { tarefas: [] }))
+        .then((d) =>
+          setConcluidas(
+            ((d.tarefas ?? []) as Tarefa[]).filter(
+              (t) => t.status === "CONCLUIDA" || t.status === "CANCELADA"
+            )
+          )
+        )
+        .catch((err) => console.error("Erro ao carregar concluídas:", err))
+    },
+    [concluidas]
+  )
+
   useEffect(() => {
     const lista = fetch("/api/tarefas?abertas=1")
       .then((r) => (r.ok ? r.json() : { tarefas: [] }))
@@ -643,15 +702,29 @@ export function QuadroTarefas() {
     [tarefas]
   )
 
+  const encontradas = useMemo(
+    () => emAberto.filter((t) => tarefaCombina(t, termosDaBusca(buscaAdiada))),
+    [emAberto, buscaAdiada]
+  )
+
+  const concluidasEncontradas = useMemo(
+    () =>
+      comConcluidas && concluidas && termosDaBusca(buscaAdiada).length > 0
+        ? concluidas.filter((t) => tarefaCombina(t, termosDaBusca(buscaAdiada)))
+        : [],
+    [comConcluidas, concluidas, buscaAdiada]
+  )
+
   const porTime = useMemo(() => {
     const mapa = Object.fromEntries(
       TIMES_TAREFA.map((s) => [s, [] as Tarefa[]])
     ) as Record<TimeTarefa, Tarefa[]>
     const semTime: Tarefa[] = []
 
-    for (const t of emAberto) {
-      if (isTimeTarefa(t.setor)) mapa[t.setor].push(t)
-      else semTime.push(t)
+    for (const t of encontradas) {
+      if (isTimeTarefa(t.setor)) {
+        if (tarefaCombina(t, termosDaBusca(buscaDoTimeAdiada[t.setor] ?? ""))) mapa[t.setor].push(t)
+      } else semTime.push(t)
     }
 
     for (const s of TIMES_TAREFA) {
@@ -659,7 +732,7 @@ export function QuadroTarefas() {
     }
 
     return { mapa, semTime }
-  }, [emAberto])
+  }, [encontradas, buscaDoTimeAdiada])
 
   if (carregando) {
     return (
@@ -671,8 +744,65 @@ export function QuadroTarefas() {
     )
   }
 
+  const buscando = termos.length > 0
+
   return (
     <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="relative w-full max-w-lg">
+          <Search
+            size={16}
+            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            ref={campoBusca}
+            type="search"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setBusca("")
+            }}
+            placeholder="Buscar em todas as pastas: nome, CPF, NB, processo…  ( / )"
+            aria-label="Buscar tarefas"
+            className="h-10 bg-card pr-9 pl-9 text-[13.5px] shadow-card [&::-webkit-search-cancel-button]:hidden"
+          />
+          {busca ? (
+            <button
+              type="button"
+              onClick={() => {
+                setBusca("")
+                campoBusca.current?.focus()
+              }}
+              aria-label="Limpar busca"
+              className="absolute top-1/2 right-2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <X size={14} />
+            </button>
+          ) : null}
+        </div>
+
+        <label className="flex cursor-pointer items-center gap-2 text-[12.5px] text-muted-foreground select-none">
+          <input
+            type="checkbox"
+            checked={comConcluidas}
+            onChange={(e) => ligarConcluidas(e.target.checked)}
+            className="size-4 accent-primary"
+          />
+          Buscar também nas concluídas
+        </label>
+
+        {buscando ? (
+          <p className="text-[12.5px] text-muted-foreground" aria-live="polite">
+            <strong className="text-foreground">{encontradas.length}</strong> em aberto
+            {comConcluidas
+              ? concluidas
+                ? ` · ${concluidasEncontradas.length} concluídas`
+                : " · carregando concluídas…"
+              : ""}
+          </p>
+        ) : null}
+      </div>
+
       <div className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {TIMES_TAREFA.map((time) => {
           const cor = CORES[time]
@@ -714,13 +844,65 @@ export function QuadroTarefas() {
                 >
                   {TIME_LABEL[time]}
                 </h3>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setBuscaDoTime((b) => {
+                      const proximo = { ...b }
+                      if (proximo[time] === undefined) proximo[time] = ""
+                      else delete proximo[time]
+                      return proximo
+                    })
+                  }
+                  title={`Buscar só em ${TIME_LABEL[time]}`}
+                  aria-label={`Buscar só em ${TIME_LABEL[time]}`}
+                  aria-pressed={buscaDoTime[time] !== undefined}
+                  className={cn(
+                    "flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-card hover:text-foreground",
+                    buscaDoTime[time] !== undefined && "bg-card text-foreground shadow-card"
+                  )}
+                >
+                  <Search size={13} />
+                </button>
                 <span className="rounded-full bg-card px-2.5 py-0.5 text-[11px] font-bold tabular-nums shadow-card">
                   {lista.length}
                 </span>
               </header>
 
+              {buscaDoTime[time] !== undefined ? (
+                <div className="relative px-2.5 pb-2">
+                  <Search
+                    size={13}
+                    className="pointer-events-none absolute top-1/2 left-5 -translate-y-[calc(50%+4px)] text-muted-foreground"
+                  />
+                  <Input
+                    autoFocus
+                    value={buscaDoTime[time]}
+                    onChange={(e) =>
+                      setBuscaDoTime((b) => ({ ...b, [time]: e.target.value }))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape")
+                        setBuscaDoTime((b) => {
+                          const proximo = { ...b }
+                          delete proximo[time]
+                          return proximo
+                        })
+                    }}
+                    placeholder={`Buscar em ${TIME_LABEL_CURTO[time]}…`}
+                    aria-label={`Buscar em ${TIME_LABEL[time]}`}
+                    className="h-8 bg-card pl-7 text-[12.5px]"
+                  />
+                </div>
+              ) : null}
+
               <div className="flex min-h-[72px] flex-col gap-2 px-2.5 pb-2.5">
                 {(() => {
+                  const termosDaColuna = [
+                    ...termos,
+                    ...termosDaBusca(buscaDoTimeAdiada[time] ?? ""),
+                  ]
+                  const filtrando = termosDaColuna.length > 0
                   const cartao = (t: Tarefa) => (
                     <CartaoTarefa
                       key={t.id}
@@ -733,14 +915,22 @@ export function QuadroTarefas() {
                       onTrocarResponsavel={(r) => patch(t.id, { responsavelId: r })}
                       onConcluir={() => patch(t.id, { status: "CONCLUIDA" })}
                       onAbrir={() => setAberta(t)}
+                      trecho={filtrando ? trechoDaBusca(t, termosDaColuna) : null}
                     />
                   )
                   const { soltas, pastas } = agruparPorPasta(lista)
+                  if (filtrando && lista.length === 0) {
+                    return (
+                      <p className="py-3 text-center text-[11.5px] text-muted-foreground">
+                        Nada encontrado aqui.
+                      </p>
+                    )
+                  }
                   return (
                     <>
                       {soltas.map(cartao)}
                       {pastas.map(([nome, itens]) => (
-                        <Pasta key={nome} nome={nome} quantas={itens.length}>
+                        <Pasta key={nome} nome={nome} quantas={itens.length} aberta={filtrando}>
                           {itens.map(cartao)}
                         </Pasta>
                       ))}
@@ -796,12 +986,56 @@ export function QuadroTarefas() {
                 onTrocarTime={(s) => patch(t.id, { setor: s })}
                 onTrocarResponsavel={(r) => patch(t.id, { responsavelId: r })}
                 onConcluir={() => patch(t.id, { status: "CONCLUIDA" })}
-                    onAbrir={() => setAberta(t)}
+                onAbrir={() => setAberta(t)}
+                trecho={buscando ? trechoDaBusca(t, termos) : null}
               />
             ))}
           </div>
         </section>
       )}
+
+      {buscando && comConcluidas && concluidasEncontradas.length > 0 ? (
+        <section className="rounded-2xl bg-muted/40 p-3 shadow-card">
+          <h3 className="mb-2 text-[11px] font-bold tracking-wide text-muted-foreground uppercase">
+            Concluídas que batem com a busca — {concluidasEncontradas.length}
+          </h3>
+          <ul className="grid gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
+            {concluidasEncontradas.slice(0, 60).map((t) => {
+              const trecho = trechoDaBusca(t, termos)
+              return (
+                <li key={t.id}>
+                  <button
+                    type="button"
+                    onClick={() => setAberta(t)}
+                    className="flex w-full flex-col gap-0.5 rounded-xl bg-card px-3 py-2 text-left shadow-card transition-shadow hover:shadow-float focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
+                  >
+                    <span className="flex items-center gap-1.5 text-[12.5px] font-medium">
+                      <Check size={12} className="shrink-0 text-emerald-600" />
+                      <span className="min-w-0 flex-1 truncate">{t.titulo}</span>
+                    </span>
+                    <span className="truncate text-[11px] text-muted-foreground">
+                      {formatarData(t.data)}
+                      {isTimeTarefa(t.setor) ? ` · ${TIME_LABEL_CURTO[t.setor]}` : ""}
+                      {t.pasta ? ` · ${t.pasta}` : ""}
+                    </span>
+                    {trecho ? (
+                      <span className="line-clamp-1 text-[11px] text-amber-800 dark:text-amber-300">
+                        {trecho}
+                      </span>
+                    ) : null}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+          {concluidasEncontradas.length > 60 ? (
+            <p className="mt-2 text-[11.5px] text-muted-foreground">
+              Mostrando 60 de {concluidasEncontradas.length}. Acrescente uma palavra à
+              busca para chegar mais perto.
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       <PainelTarefa
         tarefaId={aberta?.id ?? null}

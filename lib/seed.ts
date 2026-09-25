@@ -32,7 +32,7 @@ async function main() {
   const [adminUser] = await supabaseFetch("User", {
     id: uuid(),
     name: "Administrador",
-    email: "admin@advocacia.com",
+    email: "joaoguilherme9ccepmg@gmail.com",
     password: adminPassword,
     role: "ADMIN",
     createdAt: now,

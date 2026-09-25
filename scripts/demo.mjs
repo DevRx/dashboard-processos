@@ -34,6 +34,8 @@ const PGRST_PORT = Number(process.env.DEMO_PGRST_PORT ?? 3002)
 const GATEWAY_PORT = Number(process.env.SUPABASE_LOCAL_PORT ?? 54321)
 const APP_PORT = Number(process.env.PORT ?? 3000)
 
+const EMAIL_ADMIN = "joaoguilherme9ccepmg@gmail.com"
+
 const DATABASE_URL = `postgresql://postgres:postgres@127.0.0.1:${PG_PORT}/postgres?sslmode=disable&connection_limit=1`
 
 // Segredo fixo de propósito: é demonstração, e um segredo estável mantém
@@ -263,6 +265,14 @@ async function main() {
   await servidor.start()
   await prepararBanco(db)
   await papelAnonimo(db)
+  // O admin da demonstração trocou de e-mail. Banco criado antes disso
+  // acompanha, sem perder o que já foi feito com a conta.
+  await db.query(
+    `update users set email = $1
+      where email = 'admin@advocacia.com'
+        and not exists (select 1 from users where email = $1)`,
+    [EMAIL_ADMIN]
+  )
 
   passo("2/4 PostgREST")
   iniciar("postgrest", postgrest, [], {
@@ -301,7 +311,7 @@ async function main() {
   console.log(`
   ✓ Demonstração em http://localhost:${APP_PORT}
 
-    Admin       admin@advocacia.com       admin123
+    Admin       ${EMAIL_ADMIN}  admin123
     Advogado    advogado@advocacia.com    advogado123
     Assistente  assistente@advocacia.com  assistente123
 

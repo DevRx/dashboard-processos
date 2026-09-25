@@ -84,7 +84,7 @@ npm run dev:local       # Postgres → PostgREST → gateway → Next.js em :300
 
 | Perfil     | E-mail                     | Senha           |
 | ---------- | -------------------------- | --------------- |
-| Admin      | admin@advocacia.com        | admin123        |
+| Admin      | joaoguilherme9ccepmg@gmail.com | admin123 |
 | Advogado   | advogado@advocacia.com     | advogado123     |
 | Assistente | assistente@advocacia.com   | assistente123   |
 

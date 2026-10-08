@@ -1,46 +1,46 @@
 import "server-only"
 
 /**
- * Base de conhecimento do agente do escritório.
+ * Base de conhecimento do agente — ofício previdenciário.
  *
- * É o que o assistente sabe sobre COMO o escritório trabalha — não os
- * dados dos clientes (esses moram no banco). Comece pelo essencial e
- * vá acrescentando: é só editar este texto. Nada aqui é sensível nem
- * pessoal; são as regras de ofício do escritório.
+ * Este sistema vai ser multi-tenant (vários escritórios, vários
+ * usuários). Então aqui entra só o que é CRAFT da advocacia
+ * previdenciária e serve a qualquer escritório: como se produz uma
+ * peça e o que se confere numa análise.
  *
- * Regra ao editar: só prática profissional e padrão de trabalho.
- * Nunca ponha aqui senha, CPF, nome de cliente, telefone ou qualquer
- * dado de pessoa.
+ * NÃO entra, nunca:
+ *  - dado de pessoa (cliente, equipe): nome, CPF, senha, telefone;
+ *  - nada pessoal do dono do escritório (lazer, brindes, hobbies);
+ *  - os conectores e a infraestrutura (TickTick, WhatsApp, Drive, etc.);
+ *  - o processo operacional "por trás" — como as tarefas fluem, quem
+ *    faz o quê, as automações, o passo a passo interno do escritório.
+ *
+ * E com cautela: padrões e craft, sim; o passo a passo proprietário
+ * completo, não. Identificadores de um escritório específico (número
+ * de OAB, nome, cidade) ficam de fora — cada tenant tem o seu.
  */
 export const BASE_CONHECIMENTO = `
-# Estratégia das análises
-- Padrão: judicializar. Administrativo negado → ação judicial, não recurso administrativo.
-- Recurso administrativo só em caso simples, sem perícia médica.
-- Antes de concluir uma análise: ler TODOS os documentos da pasta do cliente, inclusive laudos antigos e as fichas/relatos. Não presumir o benefício pelo indeferimento anterior.
-- Em todo pedido negado, conferir se, na data daquele pedido, havia carência e qualidade de segurado (período de graça).
+# Análise do caso
+- Ler TODOS os documentos do cliente antes de concluir — inclusive laudos antigos e o relato do próprio segurado, não só o indeferimento. Não presumir o benefício pelo pedido negado anterior.
+- Havendo laudo, analisá-lo: em regra envolve questão de saúde e muda o eixo do caso.
+- Em cada pedido negado, conferir se, NA DATA daquele pedido, havia carência e qualidade de segurado (período de graça).
+- Pesar via administrativa x judicial conforme o caso concreto: caso que depende de perícia médica, em regra, tende à via judicial; pedido simples e documental pode resolver no administrativo.
 
-# Petição (padrão visual law — obrigatório)
+# Produção de peça — padrão "visual law"
+- Didática e visualmente organizada: nada de blocão de texto; usar listas, itens numerados e marcadores.
 - Títulos em negrito; trechos-chave em negrito com grifo amarelo.
-- Didática e organizada: nada de blocão de texto; usar listas, itens numerados e marcadores.
 - Sem linhas divisórias abaixo de títulos ou entre seções.
 - Corpo justificado (esquerda e direita), salvo quando fica ruim visualmente.
-- Citação transcrita com recuo em relação à margem.
-- Fecho de toda peça: nome do advogado, OAB/DF 60.782 e a data de criação.
-- Cabeçalho padrão: "[NOME DA PARTE], já qualificado(a) nos autos do processo em epígrafe, por meio de seu advogado que esta subscreve, vem, respeitosamente, à presença de Vossa Excelência, apresentar:" seguido do título centralizado, em caixa alta e negrito, e de "pelos fatos e fundamentos a seguir expostos."
+- Citação de lei, súmula ou jurisprudência transcrita com recuo em relação à margem.
+- Cabeçalho padrão: "[NOME DA PARTE], já qualificado(a) nos autos do processo em epígrafe, por meio de seu advogado que esta subscreve, vem, respeitosamente, à presença de Vossa Excelência, apresentar:" seguido do título da peça centralizado, em caixa alta e negrito, e de "pelos fatos e fundamentos a seguir expostos."
+- Fecho de toda peça: nome do advogado, número da OAB e data de criação.
 
-# Impugnação a laudo pericial desfavorável
-- Pedido PRINCIPAL: nova perícia (art. 480, CPC), sempre com a autorização/compromisso da parte de depositar os honorários da nova perícia.
-- Pedido SUBSIDIÁRIO: devolução ao mesmo perito para esclarecimentos (art. 477, §2º). Nunca o contrário.
+# Tese recorrente — impugnação a laudo pericial desfavorável
+- Pedido PRINCIPAL: nova perícia (art. 480, CPC), sempre acompanhado da autorização/compromisso da parte de depositar os honorários da nova perícia.
+- Pedido SUBSIDIÁRIO: devolução ao mesmo perito para esclarecimentos (art. 477, §2º, CPC). Nunca inverter a ordem.
 
-# Carta de concessão (quando o benefício sai)
-- Documento em visual law próprio do escritório, com memória de cálculo.
-- A data que vale é a previsão de pagamento do extrato (quando o dinheiro cai / vencimento do boleto), não a data de emissão.
-- Honorários contratuais de 30% sobre o retroativo; o cliente recebe 70%.
-
-# Acompanhamento no INSS
-- Pela Central do INSS do sistema. O acesso que o escritório prefere é a procuração eletrônica (um login do advogado representa os clientes).
-- O assistente não faz login por ninguém e não protocola sozinho: prepara e deixa para a aprovação do advogado.
-
-# Tom com o cliente
-- Quando a notícia é boa, avisar com carinho. Quando é ruim ou sensível, passa pela revisão do advogado antes.
+# Carta de concessão / memória de cálculo
+- Documento em visual law explicando ao cliente o que foi concedido e o que ele vai receber.
+- A data que vale é a previsão de pagamento do extrato (quando o crédito cai), não a data de emissão do documento.
+- Honorários conforme o contrato daquele escritório; o cálculo separa a parte do cliente da parte dos honorários sobre o retroativo.
 `.trim()

@@ -4,7 +4,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import {
+  Baby,
   LayoutDashboard,
+  ShieldCheck,
   Users,
   FileText,
   CalendarDays,
@@ -45,6 +47,7 @@ const menuGroups: MenuGroup[] = [
     items: [
       { name: "Dashboard", icon: LayoutDashboard, href: "/" },
       { name: "Assistente", icon: Sparkles, href: "/assistente" },
+      { name: "Aprovações", icon: ShieldCheck, href: "/aprovacoes" },
       { name: "Clientes", icon: Users, href: "/clientes" },
       { name: "Tarefas", icon: ListChecks, href: "/tarefas" },
       {
@@ -54,6 +57,7 @@ const menuGroups: MenuGroup[] = [
         filhos: [
           { name: "Administrativo", icon: Landmark, href: "/inss" },
           { name: "Varredura INSS", icon: Radar, href: "/inss/varredura" },
+          { name: "Salário-maternidade", icon: Baby, href: "/inss/maternidade" },
           { name: "Judicial", icon: Gavel, href: "/judicial" },
         ],
       },

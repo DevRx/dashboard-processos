@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Pagina } from "@/components/layout/pagina"
 import { MetricCard } from "@/components/dashboard/metric-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -137,6 +137,23 @@ export default function VarreduraPage() {
   const [filtro, setFiltro] = useState<"TODOS" | Acesso>("TODOS")
   const [rodando, setRodando] = useState(false)
   const [fila, setFila] = useState(FILA)
+  // Começa com os exemplos; se o backend tiver dado real, troca por ele.
+  const [exemplo, setExemplo] = useState(true)
+
+  useEffect(() => {
+    let vivo = true
+    fetch("/api/varredura")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!vivo || !data || data.exemplo || !data.itens?.length) return
+        setFila(data.itens as ItemVarredura[])
+        setExemplo(false)
+      })
+      .catch(() => {})
+    return () => {
+      vivo = false
+    }
+  }, [])
 
   const lista = useMemo(
     () => (filtro === "TODOS" ? fila : fila.filter((i) => i.acesso === filtro)),
@@ -262,7 +279,10 @@ export default function VarreduraPage() {
       {/* Fila de clientes */}
       <Card>
         <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
-          <CardTitle className="text-[14px]">Clientes na varredura</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-[14px]">
+            Clientes na varredura
+            {exemplo && <Badge variant="outline">dados de exemplo</Badge>}
+          </CardTitle>
           <Segmentado
             aria-label="Filtrar por forma de acesso"
             valor={filtro}

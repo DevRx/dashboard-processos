@@ -14,6 +14,7 @@ import {
   ListChecks,
   MapPin,
   Radar,
+  Sparkles,
   Wallet,
   Settings,
   Scale,
@@ -42,6 +43,7 @@ const menuGroups: MenuGroup[] = [
     label: "Operação",
     items: [
       { name: "Dashboard", icon: LayoutDashboard, href: "/" },
+      { name: "Assistente", icon: Sparkles, href: "/assistente" },
       { name: "Clientes", icon: Users, href: "/clientes" },
       { name: "Tarefas", icon: ListChecks, href: "/tarefas" },
       {

@@ -51,15 +51,24 @@ export async function responderPergunta(params: {
   pergunta: string
   nomeUsuario: string
   historico?: Mensagem[]
+  /**
+   * Chave e modelo do escritório. Multi-tenant: cada escritório traz a
+   * sua IA — é aqui que entram o "compre sua IA" e o nível de modelo
+   * por plano (um modelo mais fraco num plano mais barato). Sem isto,
+   * usa o ambiente (escritório-sede). O resto do código não muda.
+   */
+  ia?: { apiKey?: string; modelo?: string }
 }): Promise<RespostaAgente> {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  const apiKey = params.ia?.apiKey ?? process.env.ANTHROPIC_API_KEY
+  if (!apiKey) {
     return { ok: false, motivo: "sem_chave" }
   }
   if (!params.pergunta?.trim()) {
     return { ok: false, motivo: "falhou" }
   }
 
-  const client = new Anthropic()
+  const modelo = params.ia?.modelo?.trim() || MODELO
+  const client = new Anthropic({ apiKey })
 
   const historico = (params.historico ?? []).slice(-LIMITE_HISTORICO).map(
     (m) => ({
@@ -70,7 +79,7 @@ export async function responderPergunta(params: {
 
   try {
     const resposta = await client.beta.messages.create({
-      model: MODELO,
+      model: modelo,
       max_tokens: 1536,
       // O previdenciário fala de doença, morte e prisão o tempo todo; o
       // fallback evita que um falso positivo recuse uma conversa legítima.

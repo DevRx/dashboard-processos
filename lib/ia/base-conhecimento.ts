@@ -20,11 +20,12 @@ import "server-only"
  * de OAB, nome, cidade) ficam de fora — cada tenant tem o seu.
  */
 export const BASE_CONHECIMENTO = `
-# Análise do caso
-- Ler TODOS os documentos do cliente antes de concluir — inclusive laudos antigos e o relato do próprio segurado, não só o indeferimento. Não presumir o benefício pelo pedido negado anterior.
-- Havendo laudo, analisá-lo: em regra envolve questão de saúde e muda o eixo do caso.
-- Em cada pedido negado, conferir se, NA DATA daquele pedido, havia carência e qualidade de segurado (período de graça).
-- Pesar via administrativa x judicial conforme o caso concreto: caso que depende de perícia médica, em regra, tende à via judicial; pedido simples e documental pode resolver no administrativo.
+# Análise do caso (a entrega, não o passo a passo interno)
+A análise sai no mesmo capricho de uma peça — organizada, direta, fácil de ler — e cobre:
+- o benefício pretendido e um retrato da situação do segurado;
+- se os requisitos estão atendidos, com atenção a qualidade de segurado e carência no período relevante;
+- o caminho recomendado (administrativo ou judicial) e a razão — caso que depende de perícia médica, em regra, tende ao judicial;
+- o que ainda falta para instruir o pedido.
 
 # Produção de peça — padrão "visual law"
 - Didática e visualmente organizada: nada de blocão de texto; usar listas, itens numerados e marcadores.

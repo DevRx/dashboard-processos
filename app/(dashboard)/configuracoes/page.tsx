@@ -1,6 +1,7 @@
 import Link from "next/link"
 import {
   Bell,
+  Building2,
   CalendarDays,
   ChevronRight,
   FileText,
@@ -67,6 +68,27 @@ export default async function ConfiguracoesPage() {
           </section>
 
           <Equipe />
+
+          {session?.role === "ADMIN" && (
+            <Link
+              href="/configuracoes/escritorios"
+              className="group flex items-center gap-3 rounded-xl bg-card p-4 shadow-card transition-colors hover:bg-muted/40"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-soft text-brand">
+                <Building2 size={17} strokeWidth={1.9} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[13.5px] font-semibold">Escritórios</span>
+                <span className="block text-[12px] leading-snug text-muted-foreground">
+                  Provisionar escritórios: plano, chave de IA e usuários (multi-tenant).
+                </span>
+              </span>
+              <ChevronRight
+                size={16}
+                className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+              />
+            </Link>
+          )}
         </div>
 
         <section className="overflow-hidden rounded-xl bg-card shadow-card">

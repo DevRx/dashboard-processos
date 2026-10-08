@@ -13,6 +13,7 @@ import {
   Landmark,
   ListChecks,
   MapPin,
+  Radar,
   Wallet,
   Settings,
   Scale,
@@ -49,6 +50,7 @@ const menuGroups: MenuGroup[] = [
         href: "/processos",
         filhos: [
           { name: "Administrativo", icon: Landmark, href: "/inss" },
+          { name: "Varredura INSS", icon: Radar, href: "/inss/varredura" },
           { name: "Judicial", icon: Gavel, href: "/judicial" },
         ],
       },

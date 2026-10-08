@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { getCurrentUser } from "@/lib/auth"
 import { responderPergunta } from "@/lib/ia/agente-escritorio"
+import { iaDoEscritorio } from "@/lib/ia/config-escritorio"
 
 /**
  * Conversa com o agente do escritório.
@@ -36,10 +37,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Dados inválidos" }, { status: 400 })
     }
 
+    // A IA do escritório do usuário (BYO key). Vazio → cai no ambiente.
+    const ia = await iaDoEscritorio()
+
     const resultado = await responderPergunta({
       pergunta: parsed.data.pergunta,
       nomeUsuario: user.name,
       historico: parsed.data.historico,
+      ia,
     })
 
     if (!resultado.ok) {

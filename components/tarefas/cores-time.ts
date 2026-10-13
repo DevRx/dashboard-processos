@@ -1,4 +1,4 @@
-import { isTimeAntigo, isTimeTarefa, type CorGravada } from "@/lib/domain/tarefa"
+import { isTimeAntigo, isTimeTarefa, type CorGravada, type TimeTarefa } from "@/lib/domain/tarefa"
 
 /**
  * A paleta dos times, num lugar só.
@@ -74,4 +74,47 @@ export const CORES_TIME: Record<CorGravada, PaletaTime> = {
 export function paletaDe(setor?: string | null): PaletaTime | null {
   if (isTimeTarefa(setor) || isTimeAntigo(setor)) return CORES_TIME[setor]
   return null
+}
+
+/**
+ * As cores dos times no menu lateral, que é escuro o tempo todo: um tom
+ * acima do quadro (500 em vez de 600) para a cor acender sobre o
+ * azul-noite sem perder o nome do time.
+ */
+export type PaletaMenu = {
+  /** Quadradinho do time, ao lado do nome. */
+  amostra: string
+  /** Fundo da linha do time quando se está dentro dele. */
+  tinta: string
+  /** Traço à esquerda das etapas, que liga as etapas ao time. */
+  trilho: string
+  /** Barra da borda e bolinha da etapa aberta. */
+  barra: string
+}
+
+export const MENU_TIME: Record<TimeTarefa, PaletaMenu> = {
+  VERMELHO: {
+    amostra: "bg-red-500 shadow-[0_0_14px_-2px_rgba(239,68,68,0.75)]",
+    tinta: "bg-red-500/[0.14]",
+    trilho: "border-red-500/45",
+    barra: "bg-red-500",
+  },
+  AZUL: {
+    amostra: "bg-blue-500 shadow-[0_0_14px_-2px_rgba(59,130,246,0.8)]",
+    tinta: "bg-blue-500/[0.16]",
+    trilho: "border-blue-500/50",
+    barra: "bg-blue-500",
+  },
+  AMARELO: {
+    amostra: "bg-amber-400 shadow-[0_0_14px_-2px_rgba(251,191,36,0.7)]",
+    tinta: "bg-amber-400/[0.13]",
+    trilho: "border-amber-400/45",
+    barra: "bg-amber-400",
+  },
+  ROSA: {
+    amostra: "bg-pink-500 shadow-[0_0_14px_-2px_rgba(236,72,153,0.75)]",
+    tinta: "bg-pink-500/[0.15]",
+    trilho: "border-pink-500/45",
+    barra: "bg-pink-500",
+  },
 }

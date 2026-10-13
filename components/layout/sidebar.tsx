@@ -6,17 +6,15 @@ import { useEffect, useState } from "react"
 import {
   Baby,
   LayoutDashboard,
+  LayoutGrid,
   ShieldCheck,
   Users,
-  UsersRound,
   FileText,
   CalendarDays,
   ChevronRight,
-  ClipboardList,
   Ellipsis,
   Gavel,
   Landmark,
-  ListChecks,
   MapPin,
   Radar,
   RefreshCw,
@@ -25,71 +23,98 @@ import {
   Scale,
   Menu,
   X,
+  UsersRound,
   type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { LogoutButton } from "@/components/auth/logout-button"
+import { MENU_TIME } from "@/components/tarefas/cores-time"
+import {
+  ESFERAS_AMARELO,
+  ESFERA_AMARELO_LABEL,
+  ETAPAS,
+  ETAPAS_DO_TIME,
+  SLUG_ESFERA,
+  TIMES_TAREFA,
+  TIME_LABEL,
+  enderecoDaEtapa,
+  enderecoDoTime,
+  etapasDaEsfera,
+  type TimeTarefa,
+} from "@/lib/domain/tarefa"
+
+/**
+ * O menu lateral.
+ *
+ * Logo abaixo do Dashboard vêm os quatro times — vermelho, azul,
+ * amarelo e rosa, nesta ordem —, cada um com as etapas do fluxo
+ * desenhado pelo Zeca (lib/domain/tarefa/fluxo.ts). A cor do time
+ * acompanha o menu dele inteiro: o quadradinho ao lado do nome, o fundo
+ * da linha quando se está dentro do time e o traço que liga as etapas
+ * ao time, para que dê para achar o time pela cor antes de ler.
+ *
+ * Itens com 44px de altura e letra de 15px: o menu é usado o dia todo,
+ * no monitor do escritório e no celular.
+ */
 
 type MenuItem = {
   name: string
-  icon: LucideIcon
   href: string
-  /** Recortes do item — as esferas de um processo, as visões das tarefas. */
+  icon?: LucideIcon
+  /** Recortes do item — as etapas de um time, as esferas de um processo. */
   filhos?: MenuItem[]
-  /**
-   * O item não leva a lugar nenhum sozinho: apertar abre as escolhas
-   * de baixo, e quem decide para onde ir é a pessoa. É o caso das
-   * Tarefas — times ou pré-processual.
-   */
+  /** O item só abre as escolhas de baixo; não leva a lugar nenhum. */
   soAbre?: boolean
   /** Ativo só no endereço exato, não nas subpáginas dele. */
   exato?: boolean
-  /** Bolinha de cor no lugar do ícone — a cor da esfera ou do time. */
-  cor?: string
+  /** Item de time: a cor manda no desenho da linha. */
+  time?: TimeTarefa
 }
 
 type MenuGroup = {
-  label: string
+  label?: string
   items: MenuItem[]
+}
+
+/** Um time e as etapas dele; o amarelo tem um nível a mais (ADM e Judicial). */
+function itemDoTime(time: TimeTarefa): MenuItem {
+  const etapa = (id: (typeof ETAPAS_DO_TIME)[TimeTarefa][number]): MenuItem => ({
+    name: ETAPAS[id].nome,
+    href: enderecoDaEtapa(id),
+    exato: true,
+  })
+
+  const filhos: MenuItem[] =
+    time === "AMARELO"
+      ? ESFERAS_AMARELO.map((esfera) => ({
+          name: ESFERA_AMARELO_LABEL[esfera],
+          href: `/times/amarelo/${SLUG_ESFERA[esfera]}`,
+          icon: esfera === "JUDICIAL" ? Gavel : Landmark,
+          filhos: etapasDaEsfera(esfera).map(etapa),
+        }))
+      : ETAPAS_DO_TIME[time].map(etapa)
+
+  return {
+    name: TIME_LABEL[time],
+    href: enderecoDoTime(time),
+    time,
+    exato: true,
+    filhos: filhos.length ? filhos : undefined,
+  }
 }
 
 const menuGroups: MenuGroup[] = [
   {
-    label: "Operação",
+    items: [{ name: "Dashboard", icon: LayoutDashboard, href: "/" }],
+  },
+  {
+    label: "Times",
+    items: TIMES_TAREFA.map(itemDoTime),
+  },
+  {
+    label: "Escritório",
     items: [
-      { name: "Dashboard", icon: LayoutDashboard, href: "/" },
-      { name: "Assistente", icon: Sparkles, href: "/assistente" },
-      { name: "Clientes", icon: Users, href: "/clientes" },
-      {
-        name: "Tarefas",
-        icon: ListChecks,
-        href: "/tarefas",
-        soAbre: true,
-        filhos: [
-          { name: "Times", icon: UsersRound, href: "/tarefas", exato: true },
-          {
-            name: "Pré-processual",
-            icon: ClipboardList,
-            href: "/tarefas/pre-processual",
-            soAbre: true,
-            // Mesmas cores dos times: amarelo é o ADM, vermelho o judicial.
-            filhos: [
-              {
-                name: "Administrativo",
-                icon: Landmark,
-                href: "/tarefas/pre-processual/administrativo",
-                cor: "bg-amber-400",
-              },
-              {
-                name: "Judicial",
-                icon: Gavel,
-                href: "/tarefas/pre-processual/judicial",
-                cor: "bg-red-600",
-              },
-            ],
-          },
-        ],
-      },
+      { name: "Agenda", icon: CalendarDays, href: "/agenda" },
       {
         name: "Processos",
         icon: FileText,
@@ -101,25 +126,21 @@ const menuGroups: MenuGroup[] = [
           { name: "Judicial", icon: Gavel, href: "/judicial" },
         ],
       },
-      { name: "Agenda", icon: CalendarDays, href: "/agenda" },
+      { name: "Clientes", icon: Users, href: "/clientes" },
+      { name: "Assistente", icon: Sparkles, href: "/assistente" },
       {
-        // O que se usa pouco fica guardado aqui, fechado: o menu do dia
-        // a dia mostra só o que a equipe abre todo dia.
+        // O que se usa pouco fica guardado aqui, fechado.
         name: "Mais",
         icon: Ellipsis,
         href: "/mais",
         soAbre: true,
         filhos: [
+          { name: "Todas as tarefas", icon: LayoutGrid, href: "/tarefas" },
           { name: "Aprovações", icon: ShieldCheck, href: "/aprovacoes" },
           { name: "Automações", icon: RefreshCw, href: "/automacoes" },
           { name: "Mapa", icon: MapPin, href: "/mapa" },
         ],
       },
-    ],
-  },
-  {
-    label: "Escritório",
-    items: [
       { name: "Configurações", icon: Settings, href: "/configuracoes" },
     ],
   },
@@ -135,22 +156,19 @@ function Marca({ trilho }: { trilho: boolean }) {
   return (
     <div
       className={cn(
-        "flex h-[68px] items-center gap-3",
-        trilho ? "justify-center px-2 lg:justify-start lg:px-5" : "px-5"
+        "flex h-[76px] shrink-0 items-center gap-3",
+        trilho ? "justify-center px-2 lg:justify-start lg:px-6" : "px-6"
       )}
     >
-      <div className="relative flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-brand shadow-[0_6px_16px_-6px_rgba(219,39,119,0.7)]">
-        <Scale size={18} strokeWidth={2.1} className="text-white" />
-        <span
-          aria-hidden
-          className="absolute inset-0 rounded-xl ring-1 ring-white/25 ring-inset"
-        />
+      <div className="relative flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-brand shadow-[0_6px_16px_-6px_rgba(219,39,119,0.7)]">
+        <Scale size={20} strokeWidth={2.1} className="text-white" />
+        <span aria-hidden className="absolute inset-0 rounded-xl ring-1 ring-white/25 ring-inset" />
       </div>
       <div className={cn("min-w-0", trilho && "hidden lg:block")}>
-        <p className="font-heading truncate text-[14px] leading-tight font-bold tracking-[-0.01em] text-sidebar-foreground">
+        <p className="font-heading truncate text-[16px] leading-tight font-bold tracking-[-0.01em] text-sidebar-foreground">
           Zeca Aposenta
         </p>
-        <p className="truncate text-[9.5px] leading-tight font-semibold tracking-[0.18em] text-sidebar-foreground/40 uppercase">
+        <p className="truncate text-[11px] leading-tight font-medium text-sidebar-foreground/45">
           O Terror do INSS
         </p>
       </div>
@@ -158,112 +176,269 @@ function Marca({ trilho }: { trilho: boolean }) {
   )
 }
 
+function casa(pathname: string, m: MenuItem) {
+  if (m.href === "/") return pathname === "/"
+  if (m.exato) return pathname === m.href
+  return pathname === m.href || pathname.startsWith(`${m.href}/`)
+}
+
+/** O endereço está dentro do item ou de algum recorte dele. */
+function dentroDe(pathname: string, m: MenuItem): boolean {
+  if (m.soAbre) return Boolean(m.filhos?.some((f) => dentroDe(pathname, f)))
+  if (m.href === "/") return pathname === "/"
+  return pathname === m.href || pathname.startsWith(`${m.href}/`)
+}
+
+/** Botão que abre e fecha as escolhas de baixo. */
+function Seta({
+  aberto,
+  nome,
+  controla,
+  onClick,
+  trilho,
+}: {
+  aberto: boolean
+  nome: string
+  controla: string
+  onClick: () => void
+  trilho: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-expanded={aberto}
+      aria-controls={controla}
+      aria-label={`${aberto ? "Ocultar" : "Mostrar"} as opções de ${nome}`}
+      title={`${aberto ? "Ocultar" : "Mostrar"} as opções de ${nome}`}
+      className={cn(
+        "mr-1 flex size-9 shrink-0 items-center justify-center rounded-lg text-sidebar-foreground/45 transition-colors duration-150 outline-none hover:bg-white/10 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
+        trilho && "hidden lg:flex"
+      )}
+    >
+      <ChevronRight
+        size={17}
+        strokeWidth={2}
+        className={cn("transition-transform duration-200 motion-reduce:transition-none", aberto && "rotate-90")}
+      />
+    </button>
+  )
+}
+
 /**
- * Um item do menu e, quando existirem, as esferas abaixo dele.
- *
- * O filho é recuado e ganha um traço à esquerda em vez de ícone
- * próprio: ele não é um destino paralelo, é um recorte do pai. Em
- * trilho (tablet) os filhos somem — sobra largura para um ícone só, e
- * o pai leva à mesma área.
+ * Abre sozinho quando a pessoa entra no item por outro caminho (um link
+ * do Dashboard, o botão de voltar) — e não fecha quando ela sai, para o
+ * menu não ficar pulando.
  */
+function useAberto(dentro: boolean, pathname: string) {
+  const [aberto, setAberto] = useState(dentro)
+  const [visto, setVisto] = useState(pathname)
+  if (visto !== pathname) {
+    setVisto(pathname)
+    if (dentro && !aberto) setAberto(true)
+  }
+  return [aberto, setAberto] as const
+}
+
+// ── Time: linha colorida e as etapas penduradas nela ──────
+
+function ItemTime({ item, trilho, pathname, onNavegar }: { item: MenuItem; trilho: boolean; pathname: string; onNavegar?: () => void }) {
+  const time = item.time as TimeTarefa
+  const cor = MENU_TIME[time]
+  const atual = casa(pathname, item)
+  const dentro = dentroDe(pathname, item)
+  const [aberto, setAberto] = useAberto(dentro, pathname)
+  const temFilhos = Boolean(item.filhos?.length)
+  const idGaveta = `submenu-time-${time.toLowerCase()}`
+
+  return (
+    <div>
+      <div
+        className={cn(
+          "relative flex items-center rounded-xl transition-colors duration-150",
+          dentro ? cor.tinta : "hover:bg-white/[0.06]"
+        )}
+      >
+        {dentro ? (
+          <span aria-hidden className={cn("absolute top-2 bottom-2 left-0 w-1 rounded-r-full", cor.barra, trilho && "hidden lg:block")} />
+        ) : null}
+        <Link
+          href={item.href}
+          onClick={() => {
+            if (temFilhos) setAberto(true)
+            onNavegar?.()
+          }}
+          aria-current={atual ? "page" : undefined}
+          title={trilho ? `Time ${item.name}` : undefined}
+          className={cn(
+            "flex h-11 min-w-0 flex-1 items-center gap-3 rounded-xl text-[15.5px] tracking-[-0.005em] outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
+            trilho ? "justify-center px-0 lg:justify-start lg:px-4" : "px-4",
+            dentro ? "font-bold text-white" : "font-semibold text-sidebar-foreground/80 hover:text-white"
+          )}
+        >
+          <span aria-hidden className={cn("size-4 shrink-0 rounded-[5px] ring-1 ring-white/20 ring-inset", cor.amostra)} />
+          <span className={cn("truncate", trilho && "hidden lg:inline")}>{item.name}</span>
+        </Link>
+        {temFilhos ? (
+          <Seta aberto={aberto} nome={`time ${item.name}`} controla={idGaveta} onClick={() => setAberto((v) => !v)} trilho={trilho} />
+        ) : null}
+      </div>
+
+      {temFilhos && aberto ? (
+        <ul
+          id={idGaveta}
+          className={cn(
+            "animate-in fade-in slide-in-from-top-1 mt-1 mb-2 ml-[25px] flex flex-col gap-0.5 border-l-2 pl-2.5 duration-150 motion-reduce:animate-none",
+            cor.trilho,
+            trilho && "hidden lg:flex"
+          )}
+        >
+          {item.filhos!.map((sub) => (
+            <EtapaDoMenu
+              key={sub.href}
+              item={sub}
+              time={time}
+              pathname={pathname}
+              onNavegar={onNavegar}
+              abrirJunto={dentro}
+            />
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  )
+}
+
+function EtapaDoMenu({
+  item,
+  time,
+  pathname,
+  onNavegar,
+  abrirJunto = false,
+}: {
+  item: MenuItem
+  time: TimeTarefa
+  pathname: string
+  onNavegar?: () => void
+  /**
+   * Os dois lados do amarelo (ADM e Judicial) abrem junto com o time:
+   * as etapas é que são o destino, e abrir dois níveis toda vez cansa.
+   */
+  abrirJunto?: boolean
+}) {
+  const cor = MENU_TIME[time]
+  const atual = casa(pathname, item)
+  const dentro = dentroDe(pathname, item)
+  const [aberto, setAberto] = useAberto(dentro || abrirJunto, pathname)
+  const Icone = item.icon
+  const idGaveta = `submenu-${item.href.replace(/\W/g, "")}`
+
+  const link = (
+    <Link
+      href={item.href}
+      onClick={() => {
+        if (item.filhos) setAberto(true)
+        onNavegar?.()
+      }}
+      aria-current={atual ? "page" : undefined}
+      className={cn(
+        "flex h-10 min-w-0 flex-1 items-center gap-2.5 rounded-lg px-3 text-[14.5px] outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
+        atual
+          ? "bg-white/[0.11] font-semibold text-white"
+          : dentro
+            ? "font-semibold text-sidebar-foreground/90 hover:bg-white/[0.06]"
+            : "font-medium text-sidebar-foreground/65 hover:bg-white/[0.06] hover:text-white"
+      )}
+    >
+      {Icone ? (
+        <Icone size={16} strokeWidth={1.9} aria-hidden className={cn("shrink-0", atual || dentro ? "text-white" : "text-sidebar-foreground/45")} />
+      ) : (
+        <span
+          aria-hidden
+          className={cn("size-1.5 shrink-0 rounded-full transition-colors", atual ? cor.barra : "bg-sidebar-foreground/25")}
+        />
+      )}
+      <span className="truncate">{item.name}</span>
+    </Link>
+  )
+
+  if (!item.filhos?.length) return <li>{link}</li>
+
+  return (
+    <li>
+      <div className="flex items-center">
+        {link}
+        <Seta aberto={aberto} nome={item.name} controla={idGaveta} onClick={() => setAberto((v) => !v)} trilho={false} />
+      </div>
+      {aberto ? (
+        <ul id={idGaveta} className="mt-0.5 mb-1 ml-4 flex flex-col gap-0.5 border-l border-white/10 pl-2.5">
+          {item.filhos.map((sub) => (
+            <EtapaDoMenu key={sub.href} item={sub} time={time} pathname={pathname} onNavegar={onNavegar} />
+          ))}
+        </ul>
+      ) : null}
+    </li>
+  )
+}
+
+// ── Item comum (Dashboard, Agenda, Processos…) ────────────
+
 function ItemNavegacao({
   item,
   trilho,
   pathname,
   onNavegar,
-  nivel = 0,
+  filho = false,
 }: {
   item: MenuItem
   trilho: boolean
   pathname: string
   onNavegar?: () => void
-  /** 0 no topo; 1 para a escolha de baixo; 2 para a escolha da escolha. */
-  nivel?: number
+  filho?: boolean
 }) {
-  const Icon = item.icon
-  const filho = nivel > 0
-
-  const casa = (m: MenuItem) =>
-    m.href === "/" || m.exato
-      ? pathname === m.href
-      : pathname === m.href || pathname.startsWith(`${m.href}/`)
-
-  // Item que só abre as escolhas nunca é "a página atual": quem está
-  // aceso é a escolha feita embaixo dele.
-  const ativo = !item.soAbre && casa(item)
-
-  const filhoAtivo = Boolean(item.filhos?.some(casa))
-
-  const [aberto, setAberto] = useState(filhoAtivo || ativo)
-
+  const Icon = item.icon ?? LayoutGrid
+  const ativo = !item.soAbre && casa(pathname, item)
+  const dentro = dentroDe(pathname, item)
+  const [aberto, setAberto] = useAberto(dentro, pathname)
   const temFilhos = Boolean(item.filhos?.length)
-
   const idGaveta = `submenu-${item.href.replace(/\W/g, "") || "raiz"}`
 
   const classe = cn(
-    "group relative flex h-9.5 flex-1 items-center gap-2.5 rounded-lg text-[13px] tracking-[-0.005em] transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70 focus-visible:ring-offset-0",
-    trilho ? "justify-center px-0 lg:justify-start lg:px-3" : "px-3",
-    filho && !trilho && "h-8 pl-2.5",
-    filho && trilho && "ml-0 h-8 lg:pl-2.5",
-    nivel === 1 && (trilho ? "lg:ml-3" : "ml-3"),
-    nivel >= 2 && (trilho ? "lg:ml-7" : "ml-7"),
+    "group relative flex min-w-0 items-center gap-3 rounded-xl",
+    // Na linha com a seta, o link divide a largura; sozinho, ocupa a
+    // linha inteira — com flex-1 numa coluna ele encolhia de altura.
+    temFilhos ? "flex-1" : "w-full shrink-0",
+    "tracking-[-0.005em] transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
+    filho ? "h-10 px-3 text-[14.5px]" : "h-11 text-[15.5px]",
+    !filho && (trilho ? "justify-center px-0 lg:justify-start lg:px-4" : "px-4"),
     ativo
-      ? "bg-sidebar-accent font-semibold text-sidebar-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.3)]"
-      : filhoAtivo
-        ? "font-medium text-sidebar-foreground/75 hover:bg-sidebar-accent/70"
-        : "font-medium text-sidebar-foreground/55 hover:bg-sidebar-accent/70 hover:text-sidebar-foreground/95"
+      ? "bg-sidebar-accent font-semibold text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.3)]"
+      : dentro
+        ? "font-semibold text-sidebar-foreground/90 hover:bg-white/[0.06]"
+        : "font-medium text-sidebar-foreground/70 hover:bg-white/[0.06] hover:text-white"
   )
 
   const conteudo = (
     <>
-      {/* Indicador de página ativa: um traço luminoso na borda. */}
-      {ativo && !filho && (
+      {ativo && !filho ? (
         <span
           aria-hidden
           className={cn(
-            "absolute top-1/2 left-0 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-sidebar-primary shadow-[0_0_12px_2px_rgba(124,159,240,0.55)]",
+            "absolute top-1/2 left-0 h-6 w-1 -translate-y-1/2 rounded-r-full bg-sidebar-primary shadow-[0_0_12px_2px_rgba(124,159,240,0.55)]",
             trilho && "hidden lg:block"
           )}
         />
-      )}
-
-      {filho && (
-        <span
-          aria-hidden
-          className={cn(
-            "h-4 w-px shrink-0 bg-sidebar-foreground/15",
-            ativo && "bg-sidebar-primary",
-            trilho && "hidden lg:block"
-          )}
-        />
-      )}
-
-      {item.cor ? (
-        <span
-          aria-hidden
-          className={cn("mx-[3px] size-2.5 shrink-0 rounded-full ring-2 ring-white/10", item.cor)}
-        />
-      ) : (
-        <Icon
-          size={filho ? 15 : 17}
-          strokeWidth={ativo ? 2.1 : 1.75}
-          className={cn(
-            "shrink-0 transition-colors duration-150",
-            ativo
-              ? "text-sidebar-primary"
-              : "text-sidebar-foreground/45 group-hover:text-sidebar-foreground/85"
-          )}
-        />
-      )}
-      <span
+      ) : null}
+      <Icon
+        size={filho ? 17 : 19}
+        strokeWidth={ativo ? 2.1 : 1.8}
+        aria-hidden
         className={cn(
-          "truncate",
-          trilho && "hidden lg:inline",
-          filho && "text-[12.5px]"
+          "shrink-0 transition-colors duration-150",
+          ativo ? "text-sidebar-primary" : "text-sidebar-foreground/50 group-hover:text-sidebar-foreground/90"
         )}
-      >
-        {item.name}
-      </span>
+      />
+      <span className={cn("truncate", trilho && !filho && "hidden lg:inline")}>{item.name}</span>
     </>
   )
 
@@ -296,51 +471,25 @@ function ItemNavegacao({
   if (!temFilhos) return link
 
   return (
-    <>
-      <div className="flex items-center gap-0.5">
+    <div>
+      <div className="flex items-center">
         {link}
-
-        <button
-          type="button"
-          onClick={() => setAberto((v) => !v)}
-          aria-expanded={aberto}
-          aria-controls={idGaveta}
-          aria-label={`${aberto ? "Ocultar" : "Mostrar"} as opções de ${item.name}`}
-          title={`${aberto ? "Ocultar" : "Mostrar"} as opções de ${item.name}`}
+        <Seta aberto={aberto} nome={item.name} controla={idGaveta} onClick={() => setAberto((v) => !v)} trilho={trilho} />
+      </div>
+      {aberto ? (
+        <div
+          id={idGaveta}
           className={cn(
-            "flex size-7 shrink-0 items-center justify-center rounded-md text-sidebar-foreground/40 transition-colors duration-150 outline-none hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
+            "animate-in fade-in slide-in-from-top-1 mt-1 mb-2 ml-[25px] flex flex-col gap-0.5 border-l-2 border-white/10 pl-2.5 duration-150 motion-reduce:animate-none",
             trilho && "hidden lg:flex"
           )}
         >
-          <ChevronRight
-            size={15}
-            strokeWidth={2}
-            className={cn(
-              "transition-transform duration-200",
-              aberto && "rotate-90"
-            )}
-          />
-        </button>
-      </div>
-
-      {aberto && (
-        <div
-          id={idGaveta}
-          className="animate-in fade-in slide-in-from-top-1 flex flex-col gap-0.5 duration-150"
-        >
-          {item.filhos?.map((sub) => (
-            <ItemNavegacao
-              key={sub.name}
-              item={sub}
-              trilho={trilho}
-              pathname={pathname}
-              onNavegar={onNavegar}
-              nivel={nivel + 1}
-            />
+          {item.filhos!.map((sub) => (
+            <ItemNavegacao key={sub.href} item={sub} trilho={false} pathname={pathname} onNavegar={onNavegar} filho />
           ))}
         </div>
-      )}
-    </>
+      ) : null}
+    </div>
   )
 }
 
@@ -350,37 +499,30 @@ function Navegacao({ trilho, onNavegar }: Modo) {
   return (
     <nav
       aria-label="Navegação principal"
-      className={cn(
-        "flex flex-1 flex-col gap-6 overflow-y-auto py-3",
-        trilho ? "px-2 lg:px-3" : "px-3"
-      )}
+      className={cn("flex flex-1 flex-col gap-7 overflow-y-auto pt-2 pb-5", trilho ? "px-2 lg:px-4" : "px-4")}
     >
       {menuGroups.map((grupo, i) => (
-        <div key={grupo.label} className="flex flex-col gap-1">
-          <p
-            className={cn(
-              "px-3 pb-2 text-[10px] leading-none font-bold tracking-[0.16em] text-sidebar-foreground/30 uppercase",
-              trilho && "hidden lg:block"
-            )}
-          >
-            {grupo.label}
-          </p>
-          {trilho && i > 0 && (
-            <div
-              aria-hidden
-              className="mx-auto mb-2 h-px w-5 bg-sidebar-border lg:hidden"
-            />
-          )}
+        <div key={grupo.label ?? i} className="flex flex-col gap-1">
+          {grupo.label ? (
+            <p
+              className={cn(
+                "flex items-center gap-2 px-4 pb-2 text-[12.5px] leading-none font-semibold text-sidebar-foreground/40",
+                trilho && "hidden lg:flex"
+              )}
+            >
+              {grupo.label === "Times" ? <UsersRound size={13} aria-hidden /> : null}
+              {grupo.label}
+            </p>
+          ) : null}
+          {trilho && i > 0 ? <div aria-hidden className="mx-auto mb-2 h-px w-6 bg-sidebar-border lg:hidden" /> : null}
 
-          {grupo.items.map((item) => (
-            <ItemNavegacao
-              key={item.name}
-              item={item}
-              trilho={trilho}
-              pathname={pathname}
-              onNavegar={onNavegar}
-            />
-          ))}
+          {grupo.items.map((item) =>
+            item.time ? (
+              <ItemTime key={item.href} item={item} trilho={trilho} pathname={pathname} onNavegar={onNavegar} />
+            ) : (
+              <ItemNavegacao key={item.href} item={item} trilho={trilho} pathname={pathname} onNavegar={onNavegar} />
+            )
+          )}
         </div>
       ))}
     </nav>
@@ -388,31 +530,24 @@ function Navegacao({ trilho, onNavegar }: Modo) {
 }
 
 const ATALHOS_CELULAR: { name: string; icon: LucideIcon; href: string; exato?: boolean }[] = [
-  { name: "Tarefas", icon: ListChecks, href: "/tarefas", exato: true },
+  { name: "Início", icon: LayoutDashboard, href: "/", exato: true },
+  { name: "Times", icon: UsersRound, href: "/times" },
   { name: "Agenda", icon: CalendarDays, href: "/agenda" },
-  { name: "Pré-processual", icon: ClipboardList, href: "/tarefas/pre-processual" },
 ]
 
 /**
- * A barra do celular. Três atalhos e o menu — escolhidos pelo escritório:
- * tarefas, agenda e pré-processual são o que se abre na rua, entre um
- * atendimento e outro. Cada botão tem pelo menos 48px de altura, e a
- * barra respeita a faixa do gesto de voltar do iPhone.
+ * A barra do celular: Dashboard, os times, a agenda e o menu inteiro.
+ * Cada botão tem pelo menos 48px de altura, e a barra respeita a faixa
+ * do gesto de voltar do iPhone.
  */
-function BarraInferior({
-  onAbrirMenu,
-  menuAberto,
-}: {
-  onAbrirMenu: () => void
-  menuAberto: boolean
-}) {
+function BarraInferior({ onAbrirMenu, menuAberto }: { onAbrirMenu: () => void; menuAberto: boolean }) {
   const pathname = usePathname()
-  const casa = (href: string, exato?: boolean) =>
+  const ativoEm = (href: string, exato?: boolean) =>
     exato ? pathname === href : pathname === href || pathname.startsWith(`${href}/`)
 
   const classe = (ativo: boolean) =>
     cn(
-      "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[10.5px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+      "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[11.5px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
       ativo ? "bg-sidebar-accent text-sidebar-foreground" : "text-sidebar-foreground/60 active:bg-sidebar-accent/60"
     )
 
@@ -423,10 +558,10 @@ function BarraInferior({
     >
       {ATALHOS_CELULAR.map((a) => {
         const Icone = a.icon
-        const ativo = casa(a.href, a.exato)
+        const ativo = ativoEm(a.href, a.exato)
         return (
           <Link key={a.href} href={a.href} aria-current={ativo ? "page" : undefined} className={classe(ativo)}>
-            <Icone size={19} strokeWidth={ativo ? 2.1 : 1.8} className={ativo ? "text-sidebar-primary" : undefined} />
+            <Icone size={20} strokeWidth={ativo ? 2.1 : 1.8} className={ativo ? "text-sidebar-primary" : undefined} />
             {a.name}
           </Link>
         )
@@ -439,7 +574,7 @@ function BarraInferior({
         aria-controls="sidebar-drawer"
         className={classe(false)}
       >
-        <Menu size={19} strokeWidth={1.8} />
+        <Menu size={20} strokeWidth={1.8} />
         Menu
       </button>
     </nav>
@@ -448,7 +583,7 @@ function BarraInferior({
 
 /** Fundo do painel: azul-noite com uma luz suave no topo. */
 const FUNDO_SIDEBAR =
-  "bg-sidebar bg-[radial-gradient(600px_300px_at_0%_0%,rgba(124,159,240,0.16),transparent_60%),radial-gradient(400px_260px_at_100%_100%,rgba(219,39,119,0.10),transparent_60%)]"
+  "bg-sidebar bg-[radial-gradient(640px_320px_at_0%_0%,rgba(124,159,240,0.16),transparent_60%),radial-gradient(420px_280px_at_100%_100%,rgba(219,39,119,0.10),transparent_60%)]"
 
 export function Sidebar() {
   const [drawerAberto, setDrawerAberto] = useState(false)
@@ -472,25 +607,24 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Tablet: trilho de 64px. Desktop: 256px. */}
+      {/* Tablet: trilho de 76px. Desktop: 300px. */}
       <aside
         className={cn(
-          "sticky top-0 hidden h-screen w-16 shrink-0 flex-col border-r border-sidebar-border text-sidebar-foreground transition-[width] duration-200 ease-out md:flex lg:w-64",
+          "sticky top-0 hidden h-screen w-[76px] shrink-0 flex-col border-r border-sidebar-border text-sidebar-foreground transition-[width] duration-200 ease-out md:flex lg:w-[300px]",
           FUNDO_SIDEBAR
         )}
       >
         <Marca trilho />
         <Navegacao trilho />
-        <div className="border-t border-sidebar-border p-2 lg:p-3">
+        <div className="border-t border-sidebar-border p-2 lg:px-4 lg:py-3">
           <LogoutButton
-            className="justify-center px-0 lg:justify-start lg:px-3"
+            className="h-11 justify-center px-0 text-[15px] lg:justify-start lg:px-4"
             labelClassName="hidden lg:inline"
           />
         </div>
       </aside>
 
-      {/* Celular: barra fixa embaixo com o que se abre todo dia; o
-          último botão abre o menu inteiro. */}
+      {/* Celular: barra fixa embaixo; o último botão abre o menu inteiro. */}
       <BarraInferior onAbrirMenu={() => setDrawerAberto(true)} menuAberto={drawerAberto} />
 
       {drawerAberto && (
@@ -507,27 +641,27 @@ export function Sidebar() {
             aria-modal="true"
             aria-label="Menu de navegação"
             className={cn(
-              "animate-in slide-in-from-left absolute inset-y-0 left-0 flex w-[272px] max-w-[84vw] flex-col border-r border-sidebar-border text-sidebar-foreground shadow-float duration-200 ease-out",
+              "animate-in slide-in-from-left absolute inset-y-0 left-0 flex w-[300px] max-w-[86vw] flex-col border-r border-sidebar-border text-sidebar-foreground shadow-float duration-200 ease-out",
               FUNDO_SIDEBAR
             )}
           >
-            <div className="flex items-center justify-between pr-2">
+            <div className="flex items-center justify-between pr-3">
               <Marca trilho={false} />
               <button
                 type="button"
                 autoFocus
                 onClick={() => setDrawerAberto(false)}
                 aria-label="Fechar menu de navegação"
-                className="flex size-9 shrink-0 items-center justify-center rounded-lg text-sidebar-foreground/55 transition-colors duration-150 outline-none hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+                className="flex size-10 shrink-0 items-center justify-center rounded-lg text-sidebar-foreground/55 transition-colors duration-150 outline-none hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
               >
-                <X size={18} strokeWidth={1.75} />
+                <X size={20} strokeWidth={1.75} />
               </button>
             </div>
 
             <Navegacao trilho={false} onNavegar={() => setDrawerAberto(false)} />
 
-            <div className="border-t border-sidebar-border p-3">
-              <LogoutButton className="px-3" />
+            <div className="border-t border-sidebar-border px-4 py-3">
+              <LogoutButton className="h-11 px-4 text-[15px]" />
             </div>
           </div>
         </div>

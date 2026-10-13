@@ -14,6 +14,9 @@ export const TarefaSchema = z.object({
   /// a migração; o nome na interface é time.
   setor: TimeTarefaEnum.nullish(),
   responsavelId: z.string().nullish(),
+  /// A etapa do fluxo mora aqui ("AGENDAR VÍDEO", "JUDICIAL › PROTOCOLO")
+  /// — ou a lista que veio do TickTick. Ver lib/domain/tarefa/fluxo.ts.
+  pasta: z.string().trim().max(200).nullish(),
 })
 
 /**
@@ -27,6 +30,8 @@ export const TarefaPatchSchema = z
     responsavelId: z.string().nullable().optional(),
     status: TarefaStatusEnum.optional(),
     prioridade: TarefaPrioridadeEnum.optional(),
+    /** Mudar de etapa é gravar a pasta da etapa nova (junto do time). */
+    pasta: z.string().trim().max(200).nullable().optional(),
   })
   .refine((d) => Object.keys(d).length > 0, {
     message: "Nada para atualizar",
@@ -56,4 +61,22 @@ export const RespostaDuvidaSchema = z.object({
     .string()
     .min(1, "Escreva a resposta")
     .max(5000, "Resposta longa demais"),
+})
+
+/**
+ * Levar várias tarefas para o lugar do fluxo novo de uma vez — o botão
+ * "Mover" da faixa "fora do lugar". Cada movimento diz o time e a pasta
+ * (a etapa) de uma tarefa.
+ */
+export const MoverTarefasSchema = z.object({
+  movimentos: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        setor: TimeTarefaEnum,
+        pasta: z.string().trim().min(1).max(200),
+      })
+    )
+    .min(1, "Nada para mover")
+    .max(1000, "Mova no máximo mil de cada vez"),
 })

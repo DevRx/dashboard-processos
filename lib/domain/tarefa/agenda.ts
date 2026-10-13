@@ -6,9 +6,10 @@
 // move — e cada tipo ganha a sua cor, porque perder uma perícia e
 // perder um prazo são erros diferentes:
 //
-//   • perícia   → branco        (a data está na própria tarefa)
-//   • prazo     → cinza-escuro  (o monitor do DJEN abre a tarefa)
-//   • exigência → verde         (exigência do INSS, também com prazo)
+//   • prazo     → vermelho  (o monitor do DJEN abre a tarefa; vermelho
+//                            é a cor do judicial)
+//   • perícia   → amarelo   (a data está na própria tarefa)
+//   • exigência → verde     (exigência do INSS, diferente das duas)
 //
 // Não há campo "tipo" para isso no banco: a classificação sai do que a
 // tarefa já carrega — o vínculo com a intimação, a pasta que veio do

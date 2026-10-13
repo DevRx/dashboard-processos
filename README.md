@@ -225,8 +225,8 @@ servem para dizer de quem é a tarefa. Por isso:
 
 - **Tarefas** — o geral: toda tarefa em aberto, contada por dia na cor
   do time.
-- **Perícias e prazos** — perícia em **branco**, prazo em
-  **cinza-escuro**, exigência em **verde**. A regra que decide o que entra
+- **Perícias e prazos** — prazo do DJEN em **vermelho** (a cor do
+  judicial), perícia em **amarelo**, exigência em **verde**. A regra que decide o que entra
   está em `lib/domain/tarefa/agenda.ts`: tarefa aberta por intimação do
   DJEN é prazo; título ou pasta com "exigência" é exigência; com
   "perícia" é perícia; pasta de prazo ou `JUDICIAL › ANDAMENTO` é prazo.

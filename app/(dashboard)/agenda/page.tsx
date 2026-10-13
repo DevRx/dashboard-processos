@@ -63,7 +63,7 @@ import {
  *
  * À esquerda, dois calendários, um embaixo do outro: o geral, com toda
  * tarefa em aberto na cor do time, e o de perícias e prazos, onde a cor
- * é o tipo — perícia em branco, prazo do DJEN em cinza-escuro,
+ * é o tipo — prazo do DJEN em vermelho, perícia em amarelo,
  * exigência em verde. À direita, à parte, as urgentes, com filtro por
  * cor e por período.
  *
@@ -569,7 +569,7 @@ export default function AgendaPage() {
       {CATEGORIAS_AGENDA.map((c) => (
         <span key={c} className="inline-flex items-center gap-1.5">
           <span className={cn("size-2.5 rounded-full", CORES_CATEGORIA[c].ponto)} />
-          {c === "PERICIA" ? "Perícias" : c === "PRAZO" ? "Prazos (DJEN)" : "Exigências"}
+          {c === "PERICIA" ? "Perícias" : c === "PRAZO" ? "Prazos do DJEN" : "Exigências"}
         </span>
       ))}
     </div>

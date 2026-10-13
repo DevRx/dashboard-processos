@@ -197,6 +197,28 @@ Não há campo "fase" no banco: a regra está em
 perícia, sentença, concessão ficam de fora. O rodapé da tela lista as
 etapas que entraram, para conferir a regra com os dados reais.
 
+### Cores: times primeiro
+
+As cores dos times mandam em tudo: vermelho, azul, amarelo e rosa só
+servem para dizer de quem é a tarefa. Por isso:
+
+- **atraso** é laranja claro, com ícone de relógio, e **URGENTE** é
+  laranja forte (`components/ui/alerta.ts`) — nunca vermelho;
+- destaque de busca e marca de dúvida são violeta;
+- "hoje" no calendário é preto e branco, não o rosa da marca;
+- cartões de número do Dashboard não usam azul nem rosa.
+
+### Dashboard, menu e celular
+
+- O **Dashboard** é a tela inicial: números do escritório, **urgentes e
+  atrasadas** (com um quadro de atrasadas por time) e **agenda de hoje**
+  (tarefas por time e as perícias, prazos e exigências do dia).
+- No menu, **Aprovações, Automações e Mapa** ficam no grupo **Mais**.
+- No celular, uma **barra fixa embaixo** leva a Tarefas, Agenda e
+  Pré-processual; o último botão abre o menu inteiro.
+- O tema segue o aparelho (claro ou escuro); em Configurações dá para
+  fixar um dos dois.
+
 ### Agenda
 
 À esquerda, dois calendários, um embaixo do outro:

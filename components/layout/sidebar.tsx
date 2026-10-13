@@ -13,6 +13,7 @@ import {
   CalendarDays,
   ChevronRight,
   ClipboardList,
+  Ellipsis,
   Gavel,
   Landmark,
   ListChecks,
@@ -58,7 +59,6 @@ const menuGroups: MenuGroup[] = [
     items: [
       { name: "Dashboard", icon: LayoutDashboard, href: "/" },
       { name: "Assistente", icon: Sparkles, href: "/assistente" },
-      { name: "Aprovações", icon: ShieldCheck, href: "/aprovacoes" },
       { name: "Clientes", icon: Users, href: "/clientes" },
       {
         name: "Tarefas",
@@ -102,8 +102,19 @@ const menuGroups: MenuGroup[] = [
         ],
       },
       { name: "Agenda", icon: CalendarDays, href: "/agenda" },
-      { name: "Automações", icon: RefreshCw, href: "/automacoes" },
-      { name: "Mapa", icon: MapPin, href: "/mapa" },
+      {
+        // O que se usa pouco fica guardado aqui, fechado: o menu do dia
+        // a dia mostra só o que a equipe abre todo dia.
+        name: "Mais",
+        icon: Ellipsis,
+        href: "/mais",
+        soAbre: true,
+        filhos: [
+          { name: "Aprovações", icon: ShieldCheck, href: "/aprovacoes" },
+          { name: "Automações", icon: RefreshCw, href: "/automacoes" },
+          { name: "Mapa", icon: MapPin, href: "/mapa" },
+        ],
+      },
     ],
   },
   {
@@ -376,6 +387,65 @@ function Navegacao({ trilho, onNavegar }: Modo) {
   )
 }
 
+const ATALHOS_CELULAR: { name: string; icon: LucideIcon; href: string; exato?: boolean }[] = [
+  { name: "Tarefas", icon: ListChecks, href: "/tarefas", exato: true },
+  { name: "Agenda", icon: CalendarDays, href: "/agenda" },
+  { name: "Pré-processual", icon: ClipboardList, href: "/tarefas/pre-processual" },
+]
+
+/**
+ * A barra do celular. Três atalhos e o menu — escolhidos pelo escritório:
+ * tarefas, agenda e pré-processual são o que se abre na rua, entre um
+ * atendimento e outro. Cada botão tem pelo menos 48px de altura, e a
+ * barra respeita a faixa do gesto de voltar do iPhone.
+ */
+function BarraInferior({
+  onAbrirMenu,
+  menuAberto,
+}: {
+  onAbrirMenu: () => void
+  menuAberto: boolean
+}) {
+  const pathname = usePathname()
+  const casa = (href: string, exato?: boolean) =>
+    exato ? pathname === href : pathname === href || pathname.startsWith(`${href}/`)
+
+  const classe = (ativo: boolean) =>
+    cn(
+      "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[10.5px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+      ativo ? "bg-sidebar-accent text-sidebar-foreground" : "text-sidebar-foreground/60 active:bg-sidebar-accent/60"
+    )
+
+  return (
+    <nav
+      aria-label="Atalhos"
+      className="fixed inset-x-0 bottom-0 z-40 flex gap-1 border-t border-sidebar-border bg-sidebar px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] md:hidden"
+    >
+      {ATALHOS_CELULAR.map((a) => {
+        const Icone = a.icon
+        const ativo = casa(a.href, a.exato)
+        return (
+          <Link key={a.href} href={a.href} aria-current={ativo ? "page" : undefined} className={classe(ativo)}>
+            <Icone size={19} strokeWidth={ativo ? 2.1 : 1.8} className={ativo ? "text-sidebar-primary" : undefined} />
+            {a.name}
+          </Link>
+        )
+      })}
+      <button
+        type="button"
+        onClick={onAbrirMenu}
+        aria-label="Abrir menu de navegação"
+        aria-expanded={menuAberto}
+        aria-controls="sidebar-drawer"
+        className={classe(false)}
+      >
+        <Menu size={19} strokeWidth={1.8} />
+        Menu
+      </button>
+    </nav>
+  )
+}
+
 /** Fundo do painel: azul-noite com uma luz suave no topo. */
 const FUNDO_SIDEBAR =
   "bg-sidebar bg-[radial-gradient(600px_300px_at_0%_0%,rgba(124,159,240,0.16),transparent_60%),radial-gradient(400px_260px_at_100%_100%,rgba(219,39,119,0.10),transparent_60%)]"
@@ -419,17 +489,9 @@ export function Sidebar() {
         </div>
       </aside>
 
-      {/* Mobile: gatilho flutuante. */}
-      <button
-        type="button"
-        onClick={() => setDrawerAberto(true)}
-        aria-label="Abrir menu de navegação"
-        aria-expanded={drawerAberto}
-        aria-controls="sidebar-drawer"
-        className="fixed bottom-5 left-5 z-40 flex size-12 items-center justify-center rounded-full bg-sidebar text-sidebar-foreground shadow-float ring-1 ring-white/10 transition-transform duration-150 outline-none active:scale-95 focus-visible:ring-2 focus-visible:ring-sidebar-ring md:hidden"
-      >
-        <Menu size={20} strokeWidth={1.9} />
-      </button>
+      {/* Celular: barra fixa embaixo com o que se abre todo dia; o
+          último botão abre o menu inteiro. */}
+      <BarraInferior onAbrirMenu={() => setDrawerAberto(true)} menuAberto={drawerAberto} />
 
       {drawerAberto && (
         <div className="fixed inset-0 z-50 md:hidden">

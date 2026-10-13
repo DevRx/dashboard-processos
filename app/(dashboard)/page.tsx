@@ -1,4 +1,4 @@
-import { AlertTriangle, CalendarCheck, FileText, Users } from "lucide-react"
+import { AlarmClock, CalendarCheck, FileText, Users } from "lucide-react"
 
 import { Pagina } from "@/components/layout/pagina"
 import { BoasVindas } from "@/components/dashboard/boas-vindas"
@@ -8,6 +8,19 @@ import { ProcessosStatusChart } from "@/components/charts/processos-status-chart
 import { BeneficiosPorEsfera } from "@/components/charts/beneficios-por-esfera"
 import type { FatiaBeneficio } from "@/components/charts/beneficios-pizza"
 import {
+  UrgentesAtrasadas,
+  type AtrasadasPorTime,
+  type ItemUrgente,
+} from "@/components/dashboard/urgentes-atrasadas"
+import { AgendaDoDia, type ItemAgendaDoDia } from "@/components/dashboard/agenda-do-dia"
+import {
+  CATEGORIAS_AGENDA,
+  TIMES_TAREFA,
+  categoriaNaAgenda,
+  isTimeTarefa,
+} from "@/lib/domain/tarefa"
+import { formatarDataLonga } from "@/lib/formatar"
+import {
   CATEGORIAS_ADMINISTRATIVO,
   categorizarBeneficio,
 } from "@/lib/domain/beneficio"
@@ -16,6 +29,19 @@ import { getCurrentUser } from "@/lib/auth"
 import { supabase } from "@/lib/supabase/server"
 import { toCamelCase } from "@/lib/utils"
 import { idsDoEscritorio } from "@/lib/escritorio"
+
+/** Hoje no fuso do escritório: o servidor roda em UTC e virava o dia às 21h. */
+function hojeEmBrasilia() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date())
+}
+
+type Junta<T> = T | T[] | null | undefined
+
+function primeiro<T>(valor: Junta<T>): T | null {
+  return Array.isArray(valor) ? (valor[0] ?? null) : (valor ?? null)
+}
+
+const ZERADO = (): AtrasadasPorTime => ({ VERMELHO: 0, AZUL: 0, AMARELO: 0, ROSA: 0, SEM: 0 })
 
 export default async function HomePage() {
   const session = await getSession()
@@ -29,10 +55,16 @@ export default async function HomePage() {
   const porStatus: Record<string, number> = {}
   let beneficiosAdministrativo: FatiaBeneficio[] = []
   let beneficiosJudicial: FatiaBeneficio[] = []
+  let urgentes: ItemUrgente[] = []
+  let totalUrgentes = 0
+  const atrasadasPorTime = ZERADO()
+  const hojePorTime = ZERADO()
+  let agendaDeHoje: ItemAgendaDoDia[] = []
+  const hoje = hojeEmBrasilia()
 
   if (user) {
-    const hoje = new Date().toISOString().slice(0, 10)
     const escritorio = await idsDoEscritorio()
+    const ABERTA = "(CONCLUIDA,CANCELADA)"
 
     const [
       processosCount,
@@ -56,7 +88,8 @@ export default async function HomePage() {
         .from("tarefas")
         .select("*", { count: "exact", head: true })
         .in("user_id", escritorio)
-        .eq("data", hoje),
+        .eq("data", hoje)
+        .not("status", "in", ABERTA),
       supabase
         .from("tarefas")
         .select("*", { count: "exact", head: true })
@@ -76,10 +109,115 @@ export default async function HomePage() {
         .in("user_id", escritorio),
     ])
 
+    // ── urgentes e atrasadas ─────────────────────────────────────
+    // Uma contagem por time em vez de trazer as tarefas: atrasada
+    // antiga do TickTick são centenas, e aqui só o número importa.
+    const [atrasadasTimes, urgentesRes, urgentesCount, hojeRes] = await Promise.all([
+      Promise.all(
+        TIMES_TAREFA.map((time) =>
+          supabase
+            .from("tarefas")
+            .select("*", { count: "exact", head: true })
+            .in("user_id", escritorio)
+            .lt("data", hoje)
+            .not("status", "in", ABERTA)
+            .eq("setor", time)
+        )
+      ),
+      supabase
+        .from("tarefas")
+        .select("id, titulo, data, hora, setor, responsavel:users!tarefas_responsavel_id_fkey(name)")
+        .in("user_id", escritorio)
+        .eq("prioridade", "URGENTE")
+        .not("status", "in", ABERTA)
+        .order("data", { ascending: true })
+        .order("id", { ascending: true })
+        .limit(6),
+      supabase
+        .from("tarefas")
+        .select("*", { count: "exact", head: true })
+        .in("user_id", escritorio)
+        .eq("prioridade", "URGENTE")
+        .not("status", "in", ABERTA),
+      supabase
+        .from("tarefas")
+        .select("id, titulo, hora, setor, pasta, tipo, responsavel:users!tarefas_responsavel_id_fkey(name)")
+        .in("user_id", escritorio)
+        .eq("data", hoje)
+        .not("status", "in", ABERTA)
+        .order("hora", { ascending: true, nullsFirst: false })
+        .limit(1000),
+    ])
+
+    TIMES_TAREFA.forEach((time, i) => {
+      atrasadasPorTime[time] = atrasadasTimes[i].count ?? 0
+    })
+
+    totalUrgentes = urgentesCount.count ?? 0
+    urgentes = (urgentesRes.data ?? []).map((t) => ({
+      id: String(t.id),
+      titulo: t.titulo,
+      data: String(t.data),
+      hora: t.hora ?? null,
+      setor: t.setor ?? null,
+      responsavel: primeiro<{ name: string }>(t.responsavel)?.name ?? null,
+    }))
+
+    // ── agenda de hoje ───────────────────────────────────────────
+    const deHoje = hojeRes.data ?? []
+    for (const t of deHoje) {
+      hojePorTime[isTimeTarefa(t.setor) ? t.setor : "SEM"]++
+    }
+
+    // Prazo do DJEN é a tarefa que uma intimação abriu; o vínculo
+    // mora na intimação. Sem ele, a pasta e o título ainda decidem.
+    const deIntimacao = new Set<string>()
+    // Em lotes: centenas de ids numa consulta só estouram o tamanho
+    // de endereço que o Supabase aceita.
+    for (let i = 0; i < deHoje.length; i += 150) {
+      const { data: vinculos } = await supabase
+        .from("comunicacoes_djen")
+        .select("tarefa_id")
+        .in("tarefa_id", deHoje.slice(i, i + 150).map((t) => t.id))
+      for (const v of vinculos ?? []) {
+        if (v.tarefa_id) deIntimacao.add(String(v.tarefa_id))
+      }
+    }
+
+    agendaDeHoje = deHoje
+      .flatMap((t) => {
+        const categoria = categoriaNaAgenda({
+          titulo: t.titulo,
+          pasta: t.pasta,
+          tipo: t.tipo,
+          deIntimacao: deIntimacao.has(String(t.id)),
+        })
+        return categoria
+          ? [
+              {
+                id: String(t.id),
+                titulo: t.titulo,
+                hora: t.hora ?? null,
+                categoria,
+                responsavel: primeiro<{ name: string }>(t.responsavel)?.name ?? null,
+              },
+            ]
+          : []
+      })
+      .sort(
+        (a, b) =>
+          (a.hora ?? "99").localeCompare(b.hora ?? "99") ||
+          CATEGORIAS_AGENDA.indexOf(a.categoria) - CATEGORIAS_AGENDA.indexOf(b.categoria)
+      )
+
     processosAtivos = processosCount.count ?? 0
     totalClientes = clientesCount.count ?? 0
     tarefasHoje = tarefasCount.count ?? 0
     tarefasAtrasadas = atrasadasCount.count ?? 0
+    atrasadasPorTime.SEM = Math.max(
+      0,
+      tarefasAtrasadas - TIMES_TAREFA.reduce((soma, t) => soma + atrasadasPorTime[t], 0)
+    )
 
     for (const p of todosStatusRes.data || []) {
       porStatus[p.status] = (porStatus[p.status] || 0) + 1
@@ -137,10 +275,10 @@ export default async function HomePage() {
     <Pagina titulo="Início" subtitulo="Visão geral do escritório">
       <BoasVindas nome={session?.name ?? ""} />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <MetricCard
           icon={FileText}
-          tom="info"
+          tom="neutro"
           title="Processos ativos"
           value={String(processosAtivos)}
           description="Em andamento no INSS ou na Justiça"
@@ -156,7 +294,7 @@ export default async function HomePage() {
         />
         <MetricCard
           icon={CalendarCheck}
-          tom="marca"
+          tom="neutro"
           title="Para hoje"
           value={String(tarefasHoje)}
           description={
@@ -166,8 +304,8 @@ export default async function HomePage() {
           rotuloLink="Abrir agenda"
         />
         <MetricCard
-          icon={AlertTriangle}
-          tom={tarefasAtrasadas > 0 ? "perigo" : "sucesso"}
+          icon={AlarmClock}
+          tom={tarefasAtrasadas > 0 ? "atraso" : "sucesso"}
           title="Atrasados"
           value={String(tarefasAtrasadas)}
           description={
@@ -179,6 +317,22 @@ export default async function HomePage() {
           }
           href="/agenda"
           rotuloLink="Resolver"
+        />
+      </div>
+
+      <div className="grid items-start gap-5 lg:grid-cols-2">
+        <UrgentesAtrasadas
+          urgentes={urgentes}
+          totalUrgentes={totalUrgentes}
+          atrasadas={atrasadasPorTime}
+          totalAtrasadas={tarefasAtrasadas}
+          hoje={hoje}
+        />
+        <AgendaDoDia
+          dataPorExtenso={formatarDataLonga(hoje)}
+          itens={agendaDeHoje}
+          tarefasPorTime={hojePorTime}
+          totalHoje={tarefasHoje}
         />
       </div>
 

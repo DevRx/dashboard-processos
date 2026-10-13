@@ -36,7 +36,8 @@ export function Pagina({
         </div>
       )}
 
-      <main className={cn("flex-1 space-y-5 p-5 md:p-7", className)}>
+      {/* No celular, o espaço de baixo é o da barra fixa de atalhos. */}
+      <main className={cn("flex-1 space-y-5 p-4 pb-28 sm:p-5 sm:pb-28 md:p-7", className)}>
         {children}
       </main>
     </>

@@ -38,6 +38,7 @@ import { CORES_CATEGORIA } from "@/components/agenda/cores-agenda"
 import { CORES_TIME, paletaDe } from "@/components/tarefas/cores-time"
 import { formatarDataLonga, prazoRelativo } from "@/lib/formatar"
 import { cn } from "@/lib/utils"
+import { ALERTA } from "@/components/ui/alerta"
 import {
   CATEGORIAS_AGENDA,
   CATEGORIA_AGENDA_LABEL,
@@ -232,7 +233,7 @@ function Linha({
           <span className="inline-flex items-center gap-1">
             <Clock size={11} />
             {mostrarData ? (
-              <span className={cn(atrasada && "font-semibold text-status-danger-foreground")}>
+              <span className={cn(atrasada && cn("font-semibold", ALERTA.atrasadaTexto))}>
                 {atrasada ? "atrasada · " : ""}
                 {prazoRelativo(tarefa.data)}
               </span>
@@ -281,7 +282,7 @@ function DetalheDoDia({
       <h3 className="mb-2 flex items-center gap-2 text-[12.5px] font-semibold">
         <span className="inline-block first-letter:uppercase">{formatarDataLonga(data)}</span>
         {data === hoje ? (
-          <span className="rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+          <span className="rounded-full bg-foreground px-2 py-0.5 text-[10px] font-bold text-background uppercase">
             hoje
           </span>
         ) : null}
@@ -702,7 +703,7 @@ export default function AgendaPage() {
           <aside className="order-1 flex flex-col overflow-hidden rounded-2xl bg-card shadow-card lg:sticky lg:top-20 lg:order-none lg:max-h-[calc(100vh-6rem)]">
             <header className="space-y-3 border-b border-border px-4 pt-4 pb-3">
               <div className="flex items-center gap-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-status-danger text-status-danger-foreground">
+                <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", ALERTA.urgente)}>
                   <Flame size={18} strokeWidth={2} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -713,7 +714,7 @@ export default function AgendaPage() {
                     Prioridade urgente · {dicaPeriodo}, atrasadas incluídas
                   </p>
                 </div>
-                <span className="rounded-full bg-status-danger px-2.5 py-0.5 text-[13px] font-bold text-status-danger-foreground tabular-nums">
+                <span className={cn("rounded-full px-2.5 py-0.5 text-[13px] font-bold tabular-nums", ALERTA.urgente)}>
                   {urgentes.length}
                 </span>
               </div>

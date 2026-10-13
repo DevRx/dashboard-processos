@@ -172,15 +172,17 @@ export function CalendarioMes({
                 className={cn(
                   "group relative flex min-h-[54px] flex-col items-stretch gap-1 p-1 text-left outline-none transition-colors sm:min-h-[84px] sm:p-1.5",
                   c.doMes ? "bg-card hover:bg-muted/50" : "bg-muted/40 text-muted-foreground/60 hover:bg-muted/60",
-                  escolhido && "bg-brand-soft hover:bg-brand-soft dark:bg-brand/15",
+                  // Hoje e o dia escolhido ficam em preto e branco: rosa,
+                  // vermelho e as outras cores do mês são dos times.
+                  escolhido && "bg-accent hover:bg-accent",
                   "focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring"
                 )}
               >
                 <span
                   className={cn(
                     "flex size-6 items-center justify-center rounded-full text-[12px] font-semibold tabular-nums",
-                    ehHoje && "bg-brand text-white",
-                    escolhido && !ehHoje && "ring-2 ring-brand"
+                    ehHoje && "bg-foreground text-background",
+                    escolhido && !ehHoje && "ring-2 ring-foreground/70"
                   )}
                 >
                   {c.dia}

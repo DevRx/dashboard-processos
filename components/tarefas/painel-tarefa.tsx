@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
+import { DESTAQUE } from "@/components/ui/alerta"
 import {
   EVENTO_VERBO,
   type EventoTarefa,
@@ -71,7 +72,7 @@ const ICONE_EVENTO: Record<TipoEventoTarefa, typeof CircleHelp> = {
 
 const TOM_EVENTO: Record<TipoEventoTarefa, string> = {
   DUVIDA_ABERTA:
-    "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:ring-amber-900",
+    "bg-violet-50 text-violet-700 ring-violet-200 dark:bg-violet-950/50 dark:text-violet-300 dark:ring-violet-900",
   DUVIDA_RESPONDIDA:
     "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:ring-emerald-900",
   STATUS_ALTERADO:
@@ -414,7 +415,7 @@ function ConteudoPainel({
                 {emAberto.map((d) => (
                   <li
                     key={d.id}
-                    className="rounded-lg bg-amber-50 px-3 py-2 text-[12.5px] leading-snug ring-1 ring-amber-200 dark:bg-amber-950/40 dark:ring-amber-900"
+                    className={cn("rounded-lg px-3 py-2 text-[12.5px] leading-snug ring-1", DESTAQUE.duvidaCaixa)}
                   >
                     <p className="font-medium">{d.titulo}</p>
                     <p className="mt-0.5 text-[11px] text-muted-foreground">
@@ -461,7 +462,7 @@ export function PainelTarefa({
         <DialogHeader>
           <DialogTitle className="flex flex-wrap items-center gap-2">
             {ehDuvida ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10.5px] font-bold tracking-wide text-amber-800 uppercase dark:bg-amber-950/70 dark:text-amber-300">
+              <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-bold tracking-wide uppercase", DESTAQUE.duvidaEtiqueta)}>
                 <CircleHelp size={11} />
                 dúvida
               </span>

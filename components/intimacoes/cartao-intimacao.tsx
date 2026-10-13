@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CORES_TIME } from "@/components/tarefas/cores-time"
 import { cn } from "@/lib/utils"
+import { ALERTA } from "@/components/ui/alerta"
 import {
   TIMES_TAREFA,
   TIME_LABEL,
@@ -69,8 +70,9 @@ const COR_TIME = Object.fromEntries(
 ) as Record<TimeTarefa, string>
 
 const TOM_URGENCIA: Record<string, string> = {
-  ALTA: "bg-red-100 text-red-800 dark:bg-red-950/70 dark:text-red-200",
-  MEDIA: "bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200",
+  // Laranja: vermelho e amarelo são cores de time.
+  ALTA: ALERTA.urgente,
+  MEDIA: ALERTA.atrasada,
   BAIXA: "bg-muted text-muted-foreground",
 }
 
@@ -176,7 +178,7 @@ function LeituraIA({
           {alertas.map((alerta) => (
             <li
               key={alerta}
-              className="flex items-start gap-1.5 text-[11.5px] leading-snug text-amber-800 dark:text-amber-300"
+              className={cn("flex items-start gap-1.5 text-[11.5px] leading-snug", ALERTA.atrasadaTexto)}
             >
               <AlertTriangle size={11} className="mt-0.5 shrink-0" />
               {alerta}
@@ -304,9 +306,7 @@ export function CartaoIntimacao({
             <span
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-bold",
-                urgente
-                  ? "bg-red-100 text-red-800 dark:bg-red-950/70 dark:text-red-200"
-                  : "bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200"
+                urgente ? ALERTA.urgente : ALERTA.atrasada
               )}
               title="Estimativa em dias úteis, sem feriados. Confira no processo."
             >

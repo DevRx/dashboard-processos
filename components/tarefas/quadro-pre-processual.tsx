@@ -2,6 +2,7 @@
 
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react"
 import {
+  AlarmClock,
   AlertTriangle,
   CalendarClock,
   Check,
@@ -21,6 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { PainelTarefa } from "./painel-tarefa"
 import { CORES_TIME, paletaDe } from "./cores-time"
 import { cn } from "@/lib/utils"
+import { ALERTA, DESTAQUE, etiquetaDePrioridade } from "@/components/ui/alerta"
 import {
   COR_DA_ESFERA,
   ESFERA_PRE_LABEL,
@@ -90,9 +92,7 @@ function Contador({
       <span
         className={cn(
           "flex size-8 shrink-0 items-center justify-center rounded-lg",
-          destaque && valor > 0
-            ? "bg-status-danger text-status-danger-foreground"
-            : "bg-muted text-foreground/70"
+          destaque && valor > 0 ? ALERTA.selo : "bg-muted text-foreground/70"
         )}
       >
         <Icone size={16} />
@@ -155,7 +155,7 @@ function Cartao({
       </div>
 
       {trecho ? (
-        <p className="mt-1 rounded-md bg-amber-50 px-1.5 py-1 text-[11px] leading-snug text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+        <p className={cn("mt-1 rounded-md px-1.5 py-1 text-[11px] leading-snug", DESTAQUE.busca)}>
           <span className="line-clamp-2">{trecho}</span>
         </p>
       ) : null}
@@ -164,21 +164,20 @@ function Cartao({
         <span
           className={cn(
             "inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold",
-            atrasada
-              ? "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-300"
-              : "bg-card/80 text-muted-foreground"
+            atrasada ? ALERTA.atrasada : "bg-card/80 text-muted-foreground"
           )}
+          title={atrasada ? "Atrasada" : undefined}
         >
-          <CalendarClock size={11} />
+          {atrasada ? <AlarmClock size={11} /> : <CalendarClock size={11} />}
           {formatarData(tarefa.data)}
           {tarefa.hora ? ` ${tarefa.hora}` : ""}
         </span>
 
-        {tarefa.prioridade === "URGENTE" || tarefa.prioridade === "ALTA" ? (
+        {etiquetaDePrioridade(tarefa.prioridade) ? (
           <span
             className={cn(
               "rounded-full px-2 py-0.5 font-bold tracking-wide uppercase",
-              tarefa.prioridade === "URGENTE" ? "bg-red-600 text-white" : "bg-amber-500 text-white"
+              etiquetaDePrioridade(tarefa.prioridade)
             )}
           >
             {tarefa.prioridade}

@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
-import { CalendarClock, Check, ChevronRight, CircleHelp, Folder, Loader2, Plus, Search, UserRound, X } from "lucide-react"
+import { AlarmClock, CalendarClock, Check, ChevronRight, CircleHelp, Folder, Loader2, Plus, Search, UserRound, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { PainelTarefa } from "./painel-tarefa"
 import { CORES_TIME, paletaDe } from "./cores-time"
 import { cn } from "@/lib/utils"
+import { ALERTA, DESTAQUE, etiquetaDePrioridade } from "@/components/ui/alerta"
 import {
   TIMES_TAREFA,
   TIME_LABEL,
@@ -57,12 +58,6 @@ type Tarefa = {
 
 type Usuario = { id: string; name: string; role: string }
 
-const PRIORIDADE_TOM: Record<string, string> = {
-  URGENTE: "bg-red-600 text-white",
-  ALTA: "bg-amber-500 text-white",
-  MEDIA: "bg-muted text-muted-foreground",
-  BAIXA: "bg-muted text-muted-foreground",
-}
 
 function iniciais(nome: string) {
   const partes = nome.trim().split(/\s+/).filter(Boolean)
@@ -265,13 +260,13 @@ function CartaoTarefa({
                 size={12}
                 strokeWidth={2.2}
                 aria-label="dúvida"
-                className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400"
+                className={cn("mt-0.5 shrink-0", DESTAQUE.duvidaIcone)}
               />
             ) : null}
             <span className="min-w-0 flex-1">{tarefa.titulo}</span>
           </button>
           {trecho ? (
-            <p className="mt-1 rounded-md bg-amber-50 px-1.5 py-1 text-[11px] leading-snug text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+            <p className={cn("mt-1 rounded-md px-1.5 py-1 text-[11px] leading-snug", DESTAQUE.busca)}>
               <span className="line-clamp-2">{trecho}</span>
             </p>
           ) : null}
@@ -285,36 +280,39 @@ function CartaoTarefa({
             className={cn(
               "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-semibold",
               atrasada && tarefa.status !== "CONCLUIDA"
-                ? "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-300"
-                : "bg-muted text-muted-foreground"
+                ? ALERTA.atrasada
+                : "bg-card/80 text-muted-foreground"
             )}
+            title={atrasada && tarefa.status !== "CONCLUIDA" ? "Atrasada" : undefined}
           >
-            <CalendarClock size={11} />
+            {atrasada && tarefa.status !== "CONCLUIDA" ? <AlarmClock size={11} /> : <CalendarClock size={11} />}
             {prazo}
             {tarefa.hora ? ` ${tarefa.hora}` : ""}
           </span>
         ) : null}
 
-        {tarefa.prioridade !== "MEDIA" && tarefa.prioridade !== "BAIXA" ? (
+        {etiquetaDePrioridade(tarefa.prioridade) ? (
           <span
             className={cn(
               "rounded-full px-2 py-0.5 text-[10.5px] font-bold tracking-wide uppercase",
-              PRIORIDADE_TOM[tarefa.prioridade] ?? PRIORIDADE_TOM.MEDIA
+              etiquetaDePrioridade(tarefa.prioridade)
             )}
           >
             {tarefa.prioridade}
           </span>
         ) : null}
 
-        <MenuSuspenso titulo="Trocar time" gatilho={() => (
-          <span className="inline-flex items-center gap-1 rounded-full bg-card/80 px-2 py-0.5 text-[10.5px] font-semibold text-muted-foreground">
+        {/* O time já está na cor do cartão: aqui fica só a bolinha que
+            abre a troca de time, sem repetir o nome da cor. */}
+        <MenuSuspenso titulo={`Trocar time (agora: ${rotuloDaCor(tarefa.setor) ?? "sem time"})`} gatilho={() => (
+          // A bolinha é pequena; a área de toque em volta dela, não.
+          <span className="flex size-7 items-center justify-center">
             <span
               className={cn(
-                "size-2 rounded-full",
-                paleta ? paleta.ponto : "bg-muted-foreground/40"
+                "size-3.5 rounded-full ring-2 ring-card",
+                paleta ? paleta.ponto : "bg-muted-foreground/30"
               )}
             />
-            {rotuloDaCor(tarefa.setor) ?? "sem time"}
           </span>
         )}>
           {(fechar) => (
@@ -357,7 +355,7 @@ function CartaoTarefa({
           onClick={onConcluir}
           title="Marcar como concluída"
           aria-label={`Concluir tarefa ${tarefa.titulo}`}
-          className="ml-auto flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-emerald-100 hover:text-emerald-700 dark:hover:bg-emerald-950 dark:hover:text-emerald-300"
+          className="ml-auto flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground sm:size-6 transition-colors hover:bg-emerald-100 hover:text-emerald-700 dark:hover:bg-emerald-950 dark:hover:text-emerald-300"
         >
           <Check size={14} strokeWidth={2.5} />
         </button>
@@ -1001,7 +999,7 @@ export function QuadroTarefas() {
                       {t.pasta ? ` · ${t.pasta}` : ""}
                     </span>
                     {trecho ? (
-                      <span className="line-clamp-1 text-[11px] text-amber-800 dark:text-amber-300">
+                      <span className="line-clamp-1 text-[11px] text-violet-800 dark:text-violet-300">
                         {trecho}
                       </span>
                     ) : null}

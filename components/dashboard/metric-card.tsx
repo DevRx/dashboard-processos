@@ -3,7 +3,8 @@ import { ArrowRight, type LucideIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-export type TomMetrica = "neutro" | "info" | "sucesso" | "alerta" | "perigo" | "marca"
+/** `atraso` é laranja: vermelho e amarelo são cores de time. */
+export type TomMetrica = "neutro" | "info" | "sucesso" | "alerta" | "perigo" | "marca" | "atraso"
 
 const SELO: Record<TomMetrica, string> = {
   neutro: "bg-accent text-accent-foreground",
@@ -12,6 +13,7 @@ const SELO: Record<TomMetrica, string> = {
   alerta: "bg-status-warning text-status-warning-foreground",
   perigo: "bg-status-danger text-status-danger-foreground",
   marca: "bg-brand-soft text-brand",
+  atraso: "bg-orange-100 text-orange-700 dark:bg-orange-950/70 dark:text-orange-300",
 }
 
 const VALOR: Record<TomMetrica, string> = {
@@ -21,6 +23,7 @@ const VALOR: Record<TomMetrica, string> = {
   alerta: "text-status-warning-foreground",
   perigo: "text-status-danger-foreground",
   marca: "",
+  atraso: "text-orange-700 dark:text-orange-400",
 }
 
 interface MetricCardProps {
@@ -57,27 +60,29 @@ export function MetricCard({
     <>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-[11.5px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+          <p className="truncate text-[11px] font-semibold tracking-[0.08em] text-muted-foreground uppercase sm:text-[11.5px]">
             {title}
           </p>
 
           <p
             className={cn(
-              "font-heading mt-2.5 truncate text-[34px] leading-none font-semibold tracking-tight tabular-nums",
+              "font-heading mt-2 truncate text-[28px] leading-none font-semibold tracking-tight tabular-nums sm:mt-2.5 sm:text-[34px]",
               VALOR[tom]
             )}
           >
             {value}
           </p>
 
-          <p className="mt-2 text-[12.5px] text-muted-foreground">{description}</p>
+          {/* No celular os cartões vêm dois por linha: a frase explicativa
+              sai, o número e o nome bastam. */}
+          <p className="mt-2 hidden text-[12.5px] text-muted-foreground sm:block">{description}</p>
         </div>
 
         {Icon ? (
           <span
             aria-hidden
             className={cn(
-              "flex size-11 shrink-0 items-center justify-center rounded-xl",
+              "hidden size-11 shrink-0 items-center justify-center rounded-xl sm:flex",
               SELO[tom]
             )}
           >
@@ -87,7 +92,7 @@ export function MetricCard({
       </div>
 
       {href && (
-        <span className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-medium text-primary transition-transform duration-150 group-hover:translate-x-0.5 dark:text-accent-foreground">
+        <span className="mt-3 hidden items-center gap-1 text-[12.5px] font-medium sm:inline-flex text-primary transition-transform duration-150 group-hover:translate-x-0.5 dark:text-accent-foreground">
           {rotuloLink}
           <ArrowRight size={14} strokeWidth={2} />
         </span>
@@ -96,7 +101,7 @@ export function MetricCard({
   )
 
   const classes = cn(
-    "group flex flex-col rounded-2xl bg-card p-5 text-card-foreground shadow-card transition-all duration-200",
+    "group flex flex-col rounded-2xl bg-card p-4 text-card-foreground shadow-card transition-all duration-200 sm:p-5",
     href && "outline-none hover:-translate-y-0.5 hover:shadow-float focus-visible:ring-2 focus-visible:ring-ring",
     className
   )

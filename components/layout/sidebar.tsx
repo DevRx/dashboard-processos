@@ -8,9 +8,11 @@ import {
   LayoutDashboard,
   ShieldCheck,
   Users,
+  UsersRound,
   FileText,
   CalendarDays,
   ChevronRight,
+  ClipboardList,
   Gavel,
   Landmark,
   ListChecks,
@@ -31,8 +33,16 @@ type MenuItem = {
   name: string
   icon: LucideIcon
   href: string
-  /** Esferas de um processo — hoje só o administrativo. */
+  /** Recortes do item — as esferas de um processo, as visões das tarefas. */
   filhos?: MenuItem[]
+  /**
+   * O item não leva a lugar nenhum sozinho: apertar abre as escolhas
+   * de baixo, e quem decide para onde ir é a pessoa. É o caso das
+   * Tarefas — times ou pré-processual.
+   */
+  soAbre?: boolean
+  /** Ativo só no endereço exato, não nas subpáginas dele. */
+  exato?: boolean
 }
 
 type MenuGroup = {
@@ -48,7 +58,16 @@ const menuGroups: MenuGroup[] = [
       { name: "Assistente", icon: Sparkles, href: "/assistente" },
       { name: "Aprovações", icon: ShieldCheck, href: "/aprovacoes" },
       { name: "Clientes", icon: Users, href: "/clientes" },
-      { name: "Tarefas", icon: ListChecks, href: "/tarefas" },
+      {
+        name: "Tarefas",
+        icon: ListChecks,
+        href: "/tarefas",
+        soAbre: true,
+        filhos: [
+          { name: "Times", icon: UsersRound, href: "/tarefas", exato: true },
+          { name: "Pré-processual", icon: ClipboardList, href: "/tarefas/pre-processual" },
+        ],
+      },
       {
         name: "Processos",
         icon: FileText,
@@ -129,42 +148,37 @@ function ItemNavegacao({
 }) {
   const Icon = item.icon
 
-  const ativo =
-    item.href === "/"
-      ? pathname === "/"
-      : pathname === item.href || pathname.startsWith(`${item.href}/`)
+  const casa = (m: MenuItem) =>
+    m.href === "/" || m.exato
+      ? pathname === m.href
+      : pathname === m.href || pathname.startsWith(`${m.href}/`)
 
-  const filhoAtivo = Boolean(
-    item.filhos?.some(
-      (f) => pathname === f.href || pathname.startsWith(`${f.href}/`)
-    )
-  )
+  // Item que só abre as escolhas nunca é "a página atual": quem está
+  // aceso é a escolha feita embaixo dele.
+  const ativo = !item.soAbre && casa(item)
+
+  const filhoAtivo = Boolean(item.filhos?.some(casa))
 
   const [aberto, setAberto] = useState(filhoAtivo || ativo)
 
   const temFilhos = Boolean(item.filhos?.length)
 
-  const link = (
-    <Link
-      href={item.href}
-      onClick={() => {
-        if (temFilhos) setAberto(true)
-        onNavegar?.()
-      }}
-      aria-current={ativo ? "page" : undefined}
-      title={trilho ? item.name : undefined}
-      className={cn(
-        "group relative flex h-9.5 flex-1 items-center gap-2.5 rounded-lg text-[13px] tracking-[-0.005em] transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70 focus-visible:ring-offset-0",
-        trilho ? "justify-center px-0 lg:justify-start lg:px-3" : "px-3",
-        filho && !trilho && "ml-3 h-8 pl-2.5",
-        filho && trilho && "ml-0 h-8 lg:ml-3 lg:pl-2.5",
-        ativo
-          ? "bg-sidebar-accent font-semibold text-sidebar-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.3)]"
-          : filhoAtivo
-            ? "font-medium text-sidebar-foreground/75 hover:bg-sidebar-accent/70"
-            : "font-medium text-sidebar-foreground/55 hover:bg-sidebar-accent/70 hover:text-sidebar-foreground/95"
-      )}
-    >
+  const idGaveta = `submenu-${item.href.replace(/\W/g, "") || "raiz"}`
+
+  const classe = cn(
+    "group relative flex h-9.5 flex-1 items-center gap-2.5 rounded-lg text-[13px] tracking-[-0.005em] transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70 focus-visible:ring-offset-0",
+    trilho ? "justify-center px-0 lg:justify-start lg:px-3" : "px-3",
+    filho && !trilho && "ml-3 h-8 pl-2.5",
+    filho && trilho && "ml-0 h-8 lg:ml-3 lg:pl-2.5",
+    ativo
+      ? "bg-sidebar-accent font-semibold text-sidebar-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.3)]"
+      : filhoAtivo
+        ? "font-medium text-sidebar-foreground/75 hover:bg-sidebar-accent/70"
+        : "font-medium text-sidebar-foreground/55 hover:bg-sidebar-accent/70 hover:text-sidebar-foreground/95"
+  )
+
+  const conteudo = (
+    <>
       {/* Indicador de página ativa: um traço luminoso na borda. */}
       {ativo && !filho && (
         <span
@@ -206,12 +220,36 @@ function ItemNavegacao({
       >
         {item.name}
       </span>
+    </>
+  )
+
+  const link = item.soAbre ? (
+    <button
+      type="button"
+      onClick={() => setAberto((v) => !v)}
+      aria-expanded={aberto}
+      aria-controls={idGaveta}
+      title={trilho ? item.name : undefined}
+      className={cn(classe, "text-left")}
+    >
+      {conteudo}
+    </button>
+  ) : (
+    <Link
+      href={item.href}
+      onClick={() => {
+        if (temFilhos) setAberto(true)
+        onNavegar?.()
+      }}
+      aria-current={ativo ? "page" : undefined}
+      title={trilho ? item.name : undefined}
+      className={classe}
+    >
+      {conteudo}
     </Link>
   )
 
   if (!temFilhos) return link
-
-  const idGaveta = `submenu-${item.href.replace(/\W/g, "") || "raiz"}`
 
   return (
     <>
@@ -223,8 +261,8 @@ function ItemNavegacao({
           onClick={() => setAberto((v) => !v)}
           aria-expanded={aberto}
           aria-controls={idGaveta}
-          aria-label={`${aberto ? "Ocultar" : "Mostrar"} esferas de ${item.name}`}
-          title={`${aberto ? "Ocultar" : "Mostrar"} esferas de ${item.name}`}
+          aria-label={`${aberto ? "Ocultar" : "Mostrar"} as opções de ${item.name}`}
+          title={`${aberto ? "Ocultar" : "Mostrar"} as opções de ${item.name}`}
           className={cn(
             "flex size-7 shrink-0 items-center justify-center rounded-md text-sidebar-foreground/40 transition-colors duration-150 outline-none hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
             trilho && "hidden lg:flex"

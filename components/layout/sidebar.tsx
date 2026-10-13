@@ -43,6 +43,8 @@ type MenuItem = {
   soAbre?: boolean
   /** Ativo só no endereço exato, não nas subpáginas dele. */
   exato?: boolean
+  /** Bolinha de cor no lugar do ícone — a cor da esfera ou do time. */
+  cor?: string
 }
 
 type MenuGroup = {
@@ -65,7 +67,27 @@ const menuGroups: MenuGroup[] = [
         soAbre: true,
         filhos: [
           { name: "Times", icon: UsersRound, href: "/tarefas", exato: true },
-          { name: "Pré-processual", icon: ClipboardList, href: "/tarefas/pre-processual" },
+          {
+            name: "Pré-processual",
+            icon: ClipboardList,
+            href: "/tarefas/pre-processual",
+            soAbre: true,
+            // Mesmas cores dos times: amarelo é o ADM, vermelho o judicial.
+            filhos: [
+              {
+                name: "Administrativo",
+                icon: Landmark,
+                href: "/tarefas/pre-processual/administrativo",
+                cor: "bg-amber-400",
+              },
+              {
+                name: "Judicial",
+                icon: Gavel,
+                href: "/tarefas/pre-processual/judicial",
+                cor: "bg-red-600",
+              },
+            ],
+          },
         ],
       },
       {
@@ -138,15 +160,17 @@ function ItemNavegacao({
   trilho,
   pathname,
   onNavegar,
-  filho = false,
+  nivel = 0,
 }: {
   item: MenuItem
   trilho: boolean
   pathname: string
   onNavegar?: () => void
-  filho?: boolean
+  /** 0 no topo; 1 para a escolha de baixo; 2 para a escolha da escolha. */
+  nivel?: number
 }) {
   const Icon = item.icon
+  const filho = nivel > 0
 
   const casa = (m: MenuItem) =>
     m.href === "/" || m.exato
@@ -168,8 +192,10 @@ function ItemNavegacao({
   const classe = cn(
     "group relative flex h-9.5 flex-1 items-center gap-2.5 rounded-lg text-[13px] tracking-[-0.005em] transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70 focus-visible:ring-offset-0",
     trilho ? "justify-center px-0 lg:justify-start lg:px-3" : "px-3",
-    filho && !trilho && "ml-3 h-8 pl-2.5",
-    filho && trilho && "ml-0 h-8 lg:ml-3 lg:pl-2.5",
+    filho && !trilho && "h-8 pl-2.5",
+    filho && trilho && "ml-0 h-8 lg:pl-2.5",
+    nivel === 1 && (trilho ? "lg:ml-3" : "ml-3"),
+    nivel >= 2 && (trilho ? "lg:ml-7" : "ml-7"),
     ativo
       ? "bg-sidebar-accent font-semibold text-sidebar-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.3)]"
       : filhoAtivo
@@ -201,16 +227,23 @@ function ItemNavegacao({
         />
       )}
 
-      <Icon
-        size={filho ? 15 : 17}
-        strokeWidth={ativo ? 2.1 : 1.75}
-        className={cn(
-          "shrink-0 transition-colors duration-150",
-          ativo
-            ? "text-sidebar-primary"
-            : "text-sidebar-foreground/45 group-hover:text-sidebar-foreground/85"
-        )}
-      />
+      {item.cor ? (
+        <span
+          aria-hidden
+          className={cn("mx-[3px] size-2.5 shrink-0 rounded-full ring-2 ring-white/10", item.cor)}
+        />
+      ) : (
+        <Icon
+          size={filho ? 15 : 17}
+          strokeWidth={ativo ? 2.1 : 1.75}
+          className={cn(
+            "shrink-0 transition-colors duration-150",
+            ativo
+              ? "text-sidebar-primary"
+              : "text-sidebar-foreground/45 group-hover:text-sidebar-foreground/85"
+          )}
+        />
+      )}
       <span
         className={cn(
           "truncate",
@@ -291,7 +324,7 @@ function ItemNavegacao({
               trilho={trilho}
               pathname={pathname}
               onNavegar={onNavegar}
-              filho
+              nivel={nivel + 1}
             />
           ))}
         </div>

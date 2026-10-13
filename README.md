@@ -181,6 +181,22 @@ e essas aparecem na faixa "fora dos quatro times" até alguém arrastá-las
 para um dos quatro. A definição mora em `lib/domain/tarefa/time.ts`; a
 paleta, em `components/tarefas/cores-time.ts`.
 
+### Pré-processual
+
+No menu, **Tarefas** não navega: abre duas escolhas, **Times** (o
+quadro dos quatro times) e **Pré-processual**, que por sua vez abre
+**Administrativo** (amarelo) e **Judicial** (vermelho) — as mesmas cores
+dos times. Cada tela mostra as tarefas de antes do protocolo daquela
+esfera, agrupadas por responsável ou por etapa, com os contadores de
+atrasadas, urgentes e sem responsável.
+
+Não há campo "fase" no banco: a regra está em
+`lib/domain/tarefa/pre-processual.ts`. A esfera sai da pasta do TickTick
+(`ADM ›` ou `JUDICIAL ›`) e a etapa, do resto — `PROTOCOLO NOVO`,
+`TRIAGEM…`, documentos, contrato, petição entram; andamento, exigência,
+perícia, sentença, concessão ficam de fora. O rodapé da tela lista as
+etapas que entraram, para conferir a regra com os dados reais.
+
 ### Agenda
 
 À esquerda, dois calendários, um embaixo do outro:

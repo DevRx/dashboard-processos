@@ -47,7 +47,7 @@ export function ProcessosStatusChart({
   const total = data.reduce((soma, item) => soma + item.total, 0)
 
   return (
-    <Card className="gap-0 rounded-2xl">
+    <Card className="h-full gap-0 rounded-2xl">
       <CardHeader className="border-b border-border/70 pb-(--card-spacing)">
         <CardTitle>Processos por status</CardTitle>
         <CardDescription>

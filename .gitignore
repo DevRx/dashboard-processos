@@ -53,3 +53,6 @@ next-env.d.ts
 
 # prints de falha do preenchimento assistido
 /scripts/protocolo/falhas/
+
+# cache do Python das skills de design
+__pycache__/

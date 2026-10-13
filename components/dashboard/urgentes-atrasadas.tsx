@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { AlarmClock, ArrowRight, Flame, UserRound } from "lucide-react"
+import { AlarmClock, ArrowRight } from "lucide-react"
 
 import { CORES_TIME, paletaDe } from "@/components/tarefas/cores-time"
 import { ALERTA } from "@/components/ui/alerta"
@@ -27,14 +27,45 @@ function quando(data: string, hoje: string) {
   return dias < 0 ? `há ${-dias} dias` : `em ${dias} dias`
 }
 
+/** Cabeçalho comum aos painéis do Dashboard: mesma altura, mesmo peso. */
+export function CabecalhoPainel({
+  titulo,
+  resumo,
+  href,
+  rotuloLink,
+}: {
+  titulo: string
+  resumo?: React.ReactNode
+  href?: string
+  rotuloLink?: string
+}) {
+  return (
+    <header className="flex min-h-14 items-center gap-3 border-b border-border px-5 py-3">
+      <div className="min-w-0 flex-1">
+        <h2 className="font-heading text-[15px] leading-tight font-semibold">{titulo}</h2>
+        {resumo ? <p className="truncate text-[12px] text-muted-foreground">{resumo}</p> : null}
+      </div>
+      {href ? (
+        <Link
+          href={href}
+          className="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-[12.5px] font-medium text-primary transition-colors hover:bg-accent dark:text-accent-foreground"
+        >
+          {rotuloLink}
+          <ArrowRight size={14} />
+        </Link>
+      ) : null}
+    </header>
+  )
+}
+
 /**
- * O que não pode esperar: as urgentes, e quantas atrasadas cada time
- * carrega.
+ * O que não pode esperar.
  *
- * O quadrinho por time vem primeiro porque responde a pergunta do dono
- * do escritório — "quem está devendo?" — antes da lista. O número de
- * cada time fica na cor do time; o atraso em si é laranja, para não
- * se confundir com o vermelho do time vermelho.
+ * O destaque da tela é a régua de atrasadas por time: uma barra só,
+ * dividida na proporção de cada cor, com o número de cada time logo
+ * embaixo. Ela responde "quem está devendo?" num relance. As urgentes
+ * vêm depois, como linhas de tabela — alinhadas, sem cartão dentro de
+ * cartão —, com o prazo encostado à direita.
  */
 export function UrgentesAtrasadas({
   urgentes,
@@ -49,99 +80,109 @@ export function UrgentesAtrasadas({
   totalAtrasadas: number
   hoje: string
 }) {
-  return (
-    <section className="flex flex-col overflow-hidden rounded-2xl bg-card shadow-card">
-      <header className="flex items-center gap-3 px-5 pt-5 pb-3">
-        <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", ALERTA.urgente)}>
-          <Flame size={18} />
-        </span>
-        <div className="min-w-0 flex-1">
-          <h2 className="font-heading text-[16px] leading-tight font-semibold">Urgentes e atrasadas</h2>
-          <p className="text-[12px] text-muted-foreground">
-            {totalUrgentes} {totalUrgentes === 1 ? "urgente" : "urgentes"} · {totalAtrasadas}{" "}
-            {totalAtrasadas === 1 ? "atrasada" : "atrasadas"}
-          </p>
-        </div>
-        <Link
-          href="/agenda"
-          className="inline-flex shrink-0 items-center gap-1 text-[12.5px] font-medium text-primary hover:underline dark:text-accent-foreground"
-        >
-          Agenda
-          <ArrowRight size={14} />
-        </Link>
-      </header>
+  const somaTimes = TIMES_TAREFA.reduce((s, t) => s + atrasadas[t], 0)
 
-      {/* Atrasadas por time: um número por cor. */}
-      <div className="px-5 pb-4">
-        <p className="mb-2 flex items-center gap-1.5 text-[12px] font-semibold text-muted-foreground">
+  return (
+    <section className="flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-card">
+      <CabecalhoPainel
+        titulo="Urgentes e atrasadas"
+        resumo={`${totalUrgentes} ${totalUrgentes === 1 ? "urgente" : "urgentes"} · ${totalAtrasadas} ${totalAtrasadas === 1 ? "atrasada" : "atrasadas"}`}
+        href="/agenda"
+        rotuloLink="Agenda"
+      />
+
+      {/* Régua de atrasadas por time */}
+      <div className="px-5 pt-4 pb-4">
+        <p className="mb-2.5 flex items-center gap-1.5 text-[12.5px] font-medium text-muted-foreground">
           <AlarmClock size={13} className={ALERTA.atrasadaTexto} />
           Atrasadas por time
         </p>
-        <div className="grid grid-cols-4 gap-2">
-          {TIMES_TAREFA.map((t) => (
-            <Link
-              key={t}
-              href="/tarefas"
-              title={`${TIME_LABEL[t]}: ${atrasadas[t]} atrasadas`}
-              className="group overflow-hidden rounded-xl bg-muted/50 text-center ring-1 ring-border transition-shadow hover:shadow-card"
-            >
-              <span aria-hidden className={cn("block h-1.5", CORES_TIME[t].ponto)} />
-              <span
-                className={cn(
-                  "font-heading block pt-2 text-[22px] leading-none font-semibold tabular-nums",
-                  atrasadas[t] === 0 && "text-muted-foreground/60"
-                )}
-              >
-                {atrasadas[t]}
-              </span>
-              <span className="block truncate px-1 pt-1 pb-2 text-[11px] font-medium text-muted-foreground">
-                {TIME_LABEL[t]}
-              </span>
-            </Link>
-          ))}
+
+        <div
+          aria-hidden
+          className="flex h-2.5 w-full overflow-hidden rounded-full bg-muted"
+        >
+          {somaTimes > 0
+            ? TIMES_TAREFA.map((t) =>
+                atrasadas[t] > 0 ? (
+                  <span
+                    key={t}
+                    className={cn("h-full", CORES_TIME[t].ponto)}
+                    style={{ width: `${(atrasadas[t] / somaTimes) * 100}%` }}
+                  />
+                ) : null
+              )
+            : null}
         </div>
+
+        <ul className="mt-3 grid grid-cols-4 gap-2">
+          {TIMES_TAREFA.map((t) => (
+            <li key={t}>
+              <Link
+                href="/tarefas"
+                className="flex flex-col rounded-lg px-1 py-0.5 transition-colors hover:bg-muted/50"
+              >
+                <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground sm:text-[12px]">
+                  <span className={cn("size-2 shrink-0 rounded-full", CORES_TIME[t].ponto)} />
+                  <span className="truncate">{TIME_LABEL[t]}</span>
+                </span>
+                <span
+                  className={cn(
+                    "font-heading text-[22px] leading-tight font-semibold tabular-nums",
+                    atrasadas[t] === 0 && "text-muted-foreground/50"
+                  )}
+                >
+                  {atrasadas[t]}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
         {atrasadas.SEM > 0 ? (
-          <p className="mt-2 text-[11.5px] text-muted-foreground">
-            + {atrasadas.SEM} {atrasadas.SEM === 1 ? "atrasada" : "atrasadas"} sem time
+          <p className="mt-1 text-[11.5px] text-muted-foreground">
+            e {atrasadas.SEM} sem time
           </p>
         ) : null}
       </div>
 
-      <div className="border-t border-border px-3 py-3">
+      {/* Urgentes, como linhas */}
+      <div className="flex flex-1 flex-col border-t border-border">
+        <p className="px-5 pt-3 pb-1 text-[12.5px] font-medium text-muted-foreground">
+          Urgentes
+        </p>
         {urgentes.length === 0 ? (
-          <p className="px-2 py-4 text-center text-[13px] text-muted-foreground">
+          <p className="px-5 py-6 text-center text-[13px] text-muted-foreground">
             Nenhuma tarefa urgente em aberto.
           </p>
         ) : (
-          <ul className="flex flex-col gap-1.5">
+          <ul className="divide-y divide-border">
             {urgentes.map((t) => {
               const paleta = paletaDe(t.setor)
               const atrasada = t.data.slice(0, 10) < hoje
               return (
-                <li
-                  key={t.id}
-                  className={cn(
-                    "rounded-xl border-l-4 px-3 py-2",
-                    paleta ? cn(paleta.cartao, paleta.borda) : "border-l-muted-foreground/30 bg-muted/40"
-                  )}
-                >
-                  <p className="truncate text-[13px] font-semibold" title={t.titulo}>
-                    {t.titulo}
-                  </p>
-                  <p className="mt-0.5 flex flex-wrap items-center gap-x-3 text-[11.5px] text-muted-foreground">
-                    <span className={cn("inline-flex items-center gap-1", atrasada && cn("font-semibold", ALERTA.atrasadaTexto))}>
-                      {atrasada ? <AlarmClock size={11} /> : null}
-                      {atrasada ? "atrasada · " : ""}
-                      {quando(t.data, hoje)}
-                      {t.hora ? ` · ${t.hora}` : ""}
-                    </span>
-                    {t.responsavel ? (
-                      <span className="inline-flex items-center gap-1">
-                        <UserRound size={11} />
-                        {t.responsavel}
-                      </span>
-                    ) : null}
-                  </p>
+                <li key={t.id} className="flex items-center gap-3 px-5 py-2.5">
+                  <span
+                    aria-hidden
+                    className={cn("h-8 w-1 shrink-0 rounded-full", paleta?.ponto ?? "bg-muted-foreground/30")}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13px] font-semibold" title={t.titulo}>
+                      {t.titulo}
+                    </p>
+                    <p className="truncate text-[11.5px] text-muted-foreground">
+                      {t.responsavel ?? "Sem responsável"}
+                    </p>
+                  </div>
+                  <span
+                    className={cn(
+                      "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11.5px] font-semibold tabular-nums",
+                      atrasada ? ALERTA.atrasada : "text-muted-foreground"
+                    )}
+                  >
+                    {atrasada ? <AlarmClock size={11} /> : null}
+                    {quando(t.data, hoje)}
+                    {t.hora ? ` · ${t.hora}` : ""}
+                  </span>
                 </li>
               )
             })}
@@ -150,9 +191,9 @@ export function UrgentesAtrasadas({
         {totalUrgentes > urgentes.length ? (
           <Link
             href="/agenda"
-            className="mt-2 block rounded-lg px-2 py-1.5 text-center text-[12.5px] font-medium text-primary hover:bg-muted dark:text-accent-foreground"
+            className="mt-auto border-t border-border px-5 py-2.5 text-center text-[12.5px] font-medium text-primary hover:bg-muted/40 dark:text-accent-foreground"
           >
-            Ver as {totalUrgentes} urgentes na agenda
+            Ver as {totalUrgentes} urgentes
           </Link>
         ) : null}
       </div>

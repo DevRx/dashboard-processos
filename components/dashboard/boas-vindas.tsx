@@ -44,48 +44,35 @@ export function BoasVindas({ nome }: { nome: string }) {
     () => ""
   )
 
+  // Faixa, não cartão: o cumprimento abre a tela sem ocupar o lugar dos
+  // números. Os atalhos ficam à direita, do tamanho de um botão.
   return (
-    <section className="overflow-hidden rounded-2xl bg-card shadow-card">
-      <span
-        aria-hidden
-        className="block h-1 w-full bg-gradient-to-r from-primary via-brand to-primary"
-      />
-      <div className="flex flex-col gap-5 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
-        <div className="min-w-0">
-          <h2 className="font-heading text-[22px] leading-tight font-semibold tracking-[-0.01em]">
-            {cumprimento}, {primeiroNome(nome) || "bem-vindo"}!
-          </h2>
-          <p className="mt-1 text-[13.5px] text-muted-foreground first-letter:uppercase">
-            {hoje ? `${hoje} · ` : ""}Este é o resumo do escritório. Comece por um atalho ou role para ver os números.
-          </p>
-        </div>
-
-        <nav aria-label="Atalhos" className="grid shrink-0 grid-cols-2 gap-2 sm:grid-cols-4 lg:w-auto">
-          {ATALHOS.map((a) => {
-            const Icone = a.icone
-            return (
-              <Link
-                key={a.href}
-                href={a.href}
-                title={a.dica}
-                className="group flex items-center gap-2.5 rounded-xl bg-accent/70 px-3 py-2.5 text-accent-foreground ring-1 ring-inset ring-foreground/5 transition-colors duration-150 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring sm:flex-col sm:items-start sm:gap-2 sm:px-3.5 sm:py-3"
-              >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-card text-primary shadow-card dark:text-accent-foreground">
-                  <Icone size={16} strokeWidth={2} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-[13px] leading-tight font-semibold">
-                    {a.rotulo}
-                  </span>
-                  <span className="hidden truncate text-[11px] leading-tight text-muted-foreground sm:block">
-                    {a.dica}
-                  </span>
-                </span>
-              </Link>
-            )
-          })}
-        </nav>
+    <section className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <div className="min-w-0">
+        <h2 className="font-heading text-[22px] leading-tight font-semibold tracking-[-0.01em]">
+          {cumprimento}, {primeiroNome(nome) || "bem-vindo"}!
+        </h2>
+        <p className="mt-0.5 text-[13px] text-muted-foreground first-letter:uppercase">
+          {hoje || "\u00a0"}
+        </p>
       </div>
+
+      <nav aria-label="Atalhos" className="grid shrink-0 grid-cols-4 gap-2 md:flex">
+        {ATALHOS.map((a) => {
+          const Icone = a.icone
+          return (
+            <Link
+              key={a.href}
+              href={a.href}
+              title={a.dica}
+              className="flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl bg-card px-2 py-1.5 text-[11px] font-semibold text-foreground/85 shadow-card transition-colors outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring md:h-9 md:min-h-0 md:flex-row md:gap-2 md:px-3 md:text-[12.5px]"
+            >
+              <Icone size={15} strokeWidth={2} className="text-primary dark:text-accent-foreground" />
+              <span className="truncate">{a.rotulo}</span>
+            </Link>
+          )
+        })}
+      </nav>
     </section>
   )
 }

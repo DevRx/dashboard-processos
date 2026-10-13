@@ -1,12 +1,10 @@
-import { AlarmClock, CalendarCheck, FileText, Users } from "lucide-react"
 
 import { Pagina } from "@/components/layout/pagina"
 import { BoasVindas } from "@/components/dashboard/boas-vindas"
-import { MetricCard } from "@/components/dashboard/metric-card"
+import { FaixaNumeros } from "@/components/dashboard/faixa-numeros"
 import { ProcessTable, type ProcessoRecente } from "@/components/dashboard/process-table"
 import { ProcessosStatusChart } from "@/components/charts/processos-status-chart"
-import { BeneficiosPorEsfera } from "@/components/charts/beneficios-por-esfera"
-import type { FatiaBeneficio } from "@/components/charts/beneficios-pizza"
+import { BeneficiosPizza, type FatiaBeneficio } from "@/components/charts/beneficios-pizza"
 import {
   UrgentesAtrasadas,
   type AtrasadasPorTime,
@@ -271,79 +269,71 @@ export default async function HomePage() {
     })
   }
 
+  // Uma grade só, do mais urgente ao mais geral: o placar, o que não
+  // pode esperar ao lado do dia de hoje, e por fim os processos. Cada
+  // linha tem a mesma altura de ponta a ponta — painel solto, de altura
+  // própria, era o que deixava a tela com cara de desarrumada.
   return (
-    <Pagina titulo="Início" subtitulo="Visão geral do escritório">
+    <Pagina titulo="Início" subtitulo="Visão geral do escritório" className="space-y-4">
       <BoasVindas nome={session?.name ?? ""} />
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <MetricCard
-          icon={FileText}
-          tom="neutro"
-          title="Processos ativos"
-          value={String(processosAtivos)}
-          description="Em andamento no INSS ou na Justiça"
-          href="/processos"
-        />
-        <MetricCard
-          icon={Users}
-          tom="neutro"
-          title="Clientes"
-          value={String(totalClientes)}
-          description="Pessoas cadastradas"
-          href="/clientes"
-        />
-        <MetricCard
-          icon={CalendarCheck}
-          tom="neutro"
-          title="Para hoje"
-          value={String(tarefasHoje)}
-          description={
-            tarefasHoje === 1 ? "Compromisso ou prazo hoje" : "Compromissos e prazos hoje"
-          }
-          href="/agenda"
-          rotuloLink="Abrir agenda"
-        />
-        <MetricCard
-          icon={AlarmClock}
-          tom={tarefasAtrasadas > 0 ? "atraso" : "sucesso"}
-          title="Atrasados"
-          value={String(tarefasAtrasadas)}
-          description={
-            tarefasAtrasadas === 0
-              ? "Nada passou do prazo"
-              : tarefasAtrasadas === 1
-                ? "Um item passou do prazo"
-                : "Itens que passaram do prazo"
-          }
-          href="/agenda"
-          rotuloLink="Resolver"
-        />
-      </div>
-
-      <div className="grid items-start gap-5 lg:grid-cols-2">
-        <UrgentesAtrasadas
-          urgentes={urgentes}
-          totalUrgentes={totalUrgentes}
-          atrasadas={atrasadasPorTime}
-          totalAtrasadas={tarefasAtrasadas}
-          hoje={hoje}
-        />
-        <AgendaDoDia
-          dataPorExtenso={formatarDataLonga(hoje)}
-          itens={agendaDeHoje}
-          tarefasPorTime={hojePorTime}
-          totalHoje={tarefasHoje}
-        />
-      </div>
-
-      <BeneficiosPorEsfera
-        administrativo={beneficiosAdministrativo}
-        judicial={beneficiosJudicial}
+      <FaixaNumeros
+        numeros={[
+          { rotulo: "Processos ativos", valor: processosAtivos, detalhe: "No INSS e na Justiça", href: "/processos" },
+          { rotulo: "Clientes", valor: totalClientes, detalhe: "Pessoas cadastradas", href: "/clientes" },
+          { rotulo: "Para hoje", valor: tarefasHoje, detalhe: "Tarefas com data de hoje", href: "/agenda" },
+          {
+            rotulo: "Atrasadas",
+            valor: tarefasAtrasadas,
+            detalhe: tarefasAtrasadas === 0 ? "Nada passou do prazo" : "Passaram do prazo",
+            href: "/agenda",
+            atraso: true,
+          },
+        ]}
       />
 
-      <div className="grid gap-5 lg:grid-cols-[1fr_380px] lg:items-start">
-        <ProcessTable processos={processosRecentes} />
-        <ProcessosStatusChart porStatus={porStatus} />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+        <div className="min-w-0 lg:col-span-7">
+          <UrgentesAtrasadas
+            urgentes={urgentes}
+            totalUrgentes={totalUrgentes}
+            atrasadas={atrasadasPorTime}
+            totalAtrasadas={tarefasAtrasadas}
+            hoje={hoje}
+          />
+        </div>
+        <div className="min-w-0 lg:col-span-5">
+          <AgendaDoDia
+            dataPorExtenso={formatarDataLonga(hoje)}
+            itens={agendaDeHoje}
+            tarefasPorTime={hojePorTime}
+            totalHoje={tarefasHoje}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 *:h-full *:min-w-0">
+        <BeneficiosPizza
+          titulo="Administrativo"
+          descricao="Requerimentos no INSS"
+          fatias={beneficiosAdministrativo}
+          vazio="Nenhum processo administrativo cadastrado."
+        />
+        <BeneficiosPizza
+          titulo="Judicial"
+          descricao="Ações na justiça"
+          fatias={beneficiosJudicial}
+          vazio="Nenhum processo judicial cadastrado."
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+        <div className="min-w-0 lg:col-span-7 *:h-full">
+          <ProcessTable processos={processosRecentes} />
+        </div>
+        <div className="min-w-0 lg:col-span-5 *:h-full">
+          <ProcessosStatusChart porStatus={porStatus} />
+        </div>
       </div>
     </Pagina>
   )

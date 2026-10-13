@@ -9,7 +9,6 @@ import {
   ListChecks,
   MapPin,
   Users,
-  Wallet,
   type LucideIcon,
 } from "lucide-react"
 
@@ -30,7 +29,6 @@ const AREAS: { href: string; icone: LucideIcon; nome: string; oQue: string }[] =
   { href: "/judicial/intimacoes", icone: Bell, nome: "Intimações", oQue: "O que o diário oficial publicou sobre os processos, já triado." },
   { href: "/agenda", icone: CalendarDays, nome: "Agenda", oQue: "Compromissos e prazos: atrasados, de hoje e dos próximos dias." },
   { href: "/mapa", icone: MapPin, nome: "Mapa", oQue: "Onde moram os clientes, cidade por cidade." },
-  { href: "/financeiro", icone: Wallet, nome: "Financeiro", oQue: "O que entrou e o que saiu do caixa." },
 ]
 
 export default async function ConfiguracoesPage() {

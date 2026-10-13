@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto"
-import type { TimeTarefa } from "@/lib/domain/tarefa"
+import type { CorGravada } from "@/lib/domain/tarefa"
 
 /**
  * Do backup do TickTick para as tarefas do escritório.
@@ -23,7 +23,7 @@ export type TarefaImportada = {
   hora: string | null
   status: "PENDENTE" | "CONCLUIDA" | "CANCELADA"
   prioridade: "BAIXA" | "MEDIA" | "ALTA" | "URGENTE"
-  setor: TimeTarefa | null
+  setor: CorGravada | null
   pasta: string | null
   created_at: string
 }
@@ -91,22 +91,26 @@ export function linhasDoBackup(texto: string): LinhaTickTick[] {
 // ── Time ─────────────────────────────────────────────────────────────
 
 /**
- * No TickTick do escritório o time está na cor: 🔴 Zeca, 🔵 Tay,
- * 🌕/🟡 Guilherme e Camille. A coluna do kanban vale mais que a lista —
- * "TAREFAS ZECA 🔴" com coluna "AZUL 🔵" é tarefa que o Zeca passou para
- * a Tay. Sem cor em lugar nenhum (Cobrança, Inbox), fica sem time.
+ * No TickTick do escritório o time está na cor: 🔴 vermelho, 🔵 azul,
+ * 🌕/🟡 amarelo e 🩷/🟣 rosa. A coluna do kanban vale mais que a lista —
+ * "TAREFAS ZECA 🔴" com coluna "AZUL 🔵" é tarefa que o vermelho passou
+ * para o azul. Sem cor em lugar nenhum (Cobrança, Inbox), fica sem time.
+ *
+ * ⚫ continua sendo lido como preto: é uma cor antiga, que no quadro vai
+ * para a faixa "a classificar" em vez de sumir.
  */
-function timeDe(texto: string): TimeTarefa | null {
+function timeDe(texto: string): CorGravada | null {
   const t = texto.toUpperCase()
   if (!t.trim()) return null
   if (t.includes("🔵") || /\bAZUL\b/.test(t) || /\bTAY\b/.test(t)) return "AZUL"
   if (t.includes("🌕") || t.includes("🟡") || /\bAMARELO\b/.test(t)) return "AMARELO"
+  if (["🩷", "💗", "🌸", "🟣"].some((e) => t.includes(e)) || /\bROSA\b/.test(t) || /\bROXO\b/.test(t)) return "ROSA"
   if (t.includes("🔴") || /\bVERMELHO\b/.test(t) || /\bZECA\b/.test(t) || t.includes("ZÉ ")) return "VERMELHO"
   if (t.includes("⚫") || /\bPRETO\b/.test(t) || /\bRYAN\b/.test(t)) return "PRETO"
   return null
 }
 
-export function timeDaLinha(l: LinhaTickTick): TimeTarefa | null {
+export function timeDaLinha(l: LinhaTickTick): CorGravada | null {
   return timeDe(l["Column Name"]) ?? timeDe(l["List Name"]) ?? timeDe(l["Folder Name"])
 }
 
@@ -129,7 +133,7 @@ function soDizOTime(nome: string) {
   return (
     !c ||
     c === "NÃO CLASSIFICADO" ||
-    ["AZUL", "AMARELO", "VERMELHO", "PRETO", "TAY", "ZECA", "RYAN", "AUTO TAREFAS"].includes(c)
+    ["AZUL", "AMARELO", "VERMELHO", "ROSA", "ROXO", "PRETO", "TAY", "ZECA", "RYAN", "AUTO TAREFAS"].includes(c)
   )
 }
 

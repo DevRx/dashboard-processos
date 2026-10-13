@@ -17,6 +17,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { CORES_TIME } from "@/components/tarefas/cores-time"
 import { cn } from "@/lib/utils"
 import {
   TIMES_TAREFA,
@@ -63,13 +64,9 @@ export type Intimacao = {
 export type Usuario = { id: string; name: string }
 
 /** Mesmas cores do quadro de tarefas: o time é reconhecido pela cor. */
-const COR_TIME: Record<TimeTarefa, string> = {
-  VERMELHO: "bg-red-600",
-  PRETO: "bg-zinc-900 dark:bg-zinc-100",
-  AZUL: "bg-blue-600",
-  AMARELO: "bg-amber-400",
-  VERDE: "bg-emerald-600",
-}
+const COR_TIME = Object.fromEntries(
+  Object.entries(CORES_TIME).map(([time, paleta]) => [time, paleta.ponto])
+) as Record<TimeTarefa, string>
 
 const TOM_URGENCIA: Record<string, string> = {
   ALTA: "bg-red-100 text-red-800 dark:bg-red-950/70 dark:text-red-200",

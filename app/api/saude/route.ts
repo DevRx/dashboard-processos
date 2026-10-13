@@ -123,6 +123,23 @@ export async function GET() {
         detalhe: error ? `FALTANDO — aplique ${migration}.sql` : "presente",
       })
     }
+
+    // Valor novo de enum não é coluna: a única forma de saber se o banco
+    // conhece o rosa é perguntar por ele. Sem a migration, o Postgres
+    // recusa o valor e o filtro devolve erro.
+    const { error: semRosa } = await supabase
+      .from("tarefas")
+      .select("id")
+      .eq("setor", "ROSA")
+      .limit(1)
+
+    achados.push({
+      nome: "time rosa (tarefas.setor)",
+      ok: !semRosa,
+      detalhe: semRosa
+        ? "FALTANDO — aplique 20261013090000_time_rosa.sql"
+        : "presente",
+    })
   }
 
   const saudavel = achados.every((a) => a.ok)

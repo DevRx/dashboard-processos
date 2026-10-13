@@ -170,11 +170,32 @@ projeto:
 | `20260818_comunicacoes_djen` | tabela `comunicacoes_djen` |
 | `20260818_analise_intimacao` | colunas `ia_*` em `comunicacoes_djen` |
 | `20260925120000_tarefas_pasta_e_origem` | `tarefas.pasta`, `tarefas.origem_id` (importação do TickTick) |
+| `20261013090000_time_rosa` | valor `ROSA` no enum `SetorTarefa` (time rosa) |
 
-Os times são identificados por cor, e cada cor tem dono: Vermelho é
-o Zeca, Azul a Tay, Amarelo o Guilherme e a Camille, Preto o Ryan;
-Verde está livre. Trocar alguém de time é editar os rótulos em
-`lib/domain/tarefa/time.ts` — o banco continua gravando a cor.
+Os times são identificados só pela cor — sem nome de pessoa no rótulo —
+e são quatro, nesta ordem: **vermelho, azul, amarelo e rosa**. Na tela
+Tarefas cada time é um bloco separado, dois por linha, e o cartão de
+cada tarefa leva a cor do seu time. Preto e verde deixaram de ser time:
+continuam aceitos no banco porque há tarefas antigas gravadas com eles,
+e essas aparecem na faixa "fora dos quatro times" até alguém arrastá-las
+para um dos quatro. A definição mora em `lib/domain/tarefa/time.ts`; a
+paleta, em `components/tarefas/cores-time.ts`.
+
+### Agenda
+
+À esquerda, dois calendários, um embaixo do outro:
+
+- **Tarefas** — o geral: toda tarefa em aberto, contada por dia na cor
+  do time.
+- **Perícias e prazos** — perícia em **branco**, prazo em
+  **cinza-escuro**, exigência em **verde**. A regra que decide o que entra
+  está em `lib/domain/tarefa/agenda.ts`: tarefa aberta por intimação do
+  DJEN é prazo; título ou pasta com "exigência" é exigência; com
+  "perícia" é perícia; pasta de prazo ou `JUDICIAL › ANDAMENTO` é prazo.
+
+À direita, separadas, as **tarefas urgentes** (prioridade urgente), com
+filtro por cor e por período — dia, semana (7 dias), mês (30 dias) ou
+todos; as atrasadas entram em qualquer período.
 
 ### Tarefas do TickTick
 

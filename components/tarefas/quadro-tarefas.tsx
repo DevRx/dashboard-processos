@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PainelTarefa } from "./painel-tarefa"
+import { CORES_TIME, paletaDe } from "./cores-time"
 import { cn } from "@/lib/utils"
 import {
   TIMES_TAREFA,
   TIME_LABEL,
   TIME_LABEL_CURTO,
   isTimeTarefa,
+  rotuloDaCor,
   tarefaCombina,
   termosDaBusca,
   trechoDaBusca,
@@ -23,9 +25,11 @@ import {
  * Quadro de tarefas por time.
  *
  * A pergunta que ele responde é "de quem é isso?", e a resposta chega
- * pela cor da coluna antes de qualquer leitura. Dentro do cartão, o
- * responsável vem primeiro e em negrito pelo mesmo motivo: quem está
- * varrendo o quadro procura um nome, não um título de tarefa.
+ * pela cor antes de qualquer leitura. São quatro times — vermelho,
+ * azul, amarelo e rosa, nesta ordem —, cada um num bloco separado, dois
+ * por linha. O cartão da tarefa leva a cor do time dele: solto na tela,
+ * ele continua dizendo de onde é. Dentro do cartão, o responsável vem
+ * primeiro e em negrito: quem varre o quadro procura um nome.
  *
  * O campo continua se chamando `setor` no banco e na API; na tela, o
  * nome é time — ver lib/domain/tarefa/time.ts.
@@ -52,43 +56,6 @@ type Tarefa = {
 }
 
 type Usuario = { id: string; name: string; role: string }
-
-/** Cores dos times. Fortes de propósito: são o índice do quadro. */
-const CORES: Record<
-  TimeTarefa,
-  { faixa: string; cabecalho: string; ponto: string; fundo: string }
-> = {
-  VERMELHO: {
-    faixa: "bg-red-600",
-    cabecalho: "text-red-700 dark:text-red-300",
-    ponto: "bg-red-600",
-    fundo: "bg-red-50/70 dark:bg-red-950/25",
-  },
-  PRETO: {
-    faixa: "bg-zinc-900 dark:bg-zinc-100",
-    cabecalho: "text-zinc-900 dark:text-zinc-100",
-    ponto: "bg-zinc-900 dark:bg-zinc-100",
-    fundo: "bg-zinc-100/80 dark:bg-zinc-900/50",
-  },
-  AZUL: {
-    faixa: "bg-blue-600",
-    cabecalho: "text-blue-700 dark:text-blue-300",
-    ponto: "bg-blue-600",
-    fundo: "bg-blue-50/70 dark:bg-blue-950/25",
-  },
-  AMARELO: {
-    faixa: "bg-amber-400",
-    cabecalho: "text-amber-700 dark:text-amber-300",
-    ponto: "bg-amber-400",
-    fundo: "bg-amber-50/80 dark:bg-amber-950/25",
-  },
-  VERDE: {
-    faixa: "bg-emerald-600",
-    cabecalho: "text-emerald-700 dark:text-emerald-300",
-    ponto: "bg-emerald-600",
-    fundo: "bg-emerald-50/70 dark:bg-emerald-950/25",
-  },
-}
 
 const PRIORIDADE_TOM: Record<string, string> = {
   URGENTE: "bg-red-600 text-white",
@@ -211,6 +178,7 @@ function CartaoTarefa({
   const prazo = formatarData(tarefa.data)
   const atrasada = tarefa.data.slice(0, 10) < hojeISO()
   const responsavel = tarefa.responsavel
+  const paleta = paletaDe(tarefa.setor)
 
   return (
     <div
@@ -222,7 +190,9 @@ function CartaoTarefa({
       }}
       onDragEnd={onArrastarFim}
       className={cn(
-        "relative cursor-grab rounded-xl bg-card p-3 shadow-card transition-[opacity,box-shadow,transform] hover:shadow-float active:cursor-grabbing has-[[aria-expanded=true]]:z-30",
+        "relative cursor-grab rounded-xl p-3 shadow-card transition-[opacity,box-shadow,transform] hover:shadow-float active:cursor-grabbing has-[[aria-expanded=true]]:z-30",
+        // A cor do time vai no cartão: fundo claro e faixa à esquerda.
+        paleta ? cn("border-l-4", paleta.cartao, paleta.borda) : "bg-card",
         arrastando && "opacity-40"
       )}
     >
@@ -337,18 +307,14 @@ function CartaoTarefa({
         ) : null}
 
         <MenuSuspenso titulo="Trocar time" gatilho={() => (
-          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10.5px] font-semibold text-muted-foreground">
+          <span className="inline-flex items-center gap-1 rounded-full bg-card/80 px-2 py-0.5 text-[10.5px] font-semibold text-muted-foreground">
             <span
               className={cn(
                 "size-2 rounded-full",
-                isTimeTarefa(tarefa.setor)
-                  ? CORES[tarefa.setor].ponto
-                  : "bg-muted-foreground/40"
+                paleta ? paleta.ponto : "bg-muted-foreground/40"
               )}
             />
-            {isTimeTarefa(tarefa.setor)
-              ? TIME_LABEL_CURTO[tarefa.setor]
-              : "sem time"}
+            {rotuloDaCor(tarefa.setor) ?? "sem time"}
           </span>
         )}>
           {(fechar) => (
@@ -364,7 +330,7 @@ function CartaoTarefa({
                   }}
                   className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-[13px] hover:bg-accent hover:text-accent-foreground"
                 >
-                  <span className={cn("size-2.5 rounded-full", CORES[s].ponto)} />
+                  <span className={cn("size-2.5 rounded-full", CORES_TIME[s].ponto)} />
                   <span className="flex-1">{TIME_LABEL[s]}</span>
                   {s === tarefa.setor ? <Check size={14} /> : null}
                 </button>
@@ -644,14 +610,19 @@ export function QuadroTarefas() {
         body: JSON.stringify(campos),
       })
 
-      if (!r.ok) return
+      // Recusado (o rosa sem migration, por exemplo): a tela volta ao
+      // que o banco tem, em vez de mostrar a tarefa onde ela não está.
+      if (!r.ok) {
+        recarregar()
+        return
+      }
       const { tarefa } = await r.json()
 
       setTarefas((atuais) =>
         atuais.map((t) => (t.id === id ? { ...t, ...tarefa } : t))
       )
     },
-    []
+    [recarregar]
   )
 
   const criar = useCallback(
@@ -736,9 +707,9 @@ export function QuadroTarefas() {
 
   if (carregando) {
     return (
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-40 w-full" />
+      <div className="grid gap-4 lg:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-48 w-full" />
         ))}
       </div>
     )
@@ -803,9 +774,12 @@ export function QuadroTarefas() {
         ) : null}
       </div>
 
-      <div className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      {/* Quatro times, dois por linha, na ordem vermelho, azul, amarelo
+          e rosa. Cada um é um bloco à parte: a cor chapada no alto
+          separa um do outro sem precisar de rótulo com nome. */}
+      <div className="grid items-start gap-4 lg:grid-cols-2">
         {TIMES_TAREFA.map((time) => {
-          const cor = CORES[time]
+          const cor = CORES_TIME[time]
           const lista = porTime.mapa[time]
 
           const alvo = colunaAlvo === time
@@ -813,6 +787,7 @@ export function QuadroTarefas() {
           return (
             <section
               key={time}
+              aria-label={`Time ${TIME_LABEL[time]}`}
               onDragOver={(e) => {
                 e.preventDefault()
                 e.dataTransfer.dropEffect = "move"
@@ -823,25 +798,19 @@ export function QuadroTarefas() {
               }
               onDrop={(e) => soltar(e, time)}
               className={cn(
-                "flex flex-col overflow-visible rounded-2xl shadow-card transition-shadow",
-                cor.fundo,
-                // Enquanto se arrasta, a coluna sob o cursor levanta a
+                "flex flex-col overflow-visible rounded-2xl bg-card shadow-card transition-shadow",
+                // Enquanto se arrasta, o bloco sob o cursor levanta a
                 // mão: sem isso, soltar vira aposta.
                 alvo && "shadow-md ring-2 ring-foreground/30"
               )}
             >
-              <span
-                aria-hidden
-                className={cn("h-1.5 w-full shrink-0 rounded-t-2xl", cor.faixa)}
-              />
-
-              <header className="flex items-center gap-2 px-3 py-2.5">
-                <h3
-                  className={cn(
-                    "font-heading flex-1 truncate text-[13px] leading-tight font-bold tracking-wide uppercase",
-                    cor.cabecalho
-                  )}
-                >
+              <header
+                className={cn(
+                  "flex items-center gap-2 rounded-t-2xl px-4 py-3",
+                  cor.cabecalho
+                )}
+              >
+                <h3 className="font-heading flex-1 truncate text-[15px] leading-tight font-bold tracking-[0.08em] uppercase">
                   {TIME_LABEL[time]}
                 </h3>
                 <button
@@ -854,26 +823,26 @@ export function QuadroTarefas() {
                       return proximo
                     })
                   }
-                  title={`Buscar só em ${TIME_LABEL[time]}`}
-                  aria-label={`Buscar só em ${TIME_LABEL[time]}`}
+                  title={`Buscar só no ${TIME_LABEL[time]}`}
+                  aria-label={`Buscar só no ${TIME_LABEL[time]}`}
                   aria-pressed={buscaDoTime[time] !== undefined}
                   className={cn(
-                    "flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-card hover:text-foreground",
-                    buscaDoTime[time] !== undefined && "bg-card text-foreground shadow-card"
+                    "flex size-7 items-center justify-center rounded-md opacity-80 transition hover:bg-black/10 hover:opacity-100",
+                    buscaDoTime[time] !== undefined && "bg-black/15 opacity-100"
                   )}
                 >
-                  <Search size={13} />
+                  <Search size={14} />
                 </button>
-                <span className="rounded-full bg-card px-2.5 py-0.5 text-[11px] font-bold tabular-nums shadow-card">
+                <span className="rounded-full bg-black/15 px-2.5 py-0.5 text-[12px] font-bold tabular-nums">
                   {lista.length}
                 </span>
               </header>
 
               {buscaDoTime[time] !== undefined ? (
-                <div className="relative px-2.5 pb-2">
+                <div className="relative px-3 pt-3">
                   <Search
                     size={13}
-                    className="pointer-events-none absolute top-1/2 left-5 -translate-y-[calc(50%+4px)] text-muted-foreground"
+                    className="pointer-events-none absolute top-1/2 left-5.5 translate-y-[calc(-50%+6px)] text-muted-foreground"
                   />
                   <Input
                     autoFocus
@@ -889,14 +858,14 @@ export function QuadroTarefas() {
                           return proximo
                         })
                     }}
-                    placeholder={`Buscar em ${TIME_LABEL_CURTO[time]}…`}
-                    aria-label={`Buscar em ${TIME_LABEL[time]}`}
+                    placeholder={`Buscar no ${TIME_LABEL_CURTO[time]}…`}
+                    aria-label={`Buscar no ${TIME_LABEL[time]}`}
                     className="h-8 bg-card pl-7 text-[12.5px]"
                   />
                 </div>
               ) : null}
 
-              <div className="flex min-h-[72px] flex-col gap-2 px-2.5 pb-2.5">
+              <div className="flex min-h-[96px] flex-col gap-2 p-3">
                 {(() => {
                   const termosDaColuna = [
                     ...termos,
@@ -928,15 +897,27 @@ export function QuadroTarefas() {
                   }
                   return (
                     <>
-                      {soltas.map(cartao)}
-                      {pastas.map(([nome, itens]) => (
-                        <Pasta key={nome} nome={nome} quantas={itens.length} aberta={filtrando}>
-                          {itens.map(cartao)}
-                        </Pasta>
-                      ))}
+                      {soltas.length > 0 ? (
+                        <div className="grid gap-2 xl:grid-cols-2">{soltas.map(cartao)}</div>
+                      ) : null}
+                      {pastas.length > 0 ? (
+                        <div className="grid items-start gap-2 xl:grid-cols-2">
+                          {pastas.map(([nome, itens]) => (
+                            <Pasta key={nome} nome={nome} quantas={itens.length} aberta={filtrando}>
+                              {itens.map(cartao)}
+                            </Pasta>
+                          ))}
+                        </div>
+                      ) : null}
                     </>
                   )
                 })()}
+
+                {lista.length === 0 && !arrastando && !buscando ? (
+                  <p className="py-2 text-center text-[12px] text-muted-foreground">
+                    Nenhuma tarefa em aberto.
+                  </p>
+                ) : null}
 
                 {lista.length === 0 && arrastando && (
                   <p className="rounded-lg border border-dashed border-foreground/20 py-3 text-center text-[11px] text-muted-foreground">
@@ -951,8 +932,9 @@ export function QuadroTarefas() {
         })}
       </div>
 
-      {/* Tarefas antigas, criadas antes dos times existirem. A faixa
-          some sozinha quando a última for classificada. */}
+      {/* Tarefas sem time, ou ainda gravadas numa cor que deixou de ser
+          time (preto, verde). A faixa some sozinha quando a última for
+          arrastada para um dos quatro. */}
       {(porTime.semTime.length > 0 || arrastando) && (
         <section
           onDragOver={(e) => {
@@ -971,10 +953,10 @@ export function QuadroTarefas() {
         >
           <h3 className="mb-2 text-[11px] font-bold tracking-wide text-muted-foreground uppercase">
             {porTime.semTime.length > 0
-              ? `Sem time — ${porTime.semTime.length} a classificar`
+              ? `Fora dos quatro times — ${porTime.semTime.length} a classificar`
               : "Sem time — solte aqui para tirar do time"}
           </h3>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
             {porTime.semTime.map((t) => (
               <CartaoTarefa
                 key={t.id}

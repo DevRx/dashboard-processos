@@ -31,16 +31,12 @@ export const TarefaPrioridadeEnum = z.enum([
   "URGENTE",
 ])
 
-/** Times do escritório. A coluna no banco ainda se chama `setor`. */
-export const TimeTarefaEnum = z.enum([
-  "VERMELHO",
-  "PRETO",
-  "AZUL",
-  "AMARELO",
-  "VERDE",
-])
-
-export const LancamentoTipoEnum = z.enum(["ENTRADA", "SAIDA"])
+/**
+ * Times do escritório. A coluna no banco ainda se chama `setor`.
+ * Só os quatro atuais são aceitos na gravação — preto e verde ficaram
+ * em tarefas antigas, mas nenhuma tela manda tarefa para eles.
+ */
+export const TimeTarefaEnum = z.enum(["VERMELHO", "AZUL", "AMARELO", "ROSA"])
 
 export const EsferaProcessoEnum = z.enum(["ADMINISTRATIVO", "JUDICIAL"])
 

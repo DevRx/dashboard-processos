@@ -53,6 +53,16 @@ export async function GET(request: NextRequest) {
       if (!data || data.length < PAGINA) break
     }
 
+    // A agenda precisa saber quais tarefas nasceram de uma intimação:
+    // são os prazos do calendário de perícias e prazos. O vínculo mora
+    // na intimação (`comunicacoes_djen.tarefa_id`), não na tarefa.
+    if (searchParams.get("vinculos") === "1") {
+      const deIntimacao = await tarefasDeIntimacao(escritorio)
+      for (const t of tarefas) {
+        t.de_intimacao = deIntimacao.has(String(t.id))
+      }
+    }
+
     return NextResponse.json(
       { tarefas: toCamelCase(tarefas) },
       { status: 200 }
@@ -64,6 +74,39 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+/**
+ * Ids das tarefas que alguma intimação do DJEN abriu.
+ *
+ * Falhar aqui não derruba a agenda: sem o vínculo, o prazo ainda cai no
+ * calendário pela pasta ou pelo título — só perde a certeza.
+ */
+async function tarefasDeIntimacao(escritorio: string[]): Promise<Set<string>> {
+  const ids = new Set<string>()
+  const PAGINA = 1000
+
+  for (let de = 0; ; de += PAGINA) {
+    const { data, error } = await supabase
+      .from("comunicacoes_djen")
+      .select("tarefa_id")
+      .in("user_id", escritorio)
+      .not("tarefa_id", "is", null)
+      .order("id", { ascending: true })
+      .range(de, de + PAGINA - 1)
+
+    if (error) {
+      console.error("Vínculo tarefa ↔ intimação:", error.message)
+      break
+    }
+
+    for (const linha of data ?? []) {
+      if (linha.tarefa_id) ids.add(String(linha.tarefa_id))
+    }
+    if (!data || data.length < PAGINA) break
+  }
+
+  return ids
 }
 
 export async function POST(request: NextRequest) {

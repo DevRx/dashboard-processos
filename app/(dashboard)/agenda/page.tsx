@@ -2,22 +2,20 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
-  AlertTriangle,
   CalendarDays,
   CalendarPlus,
   Check,
-  CheckCircle2,
   Clock,
+  Flame,
   Loader2,
   Pencil,
   Save,
-  Sunrise,
+  Scale,
   Trash2,
-  type LucideIcon,
+  UserRound,
 } from "lucide-react"
 
 import { Pagina } from "@/components/layout/pagina"
-import { Badge, type BadgeVariant } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Campo, LinhaCampos } from "@/components/ui/campo"
 import {
@@ -35,18 +33,61 @@ import { Select } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { useConfirmacao } from "@/components/ui/confirmacao"
-import { EmptyState } from "@/components/dashboard/empty-state"
-import { formatarData, hojeISO, partesData, prazoRelativo } from "@/lib/formatar"
+import { CalendarioMes } from "@/components/agenda/calendario-mes"
+import { CORES_CATEGORIA } from "@/components/agenda/cores-agenda"
+import { CORES_TIME, paletaDe } from "@/components/tarefas/cores-time"
+import { formatarDataLonga, prazoRelativo } from "@/lib/formatar"
 import { cn } from "@/lib/utils"
+import {
+  CATEGORIAS_AGENDA,
+  CATEGORIA_AGENDA_LABEL,
+  TIMES_TAREFA,
+  TIME_LABEL,
+  categoriaNaAgenda,
+  isTimeTarefa,
+  rotuloDaCor,
+  type CategoriaAgenda,
+  type TimeTarefa,
+} from "@/lib/domain/tarefa"
 import {
   TAREFA_STATUS_LABELS,
   TAREFA_STATUS_VALUES,
-  TAREFA_PRIORIDADE_LABELS,
-  type Tarefa,
   type TarefaPrioridade,
   type TarefaStatus,
   type Processo,
 } from "@/lib/data"
+
+/**
+ * Agenda do escritório.
+ *
+ * À esquerda, dois calendários, um embaixo do outro: o geral, com toda
+ * tarefa em aberto na cor do time, e o de perícias e prazos, onde a cor
+ * é o tipo — perícia em branco, prazo do DJEN em cinza-escuro,
+ * exigência em verde. À direita, à parte, as urgentes, com filtro por
+ * cor e por período.
+ *
+ * Só as tarefas em aberto descem do servidor: as concluídas são
+ * milhares (o histórico do TickTick) e nenhuma delas é compromisso.
+ */
+
+type TarefaAgenda = {
+  id: string
+  titulo: string
+  descricao?: string | null
+  data: string
+  hora?: string | null
+  status: TarefaStatus
+  prioridade: TarefaPrioridade
+  processoId?: string | null
+  setor?: string | null
+  pasta?: string | null
+  tipo?: string | null
+  deIntimacao?: boolean
+  responsavel?: { id: string; name: string } | null
+}
+
+type Periodo = "DIA" | "SEMANA" | "MES" | "TODOS"
+type FiltroCor = "TODAS" | TimeTarefa
 
 const VAZIO = {
   titulo: "",
@@ -56,86 +97,225 @@ const VAZIO = {
   status: "PENDENTE" as TarefaStatus,
   prioridade: "MEDIA" as TarefaPrioridade,
   processoId: "",
+  setor: "" as "" | TimeTarefa,
 }
 
-const TOM_STATUS: Record<TarefaStatus, BadgeVariant> = {
-  PENDENTE: "outline",
-  EM_ANDAMENTO: "info",
-  CONCLUIDA: "success",
-  CANCELADA: "muted",
+/** Hoje no relógio de quem olha — não em UTC, que vira o dia às 21h. */
+function hojeLocal() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
 }
 
-const TOM_PRIORIDADE: Record<TarefaPrioridade, BadgeVariant> = {
-  URGENTE: "danger",
-  ALTA: "warning",
-  MEDIA: "muted",
-  BAIXA: "muted",
+function somarDias(iso: string, dias: number) {
+  const [a, m, d] = iso.split("-").map(Number)
+  const r = new Date(Date.UTC(a, m - 1, d + dias))
+  return r.toISOString().slice(0, 10)
 }
 
-type Grupo = {
-  chave: "atrasadas" | "hoje" | "proximas" | "encerradas"
-  titulo: string
-  descricao: string
-  icone: LucideIcon
-  cor: string
-  bloco: string
+function diaDe(t: TarefaAgenda) {
+  return t.data.slice(0, 10)
 }
 
-/**
- * Os grupos são a leitura da tela: o que passou (vermelho), o que é
- * hoje (a cor da marca) e o que vem depois. O bloco de data de cada
- * item repete a cor do grupo, para o olho não precisar do título.
- */
-const GRUPOS: Grupo[] = [
-  {
-    chave: "atrasadas",
-    titulo: "Atrasados",
-    descricao: "Passaram da data e ainda não foram concluídos",
-    icone: AlertTriangle,
-    cor: "text-status-danger-foreground",
-    bloco: "bg-status-danger text-status-danger-foreground",
-  },
-  {
-    chave: "hoje",
-    titulo: "Hoje",
-    descricao: "O que precisa acontecer ainda hoje",
-    icone: Sunrise,
-    cor: "text-brand",
-    bloco: "bg-brand text-white",
-  },
-  {
-    chave: "proximas",
-    titulo: "Próximos dias",
-    descricao: "Compromissos e prazos que vêm por aí",
-    icone: CalendarDays,
-    cor: "text-status-info-foreground",
-    bloco: "bg-status-info text-status-info-foreground",
-  },
-  {
-    chave: "encerradas",
-    titulo: "Concluídos e cancelados",
-    descricao: "O que já ficou para trás",
-    icone: CheckCircle2,
-    cor: "text-muted-foreground",
-    bloco: "bg-muted text-muted-foreground",
-  },
+function porDataHora(a: TarefaAgenda, b: TarefaAgenda) {
+  return `${diaDe(a)} ${a.hora ?? ""}`.localeCompare(`${diaDe(b)} ${b.hora ?? ""}`)
+}
+
+/** Ordem dos times na tela; sem time fica por último. */
+function ordemDoTime(setor?: string | null) {
+  const i = TIMES_TAREFA.indexOf(setor as TimeTarefa)
+  return i === -1 ? TIMES_TAREFA.length : i
+}
+
+const PERIODOS: { valor: Periodo; rotulo: string; dica: string }[] = [
+  { valor: "DIA", rotulo: "Dia", dica: "até hoje" },
+  { valor: "SEMANA", rotulo: "Semana", dica: "próximos 7 dias" },
+  { valor: "MES", rotulo: "Mês", dica: "próximos 30 dias" },
+  { valor: "TODOS", rotulo: "Todos", dica: "sem limite de data" },
 ]
 
-function encerrada(t: Tarefa) {
-  return t.status === "CONCLUIDA" || t.status === "CANCELADA"
+/** O que as linhas da agenda podem fazer com a tarefa. */
+type AcoesTarefa = {
+  concluindo: string | null
+  onConcluir: (t: TarefaAgenda) => void
+  onEditar: (t: TarefaAgenda, e: React.MouseEvent<HTMLButtonElement>) => void
+  onExcluir: (t: TarefaAgenda) => void
+}
+
+function Acoes({ tarefa, acoes }: { tarefa: TarefaAgenda; acoes: AcoesTarefa }) {
+  return (
+    <div className="flex shrink-0 items-center gap-0.5">
+      <Button
+        variant="soft"
+        size="icon-sm"
+        title="Marcar como concluído"
+        aria-label={`Concluir ${tarefa.titulo}`}
+        onClick={() => acoes.onConcluir(tarefa)}
+        disabled={acoes.concluindo === tarefa.id}
+        className="text-status-success-foreground hover:bg-status-success"
+      >
+        {acoes.concluindo === tarefa.id ? (
+          <Loader2 size={14} className="animate-spin" />
+        ) : (
+          <Check size={14} strokeWidth={2.5} />
+        )}
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        title="Editar"
+        aria-label={`Editar ${tarefa.titulo}`}
+        onClick={(e) => acoes.onEditar(tarefa, e)}
+      >
+        <Pencil size={14} />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        title="Excluir"
+        aria-label={`Excluir ${tarefa.titulo}`}
+        className="text-muted-foreground hover:bg-status-danger hover:text-status-danger-foreground"
+        onClick={() => acoes.onExcluir(tarefa)}
+      >
+        <Trash2 size={14} />
+      </Button>
+    </div>
+  )
+}
+
+/** Uma linha de tarefa: a faixa à esquerda diz a cor que importa ali. */
+function Linha({
+  tarefa,
+  categoria,
+  mostrarData,
+  hoje,
+  processo,
+  acoes,
+}: {
+  tarefa: TarefaAgenda
+  /** No calendário de perícias e prazos, a cor é o tipo — não o time. */
+  categoria?: CategoriaAgenda
+  mostrarData?: boolean
+  hoje: string
+  processo?: Processo | null
+  acoes: AcoesTarefa
+}) {
+  const paleta = paletaDe(tarefa.setor)
+  const atrasada = diaDe(tarefa) < hoje
+
+  return (
+    <li
+      className={cn(
+        "flex items-start gap-3 rounded-xl border-l-4 px-3 py-2.5",
+        categoria
+          ? cn("bg-muted/40", CORES_CATEGORIA[categoria].faixa)
+          : paleta
+            ? cn(paleta.cartao, paleta.borda)
+            : "border-l-muted-foreground/30 bg-muted/40"
+      )}
+    >
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          {categoria ? (
+            <span
+              className={cn(
+                "rounded-md px-1.5 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                CORES_CATEGORIA[categoria].etiqueta
+              )}
+            >
+              {CATEGORIA_AGENDA_LABEL[categoria]}
+            </span>
+          ) : null}
+          <span className="text-[13.5px] leading-snug font-semibold">{tarefa.titulo}</span>
+        </div>
+
+        <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11.5px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <Clock size={11} />
+            {mostrarData ? (
+              <span className={cn(atrasada && "font-semibold text-status-danger-foreground")}>
+                {atrasada ? "atrasada · " : ""}
+                {prazoRelativo(tarefa.data)}
+              </span>
+            ) : null}
+            {tarefa.hora ? `${mostrarData ? " · " : ""}às ${tarefa.hora}` : mostrarData ? "" : "sem hora"}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className={cn("size-2 rounded-full", paleta?.ponto ?? "bg-muted-foreground/40")} />
+            {rotuloDaCor(tarefa.setor) ?? "sem time"}
+          </span>
+          {tarefa.responsavel ? (
+            <span className="inline-flex items-center gap-1">
+              <UserRound size={11} />
+              {tarefa.responsavel.name}
+            </span>
+          ) : null}
+          {processo ? (
+            <span className="truncate">
+              {processo.beneficio}
+              {processo.numero ? ` · ${processo.numero}` : ""}
+            </span>
+          ) : null}
+        </p>
+      </div>
+      <Acoes tarefa={tarefa} acoes={acoes} />
+    </li>
+  )
+}
+
+/** O dia escolhido no calendário, por extenso, com o que há nele. */
+function DetalheDoDia({
+  data,
+  hoje,
+  vazio,
+  total,
+  children,
+}: {
+  data: string
+  hoje: string
+  vazio: string
+  total: number
+  children: React.ReactNode
+}) {
+  return (
+    <div className="border-t border-border px-4 py-3">
+      <h3 className="mb-2 flex items-center gap-2 text-[12.5px] font-semibold">
+        <span className="inline-block first-letter:uppercase">{formatarDataLonga(data)}</span>
+        {data === hoje ? (
+          <span className="rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+            hoje
+          </span>
+        ) : null}
+        <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-[11px] tabular-nums">
+          {total}
+        </span>
+      </h3>
+      {total === 0 ? (
+        <p className="py-3 text-center text-[12.5px] text-muted-foreground">{vazio}</p>
+      ) : (
+        <ul className="flex max-h-[420px] flex-col gap-1.5 overflow-y-auto pr-1">{children}</ul>
+      )}
+    </div>
+  )
 }
 
 export default function AgendaPage() {
-  const [tarefas, setTarefas] = useState<Tarefa[]>([])
+  const [tarefas, setTarefas] = useState<TarefaAgenda[]>([])
   const [processos, setProcessos] = useState<Processo[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [setorOriginal, setSetorOriginal] = useState<string>("")
   const [form, setForm] = useState(VAZIO)
   const [salvando, setSalvando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
   const [concluindo, setConcluindo] = useState<string | null>(null)
   const { confirmar, dialogo: dialogoConfirmacao } = useConfirmacao()
+
+  const [hoje] = useState(hojeLocal)
+  const [diaGeral, setDiaGeral] = useState(hoje)
+  const [diaEspecial, setDiaEspecial] = useState(hoje)
+  const [filtroCor, setFiltroCor] = useState<FiltroCor>("TODAS")
+  const [periodo, setPeriodo] = useState<Periodo>("SEMANA")
 
   // Elemento que abriu o modal. O Dialog é controlado, então o base-ui não
   // descobre sozinho para onde devolver o foco — passamos via `finalFocus`.
@@ -143,10 +323,13 @@ export default function AgendaPage() {
 
   const fetchData = useCallback(() => {
     const json = (r: Response) => (r.ok ? r.json() : null)
-    return Promise.all([fetch("/api/tarefas").then(json), fetch("/api/processos").then(json)])
+    return Promise.all([
+      fetch("/api/tarefas?abertas=1&vinculos=1").then(json),
+      fetch("/api/processos").then(json),
+    ])
       .then(([tarefasData, processosData]) => {
-        if (tarefasData) setTarefas(tarefasData.tarefas)
-        if (processosData) setProcessos(processosData.processos)
+        if (tarefasData) setTarefas(tarefasData.tarefas ?? [])
+        if (processosData) setProcessos(processosData.processos ?? [])
       })
       .catch((err) => console.error("Erro ao carregar agenda:", err))
       .finally(() => setLoading(false))
@@ -156,32 +339,111 @@ export default function AgendaPage() {
     fetchData()
   }, [fetchData])
 
+  // ── recortes ──────────────────────────────────────────────────────
+
+  const abertas = useMemo(
+    () => tarefas.filter((t) => t.status !== "CONCLUIDA" && t.status !== "CANCELADA"),
+    [tarefas]
+  )
+
+  const geralPorDia = useMemo(() => {
+    const mapa = new Map<string, TarefaAgenda[]>()
+    for (const t of abertas) {
+      const d = diaDe(t)
+      mapa.set(d, [...(mapa.get(d) ?? []), t])
+    }
+    for (const lista of mapa.values()) {
+      lista.sort((a, b) => ordemDoTime(a.setor) - ordemDoTime(b.setor) || porDataHora(a, b))
+    }
+    return mapa
+  }, [abertas])
+
+  const especialPorDia = useMemo(() => {
+    const mapa = new Map<string, { tarefa: TarefaAgenda; categoria: CategoriaAgenda }[]>()
+    for (const t of abertas) {
+      const categoria = categoriaNaAgenda(t)
+      if (!categoria) continue
+      const d = diaDe(t)
+      mapa.set(d, [...(mapa.get(d) ?? []), { tarefa: t, categoria }])
+    }
+    for (const lista of mapa.values()) {
+      lista.sort(
+        (a, b) =>
+          CATEGORIAS_AGENDA.indexOf(a.categoria) - CATEGORIAS_AGENDA.indexOf(b.categoria) ||
+          porDataHora(a.tarefa, b.tarefa)
+      )
+    }
+    return mapa
+  }, [abertas])
+
+  const urgentes = useMemo(() => {
+    const limite =
+      periodo === "DIA"
+        ? hoje
+        : periodo === "SEMANA"
+          ? somarDias(hoje, 6)
+          : periodo === "MES"
+            ? somarDias(hoje, 30)
+            : null
+
+    return abertas
+      .filter((t) => t.prioridade === "URGENTE")
+      .filter((t) => filtroCor === "TODAS" || t.setor === filtroCor)
+      .filter((t) => limite === null || diaDe(t) <= limite)
+      .sort(porDataHora)
+  }, [abertas, filtroCor, periodo, hoje])
+
+  /** Quantas urgentes cada cor tem no período — o número no filtro. */
+  const urgentesPorCor = useMemo(() => {
+    const limite =
+      periodo === "DIA" ? hoje : periodo === "SEMANA" ? somarDias(hoje, 6) : periodo === "MES" ? somarDias(hoje, 30) : null
+    const conta = new Map<string, number>()
+    for (const t of abertas) {
+      if (t.prioridade !== "URGENTE") continue
+      if (limite !== null && diaDe(t) > limite) continue
+      conta.set("TODAS", (conta.get("TODAS") ?? 0) + 1)
+      if (t.setor) conta.set(t.setor, (conta.get(t.setor) ?? 0) + 1)
+    }
+    return conta
+  }, [abertas, periodo, hoje])
+
+  const processoPorId = useMemo(
+    () => new Map(processos.map((p) => [p.id, p])),
+    [processos]
+  )
+
+  // ── ações ─────────────────────────────────────────────────────────
+
   function abrirNovo(e: React.MouseEvent<HTMLButtonElement>) {
     abridorRef.current = e.currentTarget
     setEditingId(null)
-    setForm({ ...VAZIO, data: hojeISO() })
+    setSetorOriginal("")
+    setForm({ ...VAZIO, data: diaGeral || hoje })
     setErro(null)
     setDialogOpen(true)
   }
 
-  function abrirEdicao(tarefa: Tarefa, e: React.MouseEvent<HTMLButtonElement>) {
+  function abrirEdicao(tarefa: TarefaAgenda, e: React.MouseEvent<HTMLButtonElement>) {
     abridorRef.current = e.currentTarget
     setEditingId(tarefa.id)
+    const setor = isTimeTarefa(tarefa.setor) ? tarefa.setor : ""
+    setSetorOriginal(setor)
     setForm({
       titulo: tarefa.titulo,
       descricao: tarefa.descricao || "",
-      data: tarefa.data ? tarefa.data.slice(0, 10) : "",
+      data: diaDe(tarefa),
       hora: tarefa.hora || "",
       status: tarefa.status,
       prioridade: tarefa.prioridade,
       processoId: tarefa.processoId || "",
+      setor,
     })
     setErro(null)
     setDialogOpen(true)
   }
 
   function payloadDe(t: typeof VAZIO) {
-    const payload: Record<string, string> = {
+    const payload: Record<string, string | null> = {
       titulo: t.titulo,
       data: t.data,
       status: t.status,
@@ -190,6 +452,9 @@ export default function AgendaPage() {
     if (t.descricao) payload.descricao = t.descricao
     if (t.hora) payload.hora = t.hora
     if (t.processoId) payload.processoId = t.processoId
+    // O time só vai quando mudou: tarefa ainda gravada numa cor antiga
+    // (preto, verde) não pode ser regravada sem querer.
+    if (t.setor !== setorOriginal) payload.setor = t.setor || null
     return payload
   }
 
@@ -221,35 +486,24 @@ export default function AgendaPage() {
     }
   }
 
-  async function concluir(tarefa: Tarefa) {
+  /** Só o status muda: o PATCH não arrisca apagar hora, pasta ou time. */
+  async function concluir(tarefa: TarefaAgenda) {
     setConcluindo(tarefa.id)
     try {
       const r = await fetch(`/api/tarefas/${tarefa.id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          payloadDe({
-            titulo: tarefa.titulo,
-            descricao: tarefa.descricao || "",
-            data: tarefa.data.slice(0, 10),
-            hora: tarefa.hora || "",
-            status: "CONCLUIDA",
-            prioridade: tarefa.prioridade,
-            processoId: tarefa.processoId || "",
-          })
-        ),
+        body: JSON.stringify({ status: "CONCLUIDA" }),
       })
       if (r.ok) {
-        setTarefas((atuais) =>
-          atuais.map((t) => (t.id === tarefa.id ? { ...t, status: "CONCLUIDA" } : t))
-        )
+        setTarefas((atuais) => atuais.filter((t) => t.id !== tarefa.id))
       }
     } finally {
       setConcluindo(null)
     }
   }
 
-  async function excluir(tarefa: Tarefa) {
+  async function excluir(tarefa: TarefaAgenda) {
     const ok = await confirmar({
       titulo: `Excluir "${tarefa.titulo}"?`,
       descricao: "O compromisso some da agenda de todo mundo. Isso não pode ser desfeito.",
@@ -264,25 +518,7 @@ export default function AgendaPage() {
     }
   }
 
-  const processoPorId = useMemo(
-    () => new Map(processos.map((p) => [p.id, p])),
-    [processos]
-  )
-
-  const grupos = useMemo(() => {
-    const hoje = hojeISO()
-    const porData = (a: Tarefa, b: Tarefa) =>
-      `${a.data.slice(0, 10)} ${a.hora ?? ""}`.localeCompare(
-        `${b.data.slice(0, 10)} ${b.hora ?? ""}`
-      )
-
-    return {
-      atrasadas: tarefas.filter((t) => t.data.slice(0, 10) < hoje && !encerrada(t)).sort(porData),
-      hoje: tarefas.filter((t) => t.data.slice(0, 10) === hoje && !encerrada(t)).sort(porData),
-      proximas: tarefas.filter((t) => t.data.slice(0, 10) > hoje && !encerrada(t)).sort(porData),
-      encerradas: tarefas.filter(encerrada).sort((a, b) => porData(b, a)),
-    }
-  }, [tarefas])
+  // ── peças ─────────────────────────────────────────────────────────
 
   const botaoNovo = (
     <Button onClick={abrirNovo}>
@@ -291,228 +527,251 @@ export default function AgendaPage() {
     </Button>
   )
 
-  function Item({ tarefa, grupo }: { tarefa: Tarefa; grupo: Grupo }) {
-    const { dia, mes } = partesData(tarefa.data)
-    const processo = tarefa.processoId ? processoPorId.get(tarefa.processoId) : null
-    const fechada = encerrada(tarefa)
-
-    return (
-      <li
-        className={cn(
-          "flex items-start gap-3 px-4 py-3 transition-colors hover:bg-muted/40 sm:items-center",
-          fechada && "opacity-70"
-        )}
-      >
-        <span
-          className={cn(
-            "flex w-12 shrink-0 flex-col items-center justify-center rounded-lg py-1.5 leading-none",
-            grupo.bloco
-          )}
-          title={formatarData(tarefa.data)}
-        >
-          <span className="font-heading text-lg font-semibold tabular-nums">{dia}</span>
-          <span className="mt-0.5 text-[10px] font-semibold tracking-wide uppercase">{mes}</span>
-        </span>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span
-              className={cn(
-                "text-[14px] font-semibold",
-                tarefa.status === "CONCLUIDA" && "line-through decoration-muted-foreground/60"
-              )}
-            >
-              {tarefa.titulo}
-            </span>
-            {tarefa.prioridade !== "MEDIA" && tarefa.prioridade !== "BAIXA" && (
-              <Badge variant={TOM_PRIORIDADE[tarefa.prioridade]}>
-                {TAREFA_PRIORIDADE_LABELS[tarefa.prioridade]}
-              </Badge>
-            )}
-            {tarefa.status !== "PENDENTE" && (
-              <Badge variant={TOM_STATUS[tarefa.status]}>
-                {TAREFA_STATUS_LABELS[tarefa.status]}
-              </Badge>
-            )}
-          </div>
-
-          {tarefa.descricao && (
-            <p className="mt-0.5 line-clamp-2 text-[12.5px] text-muted-foreground">
-              {tarefa.descricao}
-            </p>
-          )}
-
-          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12px] text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <Clock size={12} />
-              {tarefa.hora ? `às ${tarefa.hora}` : "sem hora marcada"}
-              {!fechada && (
-                <span className={cn("ml-1", grupo.chave === "atrasadas" && "font-medium text-status-danger-foreground")}>
-                  · {prazoRelativo(tarefa.data)}
-                </span>
-              )}
-            </span>
-            {processo && (
-              <span className="truncate">
-                {processo.beneficio}
-                {processo.numero ? ` · ${processo.numero}` : ""}
-              </span>
-            )}
-          </p>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-0.5">
-          {!fechada && (
-            <Button
-              variant="soft"
-              size="sm"
-              title="Marcar como concluído"
-              onClick={() => concluir(tarefa)}
-              disabled={concluindo === tarefa.id}
-              className="text-status-success-foreground hover:bg-status-success"
-            >
-              {concluindo === tarefa.id ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <Check size={14} strokeWidth={2.5} />
-              )}
-              <span className="hidden md:inline">Concluir</span>
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            title="Editar"
-            aria-label={`Editar ${tarefa.titulo}`}
-            onClick={(e) => abrirEdicao(tarefa, e)}
-          >
-            <Pencil size={15} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            title="Excluir"
-            aria-label={`Excluir ${tarefa.titulo}`}
-            className="text-muted-foreground hover:bg-status-danger hover:text-status-danger-foreground"
-            onClick={() => excluir(tarefa)}
-          >
-            <Trash2 size={15} />
-          </Button>
-        </div>
-      </li>
-    )
+  const acoes: AcoesTarefa = {
+    concluindo,
+    onConcluir: concluir,
+    onEditar: abrirEdicao,
+    onExcluir: excluir,
   }
 
+  const linha = (t: TarefaAgenda, extra?: { categoria?: CategoriaAgenda; mostrarData?: boolean }) => (
+    <Linha
+      key={t.id}
+      tarefa={t}
+      categoria={extra?.categoria}
+      mostrarData={extra?.mostrarData}
+      hoje={hoje}
+      processo={t.processoId ? processoPorId.get(t.processoId) : null}
+      acoes={acoes}
+    />
+  )
+
+  // ── tela ──────────────────────────────────────────────────────────
+
+  const legendaTimes = (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-muted-foreground">
+      {TIMES_TAREFA.map((t) => (
+        <span key={t} className="inline-flex items-center gap-1.5">
+          <span className={cn("size-2.5 rounded-full", CORES_TIME[t].ponto)} />
+          {TIME_LABEL[t]}
+        </span>
+      ))}
+      <span className="inline-flex items-center gap-1.5">
+        <span className="size-2.5 rounded-full bg-muted-foreground/40" />
+        Sem time
+      </span>
+    </div>
+  )
+
+  const legendaCategorias = (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-muted-foreground">
+      {CATEGORIAS_AGENDA.map((c) => (
+        <span key={c} className="inline-flex items-center gap-1.5">
+          <span className={cn("size-2.5 rounded-full", CORES_CATEGORIA[c].ponto)} />
+          {c === "PERICIA" ? "Perícias" : c === "PRAZO" ? "Prazos (DJEN)" : "Exigências"}
+        </span>
+      ))}
+    </div>
+  )
+
+  const listaGeralDoDia = geralPorDia.get(diaGeral) ?? []
+  const listaEspecialDoDia = especialPorDia.get(diaEspecial) ?? []
+  const dicaPeriodo = PERIODOS.find((p) => p.valor === periodo)?.dica
+
   return (
-    <Pagina
-      titulo="Agenda"
-      subtitulo="Compromissos e prazos do escritório"
-      acoes={botaoNovo}
-    >
-      {!loading && tarefas.length > 0 && (
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
-          {GRUPOS.filter((g) => g.chave !== "encerradas").map((g) => {
-            const Icone = g.icone
-            const total = grupos[g.chave].length
-            return (
-              <a
-                key={g.chave}
-                href={`#agenda-${g.chave}`}
-                className="flex items-center gap-2.5 rounded-xl bg-card px-3 py-3 shadow-card transition-shadow hover:shadow-md sm:gap-3 sm:px-4"
-              >
-                <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", g.bloco)}>
-                  <Icone size={18} strokeWidth={2} />
-                </span>
-                <span className="min-w-0">
-                  <span className="font-heading block text-xl leading-none font-semibold tabular-nums">
-                    {total}
-                  </span>
-                  <span className="block text-[11px] leading-tight font-medium tracking-wide text-muted-foreground uppercase">
-                    {g.titulo}
-                  </span>
-                </span>
-              </a>
-            )
-          })}
-        </div>
-      )}
-
+    <Pagina titulo="Agenda" subtitulo="Tarefas, perícias e prazos do escritório" acoes={botaoNovo}>
       {loading ? (
-        <div className="space-y-3">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 w-full" />
-          ))}
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="space-y-5">
+            <Skeleton className="h-[420px] w-full" />
+            <Skeleton className="h-[420px] w-full" />
+          </div>
+          <Skeleton className="h-[520px] w-full" />
         </div>
-      ) : tarefas.length === 0 ? (
-        <section className="rounded-xl bg-card shadow-card">
-          <EmptyState
-            icon={CalendarDays}
-            title="A agenda está vazia"
-            description="Marque o primeiro compromisso ou prazo. Ele aparece aqui separado em atrasados, hoje e próximos."
-            acao={botaoNovo}
-          />
-        </section>
       ) : (
-        GRUPOS.map((grupo) => {
-          const itens = grupos[grupo.chave]
-          const Icone = grupo.icone
-          if (itens.length === 0 && grupo.chave !== "hoje") return null
-
-          const cabecalho = (
-            <div className="flex items-center gap-3 px-4 py-3">
-              <Icone size={18} strokeWidth={2} className={cn("shrink-0", grupo.cor)} />
-              <div className="min-w-0 flex-1">
-                <h2 className={cn("font-heading text-[15px] leading-tight font-semibold", grupo.cor)}>
-                  {grupo.titulo}
-                </h2>
-                <p className="text-[12px] text-muted-foreground">{grupo.descricao}</p>
-              </div>
-              <span className="rounded-full bg-muted px-2.5 py-0.5 text-[12px] font-semibold tabular-nums">
-                {itens.length}
-              </span>
-            </div>
-          )
-
-          if (grupo.chave === "encerradas") {
-            return (
-              <details
-                key={grupo.chave}
-                id={`agenda-${grupo.chave}`}
-                className="group overflow-hidden rounded-xl bg-card shadow-card"
-              >
-                <summary className="cursor-pointer list-none select-none [&::-webkit-details-marker]:hidden">
-                  {cabecalho}
-                </summary>
-                <ul className="divide-y divide-border border-t border-border">
-                  {itens.map((t) => (
-                    <Item key={t.id} tarefa={t} grupo={grupo} />
-                  ))}
-                </ul>
-              </details>
-            )
-          }
-
-          return (
-            <section
-              key={grupo.chave}
-              id={`agenda-${grupo.chave}`}
-              className="scroll-mt-20 overflow-hidden rounded-xl bg-card shadow-card"
+        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
+          {/* Os dois calendários, um embaixo do outro, à esquerda. */}
+          <div className="order-2 flex min-w-0 flex-col gap-5 lg:order-none">
+            <CalendarioMes
+              titulo="Tarefas"
+              subtitulo="Calendário geral — toda tarefa em aberto, na cor do time"
+              icone={CalendarDays}
+              legenda={legendaTimes}
+              hoje={hoje}
+              selecionado={diaGeral}
+              onSelecionar={setDiaGeral}
+              totalDoDia={(d) => geralPorDia.get(d)?.length ?? 0}
+              conteudoDoDia={(d) => {
+                const lista = geralPorDia.get(d) ?? []
+                const conta = new Map<string, number>()
+                for (const t of lista) {
+                  const chave = isTimeTarefa(t.setor) ? t.setor : "SEM"
+                  conta.set(chave, (conta.get(chave) ?? 0) + 1)
+                }
+                return (
+                  <span className="flex flex-wrap gap-0.5">
+                    {[...TIMES_TAREFA, "SEM" as const].map((chave) => {
+                      const n = conta.get(chave)
+                      if (!n) return null
+                      return (
+                        <span
+                          key={chave}
+                          title={`${chave === "SEM" ? "Sem time" : TIME_LABEL[chave]}: ${n}`}
+                          className={cn(
+                            "flex h-4 min-w-4 items-center justify-center rounded px-1 text-[10px] leading-none font-bold tabular-nums sm:h-[18px] sm:min-w-[18px] sm:text-[10.5px]",
+                            chave === "SEM"
+                              ? "bg-muted-foreground/25 text-foreground/80"
+                              : CORES_TIME[chave].cabecalho
+                          )}
+                        >
+                          {n}
+                        </span>
+                      )
+                    })}
+                  </span>
+                )
+              }}
             >
-              {cabecalho}
-              {itens.length === 0 ? (
-                <p className="border-t border-border px-4 py-5 text-center text-[13px] text-muted-foreground">
-                  Nada marcado para hoje. Bom dia de trabalho!
+              <DetalheDoDia
+                data={diaGeral}
+                hoje={hoje}
+                total={listaGeralDoDia.length}
+                vazio="Nenhuma tarefa em aberto neste dia."
+              >
+                {listaGeralDoDia.map((t) => linha(t))}
+              </DetalheDoDia>
+            </CalendarioMes>
+
+            <CalendarioMes
+              titulo="Perícias e prazos"
+              subtitulo="Perícias, prazos do DJEN e exigências, cada um com a sua cor"
+              icone={Scale}
+              legenda={legendaCategorias}
+              hoje={hoje}
+              selecionado={diaEspecial}
+              onSelecionar={setDiaEspecial}
+              totalDoDia={(d) => especialPorDia.get(d)?.length ?? 0}
+              conteudoDoDia={(d) => {
+                const lista = especialPorDia.get(d) ?? []
+                return (
+                  <>
+                    <span className="hidden flex-col gap-0.5 sm:flex">
+                      {lista.slice(0, 2).map(({ tarefa, categoria }) => (
+                        <span
+                          key={tarefa.id}
+                          title={`${CATEGORIA_AGENDA_LABEL[categoria]}: ${tarefa.titulo}`}
+                          className={cn(
+                            "truncate rounded px-1 py-0.5 text-[10px] leading-tight font-semibold",
+                            CORES_CATEGORIA[categoria].etiqueta
+                          )}
+                        >
+                          {tarefa.titulo}
+                        </span>
+                      ))}
+                      {lista.length > 2 ? (
+                        <span className="px-1 text-[10px] font-semibold text-muted-foreground">
+                          +{lista.length - 2}
+                        </span>
+                      ) : null}
+                    </span>
+                    <span className="flex flex-wrap gap-0.5 sm:hidden">
+                      {lista.slice(0, 6).map(({ tarefa, categoria }) => (
+                        <span
+                          key={tarefa.id}
+                          className={cn("size-2 rounded-full", CORES_CATEGORIA[categoria].ponto)}
+                        />
+                      ))}
+                    </span>
+                  </>
+                )
+              }}
+            >
+              <DetalheDoDia
+                data={diaEspecial}
+                hoje={hoje}
+                total={listaEspecialDoDia.length}
+                vazio="Nenhuma perícia, prazo ou exigência neste dia."
+              >
+                {listaEspecialDoDia.map(({ tarefa, categoria }) => linha(tarefa, { categoria }))}
+              </DetalheDoDia>
+            </CalendarioMes>
+          </div>
+
+          {/* As urgentes, separadas, à direita. No celular sobem para o
+              topo: são o que não pode esperar a rolagem. */}
+          <aside className="order-1 flex flex-col overflow-hidden rounded-2xl bg-card shadow-card lg:sticky lg:top-20 lg:order-none lg:max-h-[calc(100vh-6rem)]">
+            <header className="space-y-3 border-b border-border px-4 pt-4 pb-3">
+              <div className="flex items-center gap-3">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-status-danger text-status-danger-foreground">
+                  <Flame size={18} strokeWidth={2} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h2 className="font-heading text-[15px] leading-tight font-semibold">
+                    Tarefas urgentes
+                  </h2>
+                  <p className="text-[12px] text-muted-foreground">
+                    Prioridade urgente · {dicaPeriodo}, atrasadas incluídas
+                  </p>
+                </div>
+                <span className="rounded-full bg-status-danger px-2.5 py-0.5 text-[13px] font-bold text-status-danger-foreground tabular-nums">
+                  {urgentes.length}
+                </span>
+              </div>
+
+              <Segmentado
+                cheio
+                tamanho="sm"
+                valor={periodo}
+                onChange={setPeriodo}
+                aria-label="Período"
+                opcoes={PERIODOS.map((p) => ({ valor: p.valor, rotulo: p.rotulo }))}
+              />
+
+              <div role="radiogroup" aria-label="Filtrar por cor" className="flex flex-wrap gap-1.5">
+                {(["TODAS", ...TIMES_TAREFA] as FiltroCor[]).map((cor) => {
+                  const ativo = filtroCor === cor
+                  const n = urgentesPorCor.get(cor) ?? 0
+                  return (
+                    <button
+                      key={cor}
+                      type="button"
+                      role="radio"
+                      aria-checked={ativo}
+                      onClick={() => setFiltroCor(cor)}
+                      className={cn(
+                        "inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[12px] font-semibold ring-1 transition-colors",
+                        ativo
+                          ? cor === "TODAS"
+                            ? "bg-foreground text-background ring-foreground"
+                            : cn(CORES_TIME[cor].cabecalho, "ring-transparent")
+                          : "bg-card text-muted-foreground ring-border hover:bg-muted"
+                      )}
+                    >
+                      {cor !== "TODAS" && !ativo ? (
+                        <span className={cn("size-2.5 rounded-full", CORES_TIME[cor].ponto)} />
+                      ) : null}
+                      {cor === "TODAS" ? "Todas" : TIME_LABEL[cor]}
+                      <span className="tabular-nums opacity-75">{n}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </header>
+
+            <div className="min-h-0 flex-1 overflow-y-auto p-3">
+              {urgentes.length === 0 ? (
+                <p className="px-2 py-8 text-center text-[13px] text-muted-foreground">
+                  Nenhuma tarefa urgente
+                  {filtroCor !== "TODAS" ? ` no ${TIME_LABEL[filtroCor]}` : ""} nesse período.
                 </p>
               ) : (
-                <ul className="divide-y divide-border border-t border-border">
-                  {itens.map((t) => (
-                    <Item key={t.id} tarefa={t} grupo={grupo} />
-                  ))}
+                <ul className="flex flex-col gap-1.5">
+                  {urgentes.map((t) => linha(t, { mostrarData: true }))}
                 </ul>
               )}
-            </section>
-          )
-        })
+            </div>
+          </aside>
+        </div>
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -569,6 +828,20 @@ export default function AgendaPage() {
                     { valor: "URGENTE", rotulo: "Urgente", tom: "perigo" },
                   ]}
                 />
+              </Campo>
+
+              <Campo rotulo="Time" dica="A cor com que aparece na agenda e no quadro">
+                <Select
+                  value={form.setor}
+                  onChange={(e) => setForm({ ...form, setor: e.target.value as "" | TimeTarefa })}
+                >
+                  <option value="">Sem time</option>
+                  {TIMES_TAREFA.map((t) => (
+                    <option key={t} value={t}>
+                      {TIME_LABEL[t]}
+                    </option>
+                  ))}
+                </Select>
               </Campo>
 
               {editingId && (

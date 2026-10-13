@@ -63,12 +63,15 @@ enum EventoTarefaTipo {
 /// Setores do escritório. A identidade de cada um é a cor: no quadro
 /// de tarefas ela é lida antes de qualquer texto, que é o ponto —
 /// saber de quem é a tarefa sem parar para ler.
+/// Os times atuais são vermelho, azul, amarelo e rosa; preto e verde
+/// ficaram em tarefas antigas — ver lib/domain/tarefa/time.ts.
 enum SetorTarefa {
   VERMELHO
   PRETO
   AZUL
   AMARELO
   VERDE
+  ROSA
 }
 
 enum LancamentoTipo {

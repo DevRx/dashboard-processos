@@ -21,10 +21,10 @@ export default function TarefasPage() {
   const [versao, setVersao] = useState(0)
 
   return (
-    <Pagina titulo="Tarefas" subtitulo="Quadro do escritório por time e responsável" className="space-y-4">
+    <Pagina titulo="Tarefas" subtitulo="Quatro times, cada um com a sua cor" className="space-y-4">
       <p className="max-w-3xl text-[13px] leading-relaxed text-muted-foreground">
-        A cor é o time; o nome no alto do cartão é quem responde por ela.
-        Arraste o cartão de uma coluna para outra para mudar de time, e
+        Vermelho, azul, amarelo e rosa — cada tarefa leva a cor do seu
+        time. Arraste o cartão para outro bloco para mudar de time, e
         clique nas iniciais para passar a tarefa a outra pessoa. As pastas
         dentro de cada time são as listas que vieram do TickTick.
       </p>

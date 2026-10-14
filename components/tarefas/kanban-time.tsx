@@ -1165,9 +1165,6 @@ export function KanbanTime({
                     <Plus size={15} />
                   </button>
                 </header>
-                {coluna.lugar.etapa ? (
-                  <p className="-mt-1 truncate px-4 pb-2 text-xs text-muted-foreground">{ETAPAS[coluna.lugar.etapa].responsaveis}</p>
-                ) : null}
 
                 <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-2 pb-2 [scrollbar-width:thin]">
                   {novaEm === coluna.chave ? (

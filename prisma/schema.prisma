@@ -306,6 +306,7 @@ model Tarefa {
   tarefaPai    Tarefa?           @relation("DuvidaDaTarefa", fields: [tarefaPaiId], references: [id], onDelete: Cascade)
   duvidas      Tarefa[]          @relation("DuvidaDaTarefa")
   eventos      EventoTarefa[]
+  atribuicoes  TarefaAtribuicao[]
   comunicacoes ComunicacaoDjen[]
 
   @@index([tarefaPaiId])
@@ -532,4 +533,31 @@ model Auditoria {
   user User @relation(fields: [userId], references: [id])
 
   @@map("auditorias")
+}
+
+/// Onde a tarefa está no fluxo e com quem: uma linha por pessoa, por
+/// etapa, por tarefa. Linha aberta (`fimEm` nulo) é trabalho pendente;
+/// concluir, mudar de etapa ou tirar alguém encerra a linha com o
+/// motivo. Os gatilhos e as funções que mantêm `tarefas.setor`,
+/// `responsavel_id` e `status` em dia moram na migration
+/// supabase/migrations/20261013200000_fluxo_atribuicoes.sql — o Prisma
+/// não os conhece.
+model TarefaAtribuicao {
+  id            String      @id @default(uuid())
+  tarefaId      String      @map("tarefa_id")
+  setor         SetorTarefa
+  /// Etapa do fluxo (lib/domain/tarefa/fluxo.ts); nula = no time, sem etapa.
+  etapa         String?
+  responsavelId String?     @map("responsavel_id")
+  criadaEm      DateTime    @default(now()) @map("criada_em")
+  criadaPor     String?     @map("criada_por")
+  fimEm         DateTime?   @map("fim_em")
+  fimPor        String?     @map("fim_por")
+  /// CONCLUIDA, MOVIDA, REMOVIDA ou TAREFA_FECHADA.
+  fimMotivo     String?     @map("fim_motivo")
+
+  tarefa Tarefa @relation(fields: [tarefaId], references: [id], onDelete: Cascade)
+
+  @@index([tarefaId])
+  @@map("tarefa_atribuicoes")
 }

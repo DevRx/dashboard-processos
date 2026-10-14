@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
-import { TarefaSchema } from "@/lib/validators"
+import { TarefaCriacaoSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
 import { idsDoEscritorio } from "@/lib/escritorio"
+import {
+  atribuicoesDaTarefa,
+  atribuicoesParaTela,
+  faltaMigration,
+  fluxoDisponivel,
+  garantirNoFluxo,
+  tarefasDeIntimacao,
+  usuariosDoFluxo,
+} from "@/lib/fluxo/servidor"
+import { etapaDaTarefa, responsaveisPadrao, ETAPAS, type LinhaFluxo } from "@/lib/domain/tarefa"
 
 export async function GET(request: NextRequest) {
   try {
@@ -63,10 +73,30 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return NextResponse.json(
-      { tarefas: toCamelCase(tarefas) },
-      { status: 200 }
-    )
+    // As telas dos times precisam de onde cada tarefa está no fluxo e
+    // com quem. Sem a migration, as tarefas vêm sem atribuições e a tela
+    // segue as pastas do TickTick.
+    let fluxo: { disponivel: boolean } | undefined
+    if (searchParams.get("atribuicoes") === "1") {
+      const disponivel = await fluxoDisponivel()
+      fluxo = { disponivel }
+      if (disponivel) {
+        const porTarefa = await atribuicoesParaTela(new Set(tarefas.map((t) => String(t.id))))
+        for (const t of tarefas) {
+          t.atribuicoes = porTarefa.get(String(t.id)) ?? []
+        }
+      }
+    }
+
+    // `atribuicoes` já vem em camelCase; o resto da linha, não.
+    const resposta = tarefas.map((t) => {
+      const { atribuicoes, ...resto } = t
+      const tarefa = toCamelCase(resto) as Record<string, unknown>
+      if (atribuicoes !== undefined) tarefa.atribuicoes = atribuicoes
+      return tarefa
+    })
+
+    return NextResponse.json({ tarefas: resposta, ...(fluxo ? { fluxo } : {}) }, { status: 200 })
   } catch (error) {
     console.error("Get tarefas error:", error)
     return NextResponse.json(
@@ -74,39 +104,6 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     )
   }
-}
-
-/**
- * Ids das tarefas que alguma intimação do DJEN abriu.
- *
- * Falhar aqui não derruba a agenda: sem o vínculo, o prazo ainda cai no
- * calendário pela pasta ou pelo título — só perde a certeza.
- */
-async function tarefasDeIntimacao(escritorio: string[]): Promise<Set<string>> {
-  const ids = new Set<string>()
-  const PAGINA = 1000
-
-  for (let de = 0; ; de += PAGINA) {
-    const { data, error } = await supabase
-      .from("comunicacoes_djen")
-      .select("tarefa_id")
-      .in("user_id", escritorio)
-      .not("tarefa_id", "is", null)
-      .order("id", { ascending: true })
-      .range(de, de + PAGINA - 1)
-
-    if (error) {
-      console.error("Vínculo tarefa ↔ intimação:", error.message)
-      break
-    }
-
-    for (const linha of data ?? []) {
-      if (linha.tarefa_id) ids.add(String(linha.tarefa_id))
-    }
-    if (!data || data.length < PAGINA) break
-  }
-
-  return ids
 }
 
 export async function POST(request: NextRequest) {
@@ -118,7 +115,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
-    const validatedFields = TarefaSchema.safeParse(body)
+    const validatedFields = TarefaCriacaoSchema.safeParse(body)
 
     if (!validatedFields.success) {
       const firstIssue = validatedFields.error.issues[0]
@@ -126,6 +123,26 @@ export async function POST(request: NextRequest) {
         { error: firstIssue?.message || "Dados inválidos" },
         { status: 400 }
       )
+    }
+
+    // A etapa e os responsáveis não são colunas da tarefa: vão para as
+    // atribuições, depois de gravada a tarefa.
+    const { etapa, responsaveis, ...campos } = validatedFields.data
+    if (etapa) {
+      if (campos.setor && campos.setor !== ETAPAS[etapa].time) {
+        return NextResponse.json({ error: "A etapa não é deste time" }, { status: 400 })
+      }
+      campos.setor = ETAPAS[etapa].time
+      // A pasta guarda a etapa também: se o fluxo ainda não estiver
+      // ligado no banco, é por ela que a tela acha a etapa.
+      if (!campos.pasta) campos.pasta = ETAPAS[etapa].pasta
+    }
+
+    const equipe = await usuariosDoFluxo()
+    const daEquipe = new Set(equipe.map((u) => u.id))
+    const pedidos = [...(responsaveis ?? []), ...(campos.responsavelId ? [campos.responsavelId] : [])]
+    if (pedidos.some((id) => !daEquipe.has(id))) {
+      return NextResponse.json({ error: "Responsável fora da equipe do escritório" }, { status: 400 })
     }
 
     // Verify the processo belongs to this user (if processoId is provided)
@@ -148,7 +165,7 @@ export async function POST(request: NextRequest) {
     const { data: tarefa, error } = await supabase
       .from("tarefas")
       .insert({
-        ...toSnakeCase(validatedFields.data),
+        ...toSnakeCase(campos),
         user_id: user.id,
       })
       .select("*, responsavel:users!tarefas_responsavel_id_fkey(id, name)")
@@ -162,8 +179,30 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const resposta = toCamelCase(tarefa) as Record<string, unknown>
+
+    // Tarefa nova com time já nasce no fluxo: na etapa pedida (ou na que
+    // a pasta indicar) e com os responsáveis pedidos — ou, sem nenhum,
+    // com os que a etapa indica.
+    if (campos.setor && (await fluxoDisponivel())) {
+      try {
+        const etapaFinal = etapa ?? etapaDaTarefa({ setor: campos.setor, pasta: campos.pasta ?? null })
+        const quem: (string | null)[] = responsaveis?.length
+          ? responsaveis
+          : campos.responsavelId
+            ? [campos.responsavelId]
+            : (etapaFinal ? responsaveisPadrao(etapaFinal, equipe) : null) ?? [null]
+        const linhas: LinhaFluxo[] = quem.map((r) => ({ setor: campos.setor!, etapa: etapaFinal, responsavelId: r }))
+        await garantirNoFluxo({ id: tarefa.id, setor: campos.setor }, user.id, linhas)
+        resposta.atribuicoes = await atribuicoesDaTarefa(tarefa.id)
+      } catch (erroFluxo) {
+        const e = erroFluxo as { code?: string; message?: string }
+        if (!faltaMigration(e)) console.error("Nova tarefa no fluxo:", e.message)
+      }
+    }
+
     return NextResponse.json(
-      { message: "Tarefa criada com sucesso", tarefa: toCamelCase(tarefa) },
+      { message: "Tarefa criada com sucesso", tarefa: resposta },
       { status: 201 }
     )
   } catch (error) {

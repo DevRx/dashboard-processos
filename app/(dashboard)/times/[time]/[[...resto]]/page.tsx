@@ -1,31 +1,31 @@
 "use client"
 
-import { notFound, useParams } from "next/navigation"
+import { Suspense } from "react"
+import { notFound, useParams, usePathname, useRouter, useSearchParams } from "next/navigation"
 
 import { Pagina } from "@/components/layout/pagina"
-import { QuadroTime, nomeDaEtapa } from "@/components/tarefas/quadro-time"
+import { KanbanTime, type FiltroInicial } from "@/components/tarefas/kanban-time"
 import {
-  ESFERA_AMARELO_LABEL,
-  SLUG_ESFERA,
+  ETAPAS,
+  SLUG_DO_TIME,
   TIME_LABEL,
-  enderecoDoTime,
   esferaPorSlugAmarelo,
   etapaPorSlug,
   timePorSlug,
   type EsferaAmarelo,
-  type EtapaId,
   type TimeTarefa,
 } from "@/lib/domain/tarefa"
 
 /**
- * Tela de um time, de um lado do amarelo ou de uma etapa:
+ * A tela de um time: o kanban com as etapas em colunas e os filtros no
+ * alto.
  *
- *   /times/azul                      o time inteiro
- *   /times/azul/agendar-video        uma etapa
- *   /times/amarelo/judicial          um lado do amarelo
- *   /times/amarelo/judicial/protocolo uma etapa do amarelo
+ *   /times/azul                         o time inteiro
+ *   /times/azul?etapa=agendar-video      uma etapa só
+ *   /times/amarelo?lado=judicial         um lado do amarelo
  *
- * Qualquer outro endereço é 404.
+ * Os endereços antigos por etapa (/times/azul/agendar-video,
+ * /times/amarelo/judicial/protocolo) continuam valendo e viram filtro.
  */
 
 const SUBTITULO: Record<TimeTarefa, string> = {
@@ -35,60 +35,61 @@ const SUBTITULO: Record<TimeTarefa, string> = {
   ROSA: "Etapas ainda não definidas no fluxo",
 }
 
-const SUBTITULO_ESFERA: Record<EsferaAmarelo, string> = {
-  ADMINISTRATIVO: "Requerimentos no INSS antes do protocolo",
-  JUDICIAL: "Ações antes da distribuição",
+const SLUG_LADO: Record<EsferaAmarelo, string> = { ADMINISTRATIVO: "administrativo", JUDICIAL: "judicial" }
+
+function filtroDoEndereco(time: TimeTarefa, resto: string[], busca: URLSearchParams): FiltroInicial | null {
+  let lado = esferaPorSlugAmarelo(busca.get("lado"))
+  let etapaSlug = busca.get("etapa")
+  if (resto.length) {
+    if (time === "AMARELO") {
+      lado = esferaPorSlugAmarelo(resto[0])
+      if (!lado || resto.length > 2) return null
+      etapaSlug = resto[1] ?? null
+    } else {
+      if (resto.length > 1) return null
+      etapaSlug = resto[0]
+    }
+  }
+  if (time !== "AMARELO") lado = null
+  // No amarelo a etapa vem pelo nome curto ("protocolo") e o lado diz qual.
+  const etapa = etapaSlug
+    ? time === "AMARELO"
+      ? etapaPorSlug(time, etapaSlug, lado ?? "ADMINISTRATIVO")
+      : etapaPorSlug(time, etapaSlug)
+    : null
+  if (etapaSlug && !etapa) return null
+  return { etapa, lado }
 }
 
-type Rota = { time: TimeTarefa; esfera: EsferaAmarelo | null; etapa: EtapaId | null }
+function Tela() {
+  const params = useParams<{ time: string; resto?: string[] }>()
+  const busca = useSearchParams()
+  const router = useRouter()
+  const caminho = usePathname()
+  const time = timePorSlug(params.time)
+  if (!time) notFound()
+  const inicial = filtroDoEndereco(time, params.resto ?? [], busca)
+  if (!inicial) notFound()
 
-function lerRota(slugTime?: string, resto?: string[]): Rota | null {
-  const time = timePorSlug(slugTime)
-  if (!time) return null
-  const partes = resto ?? []
-
-  if (partes.length === 0) return { time, esfera: null, etapa: null }
-
-  if (time === "AMARELO") {
-    const esfera = esferaPorSlugAmarelo(partes[0])
-    if (!esfera || partes.length > 2) return null
-    if (partes.length === 1) return { time, esfera, etapa: null }
-    const etapa = etapaPorSlug(time, partes[1], esfera)
-    return etapa ? { time, esfera, etapa } : null
+  const guardarFiltro = (f: FiltroInicial) => {
+    const q = new URLSearchParams()
+    if (f.lado) q.set("lado", SLUG_LADO[f.lado])
+    if (f.etapa) q.set("etapa", ETAPAS[f.etapa].slug)
+    const destino = `/times/${SLUG_DO_TIME[time]}${q.size ? `?${q}` : ""}`
+    if (destino !== `${caminho}${busca.size ? `?${busca}` : ""}`) router.replace(destino, { scroll: false })
   }
 
-  if (partes.length > 1) return null
-  const etapa = etapaPorSlug(time, partes[0])
-  return etapa ? { time, esfera: null, etapa } : null
+  return (
+    <Pagina titulo={TIME_LABEL[time]} subtitulo={SUBTITULO[time]}>
+      <KanbanTime key={time} time={time} inicial={inicial} onFiltro={guardarFiltro} />
+    </Pagina>
+  )
 }
 
 export default function TimePage() {
-  const params = useParams<{ time: string; resto?: string[] }>()
-  const rota = lerRota(params.time, params.resto)
-  if (!rota) notFound()
-
-  const { time, esfera, etapa } = rota
-  const nomeTime = TIME_LABEL[time]
-
-  const titulo = etapa
-    ? `${nomeTime} · ${nomeDaEtapa(etapa)}`
-    : esfera
-      ? `${nomeTime} · ${ESFERA_AMARELO_LABEL[esfera]}`
-      : nomeTime
-
-  // A volta sobe um nível: da etapa do amarelo para o lado dele, do
-  // lado (ou da etapa dos outros times) para o time.
-  const voltar = etapa
-    ? esfera
-      ? { href: `/times/amarelo/${SLUG_ESFERA[esfera]}`, rotulo: `${nomeTime} · ${ESFERA_AMARELO_LABEL[esfera]}` }
-      : { href: enderecoDoTime(time), rotulo: nomeTime }
-    : esfera
-      ? { href: enderecoDoTime(time), rotulo: nomeTime }
-      : undefined
-
   return (
-    <Pagina titulo={titulo} subtitulo={etapa ? undefined : esfera ? SUBTITULO_ESFERA[esfera] : SUBTITULO[time]} voltar={voltar}>
-      <QuadroTime key={`${time}-${esfera}-${etapa}`} time={time} esfera={esfera} etapa={etapa} />
-    </Pagina>
+    <Suspense fallback={null}>
+      <Tela />
+    </Suspense>
   )
 }

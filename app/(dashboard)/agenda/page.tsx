@@ -15,6 +15,7 @@ import {
   UserRound,
 } from "lucide-react"
 
+import { concluirMinhaParte } from "@/components/tarefas/usar-tarefas"
 import { Pagina } from "@/components/layout/pagina"
 import { Button } from "@/components/ui/button"
 import { Campo, LinhaCampos } from "@/components/ui/campo"
@@ -487,18 +488,18 @@ export default function AgendaPage() {
     }
   }
 
-  /** Só o status muda: o PATCH não arrisca apagar hora, pasta ou time. */
+  /**
+   * Concluir pela agenda fecha só a parte de quem clicou: se a tarefa
+   * tem outros responsáveis no fluxo, ela continua na agenda deles (e
+   * na de todo mundo, até a última parte). A lista vem de novo do
+   * servidor para mostrar como ficou.
+   */
   async function concluir(tarefa: TarefaAgenda) {
     setConcluindo(tarefa.id)
     try {
-      const r = await fetch(`/api/tarefas/${tarefa.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "CONCLUIDA" }),
-      })
-      if (r.ok) {
-        setTarefas((atuais) => atuais.filter((t) => t.id !== tarefa.id))
-      }
+      const r = await concluirMinhaParte(tarefa.id)
+      if (!r.ok) window.alert(r.erro)
+      fetchData()
     } finally {
       setConcluindo(null)
     }

@@ -66,8 +66,10 @@ export function formatarData(iso?: string | null) {
   return iso.slice(0, 10).split("-").reverse().join("/")
 }
 
+/** Hoje no relógio de quem usa, não em UTC: depois das 21h em Brasília o UTC já é amanhã. */
 export function hojeISO() {
-  return new Date().toISOString().slice(0, 10)
+  const agora = new Date()
+  return new Date(agora.getTime() - agora.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
 }
 
 /** Menu genérico ancorado a um gatilho, usado para time e responsável. */

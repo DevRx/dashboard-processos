@@ -14,15 +14,15 @@ import {
   ETAPAS_DO_TIME,
   TIMES_TAREFA,
   TIME_LABEL,
-  enderecoDaEtapa,
+  atribuicoesDa,
   enderecoDoTime,
-  etapaDaTarefa,
   etapasDaEsfera,
+  gruposDa,
   type EtapaId,
   type TimeTarefa,
 } from "@/lib/domain/tarefa"
 import { CORES_TIME } from "./cores-time"
-import { contar, hojeISO, useTarefasDoTime } from "./usar-tarefas"
+import { hojeISO, useTarefasDoTime } from "./usar-tarefas"
 
 /**
  * Os quatro times numa tela só — é para onde leva o botão "Times" da
@@ -32,25 +32,26 @@ import { contar, hojeISO, useTarefasDoTime } from "./usar-tarefas"
 export function PainelTimes() {
   const { tarefas, carregando, erro } = useTarefasDoTime()
 
+  // Conta cartões, não tarefas: a mesma tarefa no ADM e no Judicial
+  // conta nos dois lados, como aparece nas colunas.
   const resumo = useMemo(() => {
     const hoje = hojeISO()
-    const porTime = Object.fromEntries(
-      TIMES_TAREFA.map((t) => [
-        t,
-        { lista: [] as typeof tarefas, porEtapa: new Map<EtapaId, number>(), atrasadasPorEtapa: new Map<EtapaId, number>(), semEtapa: 0 },
-      ])
-    ) as Record<TimeTarefa, { lista: typeof tarefas; porEtapa: Map<EtapaId, number>; atrasadasPorEtapa: Map<EtapaId, number>; semEtapa: number }>
+    const vazio = () => ({ total: 0, atrasadas: 0, porEtapa: new Map<EtapaId, number>(), atrasadasPorEtapa: new Map<EtapaId, number>(), semEtapa: 0 })
+    const porTime = Object.fromEntries(TIMES_TAREFA.map((t) => [t, vazio()])) as Record<TimeTarefa, ReturnType<typeof vazio>>
 
     for (const t of tarefas) {
       if (t.status === "CONCLUIDA" || t.status === "CANCELADA") continue
-      if (!t.setor || !(t.setor in porTime)) continue
-      const r = porTime[t.setor as TimeTarefa]
-      r.lista.push(t)
-      const e = etapaDaTarefa(t)
-      if (e) {
-        r.porEtapa.set(e, (r.porEtapa.get(e) ?? 0) + 1)
-        if (t.data.slice(0, 10) < hoje) r.atrasadasPorEtapa.set(e, (r.atrasadasPorEtapa.get(e) ?? 0) + 1)
-      } else r.semEtapa++
+      const atrasada = t.data.slice(0, 10) < hoje
+      for (const g of gruposDa(atribuicoesDa(t))) {
+        const r = porTime[g.setor]
+        if (!r) continue
+        r.total++
+        if (atrasada) r.atrasadas++
+        if (g.etapa) {
+          r.porEtapa.set(g.etapa, (r.porEtapa.get(g.etapa) ?? 0) + 1)
+          if (atrasada) r.atrasadasPorEtapa.set(g.etapa, (r.atrasadasPorEtapa.get(g.etapa) ?? 0) + 1)
+        } else r.semEtapa++
+      }
     }
     return porTime
   }, [tarefas])
@@ -74,7 +75,7 @@ export function PainelTimes() {
     return (
       <li key={id}>
         <Link
-          href={enderecoDaEtapa(id)}
+          href={`${enderecoDoTime(ETAPAS[id].time)}?${ETAPAS[id].esfera ? `lado=${ETAPAS[id].esfera === "JUDICIAL" ? "judicial" : "administrativo"}&` : ""}etapa=${ETAPAS[id].slug}`}
           className="flex min-h-11 items-center gap-3 rounded-xl px-3 py-2 text-[14.5px] outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <span className="min-w-0 flex-1 truncate font-medium">{ETAPAS[id].nome}</span>
@@ -94,7 +95,7 @@ export function PainelTimes() {
     <div className="grid items-start gap-4 lg:grid-cols-2">
       {TIMES_TAREFA.map((time) => {
         const r = resumo[time]
-        const n = contar(r.lista)
+        const n = r
         const cor = CORES_TIME[time]
         return (
           <section key={time} aria-label={`Time ${TIME_LABEL[time]}`} className="overflow-hidden rounded-2xl bg-card shadow-card">
@@ -129,7 +130,7 @@ export function PainelTimes() {
                 <ul>{ETAPAS_DO_TIME[time].map((id) => linhaDaEtapa(time, id))}</ul>
               ) : (
                 <p className="px-3 py-3 text-[14px] text-muted-foreground">
-                  Ainda sem etapas no fluxo — {r.lista.length} tarefas pelas pastas do TickTick.
+                  Ainda sem etapas no fluxo — {r.total} {r.total === 1 ? "tarefa" : "tarefas"}.
                 </p>
               )}
 

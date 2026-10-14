@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { PainelTarefa } from "./painel-tarefa"
 import { CORES_TIME } from "./cores-time"
 import { CartaoTarefa, NovaTarefa, Pasta, agruparPorPasta, formatarData, type Tarefa, type Usuario } from "./cartao-tarefa"
+import { concluirMinhaParte } from "./usar-tarefas"
 import { cn } from "@/lib/utils"
 import {
   TIMES_TAREFA,
@@ -155,6 +156,21 @@ export function QuadroTarefas() {
       setTarefas((atuais) => [...atuais, tarefa])
     },
     []
+  )
+
+  /**
+   * Concluir aqui fecha só a parte de quem clicou: a tarefa com outros
+   * responsáveis no fluxo continua aberta para eles. A lista volta do
+   * servidor para mostrar como ficou.
+   */
+  const concluir = useCallback(
+    async (id: string) => {
+      setTarefas((atuais) => atuais.filter((t) => t.id !== id))
+      const r = await concluirMinhaParte(id)
+      if (!r.ok) window.alert(r.erro)
+      recarregar()
+    },
+    [recarregar]
   )
 
   /**
@@ -394,7 +410,7 @@ export function QuadroTarefas() {
                       onArrastarFim={() => setArrastando(null)}
                       onTrocarTime={(s) => patch(t.id, { setor: s })}
                       onTrocarResponsavel={(r) => patch(t.id, { responsavelId: r })}
-                      onConcluir={() => patch(t.id, { status: "CONCLUIDA" })}
+                      onConcluir={() => concluir(t.id)}
                       onAbrir={() => setAberta(t)}
                       trecho={filtrando ? trechoDaBusca(t, termosDaColuna) : null}
                     />
@@ -479,7 +495,7 @@ export function QuadroTarefas() {
                 onArrastarFim={() => setArrastando(null)}
                 onTrocarTime={(s) => patch(t.id, { setor: s })}
                 onTrocarResponsavel={(r) => patch(t.id, { responsavelId: r })}
-                onConcluir={() => patch(t.id, { status: "CONCLUIDA" })}
+                onConcluir={() => concluir(t.id)}
                 onAbrir={() => setAberta(t)}
                 trecho={buscando ? trechoDaBusca(t, termos) : null}
               />

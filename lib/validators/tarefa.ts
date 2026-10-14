@@ -1,5 +1,15 @@
 import { z } from "zod"
 import { TarefaStatusEnum, TarefaPrioridadeEnum, TimeTarefaEnum } from "./enums"
+import { ETAPAS, type EtapaId } from "@/lib/domain/tarefa/fluxo"
+
+/**
+ * Id gravado pelo banco. `z.guid()` e não `uuid()`: o formato é o mesmo,
+ * sem exigir a versão — ids criados à mão (seed, testes) também valem.
+ */
+const IdDoBanco = z.guid()
+
+/** As etapas do fluxo (lib/domain/tarefa/fluxo.ts) — só elas são aceitas. */
+export const EtapaIdEnum = z.enum(Object.keys(ETAPAS) as [EtapaId, ...EtapaId[]])
 
 export const TarefaSchema = z.object({
   processoId: z.string().optional(),
@@ -64,19 +74,59 @@ export const RespostaDuvidaSchema = z.object({
 })
 
 /**
- * Levar várias tarefas para o lugar do fluxo novo de uma vez — o botão
- * "Mover" da faixa "fora do lugar". Cada movimento diz o time e a pasta
- * (a etapa) de uma tarefa.
+ * Criar uma tarefa já dentro do fluxo: a etapa e quem responde por ela.
+ * Sem responsáveis, valem os que a etapa indica.
  */
-export const MoverTarefasSchema = z.object({
-  movimentos: z
-    .array(
-      z.object({
-        id: z.string().min(1),
-        setor: TimeTarefaEnum,
-        pasta: z.string().trim().min(1).max(200),
-      })
-    )
-    .min(1, "Nada para mover")
-    .max(1000, "Mova no máximo mil de cada vez"),
+export const TarefaCriacaoSchema = TarefaSchema.extend({
+  etapa: EtapaIdEnum.nullish(),
+  responsaveis: z.array(IdDoBanco).max(10).nullish(),
 })
+
+/** Um lugar no fluxo: o time e, se houver, a etapa. */
+export const LugarFluxoSchema = z
+  .object({
+    setor: TimeTarefaEnum,
+    etapa: EtapaIdEnum.nullable(),
+  })
+  .refine((l) => l.etapa === null || ETAPAS[l.etapa].time === l.setor, {
+    message: "A etapa não é deste time",
+  })
+
+const Responsaveis = z.array(IdDoBanco).max(10)
+
+/**
+ * As ações do fluxo sobre uma tarefa. Cada uma vira uma função do banco
+ * (migration 20261013200000_fluxo_atribuicoes) que trava a tarefa antes
+ * de mexer.
+ */
+export const AcaoFluxoSchema = z.discriminatedUnion("acao", [
+  z.object({
+    acao: z.literal("mover"),
+    de: LugarFluxoSchema,
+    para: LugarFluxoSchema,
+    /** Nulo: os mesmos de antes. Ausente: os que a etapa de destino indica. */
+    responsaveis: Responsaveis.nullable().optional(),
+  }),
+  z.object({
+    acao: z.literal("adicionar"),
+    para: LugarFluxoSchema,
+    responsaveis: Responsaveis.optional(),
+  }),
+  z.object({
+    acao: z.literal("concluirParte"),
+    em: LugarFluxoSchema,
+    responsavelId: IdDoBanco.nullable(),
+  }),
+  z.object({ acao: z.literal("concluirMinhaParte") }),
+  z.object({
+    acao: z.literal("concluirEtapa"),
+    em: LugarFluxoSchema,
+  }),
+  z.object({
+    acao: z.literal("responsaveis"),
+    em: LugarFluxoSchema,
+    responsaveis: Responsaveis,
+  }),
+])
+
+export type AcaoFluxo = z.infer<typeof AcaoFluxoSchema>

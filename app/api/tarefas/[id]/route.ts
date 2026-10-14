@@ -4,6 +4,8 @@ import { TarefaSchema, TarefaPatchSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase, toSnakeCase } from "@/lib/utils"
 import { idsDoEscritorio } from "@/lib/escritorio"
+import { etapaDaTarefa } from "@/lib/domain/tarefa"
+import { faltaMigration, fluxoDisponivel, garantirNoFluxo } from "@/lib/fluxo/servidor"
 
 export async function GET(
   _request: NextRequest,
@@ -170,6 +172,25 @@ export async function PATCH(
       // erro aqui faria a tela desfazer uma mudança que o banco já tem.
       if (erroEvento) {
         console.error("Evento de status não gravado:", erroEvento.message)
+      }
+    }
+
+    // Trocar o time por aqui (arrastar no quadro geral) numa tarefa que
+    // ainda seguia a pasta do TickTick: ela entra no fluxo já no time
+    // escolhido. Se já estava no fluxo, o gatilho do banco levou as
+    // partes abertas para o time novo.
+    if (parsed.data.setor && (await fluxoDisponivel())) {
+      try {
+        await garantirNoFluxo({ id, setor: parsed.data.setor }, user.id, [
+          {
+            setor: parsed.data.setor,
+            etapa: etapaDaTarefa({ setor: parsed.data.setor, pasta: tarefa.pasta, titulo: tarefa.titulo }),
+            responsavelId: tarefa.responsavel_id ?? null,
+          },
+        ])
+      } catch (erroFluxo) {
+        const e = erroFluxo as { code?: string; message?: string }
+        if (!faltaMigration(e)) console.error("Troca de time no fluxo:", e.message)
       }
     }
 

@@ -11,13 +11,12 @@
 //             Pendente → Protocolo → Prioridade
 //   ROSA      etapas ainda não desenhadas
 //
-// A etapa não tem coluna própria no banco: ela mora na `pasta` da
-// tarefa, junto do time (`setor`). Quem move pelo sistema grava a
-// pasta com o nome da etapa ("AGENDAR VÍDEO", "JUDICIAL › PROTOCOLO");
-// quem veio do TickTick traz a lista de lá ("JUDICIAL › PROTOCOLO
-// NOVO", "TAY › TAREFAS DE ACOMPANHAMENTO"), e as regras abaixo dizem
-// em que etapa ela cai. O que nenhuma regra reconhece fica em "outras
-// do time" — nada some da tela por não ter etapa.
+// Onde a tarefa está mora em `tarefa_atribuicoes` (time, etapa e
+// responsável — ver atribuicao.ts). Tarefa que ainda não entrou no
+// fluxo é posta numa etapa pela lista do TickTick de onde veio
+// ("JUDICIAL › PROTOCOLO NOVO", "TAY › TAREFAS DE ACOMPANHAMENTO"),
+// pelas regras abaixo. O que nenhuma regra reconhece fica em "sem
+// etapa" no time — nada some da tela por não ter etapa.
 // ─────────────────────────────────────────────────────────
 
 import type { TimeTarefa } from "./time"
@@ -427,8 +426,10 @@ export function etapaDaTarefa(t: TarefaNoFluxo): EtapaId | null {
  *  - o parecer de análise que o Claude deixa para o Zeca é a revisão
  *    da análise, do vermelho, ainda que a coluna do TickTick seja azul.
  *
- * Nada muda sozinho: a tela mostra a lista e quem decide mover é a
- * pessoa.
+ * É a regra de entrada no fluxo (lib/domain/tarefa/atribuicao.ts):
+ * enquanto a tarefa não tem linha gravada, a tela já a mostra no lugar
+ * novo, e é ali que ela é gravada quando entra no fluxo. A tarefa em
+ * si não muda até alguém agir nela (ou o administrador gravar todas).
  */
 export function destinoNoFluxo(t: TarefaNoFluxo): EtapaId | null {
   if (t.tipo === "DUVIDA") return null

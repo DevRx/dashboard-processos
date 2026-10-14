@@ -29,29 +29,16 @@ import {
 import { cn } from "@/lib/utils"
 import { LogoutButton } from "@/components/auth/logout-button"
 import { MENU_TIME } from "@/components/tarefas/cores-time"
-import {
-  ESFERAS_AMARELO,
-  ESFERA_AMARELO_LABEL,
-  ETAPAS,
-  ETAPAS_DO_TIME,
-  SLUG_ESFERA,
-  TIMES_TAREFA,
-  TIME_LABEL,
-  enderecoDaEtapa,
-  enderecoDoTime,
-  etapasDaEsfera,
-  type TimeTarefa,
-} from "@/lib/domain/tarefa"
+import { TIMES_TAREFA, TIME_LABEL, enderecoDoTime, type TimeTarefa } from "@/lib/domain/tarefa"
 
 /**
  * O menu lateral.
  *
  * Logo abaixo do Dashboard vêm os quatro times — vermelho, azul,
- * amarelo e rosa, nesta ordem —, cada um com as etapas do fluxo
- * desenhado pelo Zeca (lib/domain/tarefa/fluxo.ts). A cor do time
- * acompanha o menu dele inteiro: o quadradinho ao lado do nome, o fundo
- * da linha quando se está dentro do time e o traço que liga as etapas
- * ao time, para que dê para achar o time pela cor antes de ler.
+ * amarelo e rosa, nesta ordem. Apertar o time abre o kanban dele; as
+ * etapas do fluxo ficam como filtro dentro da tela. A cor do time pinta
+ * o quadradinho ao lado do nome e o fundo da linha quando se está
+ * dentro dele, para achar o time pela cor antes de ler.
  *
  * Itens com 44px de altura e letra de 15px: o menu é usado o dia todo,
  * no monitor do escritório e no celular.
@@ -76,31 +63,12 @@ type MenuGroup = {
   items: MenuItem[]
 }
 
-/** Um time e as etapas dele; o amarelo tem um nível a mais (ADM e Judicial). */
+/**
+ * Um time no menu leva direto ao kanban dele. As etapas não são subitem:
+ * viram filtro dentro da própria tela do time (pedido do Zeca).
+ */
 function itemDoTime(time: TimeTarefa): MenuItem {
-  const etapa = (id: (typeof ETAPAS_DO_TIME)[TimeTarefa][number]): MenuItem => ({
-    name: ETAPAS[id].nome,
-    href: enderecoDaEtapa(id),
-    exato: true,
-  })
-
-  const filhos: MenuItem[] =
-    time === "AMARELO"
-      ? ESFERAS_AMARELO.map((esfera) => ({
-          name: ESFERA_AMARELO_LABEL[esfera],
-          href: `/times/amarelo/${SLUG_ESFERA[esfera]}`,
-          icon: esfera === "JUDICIAL" ? Gavel : Landmark,
-          filhos: etapasDaEsfera(esfera).map(etapa),
-        }))
-      : ETAPAS_DO_TIME[time].map(etapa)
-
-  return {
-    name: TIME_LABEL[time],
-    href: enderecoDoTime(time),
-    time,
-    exato: true,
-    filhos: filhos.length ? filhos : undefined,
-  }
+  return { name: TIME_LABEL[time], href: enderecoDoTime(time), time }
 }
 
 const menuGroups: MenuGroup[] = [
@@ -240,144 +208,38 @@ function useAberto(dentro: boolean, pathname: string) {
   return [aberto, setAberto] as const
 }
 
-// ── Time: linha colorida e as etapas penduradas nela ──────
+// ── Time: linha colorida que leva ao kanban dele ──────────
 
 function ItemTime({ item, trilho, pathname, onNavegar }: { item: MenuItem; trilho: boolean; pathname: string; onNavegar?: () => void }) {
   const time = item.time as TimeTarefa
   const cor = MENU_TIME[time]
-  const atual = casa(pathname, item)
   const dentro = dentroDe(pathname, item)
-  const [aberto, setAberto] = useAberto(dentro, pathname)
-  const temFilhos = Boolean(item.filhos?.length)
-  const idGaveta = `submenu-time-${time.toLowerCase()}`
 
   return (
-    <div>
-      <div
-        className={cn(
-          "relative flex items-center rounded-xl transition-colors duration-150",
-          dentro ? cor.tinta : "hover:bg-white/[0.06]"
-        )}
-      >
-        {dentro ? (
-          <span aria-hidden className={cn("absolute top-2 bottom-2 left-0 w-1 rounded-r-full", cor.barra, trilho && "hidden lg:block")} />
-        ) : null}
-        <Link
-          href={item.href}
-          onClick={() => {
-            if (temFilhos) setAberto(true)
-            onNavegar?.()
-          }}
-          aria-current={atual ? "page" : undefined}
-          title={trilho ? `Time ${item.name}` : undefined}
-          className={cn(
-            "flex h-11 min-w-0 flex-1 items-center gap-3 rounded-xl text-[15.5px] tracking-[-0.005em] outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
-            trilho ? "justify-center px-0 lg:justify-start lg:px-4" : "px-4",
-            dentro ? "font-bold text-white" : "font-semibold text-sidebar-foreground/80 hover:text-white"
-          )}
-        >
-          <span aria-hidden className={cn("size-4 shrink-0 rounded-[5px] ring-1 ring-white/20 ring-inset", cor.amostra)} />
-          <span className={cn("truncate", trilho && "hidden lg:inline")}>{item.name}</span>
-        </Link>
-        {temFilhos ? (
-          <Seta aberto={aberto} nome={`time ${item.name}`} controla={idGaveta} onClick={() => setAberto((v) => !v)} trilho={trilho} />
-        ) : null}
-      </div>
-
-      {temFilhos && aberto ? (
-        <ul
-          id={idGaveta}
-          className={cn(
-            "animate-in fade-in slide-in-from-top-1 mt-1 mb-2 ml-[25px] flex flex-col gap-0.5 border-l-2 pl-2.5 duration-150 motion-reduce:animate-none",
-            cor.trilho,
-            trilho && "hidden lg:flex"
-          )}
-        >
-          {item.filhos!.map((sub) => (
-            <EtapaDoMenu
-              key={sub.href}
-              item={sub}
-              time={time}
-              pathname={pathname}
-              onNavegar={onNavegar}
-              abrirJunto={dentro}
-            />
-          ))}
-        </ul>
-      ) : null}
-    </div>
-  )
-}
-
-function EtapaDoMenu({
-  item,
-  time,
-  pathname,
-  onNavegar,
-  abrirJunto = false,
-}: {
-  item: MenuItem
-  time: TimeTarefa
-  pathname: string
-  onNavegar?: () => void
-  /**
-   * Os dois lados do amarelo (ADM e Judicial) abrem junto com o time:
-   * as etapas é que são o destino, e abrir dois níveis toda vez cansa.
-   */
-  abrirJunto?: boolean
-}) {
-  const cor = MENU_TIME[time]
-  const atual = casa(pathname, item)
-  const dentro = dentroDe(pathname, item)
-  const [aberto, setAberto] = useAberto(dentro || abrirJunto, pathname)
-  const Icone = item.icon
-  const idGaveta = `submenu-${item.href.replace(/\W/g, "")}`
-
-  const link = (
-    <Link
-      href={item.href}
-      onClick={() => {
-        if (item.filhos) setAberto(true)
-        onNavegar?.()
-      }}
-      aria-current={atual ? "page" : undefined}
+    <div
       className={cn(
-        "flex h-10 min-w-0 flex-1 items-center gap-2.5 rounded-lg px-3 text-[14.5px] outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
-        atual
-          ? "bg-white/[0.11] font-semibold text-white"
-          : dentro
-            ? "font-semibold text-sidebar-foreground/90 hover:bg-white/[0.06]"
-            : "font-medium text-sidebar-foreground/65 hover:bg-white/[0.06] hover:text-white"
+        "relative flex items-center rounded-xl transition-colors duration-150",
+        dentro ? cor.tinta : "hover:bg-white/[0.06]"
       )}
     >
-      {Icone ? (
-        <Icone size={16} strokeWidth={1.9} aria-hidden className={cn("shrink-0", atual || dentro ? "text-white" : "text-sidebar-foreground/45")} />
-      ) : (
-        <span
-          aria-hidden
-          className={cn("size-1.5 shrink-0 rounded-full transition-colors", atual ? cor.barra : "bg-sidebar-foreground/25")}
-        />
-      )}
-      <span className="truncate">{item.name}</span>
-    </Link>
-  )
-
-  if (!item.filhos?.length) return <li>{link}</li>
-
-  return (
-    <li>
-      <div className="flex items-center">
-        {link}
-        <Seta aberto={aberto} nome={item.name} controla={idGaveta} onClick={() => setAberto((v) => !v)} trilho={false} />
-      </div>
-      {aberto ? (
-        <ul id={idGaveta} className="mt-0.5 mb-1 ml-4 flex flex-col gap-0.5 border-l border-white/10 pl-2.5">
-          {item.filhos.map((sub) => (
-            <EtapaDoMenu key={sub.href} item={sub} time={time} pathname={pathname} onNavegar={onNavegar} />
-          ))}
-        </ul>
+      {dentro ? (
+        <span aria-hidden className={cn("absolute top-2 bottom-2 left-0 w-1 rounded-r-full", cor.barra, trilho && "hidden lg:block")} />
       ) : null}
-    </li>
+      <Link
+        href={item.href}
+        onClick={onNavegar}
+        aria-current={dentro ? "page" : undefined}
+        title={trilho ? `Time ${item.name}` : undefined}
+        className={cn(
+          "flex h-11 min-w-0 flex-1 items-center gap-3 rounded-xl text-[15.5px] tracking-[-0.005em] outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
+          trilho ? "justify-center px-0 lg:justify-start lg:px-4" : "px-4",
+          dentro ? "font-bold text-white" : "font-semibold text-sidebar-foreground/80 hover:text-white"
+        )}
+      >
+        <span aria-hidden className={cn("size-4 shrink-0 rounded-[5px] ring-1 ring-white/20 ring-inset", cor.amostra)} />
+        <span className={cn("truncate", trilho && "hidden lg:inline")}>{item.name}</span>
+      </Link>
+    </div>
   )
 }
 

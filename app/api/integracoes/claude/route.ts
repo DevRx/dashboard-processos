@@ -24,6 +24,17 @@ import { supabase } from "@/lib/supabase/server"
 
 const EMAIL_DO_CLAUDE = "claude@assistente.local"
 
+/**
+ * Passe livre da proteção da Vercel ("Protection Bypass for Automation").
+ *
+ * Se a hospedagem pede login da Vercel para abrir o sistema, o Claude
+ * — que chama o conector dos servidores da Anthropic — leva 401 antes
+ * de chegar aqui. Quando alguém com acesso ao projeto na Vercel cria o
+ * passe livre, a Vercel entrega o segredo nesta variável a cada deploy,
+ * e a URL do conector já sai com ele (?x-vercel-protection-bypass=…).
+ */
+const PASSE_LIVRE_VERCEL = process.env.VERCEL_AUTOMATION_BYPASS_SECRET || null
+
 type ErroBanco = { code?: string; message?: string } | null
 
 function semTabela(e: ErroBanco) {
@@ -60,7 +71,9 @@ export async function GET() {
     .order("criada_em", { ascending: false })
 
   if (error) {
-    if (semTabela(error)) return NextResponse.json({ tabelaPronta: false, aviso: MENSAGEM_SEM_TABELA, conta, chaves: [] })
+    if (semTabela(error)) {
+      return NextResponse.json({ tabelaPronta: false, aviso: MENSAGEM_SEM_TABELA, conta, chaves: [], passeLivreVercel: Boolean(PASSE_LIVRE_VERCEL) })
+    }
     console.error("Chaves do conector:", error.message)
     return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 })
   }
@@ -77,7 +90,7 @@ export async function GET() {
       conta: usuario?.name ?? null,
     }
   })
-  return NextResponse.json({ tabelaPronta: true, conta, chaves })
+  return NextResponse.json({ tabelaPronta: true, conta, chaves, passeLivreVercel: Boolean(PASSE_LIVRE_VERCEL) })
 }
 
 const PedidoSchema = z.discriminatedUnion("acao", [
@@ -145,5 +158,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 })
   }
 
-  return NextResponse.json({ chave, prefixo, conta, contaCriada }, { status: 201 })
+  // O complemento da URL do conector: o passe livre da Vercel, se houver.
+  const complemento = PASSE_LIVRE_VERCEL ? `?x-vercel-protection-bypass=${encodeURIComponent(PASSE_LIVRE_VERCEL)}` : ""
+  return NextResponse.json({ chave, prefixo, conta, contaCriada, complemento }, { status: 201 })
 }

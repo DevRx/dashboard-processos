@@ -20,6 +20,7 @@ type Chave = {
 
 type Estado = {
   tabelaPronta: boolean
+  passeLivreVercel?: boolean
   aviso?: string
   conta: { id: string; name: string } | null
   chaves: Chave[]
@@ -76,7 +77,7 @@ export function ConectarClaude() {
   const [estado, setEstado] = useState<Estado | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [gerando, setGerando] = useState(false)
-  const [nova, setNova] = useState<string | null>(null)
+  const [nova, setNova] = useState<{ chave: string; complemento: string } | null>(null)
   const [revogar, setRevogar] = useState<string | null>(null)
   // O endereço é o deste site: no servidor não há como saber, e o HTML
   // sai sem ele.
@@ -114,7 +115,7 @@ export function ConectarClaude() {
       setErro(d.error ?? "Não foi possível gerar a chave.")
       return
     }
-    setNova(d.chave)
+    setNova({ chave: d.chave, complemento: d.complemento ?? "" })
     carregar()
   }
 
@@ -170,7 +171,7 @@ export function ConectarClaude() {
             {nova ? (
               <Copiavel
                 rotulo="URL do conector, já com a chave — copie agora, ela não aparece de novo"
-                valor={`${endereco}/${nova}`}
+                valor={`${endereco}/${nova.chave}${nova.complemento}`}
                 destaque
               />
             ) : (
@@ -190,6 +191,15 @@ export function ConectarClaude() {
                   : 'A conta "Claude" será criada junto com a primeira chave.'}
               </span>
             </div>
+
+            {!estado.passeLivreVercel ? (
+              <p className="rounded-lg bg-muted/50 px-3 py-2 text-xs leading-snug text-muted-foreground ring-1 ring-border">
+                Se o Claude disser que o servidor pediu login (401), é a hospedagem: a Vercel está pedindo login para
+                abrir o sistema. Quem tem acesso ao projeto na Vercel cria em <b>Settings › Deployment Protection ›
+                Protection Bypass for Automation</b> e faz um <b>Redeploy</b>. Depois, gere outra chave aqui: a URL já
+                sai com o passe livre.
+              </p>
+            ) : null}
 
             <ol className="list-decimal space-y-1.5 rounded-lg bg-muted/40 py-3 pr-3 pl-8 text-[13px] leading-snug">
               <li>

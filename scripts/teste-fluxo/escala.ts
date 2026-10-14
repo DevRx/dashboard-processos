@@ -50,6 +50,8 @@ if (/supabase\.co|pooler\.supabase/.test(process.env.DATABASE_URL)) {
   process.exit(2)
 }
 
+// Coluna `date` chega como texto AAAA-MM-DD, não como Date no fuso da máquina.
+pg.types.setTypeParser(1082, (v) => v)
 const db = new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 8 })
 
 // ── Equipe do teste ───────────────────────────────────────
@@ -187,8 +189,9 @@ async function semear() {
     on conflict (id) do update set name = excluded.name, email = excluded.email, role = excluded.role`,
     [EQUIPE.map((p) => p.id), EQUIPE.map((p) => p.name), EQUIPE.map((p) => p.email), EQUIPE.map(() => "x"), EQUIPE.map((p) => p.role)]
   )
-  await db.query(`delete from tarefas where origem_id like 'teste-escala:%' or titulo like 'NOVA %'`)
+  await db.query(`delete from tarefas where origem_id like 'teste-escala:%' or origem_id like 'djen:%' or titulo like 'NOVA %' or titulo like '%CLIENTE TESTE PERICIA%' or titulo like 'Avisar cliente da %'`)
   await db.query(`delete from comunicacoes_djen where djen_id >= 900000000`)
+  await db.query(`delete from processos where numero = '10099990020264013400'`)
 
   const ids: string[] = [], titulos: string[] = [], setores: (string | null)[] = [], pastas: (string | null)[] = []
   const status: string[] = [], resp: (string | null)[] = [], datas: string[] = [], origens: string[] = []
@@ -435,6 +438,153 @@ async function cenarios() {
   p = await partesAbertas(s12.id)
   confere(r.status === 200 && p.length === 1 && p[0].etapa === "andamentos" && (await statusDa(s12.id)).status === "PENDENTE",
     `S12: concluída a entrega, só o andamento do Claude deveria seguir (${JSON.stringify(p)})`)
+
+  // S13 — as etapas do desenho de 14/10 nascem com quem o desenho indica.
+  const esperado: [EtapaId, string[]][] = [
+    ["questoes-clientes", [U.claude.id, U.zeca.id]],
+    ["adm-andamentos", [U.claude.id, U.gui.id]],
+    ["jud-andamentos", [U.claude.id, U.zeca.id]],
+  ]
+  for (const [etapa, quem] of esperado) {
+    const t = await novaTarefa(`NOVA S13 ${etapa}`, etapa)
+    p = await partesAbertas(t.id)
+    confere(
+      p.length === quem.length && quem.every((q) => p.some((x) => x.responsavel_id === q && x.etapa === etapa)),
+      `S13: ${etapa} deveria nascer com ${quem.length} responsáveis do desenho (veio ${JSON.stringify(p)})`
+    )
+  }
+  // Exigência processual sai do vermelho para o amarelo e volta.
+  const s13 = await novaTarefa("NOVA S13 exigência", "andamentos")
+  r = await acao(U.zeca, s13.id, { acao: "mover", de: lugarDe("andamentos"), para: lugarDe("jud-andamentos") })
+  p = await partesAbertas(s13.id)
+  confere(r.status === 200 && p.every((x) => x.setor === "AMARELO" && x.etapa === "jud-andamentos") && p.length === 2,
+    `S13: andamento do vermelho deveria ir a Judicial › Andamentos com Claude e Zeca (${JSON.stringify(p)})`)
+  r = await acao(U.claude, s13.id, { acao: "mover", de: lugarDe("jud-andamentos"), para: lugarDe("andamentos") })
+  p = await partesAbertas(s13.id)
+  confere(r.status === 200 && p.every((x) => x.setor === "VERMELHO" && x.etapa === "andamentos"), `S13: e voltar ao vermelho (${JSON.stringify(p)})`)
+  // Dúvida do cliente que virou pendência volta ao Acompanhamento do azul.
+  const s13b = await novaTarefa("NOVA S13 questão", "questoes-clientes")
+  r = await acao(U.claude, s13b.id, { acao: "mover", de: lugarDe("questoes-clientes"), para: lugarDe("acompanhamento") })
+  p = await partesAbertas(s13b.id)
+  confere(r.status === 200 && p.length === 2 && p.every((x) => x.etapa === "acompanhamento"), `S13: questão → Acompanhamento (${JSON.stringify(p)})`)
+}
+
+// ── Motor do DJEN: perícia vira duas tarefas, e o envio fica travado ──
+
+async function djenEAviso() {
+  const q = async (sql: string, params: unknown[] = []) => (await db.query(sql, params)).rows
+
+  // Um cliente com WhatsApp e um processo dele, para o aviso ter número.
+  const clienteId = crypto.randomUUID()
+  const processoId = crypto.randomUUID()
+  await db.query(`delete from clientes where cpf = '000.000.000-00'`)
+  await db.query(
+    `insert into clientes (id, user_id, nome, cpf, telefone) values ($1, $2, 'CLIENTE TESTE PERICIA', '000.000.000-00', '(61) 99999-1234')`,
+    [clienteId, U.zeca.id]
+  )
+  await db.query(
+    `insert into processos (id, user_id, cliente_id, beneficio, numero, status, esfera) values ($1, $2, $3, 'Auxílio por incapacidade temporária', '10099990020264013400', 'EM_ANALISE', 'JUDICIAL')`,
+    [processoId, U.zeca.id, clienteId]
+  )
+
+  const hoje = new Date()
+  const em10 = new Date(hoje.getTime() + 10 * 86400000)
+  // Cai num dia útil: véspera útil fica simples de conferir.
+  while (em10.getUTCDay() === 0 || em10.getUTCDay() === 6 || em10.getUTCDay() === 1) em10.setUTCDate(em10.getUTCDate() + 1)
+  const dataPericia = em10.toISOString().slice(0, 10)
+  const vespera = new Date(em10.getTime() - 86400000).toISOString().slice(0, 10)
+  const emPrazo = new Date(hoje.getTime() + 5 * 86400000).toISOString().slice(0, 10)
+
+  // D1: perícia marcada, com processo → tarefa do evento + aviso.
+  // D2: só prazo → tarefa do prazo, sem aviso.
+  // D3: perícia sem processo cadastrado → aviso sem WhatsApp.
+  // D4: perícia cuja tarefa já existe → só o aviso nasce.
+  const d = [910000001, 910000002, 910000003, 910000004]
+  await db.query(
+    `insert into comunicacoes_djen (user_id, djen_id, data_disponibilizacao, texto, numero_processo_mascara, destinatario, processo_id, prazo_estimado, prazo_dias, ia_evento_tipo, ia_evento_data, ia_evento_hora, ia_evento_local, ia_mensagem_cliente, ia_tipo_ato, ia_providencia)
+     values
+       ($1, $2, current_date, 'perícia designada', '1009999-00.2026.4.01.3400', 'CLIENTE TESTE PERICIA', $6, null, null, 'PERICIA', $7, '14:00', 'Central de Perícias da SJDF', 'Olá! Saiu a data da sua perícia.', 'Intimação para perícia', 'Levar o autor à perícia'),
+       ($1, $3, current_date, 'prazo de 15 dias', '1009999-01.2026.4.01.3400', 'OUTRO CLIENTE', null, $8, 15, null, null, null, null, null, 'Despacho de emenda', 'Emendar a inicial'),
+       ($1, $4, current_date, 'perícia sem processo', '1009999-02.2026.4.01.3400', 'TERCEIRO CLIENTE', null, null, null, 'PERICIA', $7, null, null, null, 'Intimação para perícia', 'Comparecer à perícia'),
+       ($1, $5, current_date, 'perícia com tarefa', '1009999-03.2026.4.01.3400', 'QUARTO CLIENTE', null, null, null, 'AUDIENCIA', $7, '09:30', 'Sala de audiências', 'Olá! Audiência marcada.', 'Audiência', 'Comparecer')`,
+    [U.zeca.id, d[0], d[1], d[2], d[3], processoId, dataPericia, emPrazo]
+  )
+  const jaTinha = await novaTarefa("NOVA D4 já tinha tarefa", "andamentos")
+  await db.query(`update comunicacoes_djen set tarefa_id = $1 where djen_id = $2`, [jaTinha.id, d[3]])
+
+  const antes = Number((await q(`select count(*) from tarefas`))[0].count)
+  const r1 = await chamar("POST intimações→tarefas", U.zeca, "POST", "/api/intimacoes/tarefas", {})
+  confere(r1.status === 200, `DJEN: mutirão devolveu ${r1.status} ${JSON.stringify(r1.corpo).slice(0, 200)}`)
+  confere(r1.corpo.criadas === 3 && r1.corpo.avisos === 3, `DJEN: esperava 3 tarefas e 3 avisos (veio ${JSON.stringify(r1.corpo)})`)
+
+  const linhas = await q(`select djen_id, tarefa_id, aviso_tarefa_id from comunicacoes_djen where djen_id = any($1::bigint[]) order by djen_id`, [d])
+  confere(linhas.every((l) => l.tarefa_id) && linhas[0].aviso_tarefa_id && !linhas[1].aviso_tarefa_id && linhas[2].aviso_tarefa_id && linhas[3].aviso_tarefa_id,
+    `DJEN: vínculos errados ${JSON.stringify(linhas)}`)
+
+  // D1 — a tarefa do evento: vermelho › andamentos, Claude e Zeca, dia e hora da perícia, no calendário de perícias.
+  const t1 = (await q(`select * from tarefas where id = $1`, [linhas[0].tarefa_id]))[0]
+  confere(t1.setor === "VERMELHO" && t1.pasta === "ANDAMENTOS › PERÍCIA" && String(t1.data).slice(0, 10) === dataPericia && t1.hora === "14:00" && t1.processo_id === processoId,
+    `D1: tarefa do evento errada ${JSON.stringify({ setor: t1.setor, pasta: t1.pasta, data: t1.data, hora: t1.hora })}`)
+  confere(/Perícia \d\d\/\d\d às 14:00 — Central de Perícias da SJDF/.test(t1.titulo), `D1: título "${t1.titulo}"`)
+  let p = await partesAbertas(t1.id)
+  confere(p.length === 2 && p.every((x) => x.setor === "VERMELHO" && x.etapa === "andamentos") && p.some((x) => x.responsavel_id === U.claude.id) && p.some((x) => x.responsavel_id === U.zeca.id),
+    `D1: evento deveria estar em Vermelho › Andamentos com Claude e Zeca (${JSON.stringify(p)})`)
+  const tela = await chamar("GET lista", U.zeca, "GET", "/api/tarefas?abertas=1&vinculos=1&atribuicoes=1")
+  const naTela = ((tela.corpo.tarefas ?? []) as TarefaApi[]).find((t) => t.id === t1.id)
+  confere(Boolean(naTela?.deIntimacao), "D1: a tarefa do evento deveria ser marcada como vinda da intimação")
+
+  // D1 — o aviso: amarelo › judicial › andamentos, Claude e Zeca, na véspera, com mensagem e WhatsApp.
+  const a1 = (await q(`select * from tarefas where id = $1`, [linhas[0].aviso_tarefa_id]))[0]
+  confere(a1.setor === "AMARELO" && a1.pasta === "JUDICIAL › ANDAMENTOS" && String(a1.data).slice(0, 10) === vespera && a1.prioridade === "ALTA",
+    `D1: aviso errado ${JSON.stringify({ setor: a1.setor, pasta: a1.pasta, data: a1.data, vespera })}`)
+  confere(/^Avisar cliente da perícia/.test(a1.titulo) && a1.descricao.includes("WhatsApp (61) 99999-1234") && a1.descricao.includes("Saiu a data da sua perícia") && a1.descricao.includes("desligado"),
+    `D1: o aviso deveria trazer WhatsApp, mensagem pronta e a trava (${a1.titulo} / ${String(a1.descricao).slice(0, 120)})`)
+  p = await partesAbertas(a1.id)
+  confere(p.length === 2 && p.every((x) => x.etapa === "jud-andamentos") && p.some((x) => x.responsavel_id === U.claude.id) && p.some((x) => x.responsavel_id === U.zeca.id),
+    `D1: aviso deveria estar em Judicial › Andamentos com Claude e Zeca (${JSON.stringify(p)})`)
+
+  // D2 — só prazo: no fluxo, sem aviso.
+  const t2 = (await q(`select * from tarefas where id = $1`, [linhas[1].tarefa_id]))[0]
+  p = await partesAbertas(t2.id)
+  confere(t2.setor === "VERMELHO" && String(t2.data).slice(0, 10) === emPrazo && p.length === 2 && p.every((x) => x.etapa === "andamentos"),
+    `D2: prazo deveria virar tarefa em Vermelho › Andamentos (${JSON.stringify({ data: t2.data, p })})`)
+
+  // D3 — sem processo: aviso avisa que falta o WhatsApp e a mensagem padrão.
+  const a3 = (await q(`select * from tarefas where id = $1`, [linhas[2].aviso_tarefa_id]))[0]
+  confere(a3.descricao.includes("WhatsApp: não cadastrado") && a3.descricao.includes("Mensagem pronta:"), `D3: ${String(a3.descricao).slice(0, 160)}`)
+
+  // D4 — tarefa já existia: só o aviso nasceu, e a tarefa antiga continua.
+  confere(linhas[3].tarefa_id === jaTinha.id, "D4: a tarefa que já existia deveria ser mantida")
+  const a4 = (await q(`select titulo from tarefas where id = $1`, [linhas[3].aviso_tarefa_id]))[0]
+  confere(/^Avisar cliente da audiência/.test(a4.titulo), `D4: ${a4.titulo}`)
+
+  // Rodar de novo não duplica nada.
+  const r2 = await chamar("POST intimações→tarefas", U.zeca, "POST", "/api/intimacoes/tarefas", {})
+  const depois = Number((await q(`select count(*) from tarefas`))[0].count)
+  confere(r2.corpo.criadas === 0 && r2.corpo.avisos === 0 && depois === antes + 6, `DJEN: segunda rodada duplicou (${JSON.stringify(r2.corpo)}, ${antes} → ${depois})`)
+  // Várias rodadas ao mesmo tempo também não.
+  await db.query(`update comunicacoes_djen set tarefa_id = null, aviso_tarefa_id = null where djen_id = $1`, [d[0]])
+  await db.query(`delete from tarefas where id in ($1, $2)`, [linhas[0].tarefa_id, linhas[0].aviso_tarefa_id])
+  const corrida = await Promise.all([1, 2, 3, 4].map(() => chamar("POST intimações→tarefas (corrida)", U.zeca, "POST", "/api/intimacoes/tarefas", {})))
+  const criadasNaCorrida = corrida.reduce((s, x) => s + Number(x.corpo.criadas ?? 0) + Number(x.corpo.avisos ?? 0), 0)
+  const porOrigem = await q(`select origem_id, count(*) from tarefas where origem_id like 'djen:%' group by origem_id having count(*) > 1`)
+  confere(porOrigem.length === 0 && criadasNaCorrida === 2, `DJEN: corrida de 4 rotinas criou ${criadasNaCorrida} (esperado 2) / duplicadas ${JSON.stringify(porOrigem)}`)
+
+  // A trava do envio: nasce desligada; só o admin liga; fica registrado.
+  const g = await chamar("GET configurações", U.tay, "GET", "/api/configuracoes")
+  const cfg = ((g.corpo.configuracoes ?? []) as { chave: string; valor: unknown; padrao: boolean }[]).find((c) => c.chave === "aviso_cliente_whatsapp")
+  confere(g.status === 200 && cfg?.valor === false && cfg?.padrao === false, `trava: deveria nascer gravada como false (${JSON.stringify(cfg)})`)
+  const naoAdmin = await chamar("PATCH configurações", U.tay, "PATCH", "/api/configuracoes", { chave: "aviso_cliente_whatsapp", valor: true })
+  confere(naoAdmin.status === 403, `trava: a Tay não pode ligar o envio (${naoAdmin.status})`)
+  const liga = await chamar("PATCH configurações", U.zeca, "PATCH", "/api/configuracoes", { chave: "aviso_cliente_whatsapp", valor: true })
+  const ligada = ((liga.corpo.configuracoes ?? []) as { chave: string; valor: unknown; atualizadaPor: { name: string } | null }[]).find((c) => c.chave === "aviso_cliente_whatsapp")
+  confere(liga.status === 200 && ligada?.valor === true && ligada.atualizadaPor?.name === U.zeca.name, `trava: o Zeca deveria conseguir ligar (${JSON.stringify(ligada)})`)
+  const aud = await q(`select count(*) from auditorias where acao = 'CONFIGURACAO_ALTERADA'`)
+  confere(Number(aud[0].count) >= 1, "trava: a mudança deveria ir para a auditoria")
+  const desliga = await chamar("PATCH configurações", U.zeca, "PATCH", "/api/configuracoes", { chave: "aviso_cliente_whatsapp", valor: false })
+  confere(desliga.status === 200 && (await q(`select valor from configuracoes where chave = 'aviso_cliente_whatsapp'`))[0].valor === false, "trava: deveria voltar a false")
+  const invalida = await chamar("PATCH configurações", U.zeca, "PATCH", "/api/configuracoes", { chave: "qualquer_coisa", valor: true })
+  confere(invalida.status === 400, `trava: chave desconhecida deveria dar 400 (${invalida.status})`)
 }
 
 // ── Carga aleatória ───────────────────────────────────────
@@ -533,6 +683,10 @@ async function main() {
   console.log("• cenários do Zeca")
   await cenarios()
   await invariantes("cenários")
+
+  console.log("• motor do DJEN (perícia → evento + aviso) e a trava do envio")
+  await djenEAviso()
+  await invariantes("DJEN")
 
   console.log("• trazer tudo para o fluxo (três administradores ao mesmo tempo)")
   const pend = await chamar("GET pendentes", U.zeca, "GET", "/api/tarefas/fluxo")

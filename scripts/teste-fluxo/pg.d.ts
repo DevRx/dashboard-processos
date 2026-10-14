@@ -7,6 +7,6 @@ declare module "pg" {
     query(sql: string, valores?: unknown[]): Promise<Resultado>
     end(): Promise<void>
   }
-  const pg: { Pool: typeof Pool }
+  const pg: { Pool: typeof Pool; types: { setTypeParser(oid: number, parser: (valor: string) => unknown): void } }
   export default pg
 }

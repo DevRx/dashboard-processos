@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { idsDoEscritorio } from "@/lib/escritorio"
 import { toCamelCase } from "@/lib/utils"
 import { AcaoFluxoSchema } from "@/lib/validators"
-import { linhasPelaPasta, responsaveisPadrao, type TarefaComLugar } from "@/lib/domain/tarefa"
+import { etapaBastaUm, linhasPelaPasta, responsaveisPadrao, type TarefaComLugar } from "@/lib/domain/tarefa"
 import {
   MENSAGEM_SEM_MIGRATION,
   atribuicoesDaTarefa,
@@ -171,10 +171,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       case "concluirMinhaParte": {
         // Para quem conclui de fora das telas dos times (agenda, quadro
         // geral): fecha só o que é da pessoa. Se a tarefa tem outros
-        // responsáveis, ela continua aberta para eles.
+        // responsáveis, ela continua aberta para eles — menos na etapa em
+        // que basta um (a entrega do rosa): ali quem conclui encerra a
+        // etapa para todos.
         const abertas = (await atribuicoesDaTarefa(id)).filter((a) => !a.fimEm)
         const minhas = abertas.filter((a) => a.responsavelId === user.id)
-        const alvo = minhas.length ? minhas : abertas.length === 1 ? abertas : []
+        const lugares = new Set(abertas.map((a) => `${a.setor}|${a.etapa ?? ""}`))
+        const umLugarBastaUm = lugares.size === 1 && etapaBastaUm(abertas[0]?.etapa)
+        const alvo = minhas.length ? minhas : abertas.length === 1 || umLugarBastaUm ? abertas : []
         if (!alvo.length) {
           const nomes = [...new Set(abertas.map((a) => equipe.find((u) => u.id === a.responsavelId)?.name ?? "sem responsável"))]
           return falha(
@@ -182,7 +186,20 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
             `Esta tarefa está com mais de um responsável (${nomes.join(", ")}). Conclua a parte certa pela tela do time.`
           )
         }
+        const etapasEncerradas = new Set<string>()
         for (const a of alvo) {
+          if (etapaBastaUm(a.etapa)) {
+            const chave = `${a.setor}|${a.etapa}`
+            if (etapasEncerradas.has(chave)) continue
+            etapasEncerradas.add(chave)
+            efeito += await rpc("fluxo_concluir_etapa", {
+              p_tarefa: id,
+              p_setor: a.setor,
+              p_etapa: a.etapa,
+              p_usuario: user.id,
+            })
+            continue
+          }
           efeito += await rpc("fluxo_concluir_parte", {
             p_tarefa: id,
             p_setor: a.setor,

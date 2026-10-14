@@ -71,6 +71,13 @@ export type Etapa = {
   /** O que acontece aqui, nas palavras do fluxo. Um item por passo. */
   regras: string[]
   saidas: Saida[]
+  /**
+   * Os responsáveis são alternativas, não partes: basta um concluir e a
+   * etapa acaba para todos. É o caso da entrega — Zeca ou Ryan vai até o
+   * cliente, não os dois. Sem isto, vale a regra geral: cada um conclui
+   * a sua parte e a tarefa continua para os outros.
+   */
+  bastaUm?: boolean
 }
 
 export const ESFERA_AMARELO_LABEL: Record<EsferaAmarelo, string> = {
@@ -283,19 +290,22 @@ export const ETAPAS: Record<EtapaId, Etapa> = {
   // ── Rosa · Entregas ────────────────────────────────────
   // Definido pelo Zeca em 14/10/2026: o rosa cuida das entregas. Cliente
   // que ganhou benefício permanente vem para cá, e alguém do escritório
-  // vai pessoalmente visitá-lo e entregar o benefício.
+  // vai pessoalmente visitá-lo e entregar o benefício. Responsáveis: o
+  // Zeca (que também é do vermelho) e o Ryan (que cuida das concessões).
+  // Um ou outro entrega — por isso `bastaUm`.
   "agendar-entrega": {
     id: "agendar-entrega",
     time: "ROSA",
     nome: "Agendar entrega",
     slug: "agendar-entrega",
     pasta: "AGENDAR ENTREGA",
-    responsaveis: "A definir",
+    responsaveis: "Zeca e Ryan",
+    bastaUm: true,
     campo: "Benefício concedido (ex.: aposentadoria por idade)",
     regras: [
       "O cliente ganhou benefício permanente — aposentadoria ou BPC, por exemplo. Benefício temporário, como o auxílio-doença, não vem para cá.",
-      "Combinar com o cliente o dia, a hora e o endereço da visita.",
-      "Marcada a visita, a tarefa passa para Entrega marcada, com a data na tarefa.",
+      "A tarefa aparece para o Zeca e para o Ryan. Quem for entregar combina com o cliente o dia, a hora e o endereço da visita.",
+      "Marcada a visita, a tarefa passa para Entrega marcada, com a data na tarefa. Se só um vai, deixe só ele em \"Responsáveis desta etapa\".",
     ],
     saidas: [{ quando: "Visita marcada", para: "entrega-marcada" }],
   },
@@ -305,11 +315,12 @@ export const ETAPAS: Record<EtapaId, Etapa> = {
     nome: "Entrega marcada",
     slug: "entrega-marcada",
     pasta: "ENTREGA MARCADA",
-    responsaveis: "A definir",
+    responsaveis: "Zeca e Ryan",
+    bastaUm: true,
     campo: "Data, hora e endereço da visita",
     regras: [
       "Visita com dia e hora combinados com o cliente.",
-      "Ir pessoalmente, entregar o benefício e concluir a tarefa — entregue, ela fecha.",
+      "Quem foi entrega o benefício e conclui a tarefa: entregue, ela fecha para os dois.",
       "O cliente desmarcou: mover de volta para Agendar entrega.",
     ],
     // Concluir aqui é "entregue": fecha a tarefa, sem a pergunta "para
@@ -331,6 +342,11 @@ export const ETAPAS_DO_TIME: Record<TimeTarefa, EtapaId[]> = {
     "jud-prioridade",
   ],
   ROSA: ["agendar-entrega", "entrega-marcada"],
+}
+
+/** Nesta etapa basta um responsável concluir para ela acabar para todos? */
+export function etapaBastaUm(id?: string | null): boolean {
+  return Boolean(id && (ETAPAS as Record<string, Etapa | undefined>)[id]?.bastaUm)
 }
 
 export const ESFERAS_AMARELO: EsferaAmarelo[] = ["ADMINISTRATIVO", "JUDICIAL"]

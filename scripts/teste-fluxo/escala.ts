@@ -416,6 +416,25 @@ async function cenarios() {
   const s10 = await novaTarefa("NOVA S10 terceiro", "aguardando-assinatura")
   r = await acao(U.gui, s10.id, { acao: "concluirMinhaParte" })
   confere(r.status === 409 && (await partesAbertas(s10.id)).length === 2, `S10: o Guilherme não é responsável — devia receber 409 e nada fechar (${r.status})`)
+
+  // S11 — entrega do rosa: nasce com Zeca e Ryan, e basta um entregar.
+  const s11 = await novaTarefa("NOVA S11 entrega", "entrega-marcada")
+  p = await partesAbertas(s11.id)
+  confere(p.length === 2 && p.some((x) => x.responsavel_id === U.zeca.id) && p.some((x) => x.responsavel_id === U.ryan.id),
+    `S11: Entrega marcada deveria nascer com Zeca e Ryan (veio ${JSON.stringify(p)})`)
+  r = await acao(U.ryan, s11.id, { acao: "concluirMinhaParte" })
+  confere(r.status === 200 && (await partesAbertas(s11.id)).length === 0 && (await statusDa(s11.id)).status === "CONCLUIDA",
+    `S11: o Ryan entregou — a tarefa deveria fechar para os dois (${r.status}, ${JSON.stringify(await partesAbertas(s11.id))})`)
+
+  // S12 — a entrega acaba, mas a outra frente da tarefa continua.
+  const s12 = await novaTarefa("NOVA S12 entrega e andamento", "agendar-entrega")
+  await acao(U.zeca, s12.id, { acao: "adicionar", para: lugarDe("andamentos"), responsaveis: [U.claude.id] })
+  r = await acao(U.tay, s12.id, { acao: "concluirMinhaParte" })
+  confere(r.status === 409, `S12: a Tay não é responsável e a tarefa está em dois lugares — devia receber 409 (${r.status})`)
+  r = await acao(U.zeca, s12.id, { acao: "concluirMinhaParte" })
+  p = await partesAbertas(s12.id)
+  confere(r.status === 200 && p.length === 1 && p[0].etapa === "andamentos" && (await statusDa(s12.id)).status === "PENDENTE",
+    `S12: concluída a entrega, só o andamento do Claude deveria seguir (${JSON.stringify(p)})`)
 }
 
 // ── Carga aleatória ───────────────────────────────────────

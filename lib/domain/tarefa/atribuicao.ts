@@ -159,6 +159,7 @@ const APELIDOS: Record<string, string[]> = {
   claude: ["claude"],
   tayane: ["tayane", "tay"],
   guilherme: ["guilherme", "gui"],
+  ryan: ["ryan"],
 }
 
 function semAcento(s: string) {

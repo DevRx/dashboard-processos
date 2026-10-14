@@ -31,6 +31,7 @@ import {
   TIMES_TAREFA,
   TIME_LABEL,
   atribuicoesDa,
+  etapaBastaUm,
   etapasDaEsfera,
   gruposDa,
   pessoasDaEtapa,
@@ -388,7 +389,8 @@ function MenuDoCartao({
  * clicou; se não é dele e há mais de um responsável, pergunta de quem.
  * Quando a parte concluída é a última da etapa e o desenho tem próximo
  * passo, pergunta para onde a tarefa vai — concluir de vez é escolha,
- * não acidente.
+ * não acidente. Na etapa `bastaUm` (a entrega do rosa), quem conclui
+ * encerra a etapa para todos os responsáveis.
  */
 function Concluir({
   cartao,
@@ -414,23 +416,32 @@ function Concluir({
   const saidas = grupo.etapa ? ETAPAS[grupo.etapa].saidas.filter((s) => !s.soNoMenu) : []
   const nome = (id: string | null) => usuarios.find((u) => u.id === id)?.name ?? "Sem responsável"
   const fechar = useCallback(() => setPergunta(null), [])
+  // Etapa em que os responsáveis são alternativas (a entrega do rosa):
+  // quem conclui encerra a etapa para todos, sem perguntar de quem.
+  const bastaUm = etapaBastaUm(grupo.etapa)
+  const encerrar = (responsavelId: string | null) =>
+    bastaUm ? onConcluirEtapa() : onConcluirParte(responsavelId)
 
   const concluir = (responsavelId: string | null) => {
-    const ultima = grupo.abertas.length === 1
+    const ultima = bastaUm || grupo.abertas.length === 1
     if (ultima && saidas.length) {
       setParte(responsavelId)
       setPergunta("depois")
       return
     }
-    onConcluirParte(responsavelId)
+    encerrar(responsavelId)
     setPergunta(null)
   }
 
-  const rotulo = minha
-    ? "Concluir a minha parte"
-    : grupo.abertas.length === 1
-      ? "Concluir"
-      : "Concluir a parte de alguém"
+  const rotulo = bastaUm
+    ? grupo.abertas.length > 1
+      ? "Concluir para todos"
+      : "Concluir"
+    : minha
+      ? "Concluir a minha parte"
+      : grupo.abertas.length === 1
+        ? "Concluir"
+        : "Concluir a parte de alguém"
 
   return (
     <>
@@ -439,7 +450,7 @@ function Concluir({
         type="button"
         onClick={() => {
           if (minha) concluir(minha.responsavelId)
-          else if (grupo.abertas.length === 1) concluir(grupo.abertas[0].responsavelId)
+          else if (bastaUm || grupo.abertas.length === 1) concluir(grupo.abertas[0].responsavelId)
           else setPergunta("quem")
         }}
         title={rotulo}
@@ -486,7 +497,7 @@ function Concluir({
             <div className="my-1 h-px bg-border" />
             <ItemMenu
               onClick={() => {
-                onConcluirParte(parte)
+                encerrar(parte)
                 fechar()
               }}
             >

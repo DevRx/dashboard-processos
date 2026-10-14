@@ -255,10 +255,10 @@ export default function Processos() {
                   >
                     <Avatar nome={cliente?.nome} tamanho="md" />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[14px] font-semibold hover:underline">
+                      <span className="block truncate text-sm font-semibold hover:underline">
                         {cliente?.nome ?? "—"}
                       </span>
-                      <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[12px] text-muted-foreground">
+                      <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
                         <span className="truncate">{processo.beneficio || "Benefício não informado"}</span>
                         {(processo.numero || processo.protocoloInss) && (
                           <span className="font-mono tabular-nums">
@@ -281,7 +281,7 @@ export default function Processos() {
                       <span
                         title={`Prazo: ${formatarData(processo.prazo)}`}
                         className={cn(
-                          "inline-flex items-center gap-1 text-[12px]",
+                          "inline-flex items-center gap-1 text-xs",
                           dias < 0
                             ? "font-medium text-status-danger-foreground"
                             : dias <= 3
@@ -297,7 +297,7 @@ export default function Processos() {
 
                     {responsavel ? (
                       <span
-                        className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground"
+                        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
                         title={`Responsável: ${responsavel.name}`}
                       >
                         <Avatar nome={responsavel.name} tamanho="xs" />
@@ -306,7 +306,7 @@ export default function Processos() {
                         </span>
                       </span>
                     ) : (
-                      <span className="text-[12px] text-muted-foreground/70">Sem responsável</span>
+                      <span className="text-xs text-muted-foreground/70">Sem responsável</span>
                     )}
 
                     <Button

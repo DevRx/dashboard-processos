@@ -168,7 +168,7 @@ function MenuFase({
         aria-expanded={aberto}
         title="Trocar fase"
         className={cn(
-          "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10.5px] font-bold tracking-wide uppercase outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
+          "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-bold tracking-wide uppercase outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
           TOM_STATUS[status] ?? TOM_STATUS.EM_ANALISE
         )}
       >
@@ -253,7 +253,7 @@ function PainelDataJud({
         variant="ghost"
         onClick={consultar}
         disabled={consultando}
-        className="h-7 w-full justify-start px-1.5 text-[11.5px]"
+        className="h-7 w-full justify-start px-1.5 text-xs"
       >
         {consultando ? (
           <Loader2 size={12} className="animate-spin" />
@@ -264,11 +264,11 @@ function PainelDataJud({
       </Button>
 
       {erro ? (
-        <p className="mt-1 text-[11px] leading-snug text-destructive">{erro}</p>
+        <p className="mt-1 text-xs leading-snug text-destructive">{erro}</p>
       ) : null}
 
       {dados ? (
-        <div className="mt-1.5 space-y-1 rounded-md bg-muted/60 p-2 text-[11px] leading-snug">
+        <div className="mt-1.5 space-y-1 rounded-md bg-muted/60 p-2 text-xs leading-snug">
           {dados.classe ? (
             <p>
               <span className="text-muted-foreground">Classe: </span>
@@ -301,7 +301,7 @@ function PainelDataJud({
                 variant="outline"
                 onClick={registrar}
                 disabled={registrando || registrado}
-                className="mt-1 h-7 px-2 text-[11px]"
+                className="mt-1 h-7 px-2 text-xs"
               >
                 {registrando ? (
                   <Loader2 size={11} className="animate-spin" />
@@ -346,13 +346,13 @@ function CartaoJudicial({
         />
       </Link>
 
-      <p className="mt-0.5 truncate text-[11.5px] leading-tight text-muted-foreground">
+      <p className="mt-0.5 truncate text-xs leading-tight text-muted-foreground">
         {item.beneficio}
       </p>
 
       {cnj ? (
         <div className="mt-1.5 flex items-center gap-1">
-          <span className="truncate font-mono text-[11px] select-all">{cnj}</span>
+          <span className="truncate font-mono text-xs select-all">{cnj}</span>
           <button
             type="button"
             aria-label="Copiar número do processo"
@@ -377,13 +377,13 @@ function CartaoJudicial({
           </button>
         </div>
       ) : (
-        <p className="mt-1.5 text-[11px] text-muted-foreground italic">
+        <p className="mt-1.5 text-xs text-muted-foreground italic">
           sem número CNJ — ainda não distribuída
         </p>
       )}
 
       {juizo ? (
-        <p className="mt-1 truncate text-[11px] text-muted-foreground">{juizo}</p>
+        <p className="mt-1 truncate text-xs text-muted-foreground">{juizo}</p>
       ) : null}
 
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
@@ -391,14 +391,14 @@ function CartaoJudicial({
       </div>
 
       {item.ultimoAndamento ? (
-        <p className="mt-2 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+        <p className="mt-2 line-clamp-2 text-xs leading-snug text-muted-foreground">
           <span className="font-medium text-foreground/70">
             {formatarData(item.ultimoAndamento.data)}
           </span>{" "}
           {item.ultimoAndamento.descricao}
         </p>
       ) : (
-        <p className="mt-2 text-[11px] text-muted-foreground italic">
+        <p className="mt-2 text-xs text-muted-foreground italic">
           nenhum andamento registrado
         </p>
       )}
@@ -464,11 +464,11 @@ export function QuadroJudicial({
                 >
                   {FASE_LABEL[fase]}
                 </h3>
-                <span className="rounded-full bg-card px-2 py-0.5 text-[11px] font-bold tabular-nums shadow-card">
+                <span className="rounded-full bg-card px-2 py-0.5 text-xs font-bold tabular-nums shadow-card">
                   {lista.length}
                 </span>
               </div>
-              <p className="mt-0.5 text-[10.5px] leading-tight text-muted-foreground">
+              <p className="mt-0.5 text-xs leading-tight text-muted-foreground">
                 {FASE_DESCRICAO[fase]}
               </p>
             </header>
@@ -486,7 +486,7 @@ export function QuadroJudicial({
               ))}
 
               {lista.length === 0 && (
-                <p className="flex items-center justify-center gap-1.5 py-4 text-center text-[11px] text-muted-foreground">
+                <p className="flex items-center justify-center gap-1.5 py-4 text-center text-xs text-muted-foreground">
                   {fase === "SENTENCA" ? (
                     <Gavel size={12} />
                   ) : (

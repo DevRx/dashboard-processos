@@ -29,7 +29,7 @@ export function Equipe() {
       <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
         <div>
           <h2 className="font-heading text-[15px] font-semibold">Equipe</h2>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Quem tem acesso ao sistema e o que cada pessoa pode fazer
           </p>
         </div>
@@ -57,13 +57,13 @@ export function Equipe() {
             <li key={u.id} className="flex items-center gap-3 px-4 py-3">
               <Avatar nome={u.name} tamanho="md" />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[14px] font-medium">
+                <span className="block truncate text-sm font-medium">
                   {u.name}
                   {u.id === eu?.id && (
-                    <span className="ml-1.5 text-[12px] font-normal text-muted-foreground">(você)</span>
+                    <span className="ml-1.5 text-xs font-normal text-muted-foreground">(você)</span>
                   )}
                 </span>
-                <span className="block truncate text-[12px] text-muted-foreground">{u.email}</span>
+                <span className="block truncate text-xs text-muted-foreground">{u.email}</span>
               </span>
               <Badge variant={u.role === "ADMIN" ? "default" : "secondary"}>
                 {ROTULO_POR_PAPEL[u.role] ?? u.role}

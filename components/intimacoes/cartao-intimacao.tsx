@@ -99,7 +99,7 @@ function LeituraIA({
           type="button"
           onClick={onAnalisar}
           disabled={analisando}
-          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-[11.5px] font-medium text-primary transition-colors hover:bg-accent disabled:opacity-60 dark:text-blue-400"
+          className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium text-primary transition-colors hover:bg-accent disabled:opacity-60 dark:text-blue-400"
         >
           {analisando ? (
             <Loader2 size={12} className="animate-spin" />
@@ -118,13 +118,13 @@ function LeituraIA({
   return (
     <div className="border-t border-foreground/5 bg-accent/40 px-3.5 py-2.5">
       <div className="flex flex-wrap items-center gap-1.5">
-        <span className="inline-flex items-center gap-1 text-[10.5px] font-bold tracking-wide text-primary uppercase dark:text-blue-400">
+        <span className="inline-flex items-center gap-1 text-xs font-bold tracking-wide text-primary uppercase dark:text-blue-400">
           <Sparkles size={11} />
           Leitura por IA
         </span>
 
         {intimacao.ia_tipo_ato ? (
-          <span className="rounded bg-card px-1.5 py-0.5 text-[10.5px] font-semibold shadow-card">
+          <span className="rounded bg-card px-1.5 py-0.5 text-xs font-semibold shadow-card">
             {intimacao.ia_tipo_ato}
           </span>
         ) : null}
@@ -132,7 +132,7 @@ function LeituraIA({
         {intimacao.ia_urgencia ? (
           <span
             className={cn(
-              "rounded px-1.5 py-0.5 text-[10.5px] font-bold tracking-wide uppercase",
+              "rounded px-1.5 py-0.5 text-xs font-bold tracking-wide uppercase",
               TOM_URGENCIA[intimacao.ia_urgencia] ?? TOM_URGENCIA.BAIXA
             )}
           >
@@ -141,7 +141,7 @@ function LeituraIA({
         ) : null}
 
         {daOutraParte ? (
-          <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[10.5px] font-bold tracking-wide text-violet-800 uppercase dark:bg-violet-950/70 dark:text-violet-200">
+          <span className="rounded bg-violet-100 px-1.5 py-0.5 text-xs font-bold tracking-wide text-violet-800 uppercase dark:bg-violet-950/70 dark:text-violet-200">
             prazo de outra parte
           </span>
         ) : null}
@@ -151,7 +151,7 @@ function LeituraIA({
           onClick={onAnalisar}
           disabled={analisando}
           title="Ler de novo"
-          className="ml-auto inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10.5px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          className="ml-auto inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
         >
           {analisando ? (
             <Loader2 size={11} className="animate-spin" />
@@ -163,11 +163,11 @@ function LeituraIA({
       </div>
 
       {intimacao.ia_resumo ? (
-        <p className="mt-1.5 text-[12.5px] leading-snug">{intimacao.ia_resumo}</p>
+        <p className="mt-1.5 text-[13px] leading-snug">{intimacao.ia_resumo}</p>
       ) : null}
 
       {intimacao.ia_providencia ? (
-        <p className="mt-1 text-[12.5px] leading-snug">
+        <p className="mt-1 text-[13px] leading-snug">
           <span className="font-semibold">Fazer: </span>
           {intimacao.ia_providencia}
         </p>
@@ -178,7 +178,7 @@ function LeituraIA({
           {alertas.map((alerta) => (
             <li
               key={alerta}
-              className={cn("flex items-start gap-1.5 text-[11.5px] leading-snug", ALERTA.atrasadaTexto)}
+              className={cn("flex items-start gap-1.5 text-xs leading-snug", ALERTA.atrasadaTexto)}
             >
               <AlertTriangle size={11} className="mt-0.5 shrink-0" />
               {alerta}
@@ -264,22 +264,22 @@ export function CartaoIntimacao({
       <div className="flex flex-wrap items-start gap-x-3 gap-y-2 p-3.5">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="rounded bg-accent px-1.5 py-0.5 text-[10.5px] font-bold tracking-wide text-accent-foreground uppercase">
+            <span className="rounded bg-accent px-1.5 py-0.5 text-xs font-bold tracking-wide text-accent-foreground uppercase">
               {intimacao.sigla_tribunal ?? "—"}
             </span>
-            <span className="text-[11.5px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               {intimacao.tipo_documento ?? intimacao.tipo_comunicacao ?? "Comunicação"}
             </span>
-            <span className="text-[11.5px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               · publicada em {formatarData(intimacao.data_disponibilizacao)}
             </span>
           </div>
 
-          <p className="mt-1 text-[13.5px] leading-tight font-semibold">
+          <p className="mt-1 text-[13px] leading-tight font-semibold">
             {intimacao.destinatario ?? "Parte não identificada no diário"}
           </p>
 
-          <p className="mt-0.5 text-[11.5px] leading-snug text-muted-foreground">
+          <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
             {intimacao.nome_orgao}
             {intimacao.numero_processo_mascara
               ? ` · ${intimacao.numero_processo_mascara}`
@@ -289,13 +289,13 @@ export function CartaoIntimacao({
           {intimacao.processo ? (
             <Link
               href={`/clientes/${intimacao.processo.cliente?.id ?? ""}`}
-              className="mt-1 inline-flex items-center gap-1 text-[11.5px] font-medium text-primary hover:underline dark:text-blue-400"
+              className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline dark:text-blue-400"
             >
               <Check size={12} />
               {intimacao.processo.cliente?.nome ?? "processo vinculado"}
             </Link>
           ) : (
-            <p className="mt-1 text-[11.5px] text-muted-foreground italic">
+            <p className="mt-1 text-xs text-muted-foreground italic">
               sem processo cadastrado com este número
             </p>
           )}
@@ -305,7 +305,7 @@ export function CartaoIntimacao({
           {intimacao.prazo_dias ? (
             <span
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-bold",
+                "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-bold",
                 urgente ? ALERTA.urgente : ALERTA.atrasada
               )}
               title="Estimativa em dias úteis, sem feriados. Confira no processo."
@@ -320,7 +320,7 @@ export function CartaoIntimacao({
               )}
             </span>
           ) : (
-            <span className="rounded-md bg-muted px-2 py-1 text-[11px] font-medium text-muted-foreground">
+            <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
               sem prazo explícito
             </span>
           )}
@@ -331,7 +331,7 @@ export function CartaoIntimacao({
                 href={intimacao.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-7 items-center gap-1 rounded-md px-2 text-[11.5px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                className="inline-flex h-7 items-center gap-1 rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
                 <ExternalLink size={12} />
                 Abrir no PJe
@@ -350,7 +350,7 @@ export function CartaoIntimacao({
               }}
               disabled={salvando}
               className={cn(
-                "inline-flex h-7 items-center gap-1 rounded-md px-2 text-[11.5px] font-medium transition-colors",
+                "inline-flex h-7 items-center gap-1 rounded-md px-2 text-xs font-medium transition-colors",
                 tratada
                   ? "text-muted-foreground hover:bg-accent"
                   : "text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950/50"
@@ -370,7 +370,7 @@ export function CartaoIntimacao({
       </div>
 
       {intimacao.prazo_trecho ? (
-        <p className="border-t border-foreground/5 px-3.5 py-2 text-[11.5px] leading-snug text-muted-foreground italic">
+        <p className="border-t border-foreground/5 px-3.5 py-2 text-xs leading-snug text-muted-foreground italic">
           {intimacao.prazo_trecho}
         </p>
       ) : null}
@@ -391,7 +391,7 @@ export function CartaoIntimacao({
       {/* Direcionar é o gesto mais repetido da triagem: fica numa
           linha própria, sem menu e sem formulário. */}
       <div className="flex flex-wrap items-center gap-1.5 border-t border-foreground/5 px-3.5 py-2">
-        <span className="mr-0.5 inline-flex items-center gap-1 text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <span className="mr-0.5 inline-flex items-center gap-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           <UserCheck size={12} />
           Time
         </span>
@@ -417,7 +417,7 @@ export function CartaoIntimacao({
                 }
               }}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-semibold ring-1 transition-colors",
+                "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold ring-1 transition-colors",
                 atual
                   ? "bg-foreground/5 ring-foreground/25"
                   : "ring-foreground/10 hover:bg-accent",
@@ -436,7 +436,7 @@ export function CartaoIntimacao({
         })}
 
         {intimacao.tarefa?.setor ? null : intimacao.tarefa_id ? (
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             tarefa criada, ainda sem time
           </span>
         ) : null}
@@ -447,7 +447,7 @@ export function CartaoIntimacao({
           type="button"
           onClick={() => setAberta((v) => !v)}
           aria-expanded={aberta}
-          className="inline-flex items-center gap-1 text-[11.5px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           <ChevronDown
             size={13}
@@ -457,7 +457,7 @@ export function CartaoIntimacao({
         </button>
 
         {intimacao.tarefa_id ? (
-          <span className="ml-auto inline-flex items-center gap-1 text-[11.5px] font-medium text-emerald-700 dark:text-emerald-300">
+          <span className="ml-auto inline-flex items-center gap-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
             <Check size={12} />
             prazo na lista de tarefas
           </span>
@@ -466,7 +466,7 @@ export function CartaoIntimacao({
             size="sm"
             variant={formAberto ? "secondary" : "outline"}
             onClick={() => setFormAberto((v) => !v)}
-            className="ml-auto h-7 px-2 text-[11.5px]"
+            className="ml-auto h-7 px-2 text-xs"
           >
             <ListPlus size={12} />
             Criar tarefa do prazo
@@ -477,25 +477,25 @@ export function CartaoIntimacao({
       {formAberto && !intimacao.tarefa_id && (
         <div className="animate-in fade-in slide-in-from-top-1 flex flex-wrap items-end gap-2 border-t border-foreground/5 bg-muted/40 px-3.5 py-2.5 duration-150">
           <label className="flex flex-col gap-1">
-            <span className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
+            <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               Prazo
             </span>
             <Input
               type="date"
               value={data}
               onChange={(e) => setData(e.target.value)}
-              className="h-8 w-[150px] text-[12.5px]"
+              className="h-8 w-[150px] text-[13px]"
             />
           </label>
 
           <label className="flex flex-col gap-1">
-            <span className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
+            <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               Responsável
             </span>
             <select
               value={responsavelId}
               onChange={(e) => setResponsavelId(e.target.value)}
-              className="h-8 rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
+              className="h-8 rounded-lg border border-input bg-card px-2.5 text-[13px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
             >
               <option value="">Sem responsável</option>
               {usuarios.map((u) => (
@@ -507,13 +507,13 @@ export function CartaoIntimacao({
           </label>
 
           <label className="flex flex-col gap-1">
-            <span className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
+            <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               Time
             </span>
             <select
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="h-8 rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
+              className="h-8 rounded-lg border border-input bg-card px-2.5 text-[13px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
             >
               <option value="">Sem time</option>
               {TIMES_TAREFA.map((t) => (
@@ -532,7 +532,7 @@ export function CartaoIntimacao({
       )}
 
       {aberta && (
-        <div className="animate-in fade-in max-h-72 overflow-y-auto border-t border-foreground/10 bg-muted/40 px-3.5 py-3 text-[12px] leading-relaxed whitespace-pre-line duration-150">
+        <div className="animate-in fade-in max-h-72 overflow-y-auto border-t border-foreground/10 bg-muted/40 px-3.5 py-3 text-xs leading-relaxed whitespace-pre-line duration-150">
           {intimacao.texto}
         </div>
       )}

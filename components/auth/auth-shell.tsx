@@ -116,7 +116,7 @@ function LemaAnimado() {
       {/* Um <p>, não um heading: o h1 da página é o do cartão. O texto
           para leitores de tela vem inteiro e em ordem; o bloco visual,
           fatiado para animar, fica fora da árvore de acessibilidade. */}
-      <p className="lema-titulo font-heading text-[40px] leading-[1.05] font-extrabold tracking-[-0.03em] text-white xl:text-[46px]">
+      <p className="lema-titulo font-heading text-[40px] leading-[1.05] font-bold tracking-[-0.03em] text-white xl:text-[46px]">
         <span className="sr-only">Crescer para Servir</span>
         <span aria-hidden>
           <span className="lema-linha">
@@ -126,7 +126,7 @@ function LemaAnimado() {
           </span>{" "}
           {/* A linha do "para" tem tipografia própria: sem isso ela herda
               o corpo de 46px do <p> e abre um buraco entre as palavras. */}
-          <span className="lema-linha lema-linha-para my-2 font-sans text-[14px] leading-none font-semibold tracking-[0.32em] text-white/60 uppercase">
+          <span className="lema-linha lema-linha-para my-2 font-sans text-sm leading-none font-semibold tracking-[0.32em] text-white/60 uppercase">
             <span className="lema-palavra" style={atraso(RITMO.para)}>
               para
             </span>
@@ -204,10 +204,10 @@ export function AuthShell({
         <Scale size={22} strokeWidth={2.1} />
       </span>
       <span>
-        <span className="font-heading block text-[17px] leading-tight font-bold">
+        <span className="font-heading block text-lg leading-tight font-bold">
           Zeca Aposenta
         </span>
-        <span className="block text-[10px] leading-tight font-semibold tracking-[0.2em] text-white/50 uppercase">
+        <span className="block text-xs leading-tight font-semibold tracking-[0.2em] text-white/50 uppercase">
           O Terror do INSS
         </span>
       </span>
@@ -250,7 +250,7 @@ export function AuthShell({
 
           <div className="max-w-md">
             <p
-              className="lema-entra mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[11.5px] font-semibold tracking-wide text-white/80 uppercase backdrop-blur"
+              className="lema-entra mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold tracking-wide text-white/80 uppercase backdrop-blur"
               style={atraso(RITMO.selo)}
             >
               <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_2px_rgba(52,211,153,0.7)]" />
@@ -281,7 +281,7 @@ export function AuthShell({
                       <Icone size={17} strokeWidth={1.9} />
                     </span>
                     <span>
-                      <span className="block text-[13.5px] font-semibold">
+                      <span className="block text-[13px] font-semibold">
                         {d.titulo}
                       </span>
                       <span className="block text-[13px] leading-snug text-white/60">
@@ -294,7 +294,7 @@ export function AuthShell({
             </ul>
           </div>
 
-          <p className="text-[11.5px] text-white/50">
+          <p className="text-xs text-white/50">
             © {new Date().getFullYear()} Zeca Aposenta · Acesso restrito à equipe
           </p>
         </div>
@@ -312,17 +312,17 @@ export function AuthShell({
               <span className="font-heading block text-[15px] leading-tight font-bold">
                 Zeca Aposenta
               </span>
-              <span className="block text-[9.5px] leading-tight font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+              <span className="block text-xs leading-tight font-semibold tracking-[0.2em] text-muted-foreground uppercase">
                 O Terror do INSS
               </span>
             </span>
           </div>
 
           <div className="rounded-3xl bg-card p-7 shadow-float duration-300 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 sm:p-9">
-            <h1 className="font-heading text-[26px] leading-tight font-extrabold tracking-[-0.025em]">
+            <h1 className="font-heading text-[28px] leading-tight font-bold tracking-[-0.025em]">
               {titulo}
             </h1>
-            <p className="mt-1.5 text-[14px] leading-snug text-muted-foreground">
+            <p className="mt-1.5 text-sm leading-snug text-muted-foreground">
               {descricao}
             </p>
 
@@ -330,7 +330,7 @@ export function AuthShell({
           </div>
 
           {rodape ? (
-            <p className="mt-6 text-center text-[13.5px] text-muted-foreground">
+            <p className="mt-6 text-center text-[13px] text-muted-foreground">
               {rodape}
             </p>
           ) : null}
@@ -359,7 +359,7 @@ export function CampoAuth({
     <div className="flex flex-col gap-1.5">
       <label
         htmlFor={id}
-        className="text-[12.5px] font-semibold text-foreground/80"
+        className="text-[13px] font-semibold text-foreground/80"
       >
         {rotulo}
       </label>

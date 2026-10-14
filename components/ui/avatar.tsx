@@ -24,8 +24,8 @@ function tintaDe(nome: string) {
 }
 
 const TAMANHOS = {
-  xs: "size-6 text-[10px]",
-  sm: "size-8 text-[11.5px]",
+  xs: "size-6 text-xs",
+  sm: "size-8 text-xs",
   md: "size-10 text-[13px]",
   lg: "size-14 text-lg",
   xl: "size-20 text-2xl",

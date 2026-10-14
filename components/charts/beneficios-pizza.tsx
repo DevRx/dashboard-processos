@@ -69,7 +69,7 @@ export function BeneficiosPizza({
       >
         {titulo}
       </h3>
-      <p className="mt-0.5 text-[12px] text-muted-foreground">
+      <p className="mt-0.5 text-xs text-muted-foreground">
         {total === 0
           ? descricao
           : `${descricao} · ${total === 1 ? "1 processo" : `${total} processos`}`}
@@ -129,13 +129,13 @@ export function BeneficiosPizza({
                   className="size-2.5 shrink-0 translate-y-px rounded-full"
                   style={{ background: f.cor }}
                 />
-                <span className="min-w-0 flex-1 truncate text-[12.5px]">
+                <span className="min-w-0 flex-1 truncate text-[13px]">
                   {f.label}
                 </span>
-                <span className="shrink-0 text-[12.5px] font-semibold tabular-nums">
+                <span className="shrink-0 text-[13px] font-semibold tabular-nums">
                   {f.total}
                 </span>
-                <span className="w-9 shrink-0 text-right text-[11px] text-muted-foreground tabular-nums">
+                <span className="w-9 shrink-0 text-right text-xs text-muted-foreground tabular-nums">
                   {parte(f.total)}%
                 </span>
               </li>

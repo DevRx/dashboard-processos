@@ -70,7 +70,7 @@ export function ImportarTickTick({ onImportou }: { onImportou: () => void }) {
       </Button>
 
       {resultado ? (
-        <p className="text-[12.5px] text-muted-foreground">
+        <p className="text-[13px] text-muted-foreground">
           <strong className="text-foreground">{resultado.novas.toLocaleString("pt-BR")} tarefas importadas</strong>
           {resultado.jaExistiam > 0
             ? ` · ${resultado.jaExistiam.toLocaleString("pt-BR")} já estavam aqui`
@@ -80,7 +80,7 @@ export function ImportarTickTick({ onImportou }: { onImportou: () => void }) {
         </p>
       ) : null}
 
-      {erro ? <p className="text-[12.5px] text-destructive">{erro}</p> : null}
+      {erro ? <p className="text-[13px] text-destructive">{erro}</p> : null}
     </div>
   )
 }

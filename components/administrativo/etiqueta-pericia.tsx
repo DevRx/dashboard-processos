@@ -63,7 +63,7 @@ export function EtiquetaPericia({
   const selo = (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] leading-none font-bold tracking-wide uppercase ring-1 ring-inset",
+        "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs leading-none font-bold tracking-wide uppercase ring-1 ring-inset",
         TOM_PERICIA[atual],
         deduzida && "opacity-75"
       )}

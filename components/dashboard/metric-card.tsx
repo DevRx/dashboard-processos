@@ -60,7 +60,7 @@ export function MetricCard({
     <>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="truncate text-[11px] font-semibold tracking-[0.08em] text-muted-foreground uppercase sm:text-[11.5px]">
+          <p className="text-xs leading-snug font-semibold tracking-[0.06em] text-muted-foreground uppercase">
             {title}
           </p>
 
@@ -75,7 +75,7 @@ export function MetricCard({
 
           {/* No celular os cartões vêm dois por linha: a frase explicativa
               sai, o número e o nome bastam. */}
-          <p className="mt-2 hidden text-[12.5px] text-muted-foreground sm:block">{description}</p>
+          <p className="mt-2 hidden text-[13px] text-muted-foreground sm:block">{description}</p>
         </div>
 
         {Icon ? (
@@ -92,7 +92,7 @@ export function MetricCard({
       </div>
 
       {href && (
-        <span className="mt-3 hidden items-center gap-1 text-[12.5px] font-medium sm:inline-flex text-primary transition-transform duration-150 group-hover:translate-x-0.5 dark:text-accent-foreground">
+        <span className="mt-3 hidden items-center gap-1 text-[13px] font-medium sm:inline-flex text-primary transition-transform duration-150 group-hover:translate-x-0.5 dark:text-accent-foreground">
           {rotuloLink}
           <ArrowRight size={14} strokeWidth={2} />
         </span>

@@ -71,8 +71,8 @@ export function Segmentado<T extends string>({
             onClick={() => onChange(opcao.valor)}
             className={cn(
               "inline-flex items-center justify-center gap-1.5 rounded-md font-medium whitespace-nowrap transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
-              tamanho === "sm" && "h-7 px-2.5 text-[12px]",
-              tamanho === "md" && "h-8 px-3 text-[12.5px]",
+              tamanho === "sm" && "h-7 px-2.5 text-xs",
+              tamanho === "md" && "h-8 px-3 text-[13px]",
               tamanho === "lg" && "h-10 px-4 text-sm",
               cheio && "flex-1",
               ativa

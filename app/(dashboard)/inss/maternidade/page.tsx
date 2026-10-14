@@ -111,13 +111,13 @@ export default function MaternidadePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-[14px]">Casos</CardTitle>
+          <CardTitle className="text-sm">Casos</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[680px] text-sm">
               <thead>
-                <tr className="border-b border-border text-left text-[11px] tracking-wide text-muted-foreground uppercase">
+                <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">
                   <th className="py-2 pr-3 font-medium">Segurada</th>
                   <th className="py-2 pr-3 font-medium">Fato gerador</th>
                   <th className="py-2 pr-3 font-medium">Categoria</th>

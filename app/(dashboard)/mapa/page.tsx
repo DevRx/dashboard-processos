@@ -123,7 +123,7 @@ export default function MapaPage() {
             <p className="font-heading text-xl leading-none font-semibold tabular-nums">
               {porMunicipio.length}
             </p>
-            <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
+            <p className="text-xs tracking-wide text-muted-foreground uppercase">
               cidades atendidas
             </p>
           </div>
@@ -135,7 +135,7 @@ export default function MapaPage() {
             <p className="font-heading text-xl leading-none font-semibold tabular-nums">
               {clientes.length}
             </p>
-            <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
+            <p className="text-xs tracking-wide text-muted-foreground uppercase">
               clientes no mapa · {totalAbertos} em aberto
             </p>
           </div>
@@ -147,7 +147,7 @@ export default function MapaPage() {
             <p className="font-heading text-xl leading-none font-semibold tabular-nums">
               {semLocalizacao.length}
             </p>
-            <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
+            <p className="text-xs tracking-wide text-muted-foreground uppercase">
               sem localização
             </p>
           </div>
@@ -171,7 +171,7 @@ export default function MapaPage() {
           <MapaAtendimento clientes={clientes} />
 
           <div className="rounded-xl bg-card p-4 shadow-card">
-            <h2 className="font-heading text-[14px] leading-tight font-semibold">
+            <h2 className="font-heading text-sm leading-tight font-semibold">
               Onde estamos atendendo
             </h2>
             <ul className="mt-3 flex flex-col gap-2">
@@ -190,7 +190,7 @@ export default function MapaPage() {
                     {m.clientes}
                   </span>
                   {m.abertos > 0 && (
-                    <span className="shrink-0 rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-950/60 dark:text-red-300">
+                    <span className="shrink-0 rounded bg-red-100 px-1.5 py-0.5 text-xs font-bold text-red-700 dark:bg-red-950/60 dark:text-red-300">
                       {m.abertos} em aberto
                     </span>
                   )}
@@ -203,10 +203,10 @@ export default function MapaPage() {
 
       {semLocalizacao.length > 0 && (
         <section className="rounded-xl bg-muted/40 p-4 shadow-card">
-          <h2 className="font-heading text-[14px] leading-tight font-semibold">
+          <h2 className="font-heading text-sm leading-tight font-semibold">
             Sem localização — {semLocalizacao.length} a apontar
           </h2>
-          <p className="mt-0.5 text-[12px] text-muted-foreground">
+          <p className="mt-0.5 text-xs text-muted-foreground">
             O endereço destes clientes não traz um município conhecido.
             Escolha a cidade para o pin aparecer no mapa.
           </p>
@@ -223,7 +223,7 @@ export default function MapaPage() {
                 >
                   {c.nome}
                 </Link>
-                <p className="truncate text-[11px] text-muted-foreground">
+                <p className="truncate text-xs text-muted-foreground">
                   {c.endereco || "sem endereço cadastrado"}
                 </p>
 
@@ -232,7 +232,7 @@ export default function MapaPage() {
                   disabled={salvando === c.id}
                   onChange={(e) => apontar(c.id, e.target.value)}
                   aria-label={`Cidade de ${c.nome}`}
-                  className="h-8 w-full rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
+                  className="h-8 w-full rounded-lg border border-input bg-card px-2.5 text-[13px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
                 >
                   <option value="">Apontar cidade…</option>
                   {OPCOES_DE_CIDADE}

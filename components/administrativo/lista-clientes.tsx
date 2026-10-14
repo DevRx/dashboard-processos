@@ -82,14 +82,14 @@ function LinhaCliente({
 
         <div className="pointer-events-none relative z-10 min-w-0 flex-1">
           <p className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
-            <span className="truncate text-[13.5px] leading-tight font-semibold">
+            <span className="truncate text-[13px] leading-tight font-semibold">
               {item.cliente.nome}
             </span>
-            <span className="shrink-0 font-mono text-[11.5px] leading-tight text-muted-foreground">
+            <span className="shrink-0 font-mono text-xs leading-tight text-muted-foreground">
               {cpf ?? "CPF não informado"}
             </span>
           </p>
-          <p className="mt-0.5 truncate text-[11.5px] leading-tight text-muted-foreground">
+          <p className="mt-0.5 truncate text-xs leading-tight text-muted-foreground">
             {detalhe}
           </p>
         </div>

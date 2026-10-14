@@ -33,7 +33,7 @@ export function AbasJudicial({ pendentes }: { pendentes?: number }) {
             key={aba.href}
             href={aba.href}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[12.5px] font-medium transition-colors",
+              "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors",
               ativa
                 ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
@@ -42,7 +42,7 @@ export function AbasJudicial({ pendentes }: { pendentes?: number }) {
             <Icone size={14} />
             {aba.rotulo}
             {aba.href === "/judicial/intimacoes" && pendentes ? (
-              <span className="rounded bg-red-600 px-1 text-[10.5px] font-bold text-white tabular-nums">
+              <span className="rounded bg-red-600 px-1 text-xs font-bold text-white tabular-nums">
                 {pendentes}
               </span>
             ) : null}

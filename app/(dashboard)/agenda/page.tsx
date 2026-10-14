@@ -220,17 +220,17 @@ function Linha({
           {categoria ? (
             <span
               className={cn(
-                "rounded-md px-1.5 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                "rounded-md px-1.5 py-0.5 text-xs font-bold tracking-wide uppercase",
                 CORES_CATEGORIA[categoria].etiqueta
               )}
             >
               {CATEGORIA_AGENDA_LABEL[categoria]}
             </span>
           ) : null}
-          <span className="text-[13.5px] leading-snug font-semibold">{tarefa.titulo}</span>
+          <span className="text-[13px] leading-snug font-semibold">{tarefa.titulo}</span>
         </div>
 
-        <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11.5px] text-muted-foreground">
+        <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <Clock size={11} />
             {mostrarData ? (
@@ -280,19 +280,19 @@ function DetalheDoDia({
 }) {
   return (
     <div className="border-t border-border px-4 py-3">
-      <h3 className="mb-2 flex items-center gap-2 text-[12.5px] font-semibold">
+      <h3 className="mb-2 flex items-center gap-2 text-[13px] font-semibold">
         <span className="inline-block first-letter:uppercase">{formatarDataLonga(data)}</span>
         {data === hoje ? (
-          <span className="rounded-full bg-foreground px-2 py-0.5 text-[10px] font-bold text-background uppercase">
+          <span className="rounded-full bg-foreground px-2 py-0.5 text-xs font-bold text-background uppercase">
             hoje
           </span>
         ) : null}
-        <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-[11px] tabular-nums">
+        <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs tabular-nums">
           {total}
         </span>
       </h3>
       {total === 0 ? (
-        <p className="py-3 text-center text-[12.5px] text-muted-foreground">{vazio}</p>
+        <p className="py-3 text-center text-[13px] text-muted-foreground">{vazio}</p>
       ) : (
         <ul className="flex max-h-[420px] flex-col gap-1.5 overflow-y-auto pr-1">{children}</ul>
       )}
@@ -551,7 +551,7 @@ export default function AgendaPage() {
   // ── tela ──────────────────────────────────────────────────────────
 
   const legendaTimes = (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-muted-foreground">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
       {TIMES_TAREFA.map((t) => (
         <span key={t} className="inline-flex items-center gap-1.5">
           <span className={cn("size-2.5 rounded-full", CORES_TIME[t].ponto)} />
@@ -566,7 +566,7 @@ export default function AgendaPage() {
   )
 
   const legendaCategorias = (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-muted-foreground">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
       {CATEGORIAS_AGENDA.map((c) => (
         <span key={c} className="inline-flex items-center gap-1.5">
           <span className={cn("size-2.5 rounded-full", CORES_CATEGORIA[c].ponto)} />
@@ -620,7 +620,7 @@ export default function AgendaPage() {
                           key={chave}
                           title={`${chave === "SEM" ? "Sem time" : TIME_LABEL[chave]}: ${n}`}
                           className={cn(
-                            "flex h-4 min-w-4 items-center justify-center rounded px-1 text-[10px] leading-none font-bold tabular-nums sm:h-[18px] sm:min-w-[18px] sm:text-[10.5px]",
+                            "flex h-4 min-w-4 items-center justify-center rounded px-1 text-xs leading-none font-bold tabular-nums sm:h-[18px] sm:min-w-[18px] sm:text-xs",
                             chave === "SEM"
                               ? "bg-muted-foreground/25 text-foreground/80"
                               : CORES_TIME[chave].cabecalho
@@ -663,7 +663,7 @@ export default function AgendaPage() {
                           key={tarefa.id}
                           title={`${CATEGORIA_AGENDA_LABEL[categoria]}: ${tarefa.titulo}`}
                           className={cn(
-                            "truncate rounded px-1 py-0.5 text-[10px] leading-tight font-semibold",
+                            "truncate rounded px-1 py-0.5 text-xs leading-tight font-semibold",
                             CORES_CATEGORIA[categoria].etiqueta
                           )}
                         >
@@ -671,7 +671,7 @@ export default function AgendaPage() {
                         </span>
                       ))}
                       {lista.length > 2 ? (
-                        <span className="px-1 text-[10px] font-semibold text-muted-foreground">
+                        <span className="px-1 text-xs font-semibold text-muted-foreground">
                           +{lista.length - 2}
                         </span>
                       ) : null}
@@ -711,7 +711,7 @@ export default function AgendaPage() {
                   <h2 className="font-heading text-[15px] leading-tight font-semibold">
                     Tarefas urgentes
                   </h2>
-                  <p className="text-[12px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     Prioridade urgente · {dicaPeriodo}, atrasadas incluídas
                   </p>
                 </div>
@@ -741,7 +741,7 @@ export default function AgendaPage() {
                       aria-checked={ativo}
                       onClick={() => setFiltroCor(cor)}
                       className={cn(
-                        "inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[12px] font-semibold ring-1 transition-colors",
+                        "inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold ring-1 transition-colors",
                         ativo
                           ? cor === "TODAS"
                             ? "bg-foreground text-background ring-foreground"

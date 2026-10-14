@@ -31,11 +31,11 @@ export function ProcessTable({ processos }: { processos: ProcessoRecente[] }) {
           <h2 className="font-heading text-[15px] leading-snug font-semibold">
             Processos recentes
           </h2>
-          <p className="text-[12px] text-muted-foreground">Os últimos cadastrados</p>
+          <p className="text-xs text-muted-foreground">Os últimos cadastrados</p>
         </div>
         <Link
           href="/processos"
-          className="inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[12.5px] font-medium text-primary transition-colors hover:bg-accent dark:text-accent-foreground"
+          className="inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[13px] font-medium text-primary transition-colors hover:bg-accent dark:text-accent-foreground"
         >
           Ver todos
           <ArrowRight size={14} />
@@ -58,10 +58,10 @@ export function ProcessTable({ processos }: { processos: ProcessoRecente[] }) {
               >
                 <Avatar nome={processo.clienteNome} tamanho="sm" />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[13.5px] font-medium">
+                  <span className="block truncate text-[13px] font-medium">
                     {processo.clienteNome}
                   </span>
-                  <span className="block truncate text-[12px] text-muted-foreground">
+                  <span className="block truncate text-xs text-muted-foreground">
                     {processo.beneficio || "Benefício não informado"}
                     {processo.dataEntrada && (
                       <>

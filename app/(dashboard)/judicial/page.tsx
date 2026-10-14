@@ -129,7 +129,7 @@ export default function JudicialPage() {
           </span>
 
           <div className="min-w-0 flex-1">
-            <p className="font-heading text-[17px] leading-tight font-semibold">
+            <p className="font-heading text-lg leading-tight font-semibold">
               Fila judicial
             </p>
             <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">
@@ -144,7 +144,7 @@ export default function JudicialPage() {
               <span className="font-heading text-xl leading-none font-semibold tabular-nums">
                 {itens.length}
               </span>
-              <span className="text-[10px] leading-tight font-semibold tracking-wide uppercase">
+              <span className="text-xs leading-tight font-semibold tracking-wide uppercase">
                 ações
               </span>
             </div>
@@ -154,7 +154,7 @@ export default function JudicialPage() {
                 <span className="font-heading text-xl leading-none font-semibold tabular-nums">
                   {semNumero}
                 </span>
-                <span className="text-[10px] leading-tight font-semibold tracking-wide uppercase">
+                <span className="text-xs leading-tight font-semibold tracking-wide uppercase">
                   sem
                   <br />
                   número CNJ

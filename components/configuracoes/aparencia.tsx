@@ -73,21 +73,25 @@ export function EscolhaAparencia() {
               <Miniatura escuro={escuro} />
             )}
 
-            <span className="flex items-center gap-3 bg-card px-4 py-3">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                <Icone size={18} />
+            {/* Em pé, e não lado a lado: as três opções dividem metade da
+                tela, e em linha o texto ficava espremido uma palavra por linha. */}
+            <span className="flex flex-1 flex-col gap-2 bg-card px-3.5 py-3">
+              <span className="flex items-center justify-between gap-2">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+                  <Icone size={16} />
+                </span>
+                <span
+                  className={cn(
+                    "flex size-6 shrink-0 items-center justify-center rounded-full transition-colors",
+                    ativo ? "bg-primary text-primary-foreground" : "bg-muted text-transparent"
+                  )}
+                >
+                  <Check size={14} strokeWidth={3} />
+                </span>
               </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[14px] font-semibold">{o.rotulo}</span>
-                <span className="block text-[12px] text-muted-foreground">{o.descricao}</span>
-              </span>
-              <span
-                className={cn(
-                  "flex size-6 shrink-0 items-center justify-center rounded-full transition-colors",
-                  ativo ? "bg-primary text-primary-foreground" : "bg-muted text-transparent"
-                )}
-              >
-                <Check size={14} strokeWidth={3} />
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold">{o.rotulo}</span>
+                <span className="mt-0.5 block text-xs leading-snug text-muted-foreground">{o.descricao}</span>
               </span>
             </span>
           </button>

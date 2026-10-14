@@ -11,10 +11,10 @@ export default function NotFound() {
         <p className="font-heading mt-6 text-[13px] font-bold tracking-[0.18em] text-muted-foreground uppercase">
           Erro 404
         </p>
-        <h2 className="font-heading mt-1 text-[24px] leading-tight font-extrabold tracking-[-0.02em]">
+        <h2 className="font-heading mt-1 text-2xl leading-tight font-bold tracking-[-0.02em]">
           Rota não encontrada
         </h2>
-        <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           O recurso não está disponível no momento ou o endereço foi digitado
           errado.
         </p>

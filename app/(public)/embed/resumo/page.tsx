@@ -75,7 +75,7 @@ export default async function ResumoEmbedPage() {
         </div>
         <div>
           <p className="text-sm font-bold leading-tight">Zeca Aposenta</p>
-          <p className="text-gradient-brand text-[10px] font-extrabold tracking-widest uppercase leading-tight">
+          <p className="text-gradient-brand text-xs font-bold tracking-widest uppercase leading-tight">
             O Terror do INSS
           </p>
         </div>
@@ -139,7 +139,7 @@ export default async function ResumoEmbedPage() {
         </div>
       </div>
 
-      <p className="mt-4 text-right text-[10px] text-muted-foreground">
+      <p className="mt-4 text-right text-xs text-muted-foreground">
         Atualizado em {atualizadoEm}
       </p>
     </div>

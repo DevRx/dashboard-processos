@@ -171,7 +171,7 @@ export default function AutomacoesPage() {
       {abrindo && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-[14px]">Nova automação</CardTitle>
+            <CardTitle className="text-sm">Nova automação</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid gap-3 sm:grid-cols-3">
@@ -220,7 +220,7 @@ export default function AutomacoesPage() {
                 ]}
               />
               {sensivel && (
-                <span className="text-[12px] text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   sensível fica em Revisão
                 </span>
               )}
@@ -259,7 +259,7 @@ export default function AutomacoesPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <SeloModo modo={r.modo} />
                   {r.sensivel && (
-                    <span className="text-[11.5px] text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       sensível — sempre revisão
                     </span>
                   )}

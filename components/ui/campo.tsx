@@ -39,7 +39,7 @@ export function Campo({
       role={grupo ? "group" : undefined}
       className={cn("flex min-w-0 flex-col gap-1.5", className)}
     >
-      <span className="text-[12.5px] leading-none font-medium text-foreground/85">
+      <span className="text-[13px] leading-none font-medium text-foreground/85">
         {rotulo}
         {obrigatorio && (
           <span aria-hidden className="ml-0.5 text-destructive">
@@ -51,11 +51,11 @@ export function Campo({
       {children}
 
       {erro ? (
-        <span role="alert" className="text-[12px] leading-snug text-destructive">
+        <span role="alert" className="text-xs leading-snug text-destructive">
           {erro}
         </span>
       ) : dica ? (
-        <span className="text-[12px] leading-snug text-muted-foreground">
+        <span className="text-xs leading-snug text-muted-foreground">
           {dica}
         </span>
       ) : null}

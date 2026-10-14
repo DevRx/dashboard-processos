@@ -72,7 +72,7 @@ function Dado({
   const conteudo = (
     <span
       className={cn(
-        "block truncate text-[13.5px]",
+        "block truncate text-[13px]",
         vazio ? "text-muted-foreground/70 italic" : "font-medium",
         mono && !vazio && "font-mono tabular-nums",
         href && !vazio && "hover:underline"
@@ -88,7 +88,7 @@ function Dado({
         <Icone size={17} strokeWidth={1.9} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+        <span className="block text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           {rotulo}
         </span>
         {href && !vazio ? <a href={href}>{conteudo}</a> : conteudo}
@@ -258,7 +258,7 @@ export default function ClienteDetalhe() {
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-heading text-[22px] leading-tight font-semibold tracking-[-0.01em]">
+              <h2 className="font-heading text-2xl leading-tight font-semibold tracking-[-0.01em]">
                 {cliente.nome}
               </h2>
               {cliente.beneficio ? (
@@ -307,7 +307,7 @@ export default function ClienteDetalhe() {
           <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
             <div>
               <h3 className="font-heading text-[15px] font-semibold">Casos</h3>
-              <p className="text-[12px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 Requerimentos no INSS e ações na Justiça
               </p>
             </div>
@@ -371,28 +371,28 @@ export default function ClienteDetalhe() {
                       </Button>
                     </div>
 
-                    <dl className="mt-3 grid gap-x-4 gap-y-2 text-[12.5px] sm:grid-cols-2">
+                    <dl className="mt-3 grid gap-x-4 gap-y-2 text-[13px] sm:grid-cols-2">
                       {processo.numero && (
                         <div>
-                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Número CNJ</dt>
+                          <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Número CNJ</dt>
                           <dd className="font-mono tabular-nums">{processo.numero}</dd>
                         </div>
                       )}
                       {processo.protocoloInss && (
                         <div>
-                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Protocolo INSS</dt>
+                          <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Protocolo INSS</dt>
                           <dd className="font-mono tabular-nums">{processo.protocoloInss}</dd>
                         </div>
                       )}
                       {processo.numeroBeneficio && (
                         <div>
-                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">NB</dt>
+                          <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">NB</dt>
                           <dd className="font-mono tabular-nums">{processo.numeroBeneficio}</dd>
                         </div>
                       )}
                       {responsavel && (
                         <div>
-                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Responsável</dt>
+                          <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Responsável</dt>
                           <dd className="flex items-center gap-1.5">
                             <Avatar nome={responsavel} tamanho="xs" />
                             {responsavel}
@@ -401,13 +401,13 @@ export default function ClienteDetalhe() {
                       )}
                       {processo.dataEntrada && (
                         <div>
-                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Entrada</dt>
+                          <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Entrada</dt>
                           <dd className="font-mono tabular-nums">{formatarData(processo.dataEntrada)}</dd>
                         </div>
                       )}
                       {processo.prazo && dias !== null && (
                         <div>
-                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Prazo</dt>
+                          <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Prazo</dt>
                           <dd
                             className={cn(
                               "font-mono tabular-nums",
@@ -422,13 +422,13 @@ export default function ClienteDetalhe() {
                       )}
                       {(processo.tribunal || processo.vara) && (
                         <div className="sm:col-span-2">
-                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Onde corre</dt>
+                          <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Onde corre</dt>
                           <dd>{[processo.tribunal, processo.vara].filter(Boolean).join(" · ")}</dd>
                         </div>
                       )}
                       {processo.observacoes && (
                         <div className="sm:col-span-2">
-                          <dt className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">Observações</dt>
+                          <dt className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Observações</dt>
                           <dd className="leading-relaxed text-foreground/85">{processo.observacoes}</dd>
                         </div>
                       )}

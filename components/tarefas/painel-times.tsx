@@ -66,7 +66,7 @@ export function PainelTimes() {
     )
   }
 
-  if (erro) return <p className="rounded-2xl bg-card p-5 text-[14px] shadow-card">{erro}</p>
+  if (erro) return <p className="rounded-2xl bg-card p-5 text-sm shadow-card">{erro}</p>
 
   const linhaDaEtapa = (time: TimeTarefa, id: EtapaId) => {
     const r = resumo[time]
@@ -76,15 +76,15 @@ export function PainelTimes() {
       <li key={id}>
         <Link
           href={`${enderecoDoTime(ETAPAS[id].time)}?${ETAPAS[id].esfera ? `lado=${ETAPAS[id].esfera === "JUDICIAL" ? "judicial" : "administrativo"}&` : ""}etapa=${ETAPAS[id].slug}`}
-          className="flex min-h-11 items-center gap-3 rounded-xl px-3 py-2 text-[14.5px] outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="flex min-h-11 items-center gap-3 rounded-xl px-3 py-2 text-sm outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <span className="min-w-0 flex-1 truncate font-medium">{ETAPAS[id].nome}</span>
           {atrasadas ? (
-            <span className={cn("text-[12px] font-semibold", ALERTA.atrasadaTexto)}>
+            <span className={cn("text-xs font-semibold", ALERTA.atrasadaTexto)}>
               {atrasadas} {atrasadas === 1 ? "atrasada" : "atrasadas"}
             </span>
           ) : null}
-          <span className="font-heading min-w-8 text-right text-[16px] font-bold tabular-nums">{qtd}</span>
+          <span className="font-heading min-w-8 text-right text-base font-bold tabular-nums">{qtd}</span>
           <ChevronRight size={15} className="shrink-0 text-muted-foreground" aria-hidden />
         </Link>
       </li>
@@ -106,7 +106,7 @@ export function PainelTimes() {
                 cor.cabecalho
               )}
             >
-              <span className="font-heading flex-1 text-[20px] font-extrabold tracking-[0.04em] uppercase">
+              <span className="font-heading flex-1 text-xl font-bold tracking-[0.04em] uppercase">
                 {TIME_LABEL[time]}
               </span>
               <span className="text-[13px] opacity-90">
@@ -120,7 +120,7 @@ export function PainelTimes() {
               {time === "AMARELO" ? (
                 ESFERAS_AMARELO.map((lado) => (
                   <div key={lado} className="pb-1">
-                    <p className="px-3 pt-2 pb-1 text-[12.5px] font-semibold text-muted-foreground">
+                    <p className="px-3 pt-2 pb-1 text-[13px] font-semibold text-muted-foreground">
                       {ESFERA_AMARELO_LABEL[lado]}
                     </p>
                     <ul>{etapasDaEsfera(lado).map((id) => linhaDaEtapa(time, id))}</ul>
@@ -129,7 +129,7 @@ export function PainelTimes() {
               ) : ETAPAS_DO_TIME[time].length ? (
                 <ul>{ETAPAS_DO_TIME[time].map((id) => linhaDaEtapa(time, id))}</ul>
               ) : (
-                <p className="px-3 py-3 text-[14px] text-muted-foreground">
+                <p className="px-3 py-3 text-sm text-muted-foreground">
                   Ainda sem etapas no fluxo — {r.total} {r.total === 1 ? "tarefa" : "tarefas"}.
                 </p>
               )}
@@ -137,7 +137,7 @@ export function PainelTimes() {
               {ETAPAS_DO_TIME[time].length && r.semEtapa ? (
                 <Link
                   href={enderecoDoTime(time)}
-                  className="mt-1 flex min-h-11 items-center gap-3 rounded-xl px-3 py-2 text-[13.5px] text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
+                  className="mt-1 flex min-h-11 items-center gap-3 rounded-xl px-3 py-2 text-[13px] text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
                 >
                   <span className="flex-1">Ainda sem etapa</span>
                   <span className="font-semibold tabular-nums">{r.semEtapa}</span>

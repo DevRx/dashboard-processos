@@ -106,7 +106,7 @@ export default function AssistentePage() {
                       key={ex}
                       type="button"
                       onClick={() => enviar(ex)}
-                      className="rounded-full border border-border bg-muted px-3 py-1 text-[12px] text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                      className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
                       {ex}
                     </button>
@@ -172,7 +172,7 @@ export default function AssistentePage() {
                 Enviar
               </Button>
             </div>
-            <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
+            <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
               <ShieldCheck size={13} className="shrink-0" />
               O agente prepara e explica; ele não protocola nem acessa o INSS
               sozinho. Precisa da ANTHROPIC_API_KEY para responder.

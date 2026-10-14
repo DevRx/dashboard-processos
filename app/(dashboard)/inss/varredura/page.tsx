@@ -245,7 +245,7 @@ export default function VarreduraPage() {
               <p className="text-sm font-semibold">
                 {rodando ? "Lendo o lote atual…" : "Varredura em lotes"}
               </p>
-              <p className="text-[12.5px] text-muted-foreground">
+              <p className="text-[13px] text-muted-foreground">
                 ~10 clientes a cada 30–40 min, no horário de expediente. Próximo
                 lote às 09:40.
               </p>
@@ -279,7 +279,7 @@ export default function VarreduraPage() {
       {/* Fila de clientes */}
       <Card>
         <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
-          <CardTitle className="flex items-center gap-2 text-[14px]">
+          <CardTitle className="flex items-center gap-2 text-sm">
             Clientes na varredura
             {exemplo && <Badge variant="outline">dados de exemplo</Badge>}
           </CardTitle>
@@ -300,7 +300,7 @@ export default function VarreduraPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[720px] text-sm">
               <thead>
-                <tr className="border-b border-border text-left text-[11px] tracking-wide text-muted-foreground uppercase">
+                <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">
                   <th className="py-2 pr-3 font-medium">Cliente</th>
                   <th className="py-2 pr-3 font-medium">Benefício</th>
                   <th className="py-2 pr-3 font-medium">Acesso</th>
@@ -317,7 +317,7 @@ export default function VarreduraPage() {
                   >
                     <td className="py-2.5 pr-3">
                       <p className="font-medium">{i.nome}</p>
-                      <p className="text-[12px] text-muted-foreground tabular-nums">
+                      <p className="text-xs text-muted-foreground tabular-nums">
                         {i.cpf}
                       </p>
                     </td>
@@ -361,7 +361,7 @@ export default function VarreduraPage() {
       {/* Fila de prorrogação — preparada, para na revisão */}
       <Card id="prorrogacoes">
         <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
-          <CardTitle className="text-[14px]">
+          <CardTitle className="text-sm">
             Prorrogações a preparar (DCB nos próximos 15 dias)
           </CardTitle>
           <Badge variant="outline">
@@ -379,7 +379,7 @@ export default function VarreduraPage() {
               >
                 <div className="min-w-0">
                   <p className="font-medium">{p.nome}</p>
-                  <p className="text-[12.5px] text-muted-foreground">
+                  <p className="text-[13px] text-muted-foreground">
                     {p.beneficio} · cessação {dataBr(p.dcb)}{" "}
                     <span
                       className={
@@ -418,7 +418,7 @@ export default function VarreduraPage() {
               </div>
             )
           })}
-          <p className="pt-1 text-[12px] text-muted-foreground">
+          <p className="pt-1 text-xs text-muted-foreground">
             O sistema monta o pedido com a pasta do Drive e confere se a
             prorrogação já foi pedida. O envio abre o portal com tudo pronto —
             o disparo é do advogado, nunca automático.

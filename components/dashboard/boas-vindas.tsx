@@ -52,10 +52,10 @@ export function BoasVindas({ nome }: { nome: string }) {
       />
       <div className="flex flex-col gap-5 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
-          <h2 className="font-heading text-[22px] leading-tight font-semibold tracking-[-0.01em]">
+          <h2 className="font-heading text-2xl leading-tight font-semibold tracking-[-0.01em]">
             {cumprimento}, {primeiroNome(nome) || "bem-vindo"}!
           </h2>
-          <p className="mt-1 text-[13.5px] text-muted-foreground first-letter:uppercase">
+          <p className="mt-1 text-[13px] text-muted-foreground first-letter:uppercase">
             {hoje ? `${hoje} · ` : ""}Este é o resumo do escritório. Comece por um atalho ou role para ver os números.
           </p>
         </div>
@@ -77,7 +77,7 @@ export function BoasVindas({ nome }: { nome: string }) {
                   <span className="block truncate text-[13px] leading-tight font-semibold">
                     {a.rotulo}
                   </span>
-                  <span className="hidden truncate text-[11px] leading-tight text-muted-foreground sm:block">
+                  <span className="mt-0.5 hidden text-xs leading-snug text-muted-foreground sm:line-clamp-2">
                     {a.dica}
                   </span>
                 </span>

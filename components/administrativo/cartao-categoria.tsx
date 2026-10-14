@@ -70,10 +70,10 @@ export function CartaoCategoria({
         </span>
 
         <span className="min-w-0 flex-1">
-          <span className="font-heading block text-[14.5px] leading-tight font-semibold text-balance">
+          <span className="font-heading block text-sm leading-tight font-semibold text-balance">
             {CATEGORIA_LABEL[categoria]}
           </span>
-          <span className="mt-0.5 block truncate text-[11.5px] leading-tight text-muted-foreground">
+          <span className="mt-0.5 block truncate text-xs leading-tight text-muted-foreground">
             {alerta ?? CATEGORIA_DESCRICAO[categoria]}
           </span>
         </span>
@@ -82,7 +82,7 @@ export function CartaoCategoria({
           <span className="font-heading text-2xl leading-none font-semibold tabular-nums">
             {total}
           </span>
-          <span className="text-[10px] leading-tight font-medium tracking-wide text-muted-foreground uppercase">
+          <span className="text-xs leading-tight font-medium tracking-wide text-muted-foreground uppercase">
             {total === 1 ? "cliente" : "clientes"}
           </span>
         </span>
@@ -100,7 +100,7 @@ export function CartaoCategoria({
             <span
               key={e.rotulo}
               className={cn(
-                "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] leading-none font-bold tracking-wide uppercase ring-1 ring-inset",
+                "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs leading-none font-bold tracking-wide uppercase ring-1 ring-inset",
                 e.tom
               )}
             >

@@ -179,10 +179,10 @@ function Clientes() {
                   <Avatar nome={cliente.nome} tamanho="md" />
 
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[14px] font-semibold">
+                    <span className="block truncate text-sm font-semibold">
                       {cliente.nome}
                     </span>
-                    <span className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12px] text-muted-foreground">
+                    <span className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
                       <span className="font-mono tabular-nums">
                         CPF {formatarCPF(cliente.cpf)}
                       </span>
@@ -205,7 +205,7 @@ function Clientes() {
                     </Badge>
                   )}
 
-                  <span className="hidden items-center gap-1 text-[12.5px] font-medium text-primary sm:inline-flex dark:text-accent-foreground">
+                  <span className="hidden items-center gap-1 text-[13px] font-medium text-primary sm:inline-flex dark:text-accent-foreground">
                     Abrir ficha
                     <ChevronRight
                       size={15}

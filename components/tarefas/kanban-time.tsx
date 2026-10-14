@@ -103,18 +103,18 @@ function Pessoas({ grupo, usuarios, eu }: { grupo: Grupo; usuarios: Usuario[]; e
   return (
     <div className="flex min-w-0 items-center gap-1">
       {semNinguem ? (
-        <span className="inline-flex items-center gap-1 text-[11.5px] text-muted-foreground">
+        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
           <UserRound size={13} aria-hidden />
           Sem responsável
         </span>
       ) : (
-        <div className="flex -space-x-1.5">
+        <div className="flex gap-1">
           {abertas.map((a) => (
             <span
               key={a.id}
               title={`${nome(a.responsavelId) ?? "?"} — parte em aberto`}
               className={cn(
-                "flex size-6 items-center justify-center rounded-full text-[9.5px] font-bold text-white ring-2 ring-card",
+                "flex size-7 items-center justify-center rounded-full text-xs font-semibold text-white",
                 a.responsavelId === eu ? "bg-gradient-brand" : "bg-slate-500 dark:bg-slate-600"
               )}
             >
@@ -127,7 +127,7 @@ function Pessoas({ grupo, usuarios, eu }: { grupo: Grupo; usuarios: Usuario[]; e
         <span
           key={a.id}
           title={`${nome(a.responsavelId) ?? "Alguém"} já concluiu a parte dele`}
-          className="relative flex size-6 items-center justify-center rounded-full bg-muted text-[9.5px] font-bold text-muted-foreground"
+          className="relative flex size-7 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground"
         >
           {iniciais(nome(a.responsavelId) ?? "?")}
           <span className="absolute -right-0.5 -bottom-0.5 flex size-3 items-center justify-center rounded-full bg-emerald-600 text-white ring-2 ring-card">
@@ -135,7 +135,7 @@ function Pessoas({ grupo, usuarios, eu }: { grupo: Grupo; usuarios: Usuario[]; e
           </span>
         </span>
       ))}
-      <span className="ml-1 truncate text-[11.5px] text-muted-foreground">
+      <span className="ml-1 truncate text-xs text-muted-foreground">
         {semNinguem
           ? ""
           : abertas.length === 1
@@ -187,7 +187,7 @@ function TituloMenu({ children, onVoltar }: { children: React.ReactNode; onVolta
           <ArrowLeft size={14} />
         </button>
       ) : null}
-      <p className="text-[12px] font-semibold text-muted-foreground">{children}</p>
+      <p className="text-xs font-semibold text-muted-foreground">{children}</p>
     </div>
   )
 }
@@ -198,7 +198,7 @@ function EscolherLugar({ atual, onEscolher }: { atual: Lugar; onEscolher: (l: Lu
     <div className="pb-1">
       {TIMES_TAREFA.map((time) => (
         <div key={time} className="py-0.5">
-          <p className="flex items-center gap-1.5 px-2.5 pt-1.5 pb-1 text-[11.5px] font-bold text-muted-foreground">
+          <p className="flex items-center gap-1.5 px-2.5 pt-1.5 pb-1 text-xs font-semibold text-muted-foreground">
             <span className={cn("size-2 rounded-full", CORES_TIME[time].ponto)} aria-hidden />
             {TIME_LABEL[time]}
           </p>
@@ -208,7 +208,7 @@ function EscolherLugar({ atual, onEscolher }: { atual: Lugar; onEscolher: (l: Lu
             return (
               <ItemMenu key={id ?? `${time}-sem`} disabled={igual} onClick={() => onEscolher(lugar)}>
                 <span className="pl-3.5">{id ? nomeDaEtapa(id) : "Sem etapa"}</span>
-                {igual ? <span className="ml-auto text-[11px] text-muted-foreground">aqui</span> : null}
+                {igual ? <span className="ml-auto text-xs text-muted-foreground">aqui</span> : null}
               </ItemMenu>
             )
           })}
@@ -355,7 +355,7 @@ function MenuDoCartao({
                   onResponsaveis(marcados)
                   fechar()
                 }}
-                className="h-8 rounded-lg bg-primary px-3 text-[12.5px] font-semibold text-primary-foreground hover:bg-primary/90"
+                className="h-8 rounded-lg bg-primary px-3 text-[13px] font-semibold text-primary-foreground hover:bg-primary/90"
               >
                 Salvar
               </button>
@@ -559,7 +559,7 @@ function CartaoKanban({
           <button
             type="button"
             onClick={onAbrir}
-            className="w-full rounded text-left text-[13.5px] leading-snug font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="w-full rounded text-left text-sm leading-snug font-semibold outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             {tarefa.tipo === "DUVIDA" ? (
               <CircleHelp size={13} strokeWidth={2.2} aria-label="dúvida" className={cn("mr-1 inline align-[-2px]", DESTAQUE.duvidaIcone)} />
@@ -568,7 +568,7 @@ function CartaoKanban({
           </button>
 
           {trecho ? (
-            <p className={cn("mt-1 rounded-md px-1.5 py-1 text-[11px] leading-snug", DESTAQUE.busca)}>
+            <p className={cn("mt-1 rounded-md px-1.5 py-1 text-xs leading-snug", DESTAQUE.busca)}>
               <span className="line-clamp-2">{trecho}</span>
             </p>
           ) : null}
@@ -576,7 +576,7 @@ function CartaoKanban({
           <div className="mt-1.5 flex flex-wrap items-center gap-1">
             <span
               className={cn(
-                "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold",
+                "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-semibold",
                 atrasada ? ALERTA.atrasada : "text-muted-foreground"
               )}
             >
@@ -585,7 +585,7 @@ function CartaoKanban({
               {tarefa.hora ? ` ${tarefa.hora}` : ""}
             </span>
             {prioridade ? (
-              <span className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-bold tracking-wide uppercase", prioridade)}>
+              <span className={cn("rounded-md px-1.5 py-0.5 text-xs font-semibold tracking-wide uppercase", prioridade)}>
                 {tarefa.prioridade}
               </span>
             ) : null}
@@ -593,7 +593,7 @@ function CartaoKanban({
               <span
                 key={o.chave}
                 title={`Também em ${nomeDoLugar(o)}`}
-                className="inline-flex max-w-full items-center gap-1 rounded-md bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground"
+                className="inline-flex max-w-full items-center gap-1 rounded-md bg-muted px-1.5 py-0.5 text-xs text-muted-foreground"
               >
                 <span className={cn("size-1.5 shrink-0 rounded-full", CORES_TIME[o.setor].ponto)} aria-hidden />
                 <span className="truncate">também {o.etapa ? nomeDaEtapa(o.etapa) : TIME_LABEL[o.setor]}</span>
@@ -671,14 +671,14 @@ function NovaNaColuna({
         }}
         placeholder="Nome do cliente – final do celular"
         aria-label="Título da tarefa"
-        className="h-9 rounded-lg bg-transparent px-1 text-[13.5px] outline-none placeholder:text-muted-foreground"
+        className="h-9 rounded-lg bg-transparent px-1 text-[13px] outline-none placeholder:text-muted-foreground"
       />
       <div className="flex gap-1.5">
         <select
           value={quem}
           onChange={(e) => setQuem(e.target.value)}
           aria-label="Responsável"
-          className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-card px-2 text-[12px] outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+          className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-card px-2 text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
         >
           <option value="">{padrao.length ? `Padrão: ${padrao.join(" e ")}` : "Sem responsável"}</option>
           {usuarios.map((u) => (
@@ -693,7 +693,7 @@ function NovaNaColuna({
           value={data}
           onChange={(e) => setData(e.target.value)}
           aria-label="Data"
-          className="h-8 shrink-0 rounded-lg border border-input bg-card px-2 text-[12px] outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+          className="h-8 shrink-0 rounded-lg border border-input bg-card px-2 text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
         />
       </div>
       <div className="flex gap-1.5">
@@ -701,12 +701,12 @@ function NovaNaColuna({
           type="button"
           onClick={criar}
           disabled={salvando || !titulo.trim()}
-          className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-[12.5px] font-semibold text-primary-foreground disabled:opacity-50"
+          className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-[13px] font-semibold text-primary-foreground disabled:opacity-50"
         >
           {salvando ? <Loader2 size={13} className="animate-spin" /> : null}
           Criar
         </button>
-        <button type="button" onClick={onFechar} className="h-8 rounded-lg px-3 text-[12.5px] text-muted-foreground hover:bg-accent">
+        <button type="button" onClick={onFechar} className="h-8 rounded-lg px-3 text-[13px] text-muted-foreground hover:bg-accent">
           Cancelar
         </button>
       </div>
@@ -748,7 +748,7 @@ function RegraDaColuna({ coluna }: { coluna: Coluna }) {
             {e.campo ? <p className="text-muted-foreground">O cartão precisa dizer: {e.campo}.</p> : null}
             {e.saidas.length ? (
               <div>
-                <p className="mb-1 text-[12px] font-semibold text-muted-foreground">Daqui vai para</p>
+                <p className="mb-1 text-xs font-semibold text-muted-foreground">Daqui vai para</p>
                 <ul className="space-y-0.5">
                   {e.saidas.map((s) => (
                     <li key={s.para + s.quando} className="flex items-center gap-1.5">
@@ -948,7 +948,7 @@ export function KanbanTime({
       </div>
     )
   }
-  if (erro) return <p className="rounded-2xl bg-card p-5 text-[14px] shadow-card">{erro}</p>
+  if (erro) return <p className="rounded-2xl bg-card p-5 text-sm shadow-card">{erro}</p>
 
   const cor = CORES_TIME[time]
   const chips: { chave: string; rotulo: string; qtd: number; ativo: boolean; onClick: () => void }[] = [
@@ -1021,7 +1021,7 @@ export function KanbanTime({
               }}
               placeholder="Buscar: nome, CPF, NB…"
               aria-label={`Buscar no ${TIME_LABEL[time].toLowerCase()}`}
-              className="h-10 w-full rounded-xl bg-card pr-9 pl-9 text-[13.5px] shadow-card ring-1 ring-foreground/[0.06] outline-none focus-visible:ring-2 focus-visible:ring-ring/50 [&::-webkit-search-cancel-button]:hidden"
+              className="h-10 w-full rounded-xl bg-card pr-9 pl-9 text-[13px] shadow-card ring-1 ring-foreground/[0.06] outline-none focus-visible:ring-2 focus-visible:ring-ring/50 [&::-webkit-search-cancel-button]:hidden"
             />
             {busca ? (
               <button
@@ -1068,7 +1068,7 @@ export function KanbanTime({
           </button>
 
           {atrasadas ? (
-            <span className={cn("inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[12.5px] font-semibold", ALERTA.atrasada)}>
+            <span className={cn("inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[13px] font-semibold", ALERTA.atrasada)}>
               <AlarmClock size={13} aria-hidden />
               {atrasadas} {atrasadas === 1 ? "atrasada" : "atrasadas"}
             </span>
@@ -1089,7 +1089,7 @@ export function KanbanTime({
                 )}
               >
                 {c.rotulo}
-                <span className={cn("rounded-full px-1.5 text-[11.5px] font-bold tabular-nums", c.ativo ? "bg-black/15" : "bg-muted text-muted-foreground")}>
+                <span className={cn("rounded-full px-1.5 text-xs font-semibold tabular-nums", c.ativo ? "bg-black/15" : "bg-muted text-muted-foreground")}>
                   {c.qtd}
                 </span>
               </button>
@@ -1125,11 +1125,11 @@ export function KanbanTime({
                   <span className={cn("h-4 w-1 shrink-0 rounded-full", cor.ponto)} aria-hidden />
                   <div className="min-w-0 flex-1">
                     {coluna.rotulo ? (
-                      <p className="text-[11px] leading-none font-semibold text-muted-foreground">{coluna.rotulo}</p>
+                      <p className="text-xs leading-none font-semibold text-muted-foreground">{coluna.rotulo}</p>
                     ) : null}
-                    <h3 className="truncate text-[14.5px] leading-tight font-bold">{coluna.titulo}</h3>
+                    <h3 title={coluna.titulo} className="truncate text-[15px] leading-tight font-bold">{coluna.titulo}</h3>
                   </div>
-                  <span className="rounded-full bg-card px-2 py-0.5 text-[12px] font-bold text-muted-foreground tabular-nums">{lista.length}</span>
+                  <span className="rounded-full bg-card px-2 py-0.5 text-xs font-semibold text-muted-foreground tabular-nums">{lista.length}</span>
                   <RegraDaColuna coluna={coluna} />
                   <button
                     type="button"
@@ -1141,7 +1141,7 @@ export function KanbanTime({
                   </button>
                 </header>
                 {coluna.lugar.etapa ? (
-                  <p className="-mt-1 truncate px-4 pb-2 text-[11.5px] text-muted-foreground">{ETAPAS[coluna.lugar.etapa].responsaveis}</p>
+                  <p className="-mt-1 truncate px-4 pb-2 text-xs text-muted-foreground">{ETAPAS[coluna.lugar.etapa].responsaveis}</p>
                 ) : null}
 
                 <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-2 pb-2 [scrollbar-width:thin]">
@@ -1181,7 +1181,7 @@ export function KanbanTime({
                       type="button"
                       onClick={() => setNovaEm(coluna.chave)}
                       className={cn(
-                        "rounded-xl border border-dashed py-6 text-center text-[12.5px] text-muted-foreground transition-colors hover:border-foreground/25 hover:text-foreground",
+                        "rounded-xl border border-dashed py-6 text-center text-[13px] text-muted-foreground transition-colors hover:border-foreground/25 hover:text-foreground",
                         arrastando ? "border-foreground/30" : "border-foreground/10"
                       )}
                     >
@@ -1200,7 +1200,7 @@ export function KanbanTime({
           role="status"
           aria-live="polite"
           className={cn(
-            "animate-in fade-in slide-in-from-bottom-2 fixed inset-x-4 bottom-24 z-[80] mx-auto flex max-w-lg items-center gap-3 rounded-2xl px-4 py-3 text-[13.5px] shadow-float duration-200 md:bottom-6",
+            "animate-in fade-in slide-in-from-bottom-2 fixed inset-x-4 bottom-24 z-[80] mx-auto flex max-w-lg items-center gap-3 rounded-2xl px-4 py-3 text-[13px] shadow-float duration-200 md:bottom-6",
             aviso.erro ? "bg-orange-700 text-white" : "bg-foreground text-background"
           )}
         >

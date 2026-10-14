@@ -91,14 +91,14 @@ function CartaoCliente({
           <p className="truncate text-[13px] leading-tight font-semibold">
             {item.cliente.nome}
           </p>
-          <p className="mt-0.5 truncate font-mono text-[11px] leading-tight text-muted-foreground">
+          <p className="mt-0.5 truncate font-mono text-xs leading-tight text-muted-foreground">
             {cpf ?? "CPF não informado"}
           </p>
         </div>
 
         <p
           className={cn(
-            "pointer-events-none relative z-10 truncate text-[11px] leading-tight",
+            "pointer-events-none relative z-10 truncate text-xs leading-tight",
             item.beneficio ? "text-muted-foreground" : "text-muted-foreground/70 italic"
           )}
         >
@@ -116,13 +116,13 @@ function CartaoCliente({
           ) : item.status ? (
             <StatusBadge status={item.status} className="pointer-events-none" />
           ) : (
-            <span className="pointer-events-none rounded-full bg-muted px-2 py-0.5 text-[10.5px] font-semibold text-muted-foreground">
+            <span className="pointer-events-none rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
               sem processo
             </span>
           )}
 
           {entrada ? (
-            <span className="pointer-events-none ml-auto text-[10.5px] text-muted-foreground tabular-nums">
+            <span className="pointer-events-none ml-auto text-xs text-muted-foreground tabular-nums">
               {entrada}
             </span>
           ) : null}
@@ -220,18 +220,18 @@ export function QuadroKanbanAdministrativo({
                   />
                   <h3
                     className={cn(
-                      "font-heading min-w-0 flex-1 text-[11.5px] leading-[1.25] font-bold tracking-[0.02em] uppercase",
+                      "font-heading min-w-0 flex-1 text-xs leading-[1.25] font-bold tracking-[0.02em] uppercase",
                       tinta.texto
                     )}
                   >
                     {CATEGORIA_LABEL[categoria]}
                   </h3>
-                  <span className="shrink-0 rounded-full bg-card px-1.5 py-0.5 text-[10.5px] font-bold tabular-nums shadow-card">
+                  <span className="shrink-0 rounded-full bg-card px-1.5 py-0.5 text-xs font-bold tabular-nums shadow-card">
                     {lista.length}
                   </span>
                 </div>
 
-                <p className="mt-1 text-[10.5px] leading-tight text-muted-foreground">
+                <p className="mt-1 text-xs leading-tight text-muted-foreground">
                   {CATEGORIA_DESCRICAO[categoria]}
                 </p>
 
@@ -240,7 +240,7 @@ export function QuadroKanbanAdministrativo({
                     coluna por vários minutos. */}
                 <Link
                   href={`/inss/${CATEGORIA_SLUG[categoria]}`}
-                  className="mt-1.5 inline-flex items-center gap-0.5 text-[10.5px] font-medium text-primary hover:underline dark:text-blue-400"
+                  className="mt-1.5 inline-flex items-center gap-0.5 text-xs font-medium text-primary hover:underline dark:text-blue-400"
                 >
                   abrir a fila
                   <ArrowUpRight size={11} />
@@ -262,7 +262,7 @@ export function QuadroKanbanAdministrativo({
                 ))}
 
                 {lista.length === 0 && (
-                  <p className="flex flex-col items-center gap-1 py-5 text-center text-[10.5px] leading-tight text-muted-foreground">
+                  <p className="flex flex-col items-center gap-1 py-5 text-center text-xs leading-tight text-muted-foreground">
                     <Inbox size={14} strokeWidth={1.75} />
                     Nenhum caso nesta família
                   </p>
@@ -282,7 +282,7 @@ export function QuadroKanbanAdministrativo({
           aria-label={`A classificar — ${aClassificar.length} cliente(s)`}
           className="mt-3 rounded-xl bg-muted/40 p-3 shadow-card ring-inset"
         >
-          <h3 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-muted-foreground uppercase">
+          <h3 className="mb-2 flex items-center gap-1.5 text-xs font-bold tracking-wide text-muted-foreground uppercase">
             <CircleDashed size={13} strokeWidth={2} />
             A classificar — {aClassificar.length}{" "}
             {aClassificar.length === 1 ? "cliente" : "clientes"} sem benefício

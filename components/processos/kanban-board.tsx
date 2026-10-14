@@ -128,10 +128,10 @@ export function KanbanBoard({
             }}
           >
             <div className="mb-3 flex items-center justify-between gap-2 px-1">
-              <h3 className="font-heading truncate text-[13.5px] font-semibold" title={nomeColuna}>
+              <h3 className="font-heading truncate text-[13px] font-semibold" title={nomeColuna}>
                 {nomeColuna}
               </h3>
-              <span className="shrink-0 rounded-full bg-card px-2 py-0.5 text-[11.5px] font-semibold tabular-nums shadow-card">
+              <span className="shrink-0 rounded-full bg-card px-2 py-0.5 text-xs font-semibold tabular-nums shadow-card">
                 {itens.length}
               </span>
             </div>
@@ -171,9 +171,9 @@ export function KanbanBoard({
                     </div>
 
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                      <StatusBadge status={processo.status} className="text-[10.5px]" />
+                      <StatusBadge status={processo.status} className="text-xs" />
                       {processo.numero && (
-                        <span className="truncate font-mono text-[10.5px] text-muted-foreground">
+                        <span className="truncate font-mono text-xs text-muted-foreground">
                           {processo.numero}
                         </span>
                       )}
@@ -182,7 +182,7 @@ export function KanbanBoard({
                     {prazo && (
                       <div
                         className={cn(
-                          "mt-2 flex items-center gap-1 text-[11.5px]",
+                          "mt-2 flex items-center gap-1 text-xs",
                           prazo.tom === "vencido" && "font-medium text-status-danger-foreground",
                           prazo.tom === "proximo" && "font-medium text-status-warning-foreground",
                           prazo.tom === "ok" && "text-muted-foreground"

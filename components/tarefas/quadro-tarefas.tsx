@@ -263,7 +263,7 @@ export function QuadroTarefas() {
             }}
             placeholder="Buscar em todas as pastas: nome, CPF, NB, processo…  ( / )"
             aria-label="Buscar tarefas"
-            className="h-10 bg-card pr-9 pl-9 text-[13.5px] shadow-card [&::-webkit-search-cancel-button]:hidden"
+            className="h-10 bg-card pr-9 pl-9 text-[13px] shadow-card [&::-webkit-search-cancel-button]:hidden"
           />
           {busca ? (
             <button
@@ -280,7 +280,7 @@ export function QuadroTarefas() {
           ) : null}
         </div>
 
-        <label className="flex cursor-pointer items-center gap-2 text-[12.5px] text-muted-foreground select-none">
+        <label className="flex cursor-pointer items-center gap-2 text-[13px] text-muted-foreground select-none">
           <input
             type="checkbox"
             checked={comConcluidas}
@@ -291,7 +291,7 @@ export function QuadroTarefas() {
         </label>
 
         {buscando ? (
-          <p className="text-[12.5px] text-muted-foreground" aria-live="polite">
+          <p className="text-[13px] text-muted-foreground" aria-live="polite">
             <strong className="text-foreground">{encontradas.length}</strong> em aberto
             {comConcluidas
               ? concluidas
@@ -361,7 +361,7 @@ export function QuadroTarefas() {
                 >
                   <Search size={14} />
                 </button>
-                <span className="rounded-full bg-black/15 px-2.5 py-0.5 text-[12px] font-bold tabular-nums">
+                <span className="rounded-full bg-black/15 px-2.5 py-0.5 text-xs font-bold tabular-nums">
                   {lista.length}
                 </span>
               </header>
@@ -388,7 +388,7 @@ export function QuadroTarefas() {
                     }}
                     placeholder={`Buscar no ${TIME_LABEL_CURTO[time]}…`}
                     aria-label={`Buscar no ${TIME_LABEL[time]}`}
-                    className="h-8 bg-card pl-7 text-[12.5px]"
+                    className="h-8 bg-card pl-7 text-[13px]"
                   />
                 </div>
               ) : null}
@@ -418,7 +418,7 @@ export function QuadroTarefas() {
                   const { soltas, pastas } = agruparPorPasta(lista)
                   if (filtrando && lista.length === 0) {
                     return (
-                      <p className="py-3 text-center text-[11.5px] text-muted-foreground">
+                      <p className="py-3 text-center text-xs text-muted-foreground">
                         Nada encontrado aqui.
                       </p>
                     )
@@ -442,13 +442,13 @@ export function QuadroTarefas() {
                 })()}
 
                 {lista.length === 0 && !arrastando && !buscando ? (
-                  <p className="py-2 text-center text-[12px] text-muted-foreground">
+                  <p className="py-2 text-center text-xs text-muted-foreground">
                     Nenhuma tarefa em aberto.
                   </p>
                 ) : null}
 
                 {lista.length === 0 && arrastando && (
-                  <p className="rounded-lg border border-dashed border-foreground/20 py-3 text-center text-[11px] text-muted-foreground">
+                  <p className="rounded-lg border border-dashed border-foreground/20 py-3 text-center text-xs text-muted-foreground">
                     Solte aqui
                   </p>
                 )}
@@ -479,7 +479,7 @@ export function QuadroTarefas() {
             colunaAlvo === "SEM_TIME" && "shadow-md ring-2 ring-foreground/30"
           )}
         >
-          <h3 className="mb-2 text-[11px] font-bold tracking-wide text-muted-foreground uppercase">
+          <h3 className="mb-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
             {porTime.semTime.length > 0
               ? `Fora dos quatro times — ${porTime.semTime.length} a classificar`
               : "Sem time — solte aqui para tirar do time"}
@@ -506,7 +506,7 @@ export function QuadroTarefas() {
 
       {buscando && comConcluidas && concluidasEncontradas.length > 0 ? (
         <section className="rounded-2xl bg-muted/40 p-3 shadow-card">
-          <h3 className="mb-2 text-[11px] font-bold tracking-wide text-muted-foreground uppercase">
+          <h3 className="mb-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
             Concluídas que batem com a busca — {concluidasEncontradas.length}
           </h3>
           <ul className="grid gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
@@ -519,17 +519,17 @@ export function QuadroTarefas() {
                     onClick={() => setAberta(t)}
                     className="flex w-full flex-col gap-0.5 rounded-xl bg-card px-3 py-2 text-left shadow-card transition-shadow hover:shadow-float focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
                   >
-                    <span className="flex items-center gap-1.5 text-[12.5px] font-medium">
+                    <span className="flex items-center gap-1.5 text-[13px] font-medium">
                       <Check size={12} className="shrink-0 text-emerald-600" />
                       <span className="min-w-0 flex-1 truncate">{t.titulo}</span>
                     </span>
-                    <span className="truncate text-[11px] text-muted-foreground">
+                    <span className="truncate text-xs text-muted-foreground">
                       {formatarData(t.data)}
                       {isTimeTarefa(t.setor) ? ` · ${TIME_LABEL_CURTO[t.setor]}` : ""}
                       {t.pasta ? ` · ${t.pasta}` : ""}
                     </span>
                     {trecho ? (
-                      <span className="line-clamp-1 text-[11px] text-violet-800 dark:text-violet-300">
+                      <span className="line-clamp-1 text-xs text-violet-800 dark:text-violet-300">
                         {trecho}
                       </span>
                     ) : null}
@@ -539,7 +539,7 @@ export function QuadroTarefas() {
             })}
           </ul>
           {concluidasEncontradas.length > 60 ? (
-            <p className="mt-2 text-[11.5px] text-muted-foreground">
+            <p className="mt-2 text-xs text-muted-foreground">
               Mostrando 60 de {concluidasEncontradas.length}. Acrescente uma palavra à
               busca para chegar mais perto.
             </p>

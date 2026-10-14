@@ -41,7 +41,7 @@ export default async function ConfiguracoesPage() {
         <div className="flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-center">
           <Avatar nome={session?.name} tamanho="xl" />
           <div className="min-w-0 flex-1">
-            <h2 className="font-heading truncate text-[20px] leading-tight font-semibold">
+            <h2 className="font-heading truncate text-xl leading-tight font-semibold">
               {session?.name ?? "—"}
             </h2>
             <p className="truncate text-[13px] text-muted-foreground">{session?.email ?? ""}</p>
@@ -58,7 +58,7 @@ export default async function ConfiguracoesPage() {
         <div className="flex flex-col gap-5">
           <section className="rounded-xl bg-card p-4 shadow-card">
             <h2 className="font-heading text-[15px] font-semibold">Aparência</h2>
-            <p className="mb-3 text-[12px] text-muted-foreground">
+            <p className="mb-3 text-xs text-muted-foreground">
               Vale só para este navegador. O botão de sol e lua no alto faz a mesma troca.
             </p>
             <EscolhaAparencia />
@@ -70,7 +70,7 @@ export default async function ConfiguracoesPage() {
         <section className="overflow-hidden rounded-xl bg-card shadow-card">
           <div className="border-b border-border px-4 py-3">
             <h2 className="font-heading text-[15px] font-semibold">Como o sistema se organiza</h2>
-            <p className="text-[12px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Um resumo de cada área do menu, para quem está começando
             </p>
           </div>
@@ -87,8 +87,8 @@ export default async function ConfiguracoesPage() {
                       <Icone size={17} strokeWidth={1.9} />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[13.5px] font-semibold">{a.nome}</span>
-                      <span className="block text-[12px] leading-snug text-muted-foreground">{a.oQue}</span>
+                      <span className="block text-[13px] font-semibold">{a.nome}</span>
+                      <span className="block text-xs leading-snug text-muted-foreground">{a.oQue}</span>
                     </span>
                     <ChevronRight size={16} className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                   </Link>

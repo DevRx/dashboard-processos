@@ -29,15 +29,15 @@ export default function ErroDaTela({
         <span className="flex size-14 items-center justify-center rounded-full bg-status-danger text-status-danger-foreground">
           <AlertTriangle size={26} strokeWidth={2} />
         </span>
-        <h1 className="font-heading mt-1 text-[18px] font-semibold">
+        <h1 className="font-heading mt-1 text-lg font-semibold">
           Esta tela não conseguiu abrir
         </h1>
-        <p className="text-[13.5px] leading-relaxed text-muted-foreground">
+        <p className="text-[13px] leading-relaxed text-muted-foreground">
           Aconteceu um erro inesperado. Tente de novo — se continuar, avise
           quem cuida do sistema e diga qual tela você estava abrindo.
         </p>
         {error.digest && (
-          <p className="font-mono text-[11px] text-muted-foreground/70">
+          <p className="font-mono text-xs text-muted-foreground/70">
             código {error.digest}
           </p>
         )}

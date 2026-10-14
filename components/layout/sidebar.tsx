@@ -125,18 +125,18 @@ function Marca({ trilho }: { trilho: boolean }) {
     <div
       className={cn(
         "flex h-[76px] shrink-0 items-center gap-3",
-        trilho ? "justify-center px-2 lg:justify-start lg:px-6" : "px-6"
+        trilho ? "justify-center px-2 xl:justify-start xl:px-6" : "px-6"
       )}
     >
       <div className="relative flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-brand shadow-[0_6px_16px_-6px_rgba(219,39,119,0.7)]">
         <Scale size={20} strokeWidth={2.1} className="text-white" />
         <span aria-hidden className="absolute inset-0 rounded-xl ring-1 ring-white/25 ring-inset" />
       </div>
-      <div className={cn("min-w-0", trilho && "hidden lg:block")}>
-        <p className="font-heading truncate text-[16px] leading-tight font-bold tracking-[-0.01em] text-sidebar-foreground">
+      <div className={cn("min-w-0", trilho && "hidden xl:block")}>
+        <p className="font-heading truncate text-base leading-tight font-bold tracking-[-0.01em] text-sidebar-foreground">
           Zeca Aposenta
         </p>
-        <p className="truncate text-[11px] leading-tight font-medium text-sidebar-foreground/45">
+        <p className="truncate text-xs leading-tight font-medium text-sidebar-foreground/45">
           O Terror do INSS
         </p>
       </div>
@@ -181,7 +181,7 @@ function Seta({
       title={`${aberto ? "Ocultar" : "Mostrar"} as opções de ${nome}`}
       className={cn(
         "mr-1 flex size-9 shrink-0 items-center justify-center rounded-lg text-sidebar-foreground/45 transition-colors duration-150 outline-none hover:bg-white/10 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
-        trilho && "hidden lg:flex"
+        trilho && "hidden xl:flex"
       )}
     >
       <ChevronRight
@@ -223,7 +223,7 @@ function ItemTime({ item, trilho, pathname, onNavegar }: { item: MenuItem; trilh
       )}
     >
       {dentro ? (
-        <span aria-hidden className={cn("absolute top-2 bottom-2 left-0 w-1 rounded-r-full", cor.barra, trilho && "hidden lg:block")} />
+        <span aria-hidden className={cn("absolute top-2 bottom-2 left-0 w-1 rounded-r-full", cor.barra, trilho && "hidden xl:block")} />
       ) : null}
       <Link
         href={item.href}
@@ -231,13 +231,13 @@ function ItemTime({ item, trilho, pathname, onNavegar }: { item: MenuItem; trilh
         aria-current={dentro ? "page" : undefined}
         title={trilho ? `Time ${item.name}` : undefined}
         className={cn(
-          "flex h-11 min-w-0 flex-1 items-center gap-3 rounded-xl text-[15.5px] tracking-[-0.005em] outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
-          trilho ? "justify-center px-0 lg:justify-start lg:px-4" : "px-4",
+          "flex h-11 min-w-0 flex-1 items-center gap-3 rounded-xl text-[15px] tracking-[-0.005em] outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
+          trilho ? "justify-center px-0 xl:justify-start xl:px-4" : "px-4",
           dentro ? "font-bold text-white" : "font-semibold text-sidebar-foreground/80 hover:text-white"
         )}
       >
         <span aria-hidden className={cn("size-4 shrink-0 rounded-[5px] ring-1 ring-white/20 ring-inset", cor.amostra)} />
-        <span className={cn("truncate", trilho && "hidden lg:inline")}>{item.name}</span>
+        <span className={cn("truncate", trilho && "hidden xl:inline")}>{item.name}</span>
       </Link>
     </div>
   )
@@ -271,8 +271,8 @@ function ItemNavegacao({
     // linha inteira — com flex-1 numa coluna ele encolhia de altura.
     temFilhos ? "flex-1" : "w-full shrink-0",
     "tracking-[-0.005em] transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/70",
-    filho ? "h-10 px-3 text-[14.5px]" : "h-11 text-[15.5px]",
-    !filho && (trilho ? "justify-center px-0 lg:justify-start lg:px-4" : "px-4"),
+    filho ? "h-10 px-3 text-sm" : "h-11 text-[15px]",
+    !filho && (trilho ? "justify-center px-0 xl:justify-start xl:px-4" : "px-4"),
     ativo
       ? "bg-sidebar-accent font-semibold text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_rgba(0,0,0,0.3)]"
       : dentro
@@ -287,7 +287,7 @@ function ItemNavegacao({
           aria-hidden
           className={cn(
             "absolute top-1/2 left-0 h-6 w-1 -translate-y-1/2 rounded-r-full bg-sidebar-primary shadow-[0_0_12px_2px_rgba(124,159,240,0.55)]",
-            trilho && "hidden lg:block"
+            trilho && "hidden xl:block"
           )}
         />
       ) : null}
@@ -300,7 +300,7 @@ function ItemNavegacao({
           ativo ? "text-sidebar-primary" : "text-sidebar-foreground/50 group-hover:text-sidebar-foreground/90"
         )}
       />
-      <span className={cn("truncate", trilho && !filho && "hidden lg:inline")}>{item.name}</span>
+      <span className={cn("truncate", trilho && !filho && "hidden xl:inline")}>{item.name}</span>
     </>
   )
 
@@ -343,7 +343,7 @@ function ItemNavegacao({
           id={idGaveta}
           className={cn(
             "animate-in fade-in slide-in-from-top-1 mt-1 mb-2 ml-[25px] flex flex-col gap-0.5 border-l-2 border-white/10 pl-2.5 duration-150 motion-reduce:animate-none",
-            trilho && "hidden lg:flex"
+            trilho && "hidden xl:flex"
           )}
         >
           {item.filhos!.map((sub) => (
@@ -361,22 +361,22 @@ function Navegacao({ trilho, onNavegar }: Modo) {
   return (
     <nav
       aria-label="Navegação principal"
-      className={cn("flex flex-1 flex-col gap-7 overflow-y-auto pt-2 pb-5", trilho ? "px-2 lg:px-4" : "px-4")}
+      className={cn("flex flex-1 flex-col gap-7 overflow-y-auto pt-2 pb-5", trilho ? "px-2 xl:px-4" : "px-4")}
     >
       {menuGroups.map((grupo, i) => (
         <div key={grupo.label ?? i} className="flex flex-col gap-1">
           {grupo.label ? (
             <p
               className={cn(
-                "flex items-center gap-2 px-4 pb-2 text-[12.5px] leading-none font-semibold text-sidebar-foreground/40",
-                trilho && "hidden lg:flex"
+                "flex items-center gap-2 px-4 pb-2 text-[13px] leading-none font-semibold text-sidebar-foreground/40",
+                trilho && "hidden xl:flex"
               )}
             >
               {grupo.label === "Times" ? <UsersRound size={13} aria-hidden /> : null}
               {grupo.label}
             </p>
           ) : null}
-          {trilho && i > 0 ? <div aria-hidden className="mx-auto mb-2 h-px w-6 bg-sidebar-border lg:hidden" /> : null}
+          {trilho && i > 0 ? <div aria-hidden className="mx-auto mb-2 h-px w-6 bg-sidebar-border xl:hidden" /> : null}
 
           {grupo.items.map((item) =>
             item.time ? (
@@ -409,7 +409,7 @@ function BarraInferior({ onAbrirMenu, menuAberto }: { onAbrirMenu: () => void; m
 
   const classe = (ativo: boolean) =>
     cn(
-      "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[11.5px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+      "flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
       ativo ? "bg-sidebar-accent text-sidebar-foreground" : "text-sidebar-foreground/60 active:bg-sidebar-accent/60"
     )
 
@@ -469,19 +469,20 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Tablet: trilho de 76px. Desktop: 300px. */}
+      {/* Até 1279px: trilho de 76px, só ícones e cores (o conteúdo precisa
+          da largura). Do notebook de 1280px para cima: 300px, com os nomes. */}
       <aside
         className={cn(
-          "sticky top-0 hidden h-screen w-[76px] shrink-0 flex-col border-r border-sidebar-border text-sidebar-foreground transition-[width] duration-200 ease-out md:flex lg:w-[300px]",
+          "sticky top-0 hidden h-screen w-[76px] shrink-0 flex-col border-r border-sidebar-border text-sidebar-foreground transition-[width] duration-200 ease-out md:flex xl:w-[300px]",
           FUNDO_SIDEBAR
         )}
       >
         <Marca trilho />
         <Navegacao trilho />
-        <div className="border-t border-sidebar-border p-2 lg:px-4 lg:py-3">
+        <div className="border-t border-sidebar-border p-2 xl:px-4 xl:py-3">
           <LogoutButton
-            className="h-11 justify-center px-0 text-[15px] lg:justify-start lg:px-4"
-            labelClassName="hidden lg:inline"
+            className="h-11 justify-center px-0 text-[15px] xl:justify-start xl:px-4"
+            labelClassName="hidden xl:inline"
           />
         </div>
       </aside>

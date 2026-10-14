@@ -155,8 +155,8 @@ export default function AdministrativoPage() {
             />
           </div>
 
-          <div className="min-w-0 flex-1">
-            <p className="font-heading text-[17px] leading-tight font-semibold">
+          <div className="min-w-[min(100%,18rem)] flex-1">
+            <p className="font-heading text-lg leading-tight font-semibold">
               Painel Administrativo
             </p>
             <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">
@@ -171,7 +171,7 @@ export default function AdministrativoPage() {
               <span className="font-heading text-xl leading-none font-semibold tabular-nums">
                 {ativos.length}
               </span>
-              <span className="text-[10px] leading-tight font-semibold tracking-wide uppercase">
+              <span className="text-xs leading-tight font-semibold tracking-wide uppercase">
                 na fila
               </span>
             </div>
@@ -187,7 +187,7 @@ export default function AdministrativoPage() {
               <span className="font-heading text-xl leading-none font-semibold tabular-nums">
                 {aMarcarPericia}
               </span>
-              <span className="text-[10px] leading-tight font-semibold tracking-wide uppercase">
+              <span className="text-xs leading-tight font-semibold tracking-wide uppercase">
                 perícias
                 <br />a marcar
               </span>
@@ -248,7 +248,7 @@ export default function AdministrativoPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-[14px]">
+          <CardTitle className="text-sm">
             Integração INSS — Meu INSS e GERID
           </CardTitle>
         </CardHeader>
@@ -259,7 +259,7 @@ export default function AdministrativoPage() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[640px] text-sm">
                 <thead>
-                  <tr className="border-b border-border text-left text-[11px] tracking-wide text-muted-foreground uppercase">
+                  <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">
                     <th className="py-2 pr-3 font-medium">Cliente</th>
                     <th className="py-2 pr-3 font-medium">Base legal</th>
                     <th className="py-2 pr-3 font-medium">Documentos</th>

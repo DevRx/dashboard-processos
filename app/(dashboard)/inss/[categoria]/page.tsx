@@ -130,7 +130,7 @@ export default function FilaCategoriaPage() {
           </div>
 
           {aMarcarPericia > 0 && (
-            <span className="rounded-lg bg-red-50 px-3 py-2 text-[12px] font-semibold text-red-800 ring-1 ring-red-200 dark:bg-red-950/50 dark:text-red-200 dark:ring-red-900">
+            <span className="rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-800 ring-1 ring-red-200 dark:bg-red-950/50 dark:text-red-200 dark:ring-red-900">
               {aMarcarPericia}{" "}
               {aMarcarPericia === 1 ? "perícia a marcar" : "perícias a marcar"}
             </span>
@@ -140,7 +140,7 @@ export default function FilaCategoriaPage() {
             <span className="font-heading text-3xl leading-none font-semibold tabular-nums">
               {itens.length}
             </span>
-            <span className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
+            <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               {itens.length === 1 ? "cliente" : "clientes"}
             </span>
           </span>

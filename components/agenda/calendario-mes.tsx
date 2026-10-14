@@ -98,7 +98,7 @@ export function CalendarioMes({
         <div className="min-w-[200px] flex-1">
           <h2 className="font-heading text-[15px] leading-tight font-semibold">{titulo}</h2>
           {subtitulo ? (
-            <p className="text-[12px] text-muted-foreground">{subtitulo}</p>
+            <p className="text-xs text-muted-foreground">{subtitulo}</p>
           ) : null}
         </div>
 
@@ -129,7 +129,7 @@ export function CalendarioMes({
               onSelecionar(hoje)
             }}
             disabled={noMesDeHoje && selecionado === hoje}
-            className="ml-1 h-8 rounded-lg px-2.5 text-[12px] font-semibold text-muted-foreground ring-1 ring-border transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40"
+            className="ml-1 h-8 rounded-lg px-2.5 text-xs font-semibold text-muted-foreground ring-1 ring-border transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40"
           >
             Hoje
           </button>
@@ -143,7 +143,7 @@ export function CalendarioMes({
           {DIAS_SEMANA.map((d, i) => (
             <span
               key={d}
-              className="text-center text-[10.5px] font-bold tracking-wide text-muted-foreground uppercase"
+              className="text-center text-xs font-bold tracking-wide text-muted-foreground uppercase"
             >
               <span className="hidden sm:inline">{d}</span>
               <span className="sm:hidden">{DIAS_SEMANA_CURTO[i]}</span>
@@ -180,7 +180,7 @@ export function CalendarioMes({
               >
                 <span
                   className={cn(
-                    "flex size-6 items-center justify-center rounded-full text-[12px] font-semibold tabular-nums",
+                    "flex size-6 items-center justify-center rounded-full text-xs font-semibold tabular-nums",
                     ehHoje && "bg-foreground text-background",
                     escolhido && !ehHoje && "ring-2 ring-foreground/70"
                   )}

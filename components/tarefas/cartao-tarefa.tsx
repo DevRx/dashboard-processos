@@ -188,7 +188,7 @@ export function CartaoTarefa({
         <MenuSuspenso titulo="Trocar responsável" gatilho={() => (
           <span
             className={cn(
-              "flex size-7 shrink-0 items-center justify-center rounded-full text-[10.5px] font-bold",
+              "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
               responsavel
                 ? "bg-gradient-brand text-white shadow-[0_3px_10px_-3px_rgba(219,39,119,0.6)]"
                 : "bg-muted text-muted-foreground"
@@ -210,7 +210,7 @@ export function CartaoTarefa({
                   }}
                   className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-[13px] hover:bg-accent hover:text-accent-foreground"
                 >
-                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-[9.5px] font-bold">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold">
                     {iniciais(u.name)}
                   </span>
                   <span className="flex-1 truncate">{u.name}</span>
@@ -235,7 +235,7 @@ export function CartaoTarefa({
         <div className="min-w-0 flex-1">
           <p
             title={responsavel?.name}
-            className="truncate text-[12.5px] leading-tight font-bold"
+            className="truncate text-[13px] leading-tight font-bold"
           >
             {responsavel ? nomeCurto(responsavel.name) : "Sem responsável"}
           </p>
@@ -245,7 +245,7 @@ export function CartaoTarefa({
           <button
             type="button"
             onClick={onAbrir}
-            className="mt-0.5 flex w-full items-start gap-1 rounded text-left text-[12.5px] leading-snug text-foreground/90 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="mt-0.5 flex w-full items-start gap-1 rounded text-left text-[13px] leading-snug text-foreground/90 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             {tarefa.tipo === "DUVIDA" ? (
               <CircleHelp
@@ -258,7 +258,7 @@ export function CartaoTarefa({
             <span className="min-w-0 flex-1">{tarefa.titulo}</span>
           </button>
           {trecho ? (
-            <p className={cn("mt-1 rounded-md px-1.5 py-1 text-[11px] leading-snug", DESTAQUE.busca)}>
+            <p className={cn("mt-1 rounded-md px-1.5 py-1 text-xs leading-snug", DESTAQUE.busca)}>
               <span className="line-clamp-2">{trecho}</span>
             </p>
           ) : null}
@@ -270,7 +270,7 @@ export function CartaoTarefa({
         {prazo ? (
           <span
             className={cn(
-              "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-semibold",
+              "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold",
               atrasada && tarefa.status !== "CONCLUIDA"
                 ? ALERTA.atrasada
                 : "bg-card/80 text-muted-foreground"
@@ -286,7 +286,7 @@ export function CartaoTarefa({
         {etiquetaDePrioridade(tarefa.prioridade) ? (
           <span
             className={cn(
-              "rounded-full px-2 py-0.5 text-[10.5px] font-bold tracking-wide uppercase",
+              "rounded-full px-2 py-0.5 text-xs font-bold tracking-wide uppercase",
               etiquetaDePrioridade(tarefa.prioridade)
             )}
           >
@@ -397,8 +397,8 @@ export function Pasta({
   children: React.ReactNode
 }) {
   return (
-    <details open={aberta} className="group rounded-xl bg-card/55 shadow-card open:bg-card/30">
-      <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-xl px-2.5 py-2 text-[12px] font-semibold outline-none select-none hover:bg-card focus-visible:ring-2 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
+    <details open={aberta} className="group min-w-0 rounded-xl bg-card/55 shadow-card open:bg-card/30">
+      <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-xl px-2.5 py-2 text-xs font-semibold outline-none select-none hover:bg-card focus-visible:ring-2 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
         <ChevronRight
           size={13}
           className="shrink-0 text-muted-foreground transition-transform group-open:rotate-90"
@@ -407,7 +407,7 @@ export function Pasta({
         <span className="min-w-0 flex-1 truncate" title={nome}>
           {nome}
         </span>
-        <span className="rounded-full bg-muted px-1.5 text-[10.5px] font-bold text-muted-foreground tabular-nums">
+        <span className="rounded-full bg-muted px-1.5 text-xs font-bold text-muted-foreground tabular-nums">
           {quantas}
         </span>
       </summary>
@@ -465,7 +465,7 @@ export function NovaTarefa({
       <button
         type="button"
         onClick={() => setAberto(true)}
-        className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-foreground/15 py-2 text-[12px] font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:bg-card/60 hover:text-primary"
+        className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-foreground/15 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:bg-card/60 hover:text-primary"
       >
         <Plus size={13} />
         Nova tarefa
@@ -492,7 +492,7 @@ export function NovaTarefa({
           value={responsavelId}
           onChange={(e) => setResponsavelId(e.target.value)}
           aria-label="Responsável"
-          className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
+          className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-card px-2.5 text-[13px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
         >
           <option value="">Sem responsável</option>
           {usuarios.map((u) => (
@@ -507,7 +507,7 @@ export function NovaTarefa({
           value={data}
           onChange={(e) => setData(e.target.value)}
           aria-label="Data"
-          className="h-8 shrink-0 rounded-lg border border-input bg-card px-2.5 text-[12.5px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
+          className="h-8 shrink-0 rounded-lg border border-input bg-card px-2.5 text-[13px] shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
         />
       </div>
 

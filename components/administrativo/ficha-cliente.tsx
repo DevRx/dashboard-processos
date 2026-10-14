@@ -28,10 +28,10 @@ function Campo({
 }) {
   return (
     <div className={cn("min-w-0", className)}>
-      <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+      <p className="text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
         {rotulo}
       </p>
-      <div className="mt-1 text-[13.5px] leading-snug">{children}</div>
+      <div className="mt-1 text-[13px] leading-snug">{children}</div>
     </div>
   )
 }
@@ -138,7 +138,7 @@ function SenhaMeuInss({
     <div className="flex flex-wrap items-center gap-1">
       <span
         className={cn(
-          "inline-flex h-8 min-w-[110px] items-center rounded-lg bg-muted px-2.5 font-mono text-[13.5px] font-medium tracking-wide select-all",
+          "inline-flex h-8 min-w-[110px] items-center rounded-lg bg-muted px-2.5 font-mono text-[13px] font-medium tracking-wide select-all",
           !senha && "font-sans text-muted-foreground italic tracking-normal"
         )}
       >
@@ -222,7 +222,7 @@ export function FichaClienteAdministrativa({
         <Campo rotulo="CPF">
           {formatarCpf(cliente.cpf) ? (
             <span className="flex items-center gap-1">
-              <span className="font-mono text-[13.5px] font-medium select-all">
+              <span className="font-mono text-[13px] font-medium select-all">
                 {formatarCpf(cliente.cpf)}
               </span>
               <BotaoCopiar valor={formatarCpf(cliente.cpf) as string} rotulo="CPF" />
@@ -245,7 +245,7 @@ export function FichaClienteAdministrativa({
       </div>
 
       <div className="mt-4">
-        <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+        <p className="text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
           Comentários
         </p>
         <textarea
@@ -256,7 +256,7 @@ export function FichaClienteAdministrativa({
           }}
           rows={3}
           placeholder="Anotações da equipe sobre este cliente — combinados, pendências, o que já foi tentado."
-          className="mt-1 w-full resize-y rounded-lg border border-input bg-card px-3 py-2 text-[13.5px] leading-relaxed outline-none transition focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="mt-1 w-full resize-y rounded-lg border border-input bg-card px-3 py-2 text-[13px] leading-relaxed outline-none transition focus-visible:ring-2 focus-visible:ring-ring/50"
         />
 
         <div className="mt-2 flex items-center gap-3">
@@ -275,7 +275,7 @@ export function FichaClienteAdministrativa({
 
           <Link
             href={`/clientes/${cliente.id}`}
-            className="ml-auto inline-flex items-center gap-1 text-[12.5px] font-medium text-primary hover:underline dark:text-blue-400"
+            className="ml-auto inline-flex items-center gap-1 text-[13px] font-medium text-primary hover:underline dark:text-blue-400"
           >
             Abrir pasta completa
             <ArrowUpRight size={14} />

@@ -111,7 +111,7 @@ export default function AprovacoesPage() {
                       <p className="text-sm font-semibold">{p.titulo}</p>
                       <Badge variant={ORIGEM_VARIANTE[p.origem]}>{p.origem}</Badge>
                     </div>
-                    <p className="text-[12.5px] text-muted-foreground">
+                    <p className="text-[13px] text-muted-foreground">
                       {p.cliente}
                     </p>
                     <p className="mt-1 text-[13px]">{p.detalhe}</p>

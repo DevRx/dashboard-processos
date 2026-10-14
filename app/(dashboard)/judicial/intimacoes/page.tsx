@@ -160,7 +160,7 @@ function RotinaAutomatica({
 }) {
   if (!ultima) {
     return (
-      <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
+      <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
         <Clock size={12} />
         Rotina automática ainda não rodou — veja o README para agendá-la.
       </p>
@@ -175,7 +175,7 @@ function RotinaAutomatica({
   return (
     <p
       className={cn(
-        "mt-2 flex items-center gap-1.5 text-[11.5px]",
+        "mt-2 flex items-center gap-1.5 text-xs",
         falhou || dias >= 3
           ? "font-medium text-red-700 dark:text-red-300"
           : "text-muted-foreground"
@@ -569,8 +569,8 @@ export default function IntimacoesPage() {
             <Bell size={24} strokeWidth={1.9} />
           </span>
 
-          <div className="min-w-0 flex-1">
-            <p className="font-heading text-[17px] leading-tight font-semibold">
+          <div className="min-w-[min(100%,18rem)] flex-1">
+            <p className="font-heading text-lg leading-tight font-semibold">
               Diário de Justiça Eletrônico Nacional
             </p>
             <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">
@@ -580,7 +580,7 @@ export default function IntimacoesPage() {
               as suspensões de cada tribunal.
             </p>
 
-            <label className="mt-2 inline-flex cursor-pointer items-center gap-2 text-[12.5px] font-medium">
+            <label className="mt-2 inline-flex cursor-pointer items-center gap-2 text-[13px] font-medium">
               <input
                 type="checkbox"
                 checked={automatico}
@@ -594,13 +594,13 @@ export default function IntimacoesPage() {
             <RotinaAutomatica ultima={ultimaAutomatica} />
 
             {automatico && (
-              <label className="mt-1.5 flex items-center gap-2 text-[12px] text-muted-foreground">
+              <label className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                 Entregar ao
                 <select
                   value={timePadrao}
                   onChange={(e) => definirTimePadrao(e.target.value)}
                   aria-label="Time que recebe as tarefas automáticas"
-                  className="h-7 rounded-lg border border-input bg-card px-2 text-[12px] text-foreground outline-none"
+                  className="h-7 rounded-lg border border-input bg-card px-2 text-xs text-foreground outline-none"
                 >
                   <option value="">Sem time (caixa de entrada)</option>
                   {TIMES_TAREFA.map((t) => (
@@ -615,7 +615,7 @@ export default function IntimacoesPage() {
 
           <div className="flex shrink-0 items-end gap-2">
             <label className="flex flex-col gap-1">
-              <span className="text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
+              <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                 OAB
               </span>
               <div className="flex gap-1">
@@ -667,7 +667,7 @@ export default function IntimacoesPage() {
         {aviso && (
           <p
             className={cn(
-              "border-t px-5 py-2 text-[12.5px]",
+              "border-t px-5 py-2 text-[13px]",
               aviso.tipo === "ok"
                 ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200"
                 : "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200"
@@ -681,7 +681,7 @@ export default function IntimacoesPage() {
       {semLeitura > 0 && (
         <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 shadow-card">
           <SparklesIcon size={15} className="shrink-0 text-primary" />
-          <p className="min-w-0 flex-1 text-[12.5px]">
+          <p className="min-w-0 flex-1 text-[13px]">
             <span className="font-semibold">{semLeitura}</span> publicação(ões)
             sem leitura por IA. A leitura diz do que se trata, o que fazer e
             se o prazo é do escritório.
@@ -704,7 +704,7 @@ export default function IntimacoesPage() {
       {semTarefa > 0 && (
         <div className="flex flex-wrap items-center gap-3 rounded-lg bg-accent/60 px-3.5 py-2.5 shadow-card">
           <Wand2 size={15} className="shrink-0 text-primary" />
-          <p className="min-w-0 flex-1 text-[12.5px]">
+          <p className="min-w-0 flex-1 text-[13px]">
             <span className="font-semibold">{semTarefa}</span> prazo(s)
             pendente(s) ainda sem tarefa — de antes da criação automática.
           </p>
@@ -724,7 +724,7 @@ export default function IntimacoesPage() {
       )}
 
       {vencidas.length > 0 && (
-        <p className="flex items-center gap-2 rounded-lg bg-red-50 px-3.5 py-2.5 text-[12.5px] font-medium text-red-800 ring-1 ring-red-200 dark:bg-red-950/50 dark:text-red-200 dark:ring-red-900">
+        <p className="flex items-center gap-2 rounded-lg bg-red-50 px-3.5 py-2.5 text-[13px] font-medium text-red-800 ring-1 ring-red-200 dark:bg-red-950/50 dark:text-red-200 dark:ring-red-900">
           <AlertTriangle size={15} className="shrink-0" />
           {vencidas.length} intimação(ões) pendente(s) com prazo estimado já
           vencido. {comPrazoVivo.length} ainda no prazo.
@@ -739,7 +739,7 @@ export default function IntimacoesPage() {
               type="button"
               onClick={() => setFiltroEscolhido(aba.chave)}
               className={cn(
-                "rounded-md px-3 py-1.5 text-[12.5px] font-medium transition-colors",
+                "rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors",
                 filtro === aba.chave
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"

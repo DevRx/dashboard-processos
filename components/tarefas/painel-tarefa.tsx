@@ -105,7 +105,7 @@ function Aba({
       aria-selected={ativa}
       onClick={onClick}
       className={cn(
-        "-mb-px flex items-center gap-1.5 border-b-2 px-3 py-2 text-[12.5px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "-mb-px flex items-center gap-1.5 border-b-2 px-3 py-2 text-[13px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         ativa
           ? "border-primary text-foreground"
           : "border-transparent text-muted-foreground hover:text-foreground"
@@ -113,7 +113,7 @@ function Aba({
     >
       {children}
       {contagem !== undefined && contagem > 0 ? (
-        <span className="rounded-full bg-muted px-1.5 text-[10.5px] font-bold tabular-nums">
+        <span className="rounded-full bg-muted px-1.5 text-xs font-bold tabular-nums">
           {contagem}
         </span>
       ) : null}
@@ -146,10 +146,10 @@ function AbrirDuvida({
 
   return (
     <div className="rounded-lg bg-muted/50 p-3 shadow-card">
-      <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+      <p className="text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
         Tirar uma dúvida
       </p>
-      <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
+      <p className="mt-1 text-xs leading-snug text-muted-foreground">
         Vira uma tarefa própria, ligada a esta — entra no quadro com
         responsável e prazo, e volta para cá quando for respondida.
       </p>
@@ -204,7 +204,7 @@ function Responder({
 
   return (
     <div className="rounded-lg bg-muted/50 p-3 shadow-card">
-      <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+      <p className="text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
         Responder
       </p>
       <textarea
@@ -224,7 +224,7 @@ function Responder({
           )}
           Responder e concluir
         </Button>
-        <span className="text-[11.5px] text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           Responder conclui a dúvida e tira o cartão do quadro.
         </span>
         {erro ? <span className="text-xs text-destructive">{erro}</span> : null}
@@ -236,7 +236,7 @@ function Responder({
 function LinhaDoTempo({ eventos }: { eventos: EventoTarefa[] }) {
   if (eventos.length === 0) {
     return (
-      <p className="py-8 text-center text-[12.5px] text-muted-foreground">
+      <p className="py-8 text-center text-[13px] text-muted-foreground">
         Nada aconteceu com esta tarefa ainda.
       </p>
     )
@@ -258,7 +258,7 @@ function LinhaDoTempo({ eventos }: { eventos: EventoTarefa[] }) {
             </span>
 
             <div className="min-w-0 flex-1">
-              <p className="text-[12.5px] leading-snug">
+              <p className="text-[13px] leading-snug">
                 <span className="font-semibold">
                   {e.autor?.name ?? "Alguém que saiu do escritório"}
                 </span>{" "}
@@ -278,13 +278,13 @@ function LinhaDoTempo({ eventos }: { eventos: EventoTarefa[] }) {
                     </span>
                   </span>
                 ) : null}
-                <span className="ml-1.5 text-[11px] text-muted-foreground tabular-nums">
+                <span className="ml-1.5 text-xs text-muted-foreground tabular-nums">
                   {quando(e.criadoEm)}
                 </span>
               </p>
 
               {e.texto ? (
-                <p className="mt-1 rounded-lg bg-muted/60 px-2.5 py-1.5 text-[12.5px] leading-relaxed whitespace-pre-wrap">
+                <p className="mt-1 rounded-lg bg-muted/60 px-2.5 py-1.5 text-[13px] leading-relaxed whitespace-pre-wrap">
                   {e.texto}
                 </p>
               ) : null}
@@ -292,7 +292,7 @@ function LinhaDoTempo({ eventos }: { eventos: EventoTarefa[] }) {
               {/* Evento que aconteceu numa dúvida filha diz isso: fingir
                   que aconteceu aqui confundiria quem lê a linha do tempo. */}
               {e.daDuvida ? (
-                <p className="mt-1 text-[11px] text-muted-foreground">
+                <p className="mt-1 text-xs text-muted-foreground">
                   nesta dúvida: {e.daDuvida.titulo}
                 </p>
               ) : null}
@@ -398,7 +398,7 @@ function ConteudoPainel({
         <LinhaDoTempo eventos={dados?.eventos ?? []} />
       ) : ehDuvida ? (
         respondida ? (
-          <p className="rounded-lg bg-emerald-50 px-3 py-2.5 text-[12.5px] text-emerald-800 ring-1 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:ring-emerald-900">
+          <p className="rounded-lg bg-emerald-50 px-3 py-2.5 text-[13px] text-emerald-800 ring-1 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:ring-emerald-900">
             Respondida. A resposta está no histórico.
           </p>
         ) : (
@@ -408,17 +408,17 @@ function ConteudoPainel({
         <div className="flex flex-col gap-3">
           {emAberto.length > 0 ? (
             <div>
-              <p className="text-[10.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+              <p className="text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase">
                 Esperando resposta
               </p>
               <ul className="mt-1.5 flex flex-col gap-1.5">
                 {emAberto.map((d) => (
                   <li
                     key={d.id}
-                    className={cn("rounded-lg px-3 py-2 text-[12.5px] leading-snug ring-1", DESTAQUE.duvidaCaixa)}
+                    className={cn("rounded-lg px-3 py-2 text-[13px] leading-snug ring-1", DESTAQUE.duvidaCaixa)}
                   >
                     <p className="font-medium">{d.titulo}</p>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                       com {d.responsavel?.name ?? "ninguém"} · desde{" "}
                       {quando(d.criadoEm)}
                     </p>
@@ -462,7 +462,7 @@ export function PainelTarefa({
         <DialogHeader>
           <DialogTitle className="flex flex-wrap items-center gap-2">
             {ehDuvida ? (
-              <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-bold tracking-wide uppercase", DESTAQUE.duvidaEtiqueta)}>
+              <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold tracking-wide uppercase", DESTAQUE.duvidaEtiqueta)}>
                 <CircleHelp size={11} />
                 dúvida
               </span>
@@ -478,7 +478,7 @@ export function PainelTarefa({
         </DialogHeader>
 
         {descricao ? (
-          <div className="max-h-72 overflow-y-auto rounded-lg bg-muted/50 px-3 py-2.5 text-[12.5px] leading-relaxed break-words whitespace-pre-wrap">
+          <div className="max-h-72 overflow-y-auto rounded-lg bg-muted/50 px-3 py-2.5 text-[13px] leading-relaxed break-words whitespace-pre-wrap">
             {descricao}
           </div>
         ) : null}

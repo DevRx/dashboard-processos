@@ -1,29 +1,20 @@
 import type { Metadata } from "next"
-import { Inter, Manrope, JetBrains_Mono } from "next/font/google"
+import localFont from "next/font/local"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
-// Inter no corpo (humanista, excelente em tamanhos pequenos), Manrope
-// nos títulos (geométrica, fecha bem em pesos altos) e JetBrains Mono
-// para número CNJ, CPF, datas e valores. Cobertura latin-ext garante a
-// acentuação do português.
-const inter = Inter({
-  subsets: ["latin", "latin-ext"],
+// Uma fonte só no sistema inteiro (pedido do Zeca): Inter, em todos os
+// pesos — títulos, texto, números de processo e CPF. Antes eram três
+// (Inter, Manrope e JetBrains Mono), e a mistura fazia a tela parecer
+// remendada. Vem do pacote @fontsource-variable/inter e é servida pelo
+// próprio sistema: a build não depende de buscar nada no Google, e o
+// que se vê no computador do desenvolvedor é o que vai para o ar. O
+// subconjunto latino cobre os acentos do português e a pontuação (›, —).
+const inter = localFont({
+  src: "../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
+  weight: "100 900",
+  style: "normal",
   variable: "--font-sans-app",
-  display: "swap",
-})
-
-const manrope = Manrope({
-  subsets: ["latin", "latin-ext"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-heading-app",
-  display: "swap",
-})
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500"],
-  variable: "--font-mono-app",
   display: "swap",
 })
 
@@ -41,7 +32,7 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       suppressHydrationWarning
-      className={`${inter.variable} ${manrope.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable}`}
     >
       <body style={{ margin: 0, minHeight: "100vh" }}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

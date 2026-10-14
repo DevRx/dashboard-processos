@@ -72,10 +72,10 @@ function MenuUsuario() {
         <Avatar nome={nome} tamanho="sm" />
 
         <span className="hidden min-w-0 flex-col items-start leading-tight lg:flex">
-          <span className="max-w-[10rem] truncate text-[12.5px] font-medium">
+          <span className="max-w-[10rem] truncate text-[13px] font-medium">
             {nome || "—"}
           </span>
-          <span className="max-w-[10rem] truncate text-[10.5px] text-muted-foreground">
+          <span className="max-w-[10rem] truncate text-xs text-muted-foreground">
             {papel}
           </span>
         </span>
@@ -100,7 +100,7 @@ function MenuUsuario() {
             <Avatar nome={nome} tamanho="md" />
             <div className="min-w-0">
               <p className="truncate text-[13px] font-medium">{nome || "—"}</p>
-              <p className="truncate text-[11.5px] text-muted-foreground">
+              <p className="truncate text-xs text-muted-foreground">
                 {usuario?.email ?? ""}
               </p>
             </div>
@@ -154,11 +154,11 @@ export function Header({
       )}
 
       <div className="min-w-0 flex-1">
-        <h1 className="font-heading truncate text-[17px] leading-tight font-bold tracking-[-0.015em]">
+        <h1 className="font-heading truncate text-lg leading-tight font-bold tracking-[-0.015em]">
           {title}
         </h1>
         {subtitle && (
-          <p className="truncate text-[12.5px] leading-tight text-muted-foreground">
+          <p className="truncate text-[13px] leading-tight text-muted-foreground">
             {subtitle}
           </p>
         )}

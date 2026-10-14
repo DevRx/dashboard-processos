@@ -43,14 +43,14 @@ export function AgendaDoDia({
           <CalendarDays size={18} />
         </span>
         <div className="min-w-0 flex-1">
-          <h2 className="font-heading text-[16px] leading-tight font-semibold">Agenda de hoje</h2>
-          <p className="truncate text-[12px] text-muted-foreground first-letter:uppercase">
+          <h2 className="font-heading text-base leading-tight font-semibold">Agenda de hoje</h2>
+          <p className="truncate text-xs text-muted-foreground first-letter:uppercase">
             {dataPorExtenso}
           </p>
         </div>
         <Link
           href="/agenda"
-          className="inline-flex shrink-0 items-center gap-1 text-[12.5px] font-medium text-primary hover:underline dark:text-accent-foreground"
+          className="inline-flex shrink-0 items-center gap-1 text-[13px] font-medium text-primary hover:underline dark:text-accent-foreground"
         >
           Abrir
           <ArrowRight size={14} />
@@ -58,7 +58,7 @@ export function AgendaDoDia({
       </header>
 
       <div className="px-5 pb-4">
-        <p className="mb-2 text-[12px] font-semibold text-muted-foreground">
+        <p className="mb-2 text-xs font-semibold text-muted-foreground">
           {totalHoje} {totalHoje === 1 ? "tarefa para hoje" : "tarefas para hoje"}
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -66,7 +66,7 @@ export function AgendaDoDia({
             <span
               key={t}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold",
+                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold",
                 tarefasPorTime[t] > 0 ? CORES_TIME[t].cabecalho : "bg-muted text-muted-foreground"
               )}
             >
@@ -75,7 +75,7 @@ export function AgendaDoDia({
             </span>
           ))}
           {tarefasPorTime.SEM > 0 ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-[12px] font-semibold text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
               Sem time
               <span className="tabular-nums">{tarefasPorTime.SEM}</span>
             </span>
@@ -100,7 +100,7 @@ export function AgendaDoDia({
               >
                 <span
                   className={cn(
-                    "mt-0.5 shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-bold tracking-wide uppercase",
+                    "mt-0.5 shrink-0 rounded-md px-1.5 py-0.5 text-xs font-bold tracking-wide uppercase",
                     CORES_CATEGORIA[t.categoria].etiqueta
                   )}
                 >
@@ -110,7 +110,7 @@ export function AgendaDoDia({
                   <p className="truncate text-[13px] font-semibold" title={t.titulo}>
                     {t.titulo}
                   </p>
-                  <p className="mt-0.5 flex flex-wrap items-center gap-x-3 text-[11.5px] text-muted-foreground">
+                  <p className="mt-0.5 flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
                     <span className="inline-flex items-center gap-1">
                       <Clock size={11} />
                       {t.hora ?? "sem hora"}

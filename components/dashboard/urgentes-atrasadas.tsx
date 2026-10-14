@@ -56,15 +56,15 @@ export function UrgentesAtrasadas({
           <Flame size={18} />
         </span>
         <div className="min-w-0 flex-1">
-          <h2 className="font-heading text-[16px] leading-tight font-semibold">Urgentes e atrasadas</h2>
-          <p className="text-[12px] text-muted-foreground">
+          <h2 className="font-heading text-base leading-tight font-semibold">Urgentes e atrasadas</h2>
+          <p className="text-xs text-muted-foreground">
             {totalUrgentes} {totalUrgentes === 1 ? "urgente" : "urgentes"} · {totalAtrasadas}{" "}
             {totalAtrasadas === 1 ? "atrasada" : "atrasadas"}
           </p>
         </div>
         <Link
           href="/agenda"
-          className="inline-flex shrink-0 items-center gap-1 text-[12.5px] font-medium text-primary hover:underline dark:text-accent-foreground"
+          className="inline-flex shrink-0 items-center gap-1 text-[13px] font-medium text-primary hover:underline dark:text-accent-foreground"
         >
           Agenda
           <ArrowRight size={14} />
@@ -73,7 +73,7 @@ export function UrgentesAtrasadas({
 
       {/* Atrasadas por time: um número por cor. */}
       <div className="px-5 pb-4">
-        <p className="mb-2 flex items-center gap-1.5 text-[12px] font-semibold text-muted-foreground">
+        <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
           <AlarmClock size={13} className={ALERTA.atrasadaTexto} />
           Atrasadas por time
         </p>
@@ -88,20 +88,20 @@ export function UrgentesAtrasadas({
               <span aria-hidden className={cn("block h-1.5", CORES_TIME[t].ponto)} />
               <span
                 className={cn(
-                  "font-heading block pt-2 text-[22px] leading-none font-semibold tabular-nums",
+                  "font-heading block pt-2 text-2xl leading-none font-semibold tabular-nums",
                   atrasadas[t] === 0 && "text-muted-foreground/60"
                 )}
               >
                 {atrasadas[t]}
               </span>
-              <span className="block truncate px-1 pt-1 pb-2 text-[11px] font-medium text-muted-foreground">
+              <span className="block truncate px-1 pt-1 pb-2 text-xs font-medium text-muted-foreground">
                 {TIME_LABEL[t]}
               </span>
             </Link>
           ))}
         </div>
         {atrasadas.SEM > 0 ? (
-          <p className="mt-2 text-[11.5px] text-muted-foreground">
+          <p className="mt-2 text-xs text-muted-foreground">
             + {atrasadas.SEM} {atrasadas.SEM === 1 ? "atrasada" : "atrasadas"} sem time
           </p>
         ) : null}
@@ -128,7 +128,7 @@ export function UrgentesAtrasadas({
                   <p className="truncate text-[13px] font-semibold" title={t.titulo}>
                     {t.titulo}
                   </p>
-                  <p className="mt-0.5 flex flex-wrap items-center gap-x-3 text-[11.5px] text-muted-foreground">
+                  <p className="mt-0.5 flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
                     <span className={cn("inline-flex items-center gap-1", atrasada && cn("font-semibold", ALERTA.atrasadaTexto))}>
                       {atrasada ? <AlarmClock size={11} /> : null}
                       {atrasada ? "atrasada · " : ""}
@@ -150,7 +150,7 @@ export function UrgentesAtrasadas({
         {totalUrgentes > urgentes.length ? (
           <Link
             href="/agenda"
-            className="mt-2 block rounded-lg px-2 py-1.5 text-center text-[12.5px] font-medium text-primary hover:bg-muted dark:text-accent-foreground"
+            className="mt-2 block rounded-lg px-2 py-1.5 text-center text-[13px] font-medium text-primary hover:bg-muted dark:text-accent-foreground"
           >
             Ver as {totalUrgentes} urgentes na agenda
           </Link>

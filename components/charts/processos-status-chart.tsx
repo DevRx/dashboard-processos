@@ -71,7 +71,7 @@ export function ProcessosStatusChart({
                 <XAxis
                   type="number"
                   allowDecimals={false}
-                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                  tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                   axisLine={false}
                   tickLine={false}
                 />
@@ -79,7 +79,7 @@ export function ProcessosStatusChart({
                   type="category"
                   dataKey="label"
                   width={140}
-                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                  tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                   axisLine={false}
                   tickLine={false}
                 />

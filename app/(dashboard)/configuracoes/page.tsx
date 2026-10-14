@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { ROTULO_POR_PAPEL } from "@/lib/papeis"
 import { EscolhaAparencia } from "@/components/configuracoes/aparencia"
 import { Equipe } from "@/components/configuracoes/equipe"
+import { ConectarClaude } from "@/components/configuracoes/conectar-claude"
 import { getSession } from "@/lib/session"
 
 const AREAS: { href: string; icone: LucideIcon; nome: string; oQue: string }[] = [
@@ -65,6 +66,7 @@ export default async function ConfiguracoesPage() {
           </section>
 
           <Equipe />
+          <ConectarClaude />
         </div>
 
         <section className="overflow-hidden rounded-xl bg-card shadow-card">

@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase/server"
-import { TarefaCriacaoSchema } from "@/lib/validators"
 import { getCurrentUser } from "@/lib/auth"
-import { toCamelCase, toSnakeCase } from "@/lib/utils"
+import { toCamelCase } from "@/lib/utils"
 import { idsDoEscritorio } from "@/lib/escritorio"
-import {
-  atribuicoesDaTarefa,
-  atribuicoesParaTela,
-  faltaMigration,
-  fluxoDisponivel,
-  garantirNoFluxo,
-  tarefasDeIntimacao,
-  usuariosDoFluxo,
-} from "@/lib/fluxo/servidor"
-import { etapaDaTarefa, responsaveisPadrao, ETAPAS, type LinhaFluxo } from "@/lib/domain/tarefa"
+import { atribuicoesParaTela, fluxoDisponivel, tarefasDeIntimacao } from "@/lib/fluxo/servidor"
+import { criarTarefa } from "@/lib/tarefas/servico"
 
 export async function GET(request: NextRequest) {
   try {
@@ -113,98 +104,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
     }
 
-    const body = await request.json()
-
-    const validatedFields = TarefaCriacaoSchema.safeParse(body)
-
-    if (!validatedFields.success) {
-      const firstIssue = validatedFields.error.issues[0]
-      return NextResponse.json(
-        { error: firstIssue?.message || "Dados inválidos" },
-        { status: 400 }
-      )
-    }
-
-    // A etapa e os responsáveis não são colunas da tarefa: vão para as
-    // atribuições, depois de gravada a tarefa.
-    const { etapa, responsaveis, ...campos } = validatedFields.data
-    if (etapa) {
-      if (campos.setor && campos.setor !== ETAPAS[etapa].time) {
-        return NextResponse.json({ error: "A etapa não é deste time" }, { status: 400 })
-      }
-      campos.setor = ETAPAS[etapa].time
-      // A pasta guarda a etapa também: se o fluxo ainda não estiver
-      // ligado no banco, é por ela que a tela acha a etapa.
-      if (!campos.pasta) campos.pasta = ETAPAS[etapa].pasta
-    }
-
-    const equipe = await usuariosDoFluxo()
-    const daEquipe = new Set(equipe.map((u) => u.id))
-    const pedidos = [...(responsaveis ?? []), ...(campos.responsavelId ? [campos.responsavelId] : [])]
-    if (pedidos.some((id) => !daEquipe.has(id))) {
-      return NextResponse.json({ error: "Responsável fora da equipe do escritório" }, { status: 400 })
-    }
-
-    // Verify the processo belongs to this user (if processoId is provided)
-    if (validatedFields.data.processoId) {
-      const { data: processo, error: processoError } = await supabase
-        .from("processos")
-        .select("id")
-        .eq("id", validatedFields.data.processoId)
-        .in("user_id", await idsDoEscritorio())
-        .single()
-
-      if (processoError || !processo) {
-        return NextResponse.json(
-          { error: "Processo não encontrado ou não autorizado" },
-          { status: 404 }
-        )
-      }
-    }
-
-    const { data: tarefa, error } = await supabase
-      .from("tarefas")
-      .insert({
-        ...toSnakeCase(campos),
-        user_id: user.id,
-      })
-      .select("*, responsavel:users!tarefas_responsavel_id_fkey(id, name)")
-      .single()
-
-    if (error || !tarefa) {
-      console.error("Create tarefa error:", error)
-      return NextResponse.json(
-        { error: "Erro interno do servidor" },
-        { status: 500 }
-      )
-    }
-
-    const resposta = toCamelCase(tarefa) as Record<string, unknown>
-
-    // Tarefa nova com time já nasce no fluxo: na etapa pedida (ou na que
-    // a pasta indicar) e com os responsáveis pedidos — ou, sem nenhum,
-    // com os que a etapa indica.
-    if (campos.setor && (await fluxoDisponivel())) {
-      try {
-        const etapaFinal = etapa ?? etapaDaTarefa({ setor: campos.setor, pasta: campos.pasta ?? null })
-        const quem: (string | null)[] = responsaveis?.length
-          ? responsaveis
-          : campos.responsavelId
-            ? [campos.responsavelId]
-            : (etapaFinal ? responsaveisPadrao(etapaFinal, equipe) : null) ?? [null]
-        const linhas: LinhaFluxo[] = quem.map((r) => ({ setor: campos.setor!, etapa: etapaFinal, responsavelId: r }))
-        await garantirNoFluxo({ id: tarefa.id, setor: campos.setor }, user.id, linhas)
-        resposta.atribuicoes = await atribuicoesDaTarefa(tarefa.id)
-      } catch (erroFluxo) {
-        const e = erroFluxo as { code?: string; message?: string }
-        if (!faltaMigration(e)) console.error("Nova tarefa no fluxo:", e.message)
-      }
-    }
-
-    return NextResponse.json(
-      { message: "Tarefa criada com sucesso", tarefa: resposta },
-      { status: 201 }
-    )
+    // A regra de criar (etapa, responsáveis, entrada no fluxo) mora em
+    // lib/tarefas/servico.ts — a mesma que o conector do Claude usa.
+    const r = await criarTarefa(user, await request.json())
+    return NextResponse.json(r.corpo, { status: r.status })
   } catch (error) {
     console.error("Create tarefa error:", error)
     return NextResponse.json(

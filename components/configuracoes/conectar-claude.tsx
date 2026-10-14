@@ -167,13 +167,17 @@ export function ConectarClaude() {
 
         {estado?.tabelaPronta ? (
           <>
-            <Copiavel rotulo="Endereço do conector (URL)" valor={endereco} />
-
             {nova ? (
-              <div className="space-y-2">
-                <Copiavel rotulo="Cabeçalho Authorization — copie agora, a chave não aparece de novo" valor={`Bearer ${nova}`} destaque />
-              </div>
-            ) : null}
+              <Copiavel
+                rotulo="URL do conector, já com a chave — copie agora, ela não aparece de novo"
+                valor={`${endereco}/${nova}`}
+                destaque
+              />
+            ) : (
+              <p className="rounded-lg bg-muted/50 px-3 py-2 text-[13px] leading-snug text-muted-foreground ring-1 ring-border">
+                Gere uma chave para ver a URL do conector. A URL leva a chave dentro dela: trate como uma senha.
+              </p>
+            )}
 
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               <Button type="button" onClick={gerar} disabled={gerando}>
@@ -193,13 +197,12 @@ export function ConectarClaude() {
                 <b>Adicionar conector personalizado</b>.
               </li>
               <li>
-                Nome: <b>Dashboard Processos</b>. URL: o endereço acima.
+                Nome: <b>Dashboard Processos</b>. URL: a de cima, com a chave.
               </li>
               <li>
-                Autenticação: <b>sem login</b> (No sign in). Em cabeçalhos da requisição (Request headers), adicione{" "}
-                <b>Authorization</b> com o valor que começa com <b>Bearer</b>.
+                Autenticação: <b>sem login</b> (No sign in). Não preencha OAuth Client ID nem cabeçalhos.
               </li>
-              <li>Salve. Pronto: o Claude passa a ver as ferramentas do sistema.</li>
+              <li>Salve e clique em Conectar. Pronto: o Claude passa a ver as ferramentas do sistema.</li>
             </ol>
 
             {ativas.length || revogadas.length ? (

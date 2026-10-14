@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Segmentado } from "@/components/ui/segmentado"
+import { AvisoClienteWhatsapp } from "@/components/automacoes/aviso-cliente"
 import {
   RefreshCw,
   ShieldCheck,
@@ -157,10 +158,12 @@ export default function AutomacoesPage() {
         </Button>
       }
     >
+      <AvisoClienteWhatsapp />
+
       <div className="flex items-start gap-2.5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-[13px] text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
         <AlertTriangle size={16} strokeWidth={2} className="mt-0.5 shrink-0" />
         <p>
-          Protótipo: as regras não disparam ainda. A regra que vale:{" "}
+          As regras abaixo são protótipo e não disparam ainda (a de cima, do aviso ao cliente, é real). A regra que vale:{" "}
           <strong>ação sensível</strong> (protocolar, enviar, mexer no INSS,
           avisar cliente) só em <strong>Revisão</strong> — cai na fila de
           aprovação. Automático fica para o interno e reversível (abrir tarefa,

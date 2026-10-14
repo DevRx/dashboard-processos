@@ -308,6 +308,7 @@ model Tarefa {
   eventos      EventoTarefa[]
   atribuicoes  TarefaAtribuicao[]
   comunicacoes ComunicacaoDjen[]
+  avisos       ComunicacaoDjen[] @relation("AvisoDaIntimacao")
 
   @@index([tarefaPaiId])
   @@index([tipo])
@@ -506,6 +507,17 @@ model ComunicacaoDjen {
   iaAlertas             Json?     @map("ia_alertas")
   iaModelo              String?   @map("ia_modelo")
   iaAnalisadaEm         DateTime? @map("ia_analisada_em")
+  /// Compromisso marcado no texto (perícia, audiência): dia, hora e
+  /// lugar, lidos pela regra e pela IA — ver lib/domain/intimacao/evento.ts.
+  iaEventoTipo          String?   @map("ia_evento_tipo")
+  iaEventoData          DateTime? @map("ia_evento_data") @db.Date
+  iaEventoHora          String?   @map("ia_evento_hora")
+  iaEventoLocal         String?   @map("ia_evento_local")
+  /// Mensagem pronta para o cliente. Guardada, não enviada: o envio
+  /// depende da configuração `aviso_cliente_whatsapp`.
+  iaMensagemCliente     String?   @map("ia_mensagem_cliente")
+  /// Tarefa "avisar o cliente" aberta na véspera do evento.
+  avisoTarefaId         String?   @map("aviso_tarefa_id")
   tratadaEm             DateTime? @map("tratada_em")
   createdAt             DateTime  @default(now()) @map("created_at")
 
@@ -513,6 +525,7 @@ model ComunicacaoDjen {
   user     User      @relation(fields: [userId], references: [id])
   processo Processo? @relation(fields: [processoId], references: [id], onDelete: SetNull)
   tarefa   Tarefa?   @relation(fields: [tarefaId], references: [id], onDelete: SetNull)
+  aviso    Tarefa?   @relation("AvisoDaIntimacao", fields: [avisoTarefaId], references: [id], onDelete: SetNull)
 
   @@unique([userId, djenId])
   @@index([dataDisponibilizacao])
@@ -560,4 +573,16 @@ model TarefaAtribuicao {
 
   @@index([tarefaId])
   @@map("tarefa_atribuicoes")
+}
+
+/// Configurações do escritório, chave → valor. Nasce com a trava do
+/// aviso automático ao cliente (`aviso_cliente_whatsapp`, false).
+model Configuracao {
+  chave         String   @id
+  valor         Json
+  descricao     String?
+  atualizadaEm  DateTime @default(now()) @map("atualizada_em")
+  atualizadaPor String?  @map("atualizada_por")
+
+  @@map("configuracoes")
 }

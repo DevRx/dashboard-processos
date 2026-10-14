@@ -144,7 +144,7 @@ export async function sincronizarDjen(params: {
     const { data: comAnalise } = await supabase
       .from("comunicacoes_djen")
       .select(
-        "id, processo_id, tarefa_id, prazo_estimado, prazo_dias, tipo_documento, tipo_comunicacao, destinatario, numero_processo_mascara, sigla_tribunal, nome_orgao, link, texto, ia_tipo_ato, ia_providencia, ia_urgencia, ia_prazo_de_quem"
+        "id, processo_id, tarefa_id, prazo_estimado, prazo_dias, tipo_documento, tipo_comunicacao, destinatario, numero_processo_mascara, sigla_tribunal, nome_orgao, link, texto, ia_tipo_ato, ia_providencia, ia_urgencia, ia_prazo_de_quem, aviso_tarefa_id, ia_evento_tipo, ia_evento_data, ia_evento_hora, ia_evento_local, ia_mensagem_cliente"
       )
       .in("user_id", await idsDoEscritorio())
       .in("id", gravadas.map((g) => g.id))

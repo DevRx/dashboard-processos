@@ -47,8 +47,9 @@ function normalizar(texto?: string | null) {
  * `null`, se ela é só uma tarefa e fica no calendário geral.
  *
  * A ordem das perguntas importa:
- * 1. Veio do DJEN? É prazo, ainda que a intimação fale de perícia — a
- *    data gravada é a do prazo, não a do exame.
+ * 1. Veio do DJEN? É prazo — salvo a perícia que o motor leu da
+ *    intimação, gravada na pasta "ANDAMENTOS › PERÍCIA" com a data do
+ *    exame: essa é perícia.
  * 2. Fala em exigência? Verde.
  * 3. Fala em perícia? Branco. "Pericial" não conta: "laudo pericial
  *    juntado" é andamento, não dia de perícia.
@@ -59,11 +60,17 @@ export function categoriaNaAgenda(t: TarefaParaAgenda): CategoriaAgenda | null {
   // Dúvida é conversa interna, não compromisso com data.
   if (t.tipo === "DUVIDA") return null
 
-  if (t.deIntimacao) return "PRAZO"
-
   const titulo = normalizar(t.titulo)
   const pasta = normalizar(t.pasta)
   const texto = `${titulo} ${pasta}`
+
+  // A perícia lida da intimação (lib/intimacoes/gerar-tarefas.ts) vem
+  // com a data do exame, não a de um prazo: é perícia no calendário.
+  if (t.deIntimacao) return /\bPERICIAS?\b/.test(pasta) ? "PERICIA" : "PRAZO"
+
+  // "Avisar cliente da perícia" é tarefa sobre a perícia, não a perícia:
+  // fica no calendário geral, na véspera, com as outras tarefas.
+  if (/^AVISAR\b/.test(titulo)) return null
 
   if (/\bEXIGENCIAS?\b/.test(texto)) return "EXIGENCIA"
   if (/\bPERICIAS?\b/.test(texto)) return "PERICIA"

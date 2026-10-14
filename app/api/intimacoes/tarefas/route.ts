@@ -29,12 +29,12 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from("comunicacoes_djen")
       .select(
-        "id, processo_id, tarefa_id, prazo_estimado, prazo_dias, tipo_documento, tipo_comunicacao, destinatario, numero_processo_mascara, sigla_tribunal, nome_orgao, link, texto"
+        "id, processo_id, tarefa_id, prazo_estimado, prazo_dias, tipo_documento, tipo_comunicacao, destinatario, numero_processo_mascara, sigla_tribunal, nome_orgao, link, texto, ia_tipo_ato, ia_providencia, ia_urgencia, ia_prazo_de_quem, aviso_tarefa_id, ia_evento_tipo, ia_evento_data, ia_evento_hora, ia_evento_local, ia_mensagem_cliente"
       )
       .in("user_id", await idsDoEscritorio())
-      .is("tarefa_id", null)
       .is("tratada_em", null)
-      .not("prazo_estimado", "is", null)
+      // Falta a tarefa do prazo/evento, ou falta o aviso do evento.
+      .or("and(tarefa_id.is.null,or(prazo_estimado.not.is.null,ia_evento_data.not.is.null)),and(aviso_tarefa_id.is.null,ia_evento_data.not.is.null)")
 
     if (error) {
       console.error("Mutirão de tarefas:", error.message)

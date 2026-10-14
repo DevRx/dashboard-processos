@@ -25,6 +25,7 @@ import {
   type UsuarioDoFluxo,
 } from "@/lib/domain/tarefa"
 import { atribuicoesDaTarefa, tarefasDeIntimacao, usuariosDoFluxo } from "@/lib/fluxo/servidor"
+import { avisoAoClienteLiberado } from "@/lib/configuracoes"
 import { abrirDuvida, agirNoFluxo, criarTarefa, tarefasAbertasComFluxo, type Resultado } from "@/lib/tarefas/servico"
 
 /**
@@ -212,6 +213,7 @@ const REGRAS_GERAIS = [
   "Com mais de um responsável numa etapa, cada um conclui a sua parte e a tarefa continua para os outros; ela só sai da etapa quando o último concluir. Exceção: etapas marcadas \"basta um\" (a entrega do rosa) — quem conclui encerra para todos.",
   "Tarefa que ainda segue a pasta do TickTick aparece como \"gravadoNoFluxo: false\"; a primeira ação grava ela no fluxo.",
   "Nada aqui escreve no TickTick.",
+  "Perícia e audiência lidas das intimações viram duas tarefas: a do evento, em Vermelho › Andamentos (no dia e na hora), e \"Avisar cliente\", em Amarelo › Judicial › Andamentos (na véspera, com a mensagem pronta). O envio da mensagem ao cliente só acontece se avisos_pendentes disser que está liberado — nunca por conta própria.",
 ]
 
 export function servidorDoClaude(eu: CurrentUser): McpServer {
@@ -514,6 +516,78 @@ export function servidorDoClaude(eu: CurrentUser): McpServer {
       const r = await agirNoFluxo(eu, id, { acao: "responsaveis", em: lugar, responsaveis: r1.ids })
       const equipe = await usuariosDoFluxo()
       return doResultado(r, (corpo) => ({ trocados: true, tarefa: resumoDaTarefa(corpo.tarefa as TarefaLida, equipe) }))
+    }
+  )
+
+  servidor.registerTool(
+    "avisos_pendentes",
+    {
+      title: "Avisos de perícia/audiência a mandar ao cliente",
+      description:
+        "As tarefas \"Avisar cliente\" abertas (perícia ou audiência lida da intimação), com a mensagem pronta e o WhatsApp do cliente — e se o envio automático está liberado. " +
+        "Com envioLiberado = false, NÃO envie nada: a trava é decisão do escritório (Automações › Aviso ao cliente); só liste, ou envie se uma pessoa pedir explicitamente nesta conversa. " +
+        "Depois de enviar, conclua a sua parte na tarefa com concluir_minha_parte.",
+      inputSchema: {
+        ate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional()
+          .describe("Só avisos com data até este dia, AAAA-MM-DD (padrão: hoje)."),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ ate }) => {
+      const liberado = await avisoAoClienteLiberado()
+      const limite = ate ?? hoje()
+      const escritorio = await idsDoEscritorio()
+
+      const { data, error } = await supabase
+        .from("comunicacoes_djen")
+        .select(
+          "id, numero_processo_mascara, ia_evento_tipo, ia_evento_data, ia_evento_hora, ia_evento_local, ia_mensagem_cliente, aviso:tarefas!comunicacoes_djen_aviso_tarefa_id_fkey(id, titulo, data, status), processo:processos(cliente:clientes(nome, telefone))"
+        )
+        .in("user_id", escritorio)
+        .not("aviso_tarefa_id", "is", null)
+        .not("ia_evento_data", "is", null)
+      if (error) return falhou(`Não deu para listar os avisos: ${error.message}`)
+
+      type Linha = {
+        id: string
+        numero_processo_mascara: string | null
+        ia_evento_tipo: string | null
+        ia_evento_data: string | null
+        ia_evento_hora: string | null
+        ia_evento_local: string | null
+        ia_mensagem_cliente: string | null
+        aviso: { id: string; titulo: string; data: string; status: string } | { id: string; titulo: string; data: string; status: string }[] | null
+        processo: { cliente: { nome: string; telefone: string | null } | { nome: string; telefone: string | null }[] | null } | null
+      }
+      const um = <T,>(v: T | T[] | null | undefined): T | null => (Array.isArray(v) ? (v[0] ?? null) : (v ?? null))
+
+      const avisos = ((data ?? []) as unknown as Linha[])
+        .map((l) => ({ l, aviso: um(l.aviso), cliente: um(l.processo?.cliente ?? null) }))
+        .filter(({ aviso }) => aviso && aviso.status === "PENDENTE" && aviso.data.slice(0, 10) <= limite)
+        .map(({ l, aviso, cliente }) => ({
+          tarefaId: aviso!.id,
+          tarefa: aviso!.titulo,
+          avisarAte: aviso!.data.slice(0, 10),
+          evento: { tipo: l.ia_evento_tipo, data: l.ia_evento_data, hora: l.ia_evento_hora, local: l.ia_evento_local },
+          processo: l.numero_processo_mascara,
+          cliente: cliente?.nome ?? null,
+          whatsapp: cliente?.telefone ?? null,
+          mensagem: l.ia_mensagem_cliente,
+        }))
+        .sort((a, b) => a.avisarAte.localeCompare(b.avisarAte))
+
+      return texto({
+        envioLiberado: liberado,
+        regra: liberado
+          ? "Envio liberado pelo escritório: mande a mensagem pelo WhatsApp do cliente e conclua a sua parte na tarefa."
+          : "Envio DESLIGADO pelo escritório: não envie. Liste para a equipe, ou envie só se alguém pedir nesta conversa.",
+        hoje: hoje(),
+        total: avisos.length,
+        avisos,
+      })
     }
   )
 

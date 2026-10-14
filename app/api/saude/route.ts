@@ -53,6 +53,8 @@ const EXIGIDAS = [
   { tabela: "tarefas", coluna: "origem_id", migration: "20260925120000_tarefas_pasta_e_origem" },
   { tabela: "tarefa_atribuicoes", coluna: "fim_motivo", migration: "20261013200000_fluxo_atribuicoes" },
   { tabela: "chaves_api", coluna: "hash", migration: "20261014110000_chaves_api" },
+  { tabela: "comunicacoes_djen", coluna: "ia_evento_data", migration: "20261014220000_intimacao_evento_aviso" },
+  { tabela: "configuracoes", coluna: "chave", migration: "20261014220000_intimacao_evento_aviso" },
 ] as const
 
 type Achado = { nome: string; ok: boolean; detalhe: string }

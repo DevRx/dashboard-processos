@@ -49,7 +49,7 @@ export async function POST(
     const { data: intimacao, error: erroBusca } = await supabase
       .from("comunicacoes_djen")
       .select(
-        "id, tarefa_id, processo_id, destinatario, tipo_documento, tipo_comunicacao, nome_orgao, sigla_tribunal, numero_processo_mascara, texto, prazo_dias, link, ia_tipo_ato, ia_providencia, ia_urgencia, ia_prazo_de_quem"
+        "id, tarefa_id, processo_id, destinatario, tipo_documento, tipo_comunicacao, nome_orgao, sigla_tribunal, numero_processo_mascara, texto, prazo_dias, link, ia_tipo_ato, ia_providencia, ia_urgencia, ia_prazo_de_quem, aviso_tarefa_id, ia_evento_tipo, ia_evento_data, ia_evento_hora, ia_evento_local, ia_mensagem_cliente"
       )
       .eq("id", id)
       .in("user_id", await idsDoEscritorio())

@@ -42,6 +42,27 @@ export type AnaliseIntimacao = {
   prazoDias?: number
   /** O que merece atenção: pena de extinção, multa, ato personalíssimo. */
   alertas: string[]
+  /**
+   * Compromisso marcado no texto — perícia, audiência — com dia, hora e
+   * lugar. É o que vira tarefa de avisar o cliente (ver
+   * lib/domain/intimacao/evento.ts). Nulo quando não há dia marcado.
+   */
+  evento: EventoIA | null
+  /**
+   * A mensagem pronta para o cliente, quando o ato pede que ele faça
+   * algo (ir à perícia, à audiência, trazer documento). Vazia quando
+   * não há nada a dizer a ele. Fica guardada; o envio é outra decisão.
+   */
+  mensagemCliente: string
+}
+
+export type EventoIA = {
+  tipo: "PERICIA" | "AUDIENCIA" | "OUTRO"
+  /** AAAA-MM-DD */
+  data: string
+  /** HH:MM ou nulo. */
+  hora: string | null
+  local: string | null
 }
 
 export type ResultadoAnalise =
@@ -61,8 +82,25 @@ const ESQUEMA = {
     },
     prazoDias: { type: "integer" },
     alertas: { type: "array", items: { type: "string" } },
+    evento: {
+      anyOf: [
+        {
+          type: "object",
+          properties: {
+            tipo: { type: "string", enum: ["PERICIA", "AUDIENCIA", "OUTRO"] },
+            data: { type: "string" },
+            hora: { anyOf: [{ type: "string" }, { type: "null" }] },
+            local: { anyOf: [{ type: "string" }, { type: "null" }] },
+          },
+          required: ["tipo", "data", "hora", "local"],
+          additionalProperties: false,
+        },
+        { type: "null" },
+      ],
+    },
+    mensagemCliente: { type: "string" },
   },
-  required: ["tipoAto", "resumo", "providencia", "urgencia", "prazoDeQuem", "alertas"],
+  required: ["tipoAto", "resumo", "providencia", "urgencia", "prazoDeQuem", "alertas", "evento", "mensagemCliente"],
   additionalProperties: false,
 } as const
 
@@ -81,6 +119,8 @@ Como preencher:
 - "prazoDias": o número de dias do prazo do ESCRITÓRIO, quando houver. Omita se o prazo for de outra parte ou não houver.
 - "urgencia": ALTA quando há ato a praticar com prazo, ou pena de extinção, arquivamento, preclusão ou multa. MEDIA quando há ato sem gravidade imediata. BAIXA para ciência, mero andamento e prazos de outra parte.
 - "alertas": o que muda a conduta — "sob pena de extinção sem resolução do mérito", "perícia é ato personalíssimo, o autor precisa comparecer", "exige procuração com poderes especiais". Lista vazia quando não houver.
+- "evento": o compromisso MARCADO no texto para o futuro — perícia médica ou social, audiência, exame — com "tipo" (PERICIA, AUDIENCIA ou OUTRO), "data" (AAAA-MM-DD), "hora" (HH:MM ou null) e "local" (como o texto diz: "Central de Perícias Médicas da SJDF, SGAN 601"; null se não disser). Só quando o texto designa dia: perícia já realizada, laudo juntado, DER, DIB e datas de sentença NÃO são evento. Sem dia marcado, null.
+- "mensagemCliente": quando o ato exige algo DO CLIENTE (comparecer à perícia ou audiência, levar documento, fazer exame), escreva a mensagem de WhatsApp que o escritório mandaria a ele: curta, em "você", tom acolhedor e direto, com dia, hora e lugar quando houver, o que levar e a importância de comparecer. Nunca o nome dele, nem número de processo, nem juridiquês. Nunca diga quem escreveu a mensagem. String vazia quando não há nada que o cliente precise fazer.
 
 Não invente prazo, data nem providência que o texto não traga.`
 
@@ -148,6 +188,13 @@ export async function analisarIntimacao(params: {
     }
 
     const analise = JSON.parse(bloco.text) as AnaliseIntimacao
+    // Data e hora do evento precisam estar no formato que o banco e a
+    // agenda esperam; o que vier torto é descartado, não corrigido.
+    if (analise.evento) {
+      const e = analise.evento
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(e.data)) analise.evento = null
+      else if (e.hora && !/^\d{2}:\d{2}$/.test(e.hora)) e.hora = null
+    }
 
     return { ok: true, analise, modelo: resposta.model ?? MODELO }
   } catch (erro) {

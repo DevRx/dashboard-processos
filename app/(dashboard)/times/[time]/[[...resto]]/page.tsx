@@ -32,7 +32,7 @@ const SUBTITULO: Record<TimeTarefa, string> = {
   VERMELHO: "Videochamadas, revisão das análises e andamentos",
   AZUL: "Da análise do caso até o contrato assinado",
   AMARELO: "Antes do protocolo: administrativo e judicial",
-  ROSA: "Etapas ainda não definidas no fluxo",
+  ROSA: "Entregas: o benefício permanente levado em mãos ao cliente",
 }
 
 const SLUG_LADO: Record<EsferaAmarelo, string> = { ADMINISTRATIVO: "administrativo", JUDICIAL: "judicial" }

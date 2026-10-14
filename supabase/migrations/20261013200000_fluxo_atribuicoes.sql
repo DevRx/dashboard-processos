@@ -83,6 +83,21 @@ create unique index if not exists "tarefa_atribuicoes_aberta_unica"
   )
   where "fim_em" is null;
 
+-- Só o servidor do sistema (chave secreta, que passa por cima do RLS)
+-- mexe nesta tabela. RLS ligado e nenhuma política: a chave pública do
+-- Supabase não lê nem escreve nada aqui.
+alter table "tarefa_atribuicoes" enable row level security;
+do $$
+begin
+  if exists (select 1 from pg_roles where rolname = 'anon') then
+    revoke all on table "tarefa_atribuicoes" from anon;
+  end if;
+  if exists (select 1 from pg_roles where rolname = 'authenticated') then
+    revoke all on table "tarefa_atribuicoes" from authenticated;
+  end if;
+end;
+$$;
+
 -- ── Resumo na tarefa ─────────────────────────────────────
 
 -- Recalcula setor, responsável e status da tarefa a partir das linhas.

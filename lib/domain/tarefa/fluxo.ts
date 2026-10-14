@@ -9,7 +9,8 @@
 //   VERMELHO  Vídeos · Revisão da análise · Andamentos
 //   AMARELO   Administrativo e Judicial, cada um com
 //             Pendente → Protocolo → Prioridade
-//   ROSA      etapas ainda não desenhadas
+//   ROSA      Agendar entrega → Entrega marcada (o cliente ganhou
+//             benefício permanente e o escritório vai entregar em mãos)
 //
 // Onde a tarefa está mora em `tarefa_atribuicoes` (time, etapa e
 // responsável — ver atribuicao.ts). Tarefa que ainda não entrou no
@@ -37,12 +38,20 @@ export type EtapaId =
   | "jud-pendente"
   | "jud-protocolo"
   | "jud-prioridade"
+  | "agendar-entrega"
+  | "entrega-marcada"
 
 /** Um próximo passo do fluxo, como ele está desenhado. */
 export type Saida = {
   /** O que aconteceu para a tarefa sair daqui ("Caso bom"). */
   quando: string
   para: EtapaId
+  /**
+   * Aparece só no menu do cartão: concluir a etapa não pergunta por ela.
+   * Para a saída rara de uma etapa que quase sempre só fecha (a maioria
+   * dos andamentos se encerra ali; uns poucos viram entrega no rosa).
+   */
+  soNoMenu?: boolean
 }
 
 export type Etapa = {
@@ -186,8 +195,11 @@ export const ETAPAS: Record<EtapaId, Etapa> = {
     pasta: "ANDAMENTOS",
     responsaveis: "Claude e Zeca",
     campo: "Andamento e caso",
-    regras: ["Andamentos dos processos judiciais que pedem providência do escritório."],
-    saidas: [],
+    regras: [
+      "Andamentos dos processos judiciais que pedem providência do escritório.",
+      "Saiu benefício permanente para o cliente: a tarefa vai para o rosa, em Agendar entrega.",
+    ],
+    saidas: [{ quando: "Benefício permanente concedido", para: "agendar-entrega", soNoMenu: true }],
   },
 
   // ── Amarelo · Administrativo ───────────────────────────
@@ -267,6 +279,43 @@ export const ETAPAS: Record<EtapaId, Etapa> = {
     regras: ["Protocolos judiciais que passam na frente dos outros."],
     saidas: [],
   },
+
+  // ── Rosa · Entregas ────────────────────────────────────
+  // Definido pelo Zeca em 14/10/2026: o rosa cuida das entregas. Cliente
+  // que ganhou benefício permanente vem para cá, e alguém do escritório
+  // vai pessoalmente visitá-lo e entregar o benefício.
+  "agendar-entrega": {
+    id: "agendar-entrega",
+    time: "ROSA",
+    nome: "Agendar entrega",
+    slug: "agendar-entrega",
+    pasta: "AGENDAR ENTREGA",
+    responsaveis: "A definir",
+    campo: "Benefício concedido (ex.: aposentadoria por idade)",
+    regras: [
+      "O cliente ganhou benefício permanente — aposentadoria ou BPC, por exemplo. Benefício temporário, como o auxílio-doença, não vem para cá.",
+      "Combinar com o cliente o dia, a hora e o endereço da visita.",
+      "Marcada a visita, a tarefa passa para Entrega marcada, com a data na tarefa.",
+    ],
+    saidas: [{ quando: "Visita marcada", para: "entrega-marcada" }],
+  },
+  "entrega-marcada": {
+    id: "entrega-marcada",
+    time: "ROSA",
+    nome: "Entrega marcada",
+    slug: "entrega-marcada",
+    pasta: "ENTREGA MARCADA",
+    responsaveis: "A definir",
+    campo: "Data, hora e endereço da visita",
+    regras: [
+      "Visita com dia e hora combinados com o cliente.",
+      "Ir pessoalmente, entregar o benefício e concluir a tarefa — entregue, ela fecha.",
+      "O cliente desmarcou: mover de volta para Agendar entrega.",
+    ],
+    // Concluir aqui é "entregue": fecha a tarefa, sem a pergunta "para
+    // onde vai?". A volta, se o cliente desmarcar, fica só no menu.
+    saidas: [{ quando: "Cliente desmarcou", para: "agendar-entrega", soNoMenu: true }],
+  },
 }
 
 /** As etapas de cada time, na ordem do desenho. */
@@ -281,7 +330,7 @@ export const ETAPAS_DO_TIME: Record<TimeTarefa, EtapaId[]> = {
     "jud-protocolo",
     "jud-prioridade",
   ],
-  ROSA: [],
+  ROSA: ["agendar-entrega", "entrega-marcada"],
 }
 
 export const ESFERAS_AMARELO: EsferaAmarelo[] = ["ADMINISTRATIVO", "JUDICIAL"]
@@ -408,6 +457,11 @@ export function etapaDaTarefa(t: TarefaNoFluxo): EtapaId | null {
       const etapa = etapaAmarelaDe(p)
       return esfera && etapa ? idAmarelo(esfera, etapa) : null
     }
+
+    case "ROSA":
+      if (/\bENTREGAS?\b/.test(p) && /\b(MARCAD|AGENDAD|CONFIRMAD)/.test(p)) return "entrega-marcada"
+      if (/\bENTREG/.test(p)) return "agendar-entrega"
+      return null
 
     default:
       return null

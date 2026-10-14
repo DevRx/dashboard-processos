@@ -41,6 +41,7 @@ import {
   type EsferaAmarelo,
   type EtapaId,
   type Grupo,
+  type Saida,
   type TimeTarefa,
 } from "@/lib/domain/tarefa"
 import { CORES_TIME } from "./cores-time"
@@ -87,6 +88,24 @@ function destinoCurto(de: EtapaId | null, para: EtapaId) {
   const a = de ? ETAPAS[de] : null
   const b = ETAPAS[para]
   return a && a.time === b.time && a.esfera === b.esfera ? b.nome : nomeDaEtapa(para)
+}
+
+/**
+ * Um próximo passo no menu: o que aconteceu em cima, miúdo, e para onde
+ * vai embaixo. Em linha, um "quando" comprido ("Benefício permanente
+ * concedido") espremia o destino até virar reticências.
+ */
+function ConteudoSaida({ saida, de }: { saida: Saida; de: EtapaId | null }) {
+  return (
+    <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+      <span className="text-xs leading-snug text-muted-foreground">{saida.quando}</span>
+      <span className="flex min-w-0 items-center gap-1.5">
+        <ArrowRight size={12} className="shrink-0 text-muted-foreground" aria-hidden />
+        <span className={cn("size-2 shrink-0 rounded-full", CORES_TIME[ETAPAS[saida.para].time].ponto)} aria-hidden />
+        <span className="truncate font-semibold">{destinoCurto(de, saida.para)}</span>
+      </span>
+    </span>
+  )
 }
 
 function primeiroNome(nome?: string | null) {
@@ -280,10 +299,7 @@ function MenuDoCartao({
                       fechar()
                     }}
                   >
-                    <span className="text-muted-foreground">{s.quando}</span>
-                    <ArrowRight size={12} className="shrink-0 text-muted-foreground" aria-hidden />
-                    <span className={cn("size-2 shrink-0 rounded-full", CORES_TIME[ETAPAS[s.para].time].ponto)} aria-hidden />
-                    <span className="truncate font-semibold">{destinoCurto(grupo.etapa, s.para)}</span>
+                    <ConteudoSaida saida={s} de={grupo.etapa} />
                   </ItemMenu>
                 ))}
                 <div className="my-1 h-px bg-border" />
@@ -394,7 +410,8 @@ function Concluir({
   const [parte, setParte] = useState<string | null>(null)
   const { grupo } = cartao
   const minha = grupo.abertas.find((a) => a.responsavelId && a.responsavelId === eu)
-  const saidas = grupo.etapa ? ETAPAS[grupo.etapa].saidas : []
+  // Ao concluir, só as saídas do fluxo normal; as de "só no menu" ficam no "…".
+  const saidas = grupo.etapa ? ETAPAS[grupo.etapa].saidas.filter((s) => !s.soNoMenu) : []
   const nome = (id: string | null) => usuarios.find((u) => u.id === id)?.name ?? "Sem responsável"
   const fechar = useCallback(() => setPergunta(null), [])
 
@@ -463,10 +480,7 @@ function Concluir({
                   fechar()
                 }}
               >
-                <span className="text-muted-foreground">{s.quando}</span>
-                <ArrowRight size={12} className="shrink-0 text-muted-foreground" aria-hidden />
-                <span className={cn("size-2 shrink-0 rounded-full", CORES_TIME[ETAPAS[s.para].time].ponto)} aria-hidden />
-                <span className="truncate font-semibold">{destinoCurto(grupo.etapa, s.para)}</span>
+                <ConteudoSaida saida={s} de={grupo.etapa} />
               </ItemMenu>
             ))}
             <div className="my-1 h-px bg-border" />

@@ -165,6 +165,8 @@ const PASTAS: [TimeTarefa | "PRETO" | null, string | null, number][] = [
   ["AMARELO", "ACOMPANHAMENTO", 5],
   ["AMARELO", "TAREFAS ZECA", 2],
   ["ROSA", "COBRANÇA", 3],
+  ["ROSA", "AGENDAR ENTREGA", 3],
+  ["ROSA", "ENTREGA MARCADA", 2],
   ["PRETO", "RYAN › IMPLANTAÇÃO", 2],
   [null, null, 3],
 ]

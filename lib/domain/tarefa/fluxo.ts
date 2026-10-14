@@ -1,16 +1,29 @@
 // ─────────────────────────────────────────────────────────
 // Domínio: o fluxo do escritório, time por time
 //
-// Desenhado pelo Zeca no Lucid (13/10/2026). Cada time é uma cor e tem
-// as suas etapas, na ordem em que o caso anda:
+// Desenhado pelo Zeca no Lucid (13/10/2026, revisto em 14/10/2026). Cada
+// time é uma cor e tem as suas etapas, na ordem em que o caso anda:
 //
 //   AZUL      Análise → Agendar vídeo → Aguardando assinatura
-//             e, à parte, Acompanhamento
-//   VERMELHO  Vídeos · Revisão da análise · Andamentos
-//   AMARELO   Administrativo e Judicial, cada um com
-//             Pendente → Protocolo → Prioridade
-//   ROSA      Agendar entrega → Entrega marcada (o cliente ganhou
-//             benefício permanente e o escritório vai entregar em mãos)
+//             e, à parte, Acompanhamento (Tayane faz a triagem)
+//   VERMELHO  Vídeos · Revisão da análise · Andamentos · Questões de
+//             clientes (Zeca; o Claude ao lado nos andamentos e nas
+//             questões)
+//   AMARELO   Administrativo (Guilherme) e Judicial (Zeca por ora;
+//             depois a Camille), cada um com
+//             Pendente → Protocolo → Prioridade e, à parte, Andamentos
+//             (as exigências do processo já protocolado)
+//   ROSA      Agendar entrega → Entrega marcada (Zeca e Ryan: o cliente
+//             ganhou benefício permanente e o escritório entrega em mãos)
+//
+// O Claude não é um time: é o "preto" do desenho, que atravessa todos —
+// controle de prazos, fluxos, análises, atendimento e automações. Por
+// isso ele aparece como responsável em quase toda etapa, ao lado de quem
+// é daquele time.
+//
+// Quem responde por cada etapa vale pela cor do time e pela própria
+// tarefa (o responsável está no cartão): as telas não escrevem nomes
+// no alto das colunas do kanban.
 //
 // Onde a tarefa está mora em `tarefa_atribuicoes` (time, etapa e
 // responsável — ver atribuicao.ts). Tarefa que ainda não entrou no
@@ -32,12 +45,15 @@ export type EtapaId =
   | "videos"
   | "revisao-analise"
   | "andamentos"
+  | "questoes-clientes"
   | "adm-pendente"
   | "adm-protocolo"
   | "adm-prioridade"
+  | "adm-andamentos"
   | "jud-pendente"
   | "jud-protocolo"
   | "jud-prioridade"
+  | "jud-andamentos"
   | "agendar-entrega"
   | "entrega-marcada"
 
@@ -203,10 +219,30 @@ export const ETAPAS: Record<EtapaId, Etapa> = {
     responsaveis: "Claude e Zeca",
     campo: "Andamento e caso",
     regras: [
-      "Andamentos dos processos judiciais que pedem providência do escritório.",
+      "Andamentos dos processos judiciais que pedem decisão ou ato do Zeca: intimação com prazo, perícia, sentença, acordo, recurso.",
+      "Se o andamento é só uma exigência do processo (juntar documento, emendar, cumprir determinação), ele é do amarelo, em Judicial › Andamentos.",
       "Saiu benefício permanente para o cliente: a tarefa vai para o rosa, em Agendar entrega.",
     ],
-    saidas: [{ quando: "Benefício permanente concedido", para: "agendar-entrega", soNoMenu: true }],
+    saidas: [
+      { quando: "É exigência processual", para: "jud-andamentos", soNoMenu: true },
+      { quando: "Benefício permanente concedido", para: "agendar-entrega", soNoMenu: true },
+    ],
+  },
+  "questoes-clientes": {
+    id: "questoes-clientes",
+    time: "VERMELHO",
+    nome: "Questões de clientes",
+    slug: "questoes-clientes",
+    pasta: "QUESTÕES DE CLIENTES",
+    responsaveis: "Claude e Zeca",
+    campo: "Dúvida e caso",
+    regras: [
+      "Pergunta de um cliente sobre o próprio caso — andamento, pagamento, documento, prazo — que o atendimento não soube responder na hora.",
+      "O Claude responde o que já está nos documentos e nos andamentos; o que depende de decisão ou de parecer fica com o Zeca.",
+      "Respondido ao cliente, a tarefa é concluída. A resposta vai para o banco de dados de dúvidas, para a próxima vez.",
+      "A dúvida mostrou uma pendência do caso (laudo, contribuição): manda para o azul, em Acompanhamento.",
+    ],
+    saidas: [{ quando: "Virou pendência do caso", para: "acompanhamento", soNoMenu: true }],
   },
 
   // ── Amarelo · Administrativo ───────────────────────────
@@ -247,8 +283,32 @@ export const ETAPAS: Record<EtapaId, Etapa> = {
     regras: ["Protocolos administrativos que passam na frente dos outros."],
     saidas: [],
   },
+  "adm-andamentos": {
+    id: "adm-andamentos",
+    time: "AMARELO",
+    esfera: "ADMINISTRATIVO",
+    nome: "Andamentos",
+    slug: "andamentos",
+    pasta: "ADM › ANDAMENTOS",
+    responsaveis: "Claude e Guilherme",
+    campo: "Andamento de exigência processual e caso (ex.: maternidade, BPC)",
+    regras: [
+      "Requerimento já protocolado no INSS que pediu alguma coisa: exigência, documento, perícia a agendar, recurso de prazo.",
+      "Prorrogação de auxílio-doença entra aqui também, com a data em que o pedido pode ser feito.",
+      "Salário-maternidade sempre tem uma tarefa aqui: enviar ao cliente a contribuição que o INSS pede.",
+      "Cumprida a exigência, a tarefa é concluída. Indeferido e o caso vai à Justiça: manda para Judicial › Protocolo.",
+      "Saiu benefício definitivo (aposentadoria, BPC): a tarefa vai para o rosa, em Agendar entrega.",
+    ],
+    saidas: [
+      { quando: "Indeferido, vai à Justiça", para: "jud-protocolo", soNoMenu: true },
+      { quando: "Benefício definitivo concedido", para: "agendar-entrega", soNoMenu: true },
+    ],
+  },
 
   // ── Amarelo · Judicial ─────────────────────────────────
+  // Responsáveis: o Claude e o Zeca, por ora. Quando a Camille entrar
+  // no escritório, o Zeca sai daqui e ela entra — é trocar o texto de
+  // `responsaveis` destas quatro etapas (e dar conta a ela no sistema).
   "jud-pendente": {
     id: "jud-pendente",
     time: "AMARELO",
@@ -285,6 +345,26 @@ export const ETAPAS: Record<EtapaId, Etapa> = {
     responsaveis: "Claude e Zeca",
     regras: ["Protocolos judiciais que passam na frente dos outros."],
     saidas: [],
+  },
+  "jud-andamentos": {
+    id: "jud-andamentos",
+    time: "AMARELO",
+    esfera: "JUDICIAL",
+    nome: "Andamentos",
+    slug: "andamentos",
+    pasta: "JUDICIAL › ANDAMENTOS",
+    responsaveis: "Claude e Zeca",
+    campo: "Andamento de exigência processual, caso e link do tribunal",
+    regras: [
+      "Ação já distribuída que pediu alguma coisa do escritório: emenda à inicial, juntada de documento, cumprimento de determinação, manifestação simples.",
+      "O cartão traz o link do processo no tribunal, para abrir direto de onde a exigência veio.",
+      "O andamento pede decisão do Zeca (prazo de recurso, perícia, sentença, acordo): é do vermelho, em Andamentos.",
+      "Cumprida a exigência, a tarefa é concluída. Saiu benefício permanente: vai para o rosa, em Agendar entrega.",
+    ],
+    saidas: [
+      { quando: "Precisa do Zeca", para: "andamentos", soNoMenu: true },
+      { quando: "Benefício permanente concedido", para: "agendar-entrega", soNoMenu: true },
+    ],
   },
 
   // ── Rosa · Entregas ────────────────────────────────────
@@ -331,15 +411,17 @@ export const ETAPAS: Record<EtapaId, Etapa> = {
 
 /** As etapas de cada time, na ordem do desenho. */
 export const ETAPAS_DO_TIME: Record<TimeTarefa, EtapaId[]> = {
-  VERMELHO: ["videos", "revisao-analise", "andamentos"],
+  VERMELHO: ["videos", "revisao-analise", "andamentos", "questoes-clientes"],
   AZUL: ["analise", "agendar-video", "aguardando-assinatura", "acompanhamento"],
   AMARELO: [
     "adm-pendente",
     "adm-protocolo",
     "adm-prioridade",
+    "adm-andamentos",
     "jud-pendente",
     "jud-protocolo",
     "jud-prioridade",
+    "jud-andamentos",
   ],
   ROSA: ["agendar-entrega", "entrega-marcada"],
 }
@@ -420,14 +502,17 @@ function esferaDe(pasta: string): EsferaAmarelo | null {
 
 /** Etapa do amarelo pela pasta, sem olhar o time. A ordem importa:
  *  "PROTOCOLOS PENDENTES" é pendência antes de ser protocolo. */
-function etapaAmarelaDe(pasta: string): "pendente" | "protocolo" | "prioridade" | null {
+type EtapaAmarela = "pendente" | "protocolo" | "prioridade" | "andamentos"
+
+function etapaAmarelaDe(pasta: string): EtapaAmarela | null {
   if (/\bPENDEN/.test(pasta) || /\bFALTA DOC/.test(pasta) || /\bDEVOLVID/.test(pasta)) return "pendente"
   if (/\bPRIORI/.test(pasta)) return "prioridade"
   if (/\bPROTOCOL/.test(pasta) || /\bTRIAGEM\b/.test(pasta)) return "protocolo"
+  if (/\bANDAMENTOS?\b/.test(pasta) || /\bEXIGENCIAS?\b/.test(pasta) || /\bPRORROGAC/.test(pasta)) return "andamentos"
   return null
 }
 
-function idAmarelo(esfera: EsferaAmarelo, etapa: "pendente" | "protocolo" | "prioridade"): EtapaId {
+function idAmarelo(esfera: EsferaAmarelo, etapa: EtapaAmarela): EtapaId {
   return `${esfera === "JUDICIAL" ? "jud" : "adm"}-${etapa}` as EtapaId
 }
 
@@ -465,6 +550,7 @@ export function etapaDaTarefa(t: TarefaNoFluxo): EtapaId | null {
       if (/\bASSINA/.test(p)) return null
       if (/\bREVIS/.test(p)) return "revisao-analise"
       if (/\bVIDEOS?\b/.test(p) || /\bVIDEOCHAMADAS?\b/.test(p)) return "videos"
+      if (/\bQUESTO/.test(p) || /\bDUVIDAS?\b/.test(p)) return "questoes-clientes"
       if (/\bANDAMENTOS?\b/.test(p) || /\bINTIMAC/.test(p)) return "andamentos"
       return t.deIntimacao ? "andamentos" : null
 
@@ -508,7 +594,9 @@ export function destinoNoFluxo(t: TarefaNoFluxo): EtapaId | null {
 
   const esfera = esferaDe(p)
   const amarela = etapaAmarelaDe(p)
-  if (esfera && amarela && t.setor !== "AMARELO") return idAmarelo(esfera, amarela)
+  // Andamento fica onde o TickTick deixou: o do vermelho é o que pede o
+  // Zeca, o do amarelo é a exigência processual — a pasta não diz qual.
+  if (esfera && amarela && amarela !== "andamentos" && t.setor !== "AMARELO") return idAmarelo(esfera, amarela)
 
   if (/\bASSINA/.test(p) && !esfera && t.setor !== "AZUL") return "aguardando-assinatura"
 

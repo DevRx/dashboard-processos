@@ -985,7 +985,9 @@ export function KanbanTime({
       onClick: () => mudarFiltro({ etapa: null }),
     },
     ...(time === "AMARELO"
-      ? (["pendente", "protocolo", "prioridade"] as const).map((slug) => {
+      ? // Um chip por etapa do desenho (Pendente, Protocolo, Prioridade,
+        // Andamentos): cada um reúne o lado administrativo e o judicial.
+        [...new Set(etapasDaEsfera("ADMINISTRATIVO").map((id) => ETAPAS[id].slug))].map((slug) => {
           const ids = etapasDaEsfera("ADMINISTRATIVO").concat(etapasDaEsfera("JUDICIAL")).filter((id) => ETAPAS[id].slug === slug && (!lado || ETAPAS[id].esfera === lado))
           return {
             chave: slug,

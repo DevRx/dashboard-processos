@@ -29,9 +29,9 @@ import {
  */
 
 const SUBTITULO: Record<TimeTarefa, string> = {
-  VERMELHO: "Videochamadas, revisão das análises e andamentos",
+  VERMELHO: "Videochamadas, revisão das análises, andamentos e questões de clientes",
   AZUL: "Da análise do caso até o contrato assinado",
-  AMARELO: "Antes do protocolo: administrativo e judicial",
+  AMARELO: "Protocolo e andamentos: administrativo e judicial",
   ROSA: "Entregas: o benefício permanente levado em mãos ao cliente",
 }
 

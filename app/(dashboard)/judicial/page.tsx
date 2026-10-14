@@ -1,18 +1,28 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { Scale, Search } from "lucide-react"
+import { Layers, ListTree, Scale, Search } from "lucide-react"
 
 import { Pagina } from "@/components/layout/pagina"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Segmentado } from "@/components/ui/segmentado"
 import { Skeleton } from "@/components/ui/skeleton"
 import { EmptyState } from "@/components/dashboard/empty-state"
 import {
   QuadroJudicial,
+  type AgrupamentoJudicial,
   type ItemJudicial,
 } from "@/components/judicial/quadro-judicial"
 import { AbasJudicial } from "@/components/judicial/abas-judicial"
+import {
+  REGIAO_LABEL,
+  REGIOES_JUDICIAIS,
+  faseDoStatus,
+  regiaoDaUf,
+  ufDoProcesso,
+  type RegiaoJudicial,
+} from "@/lib/domain/processo"
 
 /**
  * Fila judicial.
@@ -34,6 +44,9 @@ export default function JudicialPage() {
   const [itens, setItens] = useState<ItemJudicial[]>([])
   const [carregando, setCarregando] = useState(true)
   const [busca, setBusca] = useState("")
+  // O desenho do escritório lê o quadro por tipo de caso (BPC
+  // deficiente, incapacidade…); a fase continua a um toque.
+  const [agrupamento, setAgrupamento] = useState<AgrupamentoJudicial>("familia")
 
   const carregar = useCallback(() => {
     return fetch("/api/judicial")
@@ -114,8 +127,18 @@ export default function JudicialPage() {
 
   const semNumero = itens.filter((i) => !i.numero).length
 
+  // A faixa do desenho: "processos ativos · DF · GO · Minas · SP ·
+  // Nordeste". Ativo é o que ainda não encerrou; o estado vem da
+  // comarca, da vara ou do tribunal.
+  const ativos = useMemo(() => itens.filter((i) => faseDoStatus(i.status) !== "ENCERRADA"), [itens])
+  const porRegiao = useMemo(() => {
+    const conta = Object.fromEntries(REGIOES_JUDICIAIS.map((r) => [r, 0])) as Record<RegiaoJudicial, number>
+    for (const i of ativos) conta[regiaoDaUf(ufDoProcesso(i))] += 1
+    return conta
+  }, [ativos])
+
   return (
-    <Pagina titulo="Judicial" subtitulo="Ações em curso, por fase, com consulta ao DataJud">
+    <Pagina titulo="Judicial" subtitulo="Ações em curso, por tipo de caso ou por fase, com consulta ao DataJud">
       <AbasJudicial />
 
       <section className="overflow-hidden rounded-xl bg-card shadow-card">
@@ -165,7 +188,40 @@ export default function JudicialPage() {
         </div>
       </section>
 
-      <div className="relative max-w-sm">
+      <section
+        aria-label="Processos ativos por estado"
+        className="flex flex-wrap items-stretch gap-2 rounded-xl bg-yellow-50/70 p-2.5 shadow-card dark:bg-yellow-950/20"
+      >
+        <div className="flex items-center gap-2.5 rounded-lg bg-yellow-400 px-3.5 py-2 text-yellow-950">
+          <span className="font-heading text-xl leading-none font-semibold tabular-nums">{ativos.length}</span>
+          <span className="text-xs leading-tight font-semibold tracking-wide uppercase">
+            processos
+            <br />
+            ativos
+          </span>
+        </div>
+        {REGIOES_JUDICIAIS.filter((r) => r !== "OUTROS" || porRegiao[r] > 0).map((r) => (
+          <div
+            key={r}
+            className="flex items-center gap-2 rounded-lg bg-card px-3.5 py-2 shadow-card ring-1 ring-yellow-300/60 dark:ring-yellow-800"
+          >
+            <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{REGIAO_LABEL[r]}</span>
+            <span className="font-heading text-lg leading-none font-semibold tabular-nums">{porRegiao[r]}</span>
+          </div>
+        ))}
+      </section>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <Segmentado<AgrupamentoJudicial>
+          aria-label="Agrupar o quadro"
+          valor={agrupamento}
+          onChange={setAgrupamento}
+          opcoes={[
+            { valor: "familia", rotulo: "Por tipo de caso", icone: Layers },
+            { valor: "fase", rotulo: "Por fase", icone: ListTree },
+          ]}
+        />
+      <div className="relative w-full max-w-sm sm:w-auto sm:flex-1">
         <Search
           size={15}
           strokeWidth={1.9}
@@ -178,6 +234,7 @@ export default function JudicialPage() {
           aria-label="Buscar na fila judicial"
           className="pl-9 text-sm"
         />
+      </div>
       </div>
 
       {carregando ? (
@@ -200,6 +257,7 @@ export default function JudicialPage() {
         <>
           <QuadroJudicial
             itens={filtrados}
+            agrupamento={agrupamento}
             onTrocarStatus={trocarStatus}
             onRegistrarAndamento={registrarAndamento}
           />

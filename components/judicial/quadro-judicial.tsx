@@ -16,12 +16,17 @@ import {
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
+  FAMILIAS_JUDICIAIS,
+  FAMILIA_DESCRICAO,
+  FAMILIA_LABEL,
   FASES_JUDICIAIS,
   FASE_DESCRICAO,
   FASE_LABEL,
   STATUS_JUDICIAIS,
   STATUS_LABEL_JUDICIAL,
+  familiaDoBeneficio,
   faseDoStatus,
+  type FamiliaJudicial,
   type FaseJudicial,
 } from "@/lib/domain/processo"
 
@@ -410,12 +415,67 @@ function CartaoJudicial({
   )
 }
 
+/** Como as colunas se formam: pelo ponto da ação (fase) ou pelo tipo de caso (família). */
+export type AgrupamentoJudicial = "fase" | "familia"
+
+/**
+ * As colunas por família, no amarelo do time processual: o desenho do
+ * escritório pinta o quadro "Processos judiciais" com a cor de quem
+ * cuida dele. A fase continua com as cores de sempre.
+ */
+const TINTA_FAMILIA = {
+  barra: "bg-yellow-400",
+  texto: "text-yellow-800 dark:text-yellow-200",
+  fundo: "bg-yellow-50/70 dark:bg-yellow-950/20",
+}
+
+type Coluna = {
+  chave: string
+  titulo: string
+  descricao: string
+  tinta: { barra: string; texto: string; fundo: string }
+  lista: ItemJudicial[]
+  vazio: string
+}
+
+function colunasPorFase(itens: ItemJudicial[]): Coluna[] {
+  const porFase = Object.fromEntries(
+    FASES_JUDICIAIS.map((f) => [f, [] as ItemJudicial[]])
+  ) as Record<FaseJudicial, ItemJudicial[]>
+  for (const item of itens) porFase[faseDoStatus(item.status)].push(item)
+  return FASES_JUDICIAIS.map((fase) => ({
+    chave: fase,
+    titulo: FASE_LABEL[fase],
+    descricao: FASE_DESCRICAO[fase],
+    tinta: TINTA[fase],
+    lista: porFase[fase],
+    vazio: "Nenhuma ação nesta fase",
+  }))
+}
+
+function colunasPorFamilia(itens: ItemJudicial[]): Coluna[] {
+  const porFamilia = Object.fromEntries(
+    FAMILIAS_JUDICIAIS.map((f) => [f, [] as ItemJudicial[]])
+  ) as Record<FamiliaJudicial, ItemJudicial[]>
+  for (const item of itens) porFamilia[familiaDoBeneficio(item.beneficio)].push(item)
+  return FAMILIAS_JUDICIAIS.map((familia) => ({
+    chave: familia,
+    titulo: FAMILIA_LABEL[familia],
+    descricao: FAMILIA_DESCRICAO[familia],
+    tinta: TINTA_FAMILIA,
+    lista: porFamilia[familia],
+    vazio: "Nenhuma ação deste tipo",
+  }))
+}
+
 export function QuadroJudicial({
   itens,
+  agrupamento = "fase",
   onTrocarStatus,
   onRegistrarAndamento,
 }: {
   itens: ItemJudicial[]
+  agrupamento?: AgrupamentoJudicial
   onTrocarStatus: (processoId: string, status: string) => Promise<void>
   onRegistrarAndamento: (
     processoId: string,
@@ -423,82 +483,73 @@ export function QuadroJudicial({
     data?: string
   ) => Promise<void>
 }) {
-  const porFase = Object.fromEntries(
-    FASES_JUDICIAIS.map((f) => [f, [] as ItemJudicial[]])
-  ) as Record<FaseJudicial, ItemJudicial[]>
-
-  for (const item of itens) {
-    porFase[faseDoStatus(item.status)].push(item)
-  }
-
-  for (const fase of FASES_JUDICIAIS) {
-    porFase[fase].sort((a, b) => a.cliente.localeCompare(b.cliente))
-  }
+  const colunas = agrupamento === "familia" ? colunasPorFamilia(itens) : colunasPorFase(itens)
+  for (const c of colunas) c.lista.sort((a, b) => a.cliente.localeCompare(b.cliente))
 
   return (
-    <div className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-      {FASES_JUDICIAIS.map((fase) => {
-        const tinta = TINTA[fase]
-        const lista = porFase[fase]
+    <div
+      className={cn(
+        "grid items-start gap-3 sm:grid-cols-2",
+        agrupamento === "familia" ? "lg:grid-cols-4" : "lg:grid-cols-3 xl:grid-cols-5"
+      )}
+    >
+      {colunas.map(({ chave, titulo, descricao, tinta, lista, vazio }) => (
+        <section
+          key={chave}
+          className={cn(
+            "flex flex-col rounded-xl shadow-card ring-inset",
+            tinta.fundo
+          )}
+        >
+          <span
+            aria-hidden
+            className={cn("h-1.5 w-full shrink-0 rounded-t-xl", tinta.barra)}
+          />
 
-        return (
-          <section
-            key={fase}
-            className={cn(
-              "flex flex-col rounded-xl shadow-card ring-inset",
-              tinta.fundo
-            )}
-          >
-            <span
-              aria-hidden
-              className={cn("h-1.5 w-full shrink-0 rounded-t-xl", tinta.barra)}
-            />
-
-            <header className="px-3 py-2.5">
-              <div className="flex items-center gap-2">
-                <h3
-                  className={cn(
-                    "font-heading flex-1 truncate text-[13px] leading-tight font-bold tracking-wide uppercase",
-                    tinta.texto
-                  )}
-                >
-                  {FASE_LABEL[fase]}
-                </h3>
-                <span className="rounded-full bg-card px-2 py-0.5 text-xs font-bold tabular-nums shadow-card">
-                  {lista.length}
-                </span>
-              </div>
-              <p className="mt-0.5 text-xs leading-tight text-muted-foreground">
-                {FASE_DESCRICAO[fase]}
-              </p>
-            </header>
-
-            <div className="flex flex-col gap-2 px-2.5 pb-2.5">
-              {lista.map((item) => (
-                <CartaoJudicial
-                  key={item.id}
-                  item={item}
-                  onTrocarStatus={(s) => onTrocarStatus(item.id, s)}
-                  onRegistrarAndamento={(d, data) =>
-                    onRegistrarAndamento(item.id, d, data)
-                  }
-                />
-              ))}
-
-              {lista.length === 0 && (
-                <p className="flex items-center justify-center gap-1.5 py-4 text-center text-xs text-muted-foreground">
-                  {fase === "SENTENCA" ? (
-                    <Gavel size={12} />
-                  ) : (
-                    <Scale size={12} />
-                  )}
-                  Nenhuma ação nesta fase
-                </p>
-              )}
+          <header className="px-3 py-2.5">
+            <div className="flex items-center gap-2">
+              <h3
+                className={cn(
+                  "font-heading flex-1 truncate text-[13px] leading-tight font-bold tracking-wide uppercase",
+                  tinta.texto
+                )}
+              >
+                {titulo}
+              </h3>
+              <span className="rounded-full bg-card px-2 py-0.5 text-xs font-bold tabular-nums shadow-card">
+                {lista.length}
+              </span>
             </div>
-          </section>
-        )
-      })}
+            <p className="mt-0.5 text-xs leading-tight text-muted-foreground">
+              {descricao}
+            </p>
+          </header>
+
+          <div className="flex flex-col gap-2 px-2.5 pb-2.5">
+            {lista.map((item) => (
+              <CartaoJudicial
+                key={item.id}
+                item={item}
+                onTrocarStatus={(s) => onTrocarStatus(item.id, s)}
+                onRegistrarAndamento={(d, data) =>
+                  onRegistrarAndamento(item.id, d, data)
+                }
+              />
+            ))}
+
+            {lista.length === 0 && (
+              <p className="flex items-center justify-center gap-1.5 py-4 text-center text-xs text-muted-foreground">
+                {chave === "SENTENCA" ? (
+                  <Gavel size={12} />
+                ) : (
+                  <Scale size={12} />
+                )}
+                {vazio}
+              </p>
+            )}
+          </div>
+        </section>
+      ))}
     </div>
   )
 }

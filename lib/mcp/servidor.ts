@@ -69,7 +69,7 @@ function nomeDoLugar(setor: TimeTarefa, etapa: EtapaId | null) {
 }
 
 function texto(dados: unknown) {
-  return { content: [{ type: "text" as const, text: typeof dados === "string" ? dados : JSON.stringify(dados, null, 2) }] }
+  return { content: [{ type: "text" as const, text: typeof dados === "string" ? dados : JSON.stringify(dados) }] }
 }
 
 function falhou(mensagem: string) {

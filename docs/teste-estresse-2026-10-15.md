@@ -119,3 +119,36 @@ npx tsx scripts/teste-fluxo/estresse.ts 4000 40 16,48,96,192,384
 CHROMIUM=/opt/pw-browsers/chromium-1194/chrome-linux/chrome npx tsx scripts/teste-fluxo/cliques.ts 6 60 24
 ```
 Commits: `a283d86` (correção das Intimações), `fddafcc` (roteiros do estresse).
+
+## 6. Feito em 15/10 (madrugada) — o que entrou e o que mudou nos números
+
+Commit `794d6e6` (+ migration `20261015030000_tela_em_uma_ida.sql`, que o Zeca aplica no Supabase; sem ela o sistema segue pelo caminho antigo).
+
+| Item | Entrou | Antes → depois (mesma máquina de 2 CPUs) |
+|---|---|---|
+| P1 tela em uma ida | função `fluxo_tela(...)` + `lib/fluxo/tela.ts`; `GET /api/tarefas?abertas=1` usa-a (com `ids` e `desde`) | tela da lista 13 idas → **1**; 3,4 MB → 2,6 MB (3.600 cartões); banco 264 → 138 ms |
+| P2 nunca recarregar tudo | PATCH devolve a tarefa com partes; `usar-tarefas.ts` troca só o cartão; recarga pede só o que mudou (`desde`) | PATCH 18 idas → 4; recarga 2,6 MB → ~100 KB |
+| P3 cache da equipe | `lib/equipe.ts` (60 s por instância); auth, escritório, equipe, `/api/users` | 2–3 idas de `users` por pedido → 0 |
+| P4 conector | chave em cache 60 s, último uso 1×/5 min, `fluxoDisponivel` memorizado, `listar_tarefas`/`ver_tarefa` em uma ida | `mover_tarefa` 15 → 7 idas; `listar_tarefas` 15 idas/3,4 MB → 1 ida/109 KB; `ver_tarefa` 8 → 2 |
+| P5 menu sem prefetch | `prefetch={false}` no menu lateral e no cabeçalho | 19 pedidos por navegação → 0 |
+| P7 painel em uma ida | função `painel_resumo` + `app/(dashboard)/page.tsx` | 17 idas → 1; 91 → 14 ms de banco |
+| P8 janela por coluna | 60 cartões por coluna + "mostrar mais N" | tela com 1.089 cartões: 2,9 s → ~1 s (1.047 ms com 519 montados) |
+| P9 índices | `tarefas(data,id) where aberta`, `tarefas(updated_at)`, `comunicacoes_djen(tarefa_id)`, `tarefa_atribuicoes(tarefa_id, criada_em, fim_em)` | — |
+| P10 medir | `@vercel/speed-insights` (só na Vercel); `/api/saude` confere as funções novas | — |
+| Quebra 2 — login | `tentativas_login` + 429 a partir da 5ª senha errada em 15 min (e-mail ou endereço) | 60 senhas erradas: 5,9 s e sem bloqueio → 1,7 s e bloqueia na 6ª |
+| Quebra 3 — menu | `Flutuante` ignora rolagem nos primeiros 300 ms | — |
+
+**Mistura completa (rampa, 40 s por nível, 4.000 tarefas):**
+
+| Pessoas | ops/s antes → depois | clique p50 antes → depois | clique p95 | tela p50 |
+|---|---|---|---|---|
+| 16 | 21 → **34** | 584 → **516 ms** | 1.137 → 906 ms | 562 → 294 ms |
+| 48 | 17 → **56** | 2.183 → **752 ms** | 3.811 → 1.399 ms | 2.574 → 417 ms |
+| 96 | 14 → 38 | 4.207 → 2.133 ms | 7.338 → 4.550 ms | 6.124 → 1.250 ms |
+| 192 | 12 → 20 | 6.347 → 5.095 ms | 10.025 → 10.064 ms | 11.241 → 3.761 ms |
+
+Média de idas ao banco por operação: **5,9 → 2,2**. Teto de conforto nesta máquina: 48 → 96 pessoas. Regressão do fluxo (`escala.ts`): 277 verificações, 0 falhas, 102 → 140 ops/s, leitura da tela 242 → 156 ms. Zero 5xx em todas as rodadas.
+
+Lembrete: aqui cada ida ao banco custa ~2 ms (tudo na mesma máquina); na Vercel + Supabase cada ida custa de 5 a 120 ms conforme a região — por isso o corte de 13 → 1 idas pesa muito mais em produção do que nestes números. P6 (fixar a região da função na do Supabase) continua pendente de conferir a região do projeto.
+
+**Não entrou (de propósito):** descrição cortada na lista — a agenda edita a tarefa a partir da lista e gravaria o texto cortado. Fica para quando a edição ler a tarefa inteira antes.

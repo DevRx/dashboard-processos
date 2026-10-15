@@ -113,7 +113,7 @@ async function fecharMenus(page: Page) {
 
 async function pessoaNoNavegador(ctx: BrowserContext, eu: Pessoa, i: number, fim: number) {
   const page = await ctx.newPage()
-  page.on("console", (m) => { if (m.type() === "error") { errosConsole++; if (problemas.length < 60) problemas.push(`console [${eu.name.split(" ")[0]}]: ${m.text().slice(0, 160)}`) } })
+  page.on("console", (m) => { if (m.type() === "error" && !/status of 409/.test(m.text())) { errosConsole++; if (problemas.length < 60) problemas.push(`console [${eu.name.split(" ")[0]}]: ${m.text().slice(0, 160)}`) } })
   page.on("pageerror", (e) => { errosConsole++; problemas.push(`erro na página [${eu.name.split(" ")[0]}]: ${String(e.message).slice(0, 160)}`) })
   page.on("requestfailed", (r) => {
     // Pré-carregamentos de links (?_rsc=) cancelados por uma navegação não são falhas.

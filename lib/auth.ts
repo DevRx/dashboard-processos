@@ -1,8 +1,7 @@
 import "server-only"
 import { redirect } from "next/navigation"
 import { getSession } from "@/lib/session"
-import { supabase } from "@/lib/supabase/server"
-import { toCamelCase } from "@/lib/utils"
+import { membroDaEquipe } from "@/lib/equipe"
 import { UserRole } from "@/lib/data"
 
 export type CurrentUser = {
@@ -16,17 +15,13 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   const session = await getSession()
   if (!session?.userId) return null
 
-  const { data: user, error } = await supabase
-    .from("users")
-    .select("id, name, email, role")
-    .eq("id", session.userId)
-    .maybeSingle()
+  // O papel que vale é o do banco, não o da sessão — lido pelo cache da
+  // equipe (lib/equipe.ts): uma ida ao banco por minuto, não por pedido.
+  // Um papel trocado passa a valer em até um minuto.
+  const user = await membroDaEquipe(session.userId).catch(() => null)
+  if (!user) return null
 
-  if (error || !user) {
-    return null
-  }
-
-  return toCamelCase(user) as CurrentUser
+  return { id: user.id, name: user.name, email: user.email, role: user.role as UserRole }
 }
 
 export async function requireAuth(): Promise<CurrentUser> {

@@ -6,6 +6,7 @@ import { toCamelCase, toSnakeCase } from "@/lib/utils"
 import { idsDoEscritorio } from "@/lib/escritorio"
 import { etapaDaTarefa } from "@/lib/domain/tarefa"
 import { faltaMigration, fluxoDisponivel, garantirNoFluxo } from "@/lib/fluxo/servidor"
+import { tarefaComoFicou } from "@/lib/tarefas/servico"
 
 export async function GET(
   _request: NextRequest,
@@ -194,7 +195,10 @@ export async function PATCH(
       }
     }
 
-    return NextResponse.json({ tarefa: toCamelCase(tarefa) }, { status: 200 })
+    // Volta com as partes do fluxo: a tela troca só este cartão, em vez
+    // de recarregar a lista inteira depois de cada edição.
+    const completa = await tarefaComoFicou(id).catch(() => null)
+    return NextResponse.json({ tarefa: completa ?? toCamelCase(tarefa) }, { status: 200 })
   } catch (error) {
     console.error("Patch tarefa error:", error)
     return NextResponse.json(

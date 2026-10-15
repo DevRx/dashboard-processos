@@ -43,10 +43,115 @@ function primeiro<T>(valor: Junta<T>): T | null {
 
 const ZERADO = (): AtrasadasPorTime => ({ VERMELHO: 0, AZUL: 0, AMARELO: 0, ROSA: 0, SEM: 0 })
 
-export default async function HomePage() {
-  const session = await getSession()
-  const user = await getCurrentUser()
+type Painel = {
+  processosAtivos: number
+  totalClientes: number
+  tarefasHoje: number
+  tarefasAtrasadas: number
+  processosRecentes: ProcessoRecente[]
+  porStatus: Record<string, number>
+  beneficiosAdministrativo: FatiaBeneficio[]
+  beneficiosJudicial: FatiaBeneficio[]
+  urgentes: ItemUrgente[]
+  totalUrgentes: number
+  atrasadasPorTime: AtrasadasPorTime
+  hojePorTime: AtrasadasPorTime
+  agendaDeHoje: ItemAgendaDoDia[]
+}
 
+const VAZIO = (): Painel => ({
+  processosAtivos: 0,
+  totalClientes: 0,
+  tarefasHoje: 0,
+  tarefasAtrasadas: 0,
+  processosRecentes: [],
+  porStatus: {},
+  beneficiosAdministrativo: [],
+  beneficiosJudicial: [],
+  urgentes: [],
+  totalUrgentes: 0,
+  atrasadasPorTime: ZERADO(),
+  hojePorTime: ZERADO(),
+  agendaDeHoje: [],
+})
+
+/** As fatias por família, na ordem do catálogo — a mesma posição nas duas pizzas. */
+function fatias(mapa: Map<string, number>): FatiaBeneficio[] {
+  return CATEGORIAS_ADMINISTRATIVO.map((categoria) => ({ categoria, total: mapa.get(categoria) ?? 0 })).filter((f) => f.total > 0)
+}
+
+function porTime(contagem: Record<string, number> | null | undefined): AtrasadasPorTime {
+  const r = ZERADO()
+  for (const [setor, n] of Object.entries(contagem ?? {})) {
+    r[isTimeTarefa(setor) ? setor : "SEM"] += Number(n) || 0
+  }
+  return r
+}
+
+/**
+ * O painel em uma ida ao banco (função `painel_resumo`, migration
+ * 20261015030000). Antes eram 17 consultas para somar meia dúzia de
+ * números. Devolve `null` enquanto a função não existe no banco.
+ */
+async function carregarPainelRpc(hoje: string): Promise<Painel | null> {
+  const { data, error } = await supabase.rpc("painel_resumo", { p_usuarios: await idsDoEscritorio(), p_hoje: hoje })
+  if (error) {
+    if (!/painel_resumo|PGRST202|42883/.test(`${error.code} ${error.message}`)) console.error("Painel:", error.message)
+    return null
+  }
+  const r = (data ?? {}) as {
+    processosAtivos?: number
+    totalClientes?: number
+    tarefasHoje?: number
+    tarefasAtrasadas?: number
+    atrasadasPorTime?: Record<string, number>
+    totalUrgentes?: number
+    urgentes?: { id: string; titulo: string; data: string; hora: string | null; setor: string | null; responsavel: string | null }[]
+    hojePorTime?: Record<string, number>
+    agendaDeHoje?: { id: string; titulo: string; hora: string | null; setor: string | null; pasta: string | null; tipo: string | null; responsavel: string | null; deIntimacao: boolean }[]
+    processosRecentes?: { id: string; clienteId: string; clienteNome: string | null; beneficio: string; status: string; dataEntrada: string | null }[]
+    porStatus?: Record<string, number>
+    porBeneficio?: { esfera: string | null; beneficio: string; total: number }[]
+  }
+
+  const contagem = { ADMINISTRATIVO: new Map<string, number>(), JUDICIAL: new Map<string, number>() }
+  for (const p of r.porBeneficio ?? []) {
+    const esfera = p.esfera === "JUDICIAL" ? "JUDICIAL" : "ADMINISTRATIVO"
+    const categoria = categorizarBeneficio(p.beneficio)
+    contagem[esfera].set(categoria, (contagem[esfera].get(categoria) ?? 0) + Number(p.total))
+  }
+
+  const painel = VAZIO()
+  painel.processosAtivos = Number(r.processosAtivos ?? 0)
+  painel.totalClientes = Number(r.totalClientes ?? 0)
+  painel.tarefasHoje = Number(r.tarefasHoje ?? 0)
+  painel.tarefasAtrasadas = Number(r.tarefasAtrasadas ?? 0)
+  painel.atrasadasPorTime = porTime(r.atrasadasPorTime)
+  painel.hojePorTime = porTime(r.hojePorTime)
+  painel.totalUrgentes = Number(r.totalUrgentes ?? 0)
+  painel.urgentes = (r.urgentes ?? []).map((t) => ({ id: String(t.id), titulo: t.titulo, data: String(t.data), hora: t.hora ?? null, setor: t.setor ?? null, responsavel: t.responsavel ?? null }))
+  painel.agendaDeHoje = (r.agendaDeHoje ?? [])
+    .flatMap((t) => {
+      const categoria = categoriaNaAgenda({ titulo: t.titulo, pasta: t.pasta, tipo: t.tipo, deIntimacao: t.deIntimacao })
+      return categoria ? [{ id: String(t.id), titulo: t.titulo, hora: t.hora ?? null, categoria, responsavel: t.responsavel ?? null }] : []
+    })
+    .sort((a, b) => (a.hora ?? "99").localeCompare(b.hora ?? "99") || CATEGORIAS_AGENDA.indexOf(a.categoria) - CATEGORIAS_AGENDA.indexOf(b.categoria))
+  painel.processosRecentes = (r.processosRecentes ?? []).map((p) => ({
+    id: p.id,
+    clienteId: p.clienteId,
+    clienteNome: p.clienteNome || "—",
+    beneficio: p.beneficio,
+    status: p.status as ProcessoRecente["status"],
+    dataEntrada: p.dataEntrada,
+  }))
+  painel.porStatus = Object.fromEntries(Object.entries(r.porStatus ?? {}).map(([k, v]) => [k, Number(v)]))
+  painel.beneficiosAdministrativo = fatias(contagem.ADMINISTRATIVO)
+  painel.beneficiosJudicial = fatias(contagem.JUDICIAL)
+  return painel
+}
+
+/** O caminho de antes da migration: uma consulta por número. */
+async function carregarPainelAntigo(hoje: string): Promise<Painel> {
   let processosAtivos = 0
   let totalClientes = 0
   let tarefasHoje = 0
@@ -60,9 +165,7 @@ export default async function HomePage() {
   const atrasadasPorTime = ZERADO()
   const hojePorTime = ZERADO()
   let agendaDeHoje: ItemAgendaDoDia[] = []
-  const hoje = hojeEmBrasilia()
-
-  if (user) {
+  {
     const escritorio = await idsDoEscritorio()
     const ABERTA = "(CONCLUIDA,CANCELADA)"
 
@@ -240,12 +343,6 @@ export default async function HomePage() {
 
     // A ordem é a do catálogo, não a da contagem: assim a mesma família
     // fica na mesma posição nas duas pizzas.
-    const fatias = (mapa: Map<string, number>): FatiaBeneficio[] =>
-      CATEGORIAS_ADMINISTRATIVO.map((categoria) => ({
-        categoria,
-        total: mapa.get(categoria) ?? 0,
-      })).filter((f) => f.total > 0)
-
     beneficiosAdministrativo = fatias(contagem.ADMINISTRATIVO)
     beneficiosJudicial = fatias(contagem.JUDICIAL)
 
@@ -269,7 +366,45 @@ export default async function HomePage() {
         dataEntrada: p.dataEntrada,
       }
     })
+    }
+  return {
+    processosAtivos,
+    totalClientes,
+    tarefasHoje,
+    tarefasAtrasadas,
+    processosRecentes,
+    porStatus,
+    beneficiosAdministrativo,
+    beneficiosJudicial,
+    urgentes,
+    totalUrgentes,
+    atrasadasPorTime,
+    hojePorTime,
+    agendaDeHoje,
   }
+}
+
+export default async function HomePage() {
+  const session = await getSession()
+  const user = await getCurrentUser()
+  const hoje = hojeEmBrasilia()
+
+  const painel = user ? ((await carregarPainelRpc(hoje)) ?? (await carregarPainelAntigo(hoje))) : VAZIO()
+  const {
+    processosAtivos,
+    totalClientes,
+    tarefasHoje,
+    tarefasAtrasadas,
+    processosRecentes,
+    porStatus,
+    beneficiosAdministrativo,
+    beneficiosJudicial,
+    urgentes,
+    totalUrgentes,
+    atrasadasPorTime,
+    hojePorTime,
+    agendaDeHoje,
+  } = painel
 
   return (
     <Pagina titulo="Início" subtitulo="Visão geral do escritório">

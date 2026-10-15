@@ -221,7 +221,16 @@ async function preparar() {
 type Op = { nome: string; tipo: "tela" | "clique"; peso: number; quem?: Pessoa; fn: (quem: Pessoa) => Promise<unknown> }
 
 const LISTA = "/api/tarefas?abertas=1&vinculos=1&atribuicoes=1"
-const recarregar = (quem: Pessoa) => chamar("tela lista (recarga)", quem, "GET", LISTA)
+
+/**
+ * A recarga que a tela faz depois de uma ação recusada: desde 15/10 ela
+ * pede só o que mudou (`desde` = o `agora` da última leitura). Sem a
+ * função no banco, o servidor manda tudo, como antes — o teste mede o
+ * que o servidor devolver.
+ */
+let agoraDaTela: string | null = null
+const recarregar = (quem: Pessoa) =>
+  chamar(agoraDaTela ? "tela lista (só mudanças)" : "tela lista (recarga)", quem, "GET", agoraDaTela ? `${LISTA}&desde=${encodeURIComponent(agoraDaTela)}` : LISTA)
 
 /**
  * Abrir a tela: além de medir, de tempos em tempos atualiza o estado
@@ -233,6 +242,7 @@ const recarregar = (quem: Pessoa) => chamar("tela lista (recarga)", quem, "GET",
 let ultimaAtualizacao = 0
 async function abrirTela(quem: Pessoa) {
   const r = await chamar("tela lista", quem, "GET", LISTA)
+  if (r.status === 200 && typeof r.corpo.agora === "string") agoraDaTela = r.corpo.agora
   if (r.status === 200 && Date.now() - ultimaAtualizacao > 5000) {
     ultimaAtualizacao = Date.now()
     const lista = (r.corpo.tarefas ?? []) as TarefaApi[]
@@ -251,7 +261,8 @@ async function abrirTela(quem: Pessoa) {
 
 const OPERACOES: Op[] = [
   // ── Telas ──
-  { nome: "tela lista", tipo: "tela", peso: 14, fn: abrirTela },
+  { nome: "tela lista", tipo: "tela", peso: 5, fn: abrirTela },
+  { nome: "tela lista (só mudanças)", tipo: "tela", peso: 9, fn: (q) => recarregar(q) },
   { nome: "tela agenda", tipo: "tela", peso: 3, fn: (q) => chamar("tela agenda", q, "GET", "/api/tarefas?abertas=1&vinculos=1") },
   { nome: "tela equipe", tipo: "tela", peso: 4, fn: (q) => chamar("tela equipe", q, "GET", "/api/users") },
   { nome: "tela eu", tipo: "tela", peso: 4, fn: (q) => chamar("tela eu", q, "GET", "/api/auth/me") },
@@ -345,8 +356,11 @@ const OPERACOES: Op[] = [
         : y < 0.5 ? { setor: sortear(TIMES_TAREFA) }
         : y < 0.75 ? { responsavelId: acaso() < 0.2 ? null : sortear(EQUIPE).id }
         : { prioridade: sortear(["BAIXA", "MEDIA", "ALTA", "URGENTE"]) }
-      await chamar("editar por fora (PATCH)", q, "PATCH", `/api/tarefas/${t.id}`, campos)
-      await recarregar(q) // a tela recarrega depois de todo PATCH (usar-tarefas.ts)
+      const r = await chamar("editar por fora (PATCH)", q, "PATCH", `/api/tarefas/${t.id}`, campos)
+      // A tela troca o cartão pela resposta (usar-tarefas.ts); só sem partes ela recarrega.
+      const nova = r.corpo.tarefa as TarefaApi | undefined
+      if (r.status === 200 && Array.isArray(nova?.atribuicoes)) lembrar(r, t.id)
+      else await recarregar(q)
     },
   },
   {

@@ -1,6 +1,12 @@
 "use client"
 
 import Link from "next/link"
+
+// Os links do menu não pré-carregam (prefetch={false}): toda tela aqui é
+// dinâmica, e cada link à vista pedia ao servidor a própria rota — eram
+// 19 pedidos por navegação, 95% cancelados antes de terminar (teste de
+// 15/10/2026). A casca de uma tela leva 15–90 ms para chegar; o que
+// demora é o JSON que ela pede depois, e isso o prefetch não adianta.
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import {
@@ -227,6 +233,7 @@ function ItemTime({ item, trilho, pathname, onNavegar }: { item: MenuItem; trilh
       ) : null}
       <Link
         href={item.href}
+        prefetch={false}
         onClick={onNavegar}
         aria-current={dentro ? "page" : undefined}
         title={trilho ? `Time ${item.name}` : undefined}
@@ -318,6 +325,7 @@ function ItemNavegacao({
   ) : (
     <Link
       href={item.href}
+      prefetch={false}
       onClick={() => {
         if (temFilhos) setAberto(true)
         onNavegar?.()
@@ -422,7 +430,7 @@ function BarraInferior({ onAbrirMenu, menuAberto }: { onAbrirMenu: () => void; m
         const Icone = a.icon
         const ativo = ativoEm(a.href, a.exato)
         return (
-          <Link key={a.href} href={a.href} aria-current={ativo ? "page" : undefined} className={classe(ativo)}>
+          <Link key={a.href} href={a.href} prefetch={false} aria-current={ativo ? "page" : undefined} className={classe(ativo)}>
             <Icone size={20} strokeWidth={ativo ? 2.1 : 1.8} className={ativo ? "text-sidebar-primary" : undefined} />
             {a.name}
           </Link>

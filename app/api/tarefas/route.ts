@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { toCamelCase } from "@/lib/utils"
 import { idsDoEscritorio } from "@/lib/escritorio"
 import { atribuicoesParaTela, fluxoDisponivel, tarefasDeIntimacao } from "@/lib/fluxo/servidor"
+import { telaDoFluxo } from "@/lib/fluxo/tela"
 import { criarTarefa } from "@/lib/tarefas/servico"
 
 export async function GET(request: NextRequest) {
@@ -19,6 +20,19 @@ export async function GET(request: NextRequest) {
     // são milhares de concluídas, e mandá-las para a tela só para ela
     // jogar fora é o que deixava o quadro lento.
     const soAbertas = searchParams.get("abertas") === "1"
+
+    // O caminho rápido: as abertas (ou só o que mudou desde `desde`, ou
+    // só os `ids` pedidos) numa ida ao banco, já com partes, vínculo
+    // com o DJEN, responsável e processo — ver lib/fluxo/tela.ts. Sem
+    // a migration, a função devolve null e vale o caminho de sempre.
+    const ids = (searchParams.get("ids") ?? "").split(",").filter(Boolean)
+    if (!processoId && (soAbertas || ids.length)) {
+      const tela = await telaDoFluxo({ ids, desde: searchParams.get("desde") })
+      if (tela) {
+        return NextResponse.json({ tarefas: tela.tarefas, agora: tela.agora, fluxo: { disponivel: true } }, { status: 200 })
+      }
+    }
+
     const escritorio = await idsDoEscritorio()
 
     // O Supabase devolve no máximo mil linhas por consulta, em silêncio.

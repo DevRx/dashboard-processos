@@ -2,6 +2,7 @@ import "server-only"
 import { cache } from "react"
 
 import { supabase } from "@/lib/supabase/server"
+import { equipe } from "@/lib/equipe"
 import {
   linhasPelaPasta,
   type Atribuicao,
@@ -30,10 +31,20 @@ export function faltaMigration(erro?: { code?: string | null; message?: string |
 export const MENSAGEM_SEM_MIGRATION =
   "O fluxo novo ainda não está ligado no banco: falta rodar a migration 20261013200000_fluxo_atribuicoes.sql no Supabase."
 
-/** A tabela do fluxo existe? Uma consulta por requisição. */
+/**
+ * A tabela do fluxo existe? Uma migration não se desfaz: depois do
+ * primeiro "sim" a resposta fica na memória da instância e a pergunta
+ * deixa de custar uma ida ao banco em toda ação. Um "não" é perguntado
+ * de novo a cada requisição, para a migration valer assim que rodar.
+ */
+let fluxoJaVisto = false
 export const fluxoDisponivel = cache(async (): Promise<boolean> => {
+  if (fluxoJaVisto) return true
   const { error } = await supabase.from("tarefa_atribuicoes").select("id").limit(1)
-  if (!error) return true
+  if (!error) {
+    fluxoJaVisto = true
+    return true
+  }
   if (!faltaMigration(error)) console.error("Fluxo — verificar tabela:", error.message)
   return false
 })
@@ -153,12 +164,12 @@ export async function tarefasDeIntimacao(escritorio: string[]): Promise<Set<stri
 
 /** A equipe do escritório, para ligar os nomes das etapas às contas. */
 export const usuariosDoFluxo = cache(async (): Promise<UsuarioDoFluxo[]> => {
-  const { data, error } = await supabase.from("users").select("id, name, email")
-  if (error) {
-    console.error("Fluxo — equipe:", error.message)
+  try {
+    return (await equipe()).map(({ id, name, email }) => ({ id, name, email }))
+  } catch (e) {
+    console.error("Fluxo — equipe:", (e as Error).message)
     return []
   }
-  return (data ?? []) as UsuarioDoFluxo[]
 })
 
 /** Uma linha para a função do banco: o formato que ela lê do JSON. */

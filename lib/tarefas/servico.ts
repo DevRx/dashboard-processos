@@ -24,6 +24,7 @@ import {
   tarefasDeIntimacao,
   usuariosDoFluxo,
 } from "@/lib/fluxo/servidor"
+import { tarefaDaTela, telaDoFluxo, type FiltrosTela } from "@/lib/fluxo/tela"
 
 /**
  * O que as rotas de tarefa fazem, separado de quem pediu e de como.
@@ -134,9 +135,31 @@ export async function criarTarefa(
 // ── Ações do fluxo ────────────────────────────────────────
 
 /** Esta tarefa foi aberta por uma intimação do DJEN? */
-async function nasceuDeIntimacao(tarefaId: string) {
+export async function nasceuDeIntimacao(tarefaId: string) {
   const { data } = await supabase.from("comunicacoes_djen").select("id").eq("tarefa_id", tarefaId).limit(1)
   return Boolean(data?.length)
+}
+
+/**
+ * A tarefa como ficou depois de uma mudança, com as partes do fluxo —
+ * é o que a tela usa para trocar o cartão sem recarregar a lista. Uma
+ * ida ao banco com a função da tela; sem ela, duas, como antes.
+ */
+export async function tarefaComoFicou(id: string): Promise<Record<string, unknown>> {
+  const pronta = await tarefaDaTela(id)
+  if (pronta) return pronta
+
+  const { data: depois, error } = await supabase
+    .from("tarefas")
+    .select("*, processo:processos(beneficio, numero), responsavel:users!tarefas_responsavel_id_fkey(id, name)")
+    .eq("id", id)
+    .maybeSingle()
+  if (error) throw error
+
+  const resposta = toCamelCase(depois ?? {}) as Record<string, unknown>
+  resposta.atribuicoes = await atribuicoesDaTarefa(id).catch(() => [])
+  resposta.deIntimacao = await nasceuDeIntimacao(id)
+  return resposta
 }
 
 type ErroBanco = { code?: string | null; message?: string | null; details?: string | null }
@@ -321,16 +344,7 @@ export async function agirNoFluxo(user: CurrentUser, id: string, body: unknown):
       }
     }
 
-    const { data: depois, error: erroDepois } = await supabase
-      .from("tarefas")
-      .select("*, processo:processos(beneficio, numero), responsavel:users!tarefas_responsavel_id_fkey(id, name)")
-      .eq("id", id)
-      .maybeSingle()
-    if (erroDepois) throw erroDepois
-
-    const resposta = toCamelCase(depois ?? {}) as Record<string, unknown>
-    resposta.atribuicoes = await atribuicoesDaTarefa(id)
-    return { status: 200, corpo: { efeito, tarefa: resposta } }
+    return { status: 200, corpo: { efeito, tarefa: await tarefaComoFicou(id) } }
   } catch (falha) {
     const e = falha as ErroBanco
     if (faltaMigration(e)) return erro(503, MENSAGEM_SEM_MIGRATION)
@@ -431,7 +445,11 @@ export async function abrirDuvida(user: CurrentUser, id: string, body: unknown):
  * gravadas, ou nenhuma — quem lê calcula pela pasta) e com a marca de
  * que nasceu de intimação. É o que as telas dos times recebem.
  */
-export async function tarefasAbertasComFluxo(): Promise<Record<string, unknown>[]> {
+export async function tarefasAbertasComFluxo(filtros: FiltrosTela = {}): Promise<Record<string, unknown>[]> {
+  // Numa ida só, já filtrado no banco, quando a função existe.
+  const tela = await telaDoFluxo(filtros)
+  if (tela) return tela.tarefas
+
   const escritorio = await idsDoEscritorio()
   const PAGINA = 1000
   const linhas: Record<string, unknown>[] = []

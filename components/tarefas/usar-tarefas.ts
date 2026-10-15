@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import type { Atribuicao } from "@/lib/domain/tarefa"
 import type { Tarefa, Usuario } from "./cartao-tarefa"
@@ -26,26 +26,53 @@ export type ResultadoAcao = { ok: true } | { ok: false; status: number; erro: st
  * devolveu. Se o banco recusar (alguém mexeu antes), a lista inteira é
  * recarregada: a tela nunca mostra o que o banco não tem.
  */
+const LISTA = "/api/tarefas?abertas=1&vinculos=1&atribuicoes=1"
+
 export function useTarefasDoTime() {
   const [tarefas, setTarefas] = useState<TarefaDoTime[]>([])
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState<string | null>(null)
   const [fluxoLigado, setFluxoLigado] = useState(true)
+  // O instante da última leitura, pelo relógio do banco: a próxima
+  // recarga pede só o que mudou desde então.
+  const desde = useRef<string | null>(null)
+
+  /**
+   * Aplica uma lista de tarefas sobre a tela: as que fecharam saem, as
+   * outras entram ou são trocadas. É o que uma recarga "só o que mudou"
+   * devolve — e também o que a lista inteira devolve, quando `tudo`.
+   */
+  const aplicar = useCallback((lista: TarefaDoTime[], tudo: boolean) => {
+    setTarefas((atuais) => {
+      if (tudo) return lista.filter((t) => t.status !== "CONCLUIDA" && t.status !== "CANCELADA")
+      const porId = new Map(atuais.map((t) => [t.id, t]))
+      for (const t of lista) {
+        if (t.status === "CONCLUIDA" || t.status === "CANCELADA") porId.delete(t.id)
+        else porId.set(t.id, { ...(porId.get(t.id) ?? {}), ...t })
+      }
+      return [...porId.values()]
+    })
+  }, [])
 
   const buscar = useCallback(
-    () =>
-      fetch("/api/tarefas?abertas=1&vinculos=1&atribuicoes=1")
+    (soMudancas = false) => {
+      const caminho = soMudancas && desde.current ? `${LISTA}&desde=${encodeURIComponent(desde.current)}` : LISTA
+      return fetch(caminho)
         .then((r) => {
           if (!r.ok) throw new Error(String(r.status))
           return r.json()
         })
         .then((d) => {
-          setTarefas(d.tarefas ?? [])
+          // Sem `agora` o servidor seguiu o caminho antigo e mandou tudo.
+          const parcial = Boolean(soMudancas && desde.current && d.agora)
+          aplicar(d.tarefas ?? [], !parcial)
+          desde.current = d.agora ?? null
           setFluxoLigado(d.fluxo?.disponivel !== false)
           setErro(null)
-        }),
-    []
+        })
+    },
+    [aplicar]
   )
 
   useEffect(() => {
@@ -58,8 +85,9 @@ export function useTarefasDoTime() {
       .finally(() => setCarregando(false))
   }, [buscar])
 
+  /** Atualiza a tela com o que mudou desde a última leitura — poucas linhas, não a lista inteira. */
   const recarregar = useCallback(() => {
-    buscar().catch(() => setErro("Não foi possível atualizar as tarefas. Recarregue a página."))
+    buscar(true).catch(() => setErro("Não foi possível atualizar as tarefas. Recarregue a página."))
   }, [buscar])
 
   const trocar = useCallback((nova: TarefaDoTime) => {
@@ -80,12 +108,16 @@ export function useTarefasDoTime() {
         body: JSON.stringify(campos),
       }).catch(() => null)
 
-      // Mexer na tarefa mexe nas partes (o banco traduz): a lista volta
-      // do servidor para mostrar como ficou.
-      recarregar()
+      // Mexer na tarefa mexe nas partes (o banco traduz). O servidor
+      // devolve a tarefa como ficou, com as partes: só este cartão é
+      // trocado. Se a resposta vier sem elas, a tela pede o que mudou.
+      const json = r ? await r.json().catch(() => ({})) : {}
+      const nova = json.tarefa as TarefaDoTime | undefined
+      if (r?.ok && nova && Array.isArray(nova.atribuicoes)) trocar(nova)
+      else recarregar()
       return Boolean(r?.ok)
     },
-    [recarregar]
+    [recarregar, trocar]
   )
 
   const agir = useCallback(

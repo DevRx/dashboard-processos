@@ -1,6 +1,6 @@
 import "server-only"
 import { cache } from "react"
-import { supabase } from "@/lib/supabase/server"
+import { equipe } from "@/lib/equipe"
 
 /**
  * O dono do dado é o escritório, não quem digitou.
@@ -18,19 +18,16 @@ import { supabase } from "@/lib/supabase/server"
  * mais de um escritório no mesmo banco, esta função é o único lugar a
  * mudar.
  *
- * `cache` da React deduplica a consulta dentro da mesma requisição: a
- * página inicial sozinha faz seis consultas escopadas, e seria um
- * desperdício perguntar seis vezes quem trabalha aqui.
+ * A lista vem do cache da equipe (lib/equipe.ts), lido do banco uma
+ * vez por minuto por instância — antes era uma consulta por pedido.
  */
 export const idsDoEscritorio = cache(async (): Promise<string[]> => {
-  const { data, error } = await supabase.from("users").select("id")
-
-  if (error) {
+  try {
+    return (await equipe()).map((u) => u.id)
+  } catch (e) {
     // Lista vazia é o lado seguro do erro: a consulta não acha nada,
     // em vez de deixar de filtrar e achar tudo.
-    console.error("Escopo do escritório:", error.message)
+    console.error("Escopo do escritório:", (e as Error).message)
     return []
   }
-
-  return (data ?? []).map((u) => u.id as string)
 })

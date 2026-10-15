@@ -586,3 +586,16 @@ model Configuracao {
 
   @@map("configuracoes")
 }
+
+/// Senhas erradas no login (migration 20261015030000): a partir da 5ª em
+/// 15 minutos, por e-mail ou por endereço, o login responde 429.
+model TentativaLogin {
+  id     BigInt   @id @default(autoincrement())
+  email  String
+  ip     String?
+  quando DateTime @default(now())
+
+  @@index([email, quando])
+  @@index([ip, quando])
+  @@map("tentativas_login")
+}

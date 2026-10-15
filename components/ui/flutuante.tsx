@@ -63,8 +63,13 @@ export function Flutuante({
         ancora.current?.focus()
       }
     }
+    // Rolagem que ainda está assentando no instante do clique (trackpad
+    // com inércia, a coluna terminando de rolar até o cartão) não é a
+    // pessoa indo embora: nos primeiros 300 ms o menu fica.
+    const abriuEm = Date.now()
     const rolou = (e: Event) => {
       if (painel.current?.contains(e.target as Node)) return
+      if (Date.now() - abriuEm < 300) return
       onFechar()
     }
     document.addEventListener("mousedown", fora)

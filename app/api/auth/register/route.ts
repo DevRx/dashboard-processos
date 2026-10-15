@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { supabase } from "@/lib/supabase/server"
+import { esquecerEquipe } from "@/lib/equipe"
 import { getCurrentUser } from "@/lib/auth"
 import { RegisterSchema } from "@/lib/validators"
 
@@ -94,6 +95,7 @@ export async function POST(request: NextRequest) {
       })
       .select("id, name, email, role")
       .single()
+    esquecerEquipe()
 
     if (error || !user) {
       // O índice único do e-mail é quem decide de verdade: entre a

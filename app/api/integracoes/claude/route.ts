@@ -4,8 +4,9 @@ import bcrypt from "bcryptjs"
 import { z } from "zod"
 
 import { getCurrentUser } from "@/lib/auth"
-import { novaChave } from "@/lib/chaves"
+import { esquecerChaves, novaChave } from "@/lib/chaves"
 import { supabase } from "@/lib/supabase/server"
+import { esquecerEquipe } from "@/lib/equipe"
 
 /**
  * Configurações › Conectar o Claude — só o administrador.
@@ -111,6 +112,7 @@ export async function POST(request: NextRequest) {
       .update({ revogada_em: new Date().toISOString() })
       .eq("id", pedido.data.id)
       .is("revogada_em", null)
+    esquecerChaves()
     if (error) {
       if (semTabela(error)) return NextResponse.json({ error: MENSAGEM_SEM_TABELA }, { status: 503 })
       console.error("Revogar chave:", error.message)
@@ -143,6 +145,7 @@ export async function POST(request: NextRequest) {
     }
     conta = data
     contaCriada = true
+    esquecerEquipe()
   }
 
   const { chave, hash, prefixo } = novaChave()

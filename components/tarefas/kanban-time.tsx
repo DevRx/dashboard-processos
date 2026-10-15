@@ -113,6 +113,10 @@ function primeiroNome(nome?: string | null) {
   return (nome ?? "").trim().split(/\s+/)[0] || "Sem nome"
 }
 
+
+/** Cartões montados por coluna antes do "mostrar mais" (teste de 15/10: o tempo até a tela aparecer cresce com os cartões). */
+const JANELA_DA_COLUNA = 60
+
 // ── Avatares dos responsáveis ─────────────────────────────
 
 function Pessoas({ grupo, usuarios, eu }: { grupo: Grupo; usuarios: Usuario[]; eu?: string }) {
@@ -821,6 +825,10 @@ export function KanbanTime({
   const termos = termosDaBusca(useDeferredValue(busca))
   const [aberta, setAberta] = useState<TarefaDoTime | null>(null)
   const [novaEm, setNovaEm] = useState<string | null>(null)
+  // Janela por coluna: uma coluna com 400 cartões não é lida, é rolada.
+  // A tela monta os primeiros e oferece "mostrar mais"; a busca e os
+  // filtros continuam valendo sobre todos (o filtro é antes da janela).
+  const [mostrando, setMostrando] = useState<Record<string, number>>({})
   const [arrastando, setArrastando] = useState<string | null>(null)
   const [alvo, setAlvo] = useState<string | null>(null)
   const [aviso, setAviso] = useState<{ texto: string; desfazer?: () => void; erro?: boolean } | null>(null)
@@ -1182,7 +1190,7 @@ export function KanbanTime({
                     />
                   ) : null}
 
-                  {lista.map((c) => (
+                  {lista.slice(0, mostrando[coluna.chave] ?? JANELA_DA_COLUNA).map((c) => (
                     <CartaoKanban
                       key={c.grupo.chave}
                       cartao={c}
@@ -1199,6 +1207,16 @@ export function KanbanTime({
                       onAbrir={() => setAberta(c.tarefa)}
                     />
                   ))}
+
+                  {lista.length > (mostrando[coluna.chave] ?? JANELA_DA_COLUNA) ? (
+                    <button
+                      type="button"
+                      onClick={() => setMostrando((m) => ({ ...m, [coluna.chave]: (m[coluna.chave] ?? JANELA_DA_COLUNA) + JANELA_DA_COLUNA }))}
+                      className="rounded-xl border border-dashed border-foreground/15 py-2.5 text-center text-[13px] font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+                    >
+                      Mostrar mais {Math.min(JANELA_DA_COLUNA, lista.length - (mostrando[coluna.chave] ?? JANELA_DA_COLUNA))} de {lista.length - (mostrando[coluna.chave] ?? JANELA_DA_COLUNA)} restantes
+                    </button>
+                  ) : null}
 
                   {lista.length === 0 && novaEm !== coluna.chave ? (
                     <button

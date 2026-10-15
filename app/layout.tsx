@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import localFont from "next/font/local"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
@@ -38,6 +39,10 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>
+        {/* Tempo real das telas, medido no navegador de quem usa (painel da
+            Vercel › Speed Insights). Só na Vercel: fora dela o script não
+            existe e cada tela daria um 404 no console. */}
+        {process.env.VERCEL === "1" ? <SpeedInsights /> : null}
       </body>
     </html>
   )

@@ -110,6 +110,7 @@ function MenuUsuario() {
 
           <Link
             href="/configuracoes"
+            prefetch={false}
             role="menuitem"
             onClick={() => setAberto(false)}
             className="flex h-9 items-center gap-2.5 rounded-lg px-3 text-[13px] text-foreground/80 transition-colors duration-150 outline-none hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent"

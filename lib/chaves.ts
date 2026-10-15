@@ -36,27 +36,64 @@ export function chaveDoPedido(request: Request): string | null {
  * A conta dona da chave — ou `null` se a chave não existe, foi revogada
  * ou a tabela ainda não foi criada. Marca o último uso.
  */
+/**
+ * Chave → conta fica na memória da instância por 60 s: o Claude faz
+ * várias chamadas seguidas com a mesma chave, e cada uma custava uma
+ * leitura e uma gravação ("último uso") antes de a ferramenta começar.
+ * Revogar uma chave passa a valer em até um minuto. O "último uso" é
+ * gravado no máximo uma vez a cada 5 minutos por chave.
+ */
+const VALIDADE_MS = 60_000
+const ULTIMO_USO_MS = 5 * 60_000
+const lembradas = new Map<string, { em: number; id: string; usuario: CurrentUser; usoGravadoEm: number }>()
+
 export async function usuarioDaChave(chave: string | null): Promise<CurrentUser | null> {
   if (!chave || !chave.startsWith(PREFIXO) || chave.length < 20) return null
 
-  const { data, error } = await supabase
-    .from("chaves_api")
-    .select("id, revogada_em, usuario:users!chaves_api_usuario_id_fkey(id, name, email, role)")
-    .eq("hash", resumoDaChave(chave))
-    .maybeSingle()
+  const hash = resumoDaChave(chave)
+  const agora = Date.now()
+  let lembrada = lembradas.get(hash)
 
-  if (error) {
-    console.error("Chave do conector:", error.message)
-    return null
+  if (!lembrada || agora - lembrada.em > VALIDADE_MS) {
+    const { data, error } = await supabase
+      .from("chaves_api")
+      .select("id, revogada_em, usuario:users!chaves_api_usuario_id_fkey(id, name, email, role)")
+      .eq("hash", hash)
+      .maybeSingle()
+
+    if (error) {
+      console.error("Chave do conector:", error.message)
+      return null
+    }
+    if (!data || data.revogada_em) {
+      lembradas.delete(hash)
+      return null
+    }
+
+    const usuario = Array.isArray(data.usuario) ? data.usuario[0] : data.usuario
+    if (!usuario) return null
+
+    lembrada = { em: agora, id: data.id as string, usuario: toCamelCase(usuario) as CurrentUser, usoGravadoEm: lembrada?.usoGravadoEm ?? 0 }
+    lembradas.set(hash, lembrada)
   }
-  if (!data || data.revogada_em) return null
-
-  const usuario = Array.isArray(data.usuario) ? data.usuario[0] : data.usuario
-  if (!usuario) return null
 
   // Último uso: para o administrador ver se o conector está mesmo em uso.
   // Falhar aqui não impede o trabalho.
-  await supabase.from("chaves_api").update({ ultimo_uso_em: new Date().toISOString() }).eq("id", data.id)
+  if (agora - lembrada.usoGravadoEm > ULTIMO_USO_MS) {
+    lembrada.usoGravadoEm = agora
+    void supabase
+      .from("chaves_api")
+      .update({ ultimo_uso_em: new Date(agora).toISOString() })
+      .eq("id", lembrada.id)
+      .then(({ error }) => {
+        if (error) console.error("Último uso da chave:", error.message)
+      })
+  }
 
-  return toCamelCase(usuario) as CurrentUser
+  return lembrada.usuario
+}
+
+/** Depois de revogar ou criar chave: a próxima chamada vai ao banco. */
+export function esquecerChaves() {
+  lembradas.clear()
 }

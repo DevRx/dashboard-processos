@@ -106,7 +106,7 @@ async function handleStorage(req, res, subPath) {
   }
 }
 
-http
+const servidor = http
   .createServer(async (req, res) => {
     try {
       const url = new URL(req.url, "http://localhost")
@@ -134,3 +134,9 @@ http
     }
   })
   .listen(PORT, "127.0.0.1", () => console.log(`✓ gateway Supabase local em http://127.0.0.1:${PORT}`))
+
+// Sob carga o cliente reaproveita a conexão no instante em que o padrão
+// de 5 s do Node a fecharia — "other side closed". Mais folga que o
+// cliente (que fecha as dele antes).
+servidor.keepAliveTimeout = 65_000
+servidor.headersTimeout = 66_000

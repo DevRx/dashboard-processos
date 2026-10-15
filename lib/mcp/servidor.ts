@@ -24,9 +24,10 @@ import {
   type TimeTarefa,
   type UsuarioDoFluxo,
 } from "@/lib/domain/tarefa"
-import { atribuicoesDaTarefa, tarefasDeIntimacao, usuariosDoFluxo } from "@/lib/fluxo/servidor"
+import { atribuicoesDaTarefa, usuariosDoFluxo } from "@/lib/fluxo/servidor"
 import { avisoAoClienteLiberado } from "@/lib/configuracoes"
-import { abrirDuvida, agirNoFluxo, criarTarefa, tarefasAbertasComFluxo, type Resultado } from "@/lib/tarefas/servico"
+import { abrirDuvida, agirNoFluxo, criarTarefa, nasceuDeIntimacao, tarefasAbertasComFluxo, type Resultado } from "@/lib/tarefas/servico"
+import { tarefaDaTela } from "@/lib/fluxo/tela"
 
 /**
  * O conector do Claude: as ferramentas que ele usa para trabalhar nas
@@ -150,6 +151,10 @@ function descreverGrupo(g: Grupo, equipe: UsuarioDoFluxo[]) {
 
 /** A tarefa do escritório, com onde ela está agora. */
 async function lerTarefa(id: string): Promise<TarefaLida | null> {
+  // Uma ida só, quando a função da tela existe.
+  const pronta = await tarefaDaTela(id)
+  if (pronta !== undefined) return pronta as TarefaLida | null
+
   const escritorio = await idsDoEscritorio()
   const { data } = await supabase
     .from("tarefas")
@@ -160,7 +165,7 @@ async function lerTarefa(id: string): Promise<TarefaLida | null> {
   if (!data) return null
   const t = toCamelCase(data) as TarefaLida
   t.atribuicoes = await atribuicoesDaTarefa(id).catch(() => [])
-  t.deIntimacao = (await tarefasDeIntimacao(escritorio)).has(id)
+  t.deIntimacao = await nasceuDeIntimacao(id)
   return t
 }
 
@@ -285,7 +290,11 @@ export function servidorDoClaude(eu: CurrentUser): McpServer {
       }
 
       const termos = busca ? termosDaBusca(busca) : []
-      const todas = (await tarefasAbertasComFluxo()) as TarefaLida[]
+      // Filtrado no banco (lib/fluxo/tela.ts); o filtro abaixo só
+      // confirma, e é o que vale quando a função ainda não existe.
+      const max = limite ?? 50
+      // O banco já corta na quantidade pedida (com folga para o filtro abaixo).
+      const todas = (await tarefasAbertasComFluxo({ responsavel: pessoa, setor: time ?? null, etapa: etapa ?? null, busca: busca ?? null, limite: max * 2 + 50 })) as TarefaLida[]
       const achadas = todas.filter((t) => {
         if (t.tipo === "DUVIDA") return false
         if (termos.length && !tarefaCombina({ ...t, titulo: t.titulo }, termos)) return false
@@ -297,9 +306,9 @@ export function servidorDoClaude(eu: CurrentUser): McpServer {
         )
       })
 
-      const max = limite ?? 50
       return texto({
         total: achadas.length,
+        ...(todas.length >= max * 2 + 50 ? { totalCortadoEm: todas.length } : {}),
         mostrando: Math.min(max, achadas.length),
         hoje: hoje(),
         tarefas: achadas.slice(0, max).map((t) => resumoDaTarefa(t, equipe)),

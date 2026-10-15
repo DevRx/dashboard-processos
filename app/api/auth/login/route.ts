@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { supabase } from "@/lib/supabase/server"
+import { esquecerEquipe } from "@/lib/equipe"
 import { LoginSchema } from "@/lib/validators"
 import { createSession } from "@/lib/session"
 import { ehAdminFixo } from "@/lib/admins"
+import { LIMITE, falhasRecentes, ipDoPedido, limparFalhas, registrarFalha } from "@/lib/tentativas-login"
 
 /**
  * Entrar.
@@ -34,6 +36,20 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, password } = validatedFields.data
+    const ip = ipDoPedido(request)
+
+    // Limite de tentativas (lib/tentativas-login.ts): a partir da 5ª
+    // senha errada em 15 minutos, por e-mail ou por endereço, a porta
+    // fecha antes de conferir a senha — que é a parte cara.
+    const falhas = await falhasRecentes(email, ip)
+    if (falhas && (falhas.email >= LIMITE || falhas.ip >= LIMITE)) {
+      const segundos = Math.max(1, Math.ceil(((falhas.proximaEm?.getTime() ?? Date.now()) - Date.now()) / 1000))
+      const minutos = Math.max(1, Math.ceil(segundos / 60))
+      return NextResponse.json(
+        { error: `Muitas tentativas. Tente de novo em ${minutos} minuto${minutos > 1 ? "s" : ""}.` },
+        { status: 429, headers: { "Retry-After": String(segundos) } }
+      )
+    }
 
     const { data: user, error } = await supabase
       .from("users")
@@ -59,6 +75,7 @@ export async function POST(request: NextRequest) {
     // Mesma resposta para e-mail que não existe e senha errada: dizer
     // qual dos dois falhou entrega ao contrário quem tem conta aqui.
     if (!user) {
+      await registrarFalha(email, ip)
       return NextResponse.json(
         { error: "Credenciais inválidas" },
         { status: 401 }
@@ -68,11 +85,14 @@ export async function POST(request: NextRequest) {
     const passwordMatch = await bcrypt.compare(password, user.password)
 
     if (!passwordMatch) {
+      await registrarFalha(email, ip)
       return NextResponse.json(
         { error: "Credenciais inválidas" },
         { status: 401 }
       )
     }
+
+    if (falhas && falhas.email > 0) await limparFalhas(email)
 
     // Ver lib/admins.ts. Grava no banco, e não só na sessão: o papel
     // que as rotas conferem é o do banco (lib/auth.ts).
@@ -84,6 +104,7 @@ export async function POST(request: NextRequest) {
 
       if (erroPapel) console.error("Promover a ADMIN:", erroPapel.message)
       else user.role = "ADMIN"
+      esquecerEquipe()
     }
 
     await createSession({

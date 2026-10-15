@@ -55,6 +55,13 @@ const EXIGIDAS = [
   { tabela: "chaves_api", coluna: "hash", migration: "20261014110000_chaves_api" },
   { tabela: "comunicacoes_djen", coluna: "ia_evento_data", migration: "20261014220000_intimacao_evento_aviso" },
   { tabela: "configuracoes", coluna: "chave", migration: "20261014220000_intimacao_evento_aviso" },
+  { tabela: "tentativas_login", coluna: "email", migration: "20261015030000_tela_em_uma_ida" },
+] as const
+
+/** Funções do banco que o caminho rápido usa; sem elas vale o caminho antigo, mais lento. */
+const FUNCOES = [
+  { funcao: "fluxo_tela", args: { p_usuarios: [] as string[], p_limite: 1 }, migration: "20261015030000_tela_em_uma_ida" },
+  { funcao: "painel_resumo", args: { p_usuarios: [] as string[], p_hoje: "2026-01-01" }, migration: "20261015030000_tela_em_uma_ida" },
 ] as const
 
 type Achado = { nome: string; ok: boolean; detalhe: string }
@@ -125,6 +132,15 @@ export async function GET() {
         nome: `${tabela}.${coluna}`,
         ok: !error,
         detalhe: error ? `FALTANDO — aplique ${migration}.sql` : "presente",
+      })
+    }
+
+    for (const { funcao, args, migration } of FUNCOES) {
+      const { error } = await supabase.rpc(funcao, args)
+      achados.push({
+        nome: `função ${funcao}()`,
+        ok: !error,
+        detalhe: error ? `FALTANDO — aplique ${migration}.sql (a tela segue pelo caminho lento)` : "presente",
       })
     }
 

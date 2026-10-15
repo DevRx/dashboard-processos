@@ -47,8 +47,11 @@ export async function GET() {
     const [intimacoesRes, execucaoRes] = await Promise.all([
       supabase
         .from("comunicacoes_djen")
+        // A intimação aponta para duas tarefas (a do prazo/evento e a do
+        // aviso ao cliente): o embed precisa dizer qual chave, senão o
+        // PostgREST recusa por ambiguidade e a tela cai com 500.
         .select(
-          "*, processo:processos(id, numero, cliente:clientes(id, nome)), tarefa:tarefas(id, setor, data, status)"
+          "*, processo:processos(id, numero, cliente:clientes(id, nome)), tarefa:tarefas!comunicacoes_djen_tarefa_id_fkey(id, setor, data, status), aviso:tarefas!comunicacoes_djen_aviso_tarefa_id_fkey(id, data, status)"
         )
         .in("user_id", await idsDoEscritorio())
         .order("data_disponibilizacao", { ascending: false })

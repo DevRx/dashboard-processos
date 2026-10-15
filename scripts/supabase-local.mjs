@@ -25,8 +25,28 @@ async function readBody(req) {
   return Buffer.concat(chunks)
 }
 
+// ── Contagem de idas ao banco ─────────────────────────────
+//
+// Em produção o app fala com o Supabase pela rede, e cada chamada ao
+// PostgREST é uma ida e volta de dezenas de milissegundos. O que decide
+// a velocidade de um clique é quantas dessas idas ele faz. Este contador
+// (GET /__contagem, com ?zerar=1 para começar de novo) dá esse número
+// por rota — é o que o teste de estresse lê.
+const contagem = { total: 0, ms: 0, bytes: 0, porRota: {} }
+function contar(metodo, subPath, ms, bytes) {
+  const rota = `${metodo} ${subPath.split("?")[0]}`
+  contagem.total++
+  contagem.ms += ms
+  contagem.bytes += bytes
+  const r = (contagem.porRota[rota] ??= { n: 0, ms: 0, bytes: 0 })
+  r.n++
+  r.ms += ms
+  r.bytes += bytes
+}
+
 /** Encaminha ao PostgREST preservando query, método e cabeçalhos do PostgREST. */
 async function proxyRest(req, res, subPath) {
+  const ini = performance.now()
   const body = ["GET", "HEAD"].includes(req.method) ? undefined : await readBody(req)
   const headers = {}
   for (const [k, v] of Object.entries(req.headers)) {
@@ -38,11 +58,13 @@ async function proxyRest(req, res, subPath) {
   headers["content-profile"] = headers["content-profile"] ?? "public"
 
   const upstream = await fetch(`${PGRST}${subPath}`, { method: req.method, headers, body })
+  const resposta = Buffer.from(await upstream.arrayBuffer())
+  contar(req.method, subPath, performance.now() - ini, resposta.length)
   res.writeHead(upstream.status, {
     "content-type": upstream.headers.get("content-type") ?? "application/json",
     "content-range": upstream.headers.get("content-range") ?? "",
   })
-  res.end(Buffer.from(await upstream.arrayBuffer()))
+  res.end(resposta)
 }
 
 /** Storage mínimo: upload, download, remove e URL assinada (sem assinatura real). */
@@ -88,6 +110,15 @@ http
   .createServer(async (req, res) => {
     try {
       const url = new URL(req.url, "http://localhost")
+      if (url.pathname === "/__contagem") {
+        const foto = JSON.stringify(contagem)
+        if (url.searchParams.has("zerar")) {
+          contagem.total = contagem.ms = contagem.bytes = 0
+          contagem.porRota = {}
+        }
+        res.writeHead(200, { "content-type": "application/json" })
+        return res.end(foto)
+      }
       if (url.pathname.startsWith("/rest/v1")) {
         return await proxyRest(req, res, req.url.slice("/rest/v1".length))
       }

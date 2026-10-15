@@ -28,6 +28,7 @@ import { atribuicoesDaTarefa, usuariosDoFluxo } from "@/lib/fluxo/servidor"
 import { avisoAoClienteLiberado } from "@/lib/configuracoes"
 import { abrirDuvida, agirNoFluxo, criarTarefa, nasceuDeIntimacao, tarefasAbertasComFluxo, type Resultado } from "@/lib/tarefas/servico"
 import { tarefaDaTela } from "@/lib/fluxo/tela"
+import { diagnosticar } from "@/lib/saude"
 
 /**
  * O conector do Claude: as ferramentas que ele usa para trabalhar nas
@@ -525,6 +526,28 @@ export function servidorDoClaude(eu: CurrentUser): McpServer {
       const r = await agirNoFluxo(eu, id, { acao: "responsaveis", em: lugar, responsaveis: r1.ids })
       const equipe = await usuariosDoFluxo()
       return doResultado(r, (corpo) => ({ trocados: true, tarefa: resumoDaTarefa(corpo.tarefa as TarefaLida, equipe) }))
+    }
+  )
+
+  servidor.registerTool(
+    "saude_do_sistema",
+    {
+      title: "Saúde do sistema",
+      description:
+        "Diagnóstico do sistema: variáveis, banco, migrations, funções do caminho rápido e a rotina do DJEN. " +
+        "Devolve saudavel = true quando está tudo no lugar; caso contrário, a lista do que está FALTANDO ou PARADO. Não lê dado de cliente.",
+      inputSchema: {},
+      annotations: { readOnlyHint: true },
+    },
+    async () => {
+      const d = await diagnosticar()
+      return texto({
+        saudavel: d.saudavel,
+        resumo: d.resumo,
+        pendencias: d.achados.filter((a) => !a.ok).map((a) => `${a.nome}: ${a.detalhe}`),
+        avisos: d.achados.filter((a) => a.ok && /ausente/.test(a.detalhe)).map((a) => `${a.nome}: ${a.detalhe}`),
+        conferido: d.achados.length,
+      })
     }
   )
 

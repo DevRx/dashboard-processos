@@ -29,6 +29,7 @@ import { avisoAoClienteLiberado } from "@/lib/configuracoes"
 import { abrirDuvida, agirNoFluxo, criarTarefa, nasceuDeIntimacao, tarefasAbertasComFluxo, type Resultado } from "@/lib/tarefas/servico"
 import { tarefaDaTela } from "@/lib/fluxo/tela"
 import { diagnosticar } from "@/lib/saude"
+import { rodarRotinaDjen } from "@/lib/intimacoes/rotina"
 
 /**
  * O conector do Claude: as ferramentas que ele usa para trabalhar nas
@@ -548,6 +549,22 @@ export function servidorDoClaude(eu: CurrentUser): McpServer {
         avisos: d.achados.filter((a) => a.ok && /ausente/.test(a.detalhe)).map((a) => `${a.nome}: ${a.detalhe}`),
         conferido: d.achados.length,
       })
+    }
+  )
+
+  servidor.registerTool(
+    "sincronizar_djen",
+    {
+      title: "Rodar agora a passada do DJEN",
+      description:
+        "Busca as intimações novas no DJEN e abre as tarefas dos prazos e perícias — o mesmo que o cron da Vercel faz duas vezes por dia útil. " +
+        "Use quando saude_do_sistema disser que a rotina do DJEN está PARADA. Rodar mais de uma vez não duplica nada.",
+      inputSchema: {},
+    },
+    async () => {
+      const r = await rodarRotinaDjen("conector", eu.name)
+      if (!r.ok) return falhou(`A passada do DJEN falhou: ${r.motivo}`)
+      return texto({ ok: true, encontradas: r.encontradas, novas: r.novas, tarefasCriadas: r.tarefasCriadas, periodo: { de: r.de, ate: r.ate } })
     }
   )
 

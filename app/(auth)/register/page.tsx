@@ -46,10 +46,9 @@ export default function RegisterPage() {
       } else if (!response.ok) {
         setError(data.error || "Erro ao cadastrar")
       } else {
-        // Quem cadastra é o ADMIN, já logado: mandá-lo ao /login só o
-        // devolvia à tela inicial, sem sinal de que o cadastro entrou.
-        // A lista da equipe é onde a pessoa nova aparece.
-        router.push("/configuracoes")
+        // O ADMIN que cadastra alguém volta à lista da equipe, onde a
+        // pessoa nova aparece; quem criou a própria conta vai entrar.
+        router.push(data.porAdmin ? "/configuracoes" : "/login")
         router.refresh()
       }
     } catch {
@@ -61,16 +60,16 @@ export default function RegisterPage() {
 
   return (
     <AuthShell
-      titulo="Cadastrar pessoa"
-      descricao="Crie o acesso de alguém da equipe. A pessoa entra depois com o e-mail e a senha definidos aqui."
+      titulo="Criar acesso"
+      descricao="Cadastre nome, e-mail e senha para entrar no painel do escritório."
       rodape={
         <>
-          Desistiu?{" "}
+          Já tem uma conta?{" "}
           <Link
-            href="/configuracoes"
+            href="/login"
             className="font-semibold text-primary underline-offset-4 hover:underline"
           >
-            Voltar para a equipe
+            Entrar
           </Link>
         </>
       }
@@ -149,7 +148,7 @@ export default function RegisterPage() {
             </>
           ) : (
             <>
-              Cadastrar
+              Criar conta
               <ArrowRight size={17} />
             </>
           )}

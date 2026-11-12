@@ -2,11 +2,13 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { ArrowRight, Eye, EyeOff, Loader2, LockKeyhole, Mail } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { AuthShell, CampoAuth, ErroAuth } from "@/components/auth/auth-shell"
+import { CADASTRO_ABERTO } from "@/lib/cadastro"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -48,8 +50,19 @@ export default function LoginPage() {
       descricao="Entre com seu e-mail e senha para acessar o painel do escritório."
       rodape={
         <>
-          Ainda não tem conta? Peça o acesso a um administrador do
-          escritório — é ele quem cadastra a equipe.
+          {CADASTRO_ABERTO ? (
+            <>
+              Ainda não tem conta?{" "}
+              <Link
+                href="/register"
+                className="font-semibold text-primary underline-offset-4 hover:underline"
+              >
+                Criar acesso
+              </Link>
+            </>
+          ) : (
+            "Ainda não tem conta? Peça o acesso a um administrador do escritório — é ele quem cadastra a equipe."
+          )}
         </>
       }
     >

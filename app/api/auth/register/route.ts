@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase/server"
 import { esquecerEquipe } from "@/lib/equipe"
 import { getCurrentUser } from "@/lib/auth"
 import { RegisterSchema } from "@/lib/validators"
+import { CADASTRO_ABERTO } from "@/lib/cadastro"
 
 /**
  * Criar conta deixou de ser público.
@@ -41,14 +42,18 @@ export async function POST(request: NextRequest) {
 
     // Contagem desconhecida trata como "há gente": o lado seguro do
     // erro é exigir ADMIN, não abrir o cadastro para a rua.
-    if ((count ?? 1) > 0) {
-      const atual = await getCurrentUser()
+    const haGente = (count ?? 1) > 0
+    const atual = haGente ? await getCurrentUser() : null
+    const porAdmin = atual?.role === "ADMIN"
 
+    // Com o cadastro aberto (lib/cadastro.ts), a exigência de ADMIN
+    // fica suspensa — o que não fica é o papel: ver `papel` abaixo.
+    if (haGente && !CADASTRO_ABERTO) {
       if (!atual) {
         return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
       }
 
-      if (atual.role !== "ADMIN") {
+      if (!porAdmin) {
         return NextResponse.json(
           { error: "Apenas um administrador cadastra novas pessoas" },
           { status: 403 }
@@ -83,6 +88,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Só ADMIN (ou a instalação vazia) escolhe papel. Sem isso, com o cadastro aberto, bastava
+    // mandar `role: "ADMIN"` no corpo para nascer administrador.
+    const papel = porAdmin || !haGente ? role || "USER" : "USER"
+
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const { data: user, error } = await supabase
@@ -91,7 +100,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         password: hashedPassword,
-        role: role || "USER",
+        role: papel,
       })
       .select("id, name, email, role")
       .single()
@@ -109,7 +118,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: "Usuário criado com sucesso", user },
+      { message: "Usuário criado com sucesso", user, porAdmin },
       { status: 201 }
     )
   } catch (error) {

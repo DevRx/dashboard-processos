@@ -40,10 +40,16 @@ export default function RegisterPage() {
 
       const data = await response.json()
 
-      if (!response.ok) {
+      if (response.status === 401) {
+        // Sessão vencida no meio do cadastro: a rota exige ADMIN logado.
+        setError("Sua sessão expirou. Entre de novo para cadastrar a pessoa.")
+      } else if (!response.ok) {
         setError(data.error || "Erro ao cadastrar")
       } else {
-        router.push("/login")
+        // O ADMIN que cadastra alguém volta à lista da equipe, onde a
+        // pessoa nova aparece; quem criou a própria conta vai entrar.
+        router.push(data.porAdmin ? "/configuracoes" : "/login")
+        router.refresh()
       }
     } catch {
       setError("Erro de conexão")
@@ -55,7 +61,7 @@ export default function RegisterPage() {
   return (
     <AuthShell
       titulo="Criar acesso"
-      descricao="Cadastre-se para entrar no painel do escritório."
+      descricao="Cadastre nome, e-mail e senha para entrar no painel do escritório."
       rodape={
         <>
           Já tem uma conta?{" "}

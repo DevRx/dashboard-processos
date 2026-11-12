@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { decrypt } from "@/lib/session"
+import { CADASTRO_ABERTO } from "@/lib/cadastro"
 
 /**
  * Quem entra e quem não entra.
@@ -29,6 +30,10 @@ const rotasDeEntrada = ["/login"]
  * expulsar quem já está logado.
  */
 const rotasAbertas = ["/embed"]
+
+// Ver lib/cadastro.ts: enquanto o cadastro estiver aberto, /register
+// atende com ou sem sessão.
+if (CADASTRO_ABERTO) rotasAbertas.push("/register")
 
 function casa(rotas: string[], pathname: string) {
   return rotas.some(
